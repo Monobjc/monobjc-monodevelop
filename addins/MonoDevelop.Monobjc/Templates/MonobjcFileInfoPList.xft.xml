@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<Template Originator="Laurent Etiemble" Created="2010/10/27">
+	
+	<!-- Template Header -->
+	<TemplateConfiguration>
+	  <_Name>Application Property List</_Name>
+      <Icon>md-monobjc-plist</Icon>
+	  <_Category>Monobjc</_Category>
+	  <LanguageName>*</LanguageName>
+	  <ProjectType>Monobjc</ProjectType>
+	  <_Description>An XML property list file that describes the application.</_Description>
+      <DefaultFilename IsFixed="true">Info.plist</DefaultFilename>
+	</TemplateConfiguration>
+	
+	<!-- Conditions -->
+	<Conditions>
+		<ParentProject PermittedCreationPaths="" ExcludedFiles="Info.plist" RequireProject="True"/>
+	</Conditions>
+	
+	<!-- Template Content -->
+	<TemplateFiles>
+	  <File name="Info.plist" SuppressAutoOpen="True">
+<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>${CFBundleExecutable}</string>
+	<key>CFBundleIconFile</key>
+	<string>${CFBundleIconFile}</string>
+	<key>CFBundleIdentifier</key>
+	<string>${CFBundleIdentifier}</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>${CFBundleName}</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>1</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>${LSMinimumSystemVersion}</string>
+	<key>NSMainNibFile</key>
+	<string>${NSMainNibFile}</string>
+	<key>NSPrincipalClass</key>
+	<string>NSApplication</string>
+</dict>
+</plist>]]>
+		</File>
+	</TemplateFiles>
+	
+</Template>

@@ -1,0 +1,37 @@
+<?xml version="1.0" ?>
+<Template Originator="Laurent Etiemble" Created="2010/10/27">
+	
+	<!-- Template Header -->
+	<TemplateConfiguration>
+	  <_Name>NSObject Subclass</_Name>
+    	<Icon>md-monobjc-class</Icon>
+	  <_Category>Monobjc</_Category>
+	  <LanguageName>C#</LanguageName>
+	  <ProjectType>Monobjc</ProjectType>
+	  <_Description>A .NET class that inherits NSObject and is exposed to the Objective-C runtime.</_Description>
+	</TemplateConfiguration>
+	
+	<!-- Template Content -->
+	<TemplateFiles>
+	  <File name="${Name}.cs">
+<![CDATA[using System;
+using Monobjc;
+using Monobjc.AppKit;
+using Monobjc.Foundation;
+
+namespace ${Namespace}
+{
+    [ObjectiveCClass]
+	public partial class ${Name} : NSObject
+	{
+		public static readonly Class ${Name}Class = Class.Get(typeof(${Name}));
+		
+		public ${Name} () { }
+		
+        public ${Name} (IntPtr nativePointer) : base(nativePointer) { }
+	}
+}]]>
+		</File>
+	</TemplateFiles>
+	
+</Template>

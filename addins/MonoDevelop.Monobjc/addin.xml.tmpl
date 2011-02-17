@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin id="MonoDevelop.Monobjc"
+       name="Monobjc Development"
+       author="Laurent Etiemble"
+       url="http://www.monobjc.net/"
+       description="Development of Mac OS X applications using Monobjc."
+       copyright="GPL"
+       category="Mac Development"
+       version="@MD_VERSION@.@ADDIN_VERSION@.0">
+
+  <Runtime>
+    <!-- Assemblies -->
+    <Import assembly="MonoDevelop.Monobjc.dll" />
+    <Import assembly="Monobjc.Tools.dll" />
+    <!-- Templates -->
+    <Import file="Templates/MonobjcFileDefinitionPList.xft.xml"/>
+    <Import file="Templates/MonobjcFileInfoPList.xft.xml"/>
+    <Import file="Templates/MonobjcFileInfoPListDocument.xft.xml"/>
+    <Import file="Templates/MonobjcFileNSObject.xft.xml"/>
+    <Import file="Templates/MonobjcFileNSView.xft.xml"/>
+    <Import file="Templates/MonobjcProject.xpt.xml"/>
+    <Import file="Templates/MonobjcProjectDocument.xpt.xml"/>
+    <Import file="Templates/MonobjcProjectEmpty.xpt.xml"/>
+    <Import file="Templates/MonobjcXibEmpty.xft.xml"/>
+    <Import file="Templates/MonobjcXibView.xft.xml"/>
+    <Import file="Templates/MonobjcXibWindow.xft.xml"/>
+  </Runtime>
+
+  <!-- Dependencies -->
+  <Dependencies>
+    <Addin id="MonoDevelop.Core" version="@MD_VERSION@" />
+    <Addin id="MonoDevelop.Ide" version="@MD_VERSION@" />
+    <Addin id="MonoDevelop.Deployment" version="@MD_VERSION@" />
+    <Addin id="MonoDevelop.DesignerSupport" version="@MD_VERSION@" />
+  </Dependencies>
+
+  <!-- File Templates -->
+  <Extension path="/MonoDevelop/Ide/FileTemplates">
+    <FileTemplate id="MonobjcFileDefinitionPList"
+                  file="Templates/MonobjcFileDefinitionPList.xft.xml"/>
+    <FileTemplate id="MonobjcFileInfoPListDocument"
+                  file="Templates/MonobjcFileInfoPListDocument.xft.xml"/>
+    <FileTemplate id="MonobjcFileInfoPList"
+                  file="Templates/MonobjcFileInfoPList.xft.xml"/>
+    <FileTemplate id="MonobjcFileNSObject"
+                  file="Templates/MonobjcFileNSObject.xft.xml"/>
+    <FileTemplate id="MonobjcFileNSView"
+                  file="Templates/MonobjcFileNSView.xft.xml"/>
+    <FileTemplate id="MonobjcXibEmpty"
+                  file="Templates/MonobjcXibEmpty.xft.xml"/>
+    <FileTemplate id="MonobjcXibView"
+                  file="Templates/MonobjcXibView.xft.xml"/>
+    <FileTemplate id="MonobjcXibWindow"
+                  file="Templates/MonobjcXibWindow.xft.xml"/>
+  </Extension>
+
+  <!-- Project Templates -->
+  <Extension path="/MonoDevelop/Ide/ProjectTemplates">
+    <ProjectTemplate id="MonobjcProject"
+                     file="Templates/MonobjcProject.xpt.xml"/>
+    <ProjectTemplate id="MonobjcProjectDocument"
+                     file="Templates/MonobjcProjectDocument.xpt.xml"/>
+    <ProjectTemplate id="MonobjcProjectEmpty"
+                     file="Templates/MonobjcProjectEmpty.xpt.xml"/>
+  </Extension>
+
+  <Extension path="/MonoDevelop/ProjectModel/MSBuildItemTypes">
+    <DotNetProjectSubtype guid="{804445eb-57e1-4f64-8830-61a8701f1c25}"
+                          type="MonoDevelop.Monobjc.MonobjcProject" />
+  </Extension>
+
+  <!-- Project Bindings -->
+  <Extension path="/MonoDevelop/ProjectModel/ProjectBindings">
+    <ProjectBinding id="Monobjc"
+                    class="MonoDevelop.Monobjc.MonobjcProjectBinding" />
+  </Extension>
+
+  <!-- Serializable Classes -->
+  <Extension path="/MonoDevelop/ProjectModel/SerializableClasses">
+    <DataType class="MonoDevelop.Monobjc.MonobjcProject" />
+    <DataType class="MonoDevelop.Monobjc.MonobjcProjectConfiguration" />
+  </Extension>
+
+  <!-- ProjectService Extensions -->
+  <Extension path="/MonoDevelop/ProjectModel/ProjectServiceExtensions">
+    <Class class="MonoDevelop.Monobjc.MonobjcBuildExtension"
+           insertafter="MidStep" />
+  </Extension>
+
+  <!-- ExecutionHandlers -->
+  <Extension path="/MonoDevelop/Core/ExecutionHandlers">
+    <ExecutionHandler id="Monobjc"
+                      class="MonoDevelop.Monobjc.MonobjcExecutionHandler"/>
+  </Extension>
+
+  <!-- Commands -->
+  <Extension path="/MonoDevelop/Ide/Commands/Project">
+    <Command id="MonoDevelop.Monobjc.Command.ExportBundle"
+             defaultHandler="MonoDevelop.Monobjc.Command.ExportBundleCommandHandler"
+             _label="Create Monobjc Bundle"
+             _description="Export a Monobjc application bundle"/>
+  </Extension>
+
+  <!-- Project Menu -->
+  <Extension path="/MonoDevelop/Ide/MainMenu/Project">
+    <CommandItem id="MonoDevelop.Monobjc.Command.ExportBundle"
+                 insertafter="MonoDevelop.Ide.Commands.ProjectCommands.ExportProject"/>
+  </Extension>
+
+  <!-- Project Context Menu -->
+  <Extension path="/MonoDevelop/Ide/ContextMenu/ProjectPad/Tools">
+    <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
+      <CommandItem id="MonoDevelop.Monobjc.Command.ExportBundle"
+                   insertafter="MonoDevelop.Ide.Commands.ProjectCommands.ExportProject"/>
+    </Condition>
+  </Extension>
+
+  <!-- Project General Options -->
+  <Extension path="/MonoDevelop/ProjectModel/Gui/ItemOptionPanels/Common">
+    <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
+      <Section id="MonobjcGeneralOptions"
+               icon="md-monobjc"
+               _label="Monobjc Settings">
+        <Panel id="MonobjcGeneralOptionsPanel"
+               class="MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsPanel"
+               fill="true" />
+      </Section>
+    </Condition>
+  </Extension>
+
+  <!-- Project Deployment Options -->
+  <Extension path="/MonoDevelop/ProjectModel/Gui/ItemOptionPanels/Deployment">
+    <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
+      <Section id="MonobjcDeploymentOptions"
+               icon="md-monobjc"
+               _label="Monobjc Deployment">
+        <Panel id="MonobjcDeploymentOptionsPanel"
+               class="MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsPanel"
+               fill="true" />
+      </Section>
+    </Condition>
+  </Extension>
+
+  <!-- Icons -->
+  <Extension path="/MonoDevelop/Core/StockIcons">
+    <StockIcon stockid="md-monobjc" resource="monobjc-16.png" size="Menu" />
+    <StockIcon stockid="md-monobjc" resource="monobjc-24.png" size="Button" />
+    <StockIcon stockid="md-monobjc-fmk" resource="monobjc-fmk-16.png" size="Menu" />
+    <StockIcon stockid="md-monobjc-logo" resource="monobjc-logo-64.png" />
+    <StockIcon stockid="md-monobjc-xib" resource="monobjc-xib-32.png" size="Dnd" />
+    <StockIcon stockid="md-monobjc-project" icon="md-project|res:monobjc-overlay-24.png" size="Dnd" />
+    <StockIcon stockid="md-monobjc-class" icon="md-class-file" size="Dnd" />
+    <StockIcon stockid="md-monobjc-protocol" icon="md-interface-file" size="Dnd" />
+    <StockIcon stockid="md-monobjc-plist" icon="md-text-file-icon" size="Dnd" />
+  </Extension>
+
+  <!-- Extension point for CodeBehind -->
+  <ExtensionPoint path="/Monobjc/CodeBehindGeneration" name="CodeBehind Generators">
+    <ExtensionNode name="CodeBehindGenerator"
+                   type="MonoDevelop.Monobjc.CodeGeneration.CodeBehindGeneratorCodon"/>
+  </ExtensionPoint>
+
+  <!-- Generator for CodeBehind -->
+  <Extension path="/Monobjc/CodeBehindGeneration">
+    <CodeBehindGenerator id="C#"
+                         class="MonoDevelop.Monobjc.CodeGeneration.CSharpCodeBehindGenerator"/>
+    <CodeBehindGenerator id="VBNet"
+                         class="MonoDevelop.Monobjc.CodeGeneration.VBNetCodeBehindGenerator"/>
+  </Extension>
+
+</Addin>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Addin id="MonoDevelop.Monobjc.Refactoring"
+       name="Monobjc Refactoring"
+       author="Laurent Etiemble"
+       url="http://www.monobjc.net/"
+       description="Monobjc Refactoring"
+       copyright="GPL"
+       category="IDE extensions"
+       version="@MD_VERSION@.@ADDIN_VERSION@.0">
+	
+  <Runtime>
+    <!-- Assemblies -->
+    <Import assembly="MonoDevelop.Monobjc.Refactoring.dll" />
+  </Runtime>
+
+  <!-- Dependencies -->
+  <Dependencies>
+    <Addin id="MonoDevelop.Core" version="@MD_VERSION@"/>
+    <Addin id="MonoDevelop.Ide" version="@MD_VERSION@"/>
+    <Addin id="MonoDevelop.Refactoring" version="@MD_VERSION@"/>
+    <Addin id="MonoDevelop.Monobjc" version="@MD_VERSION@"/>
+  </Dependencies>
+
+  <Extension path="/MonoDevelop/Refactoring/Refactorings">
+    <Class id="CreateObjectiveCIVar" class="MonoDevelop.Monobjc.Refactoring.CreateIVarOperation" />
+    <Class id="ImplementObjectiveCProtocol" class="MonoDevelop.Monobjc.Refactoring.ImplementProtocolOperation" />
+  </Extension>
+
+  <Extension path="/MonoDevelop/Ide/Commands/Refactoring">
+    <Command id="MonoDevelop.Monobjc.Refactoring.CreateObjectiveCIVar"
+             defaultHandler="MonoDevelop.Monobjc.Refactoring.CreateIVarHandler"
+             _label="Create Variable"/>
+    <Command id="MonoDevelop.Monobjc.Refactoring.ImplementObjectiveCProtocol"
+             defaultHandler="MonoDevelop.Monobjc.Refactoring.ImplementProtocolHandler"
+             _label="Implement Protocol"/>
+  </Extension>
+
+</Addin>

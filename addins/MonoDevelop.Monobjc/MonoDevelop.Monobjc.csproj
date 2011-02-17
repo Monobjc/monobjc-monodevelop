@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6216C823-55A2-47D4-96A0-B1461EE66B1B}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>MonoDevelop.Monobjc</RootNamespace>
+    <AssemblyName>MonoDevelop.Monobjc</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>none</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Posix" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="MonoDevelop.Core, Version=2.4.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <Package>monodevelop</Package>
+    </Reference>
+    <Reference Include="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <Package>monodevelop</Package>
+    </Reference>
+    <Reference Include="MonoDevelop.Deployment, Version=2.4.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <Package>monodevelop-core-addins</Package>
+    </Reference>
+    <Reference Include="MonoDevelop.DesignerSupport, Version=2.4.0.0, Culture=neutral">
+      <SpecificVersion>False</SpecificVersion>
+      <Package>monodevelop-core-addins</Package>
+    </Reference>
+    <Reference Include="Mono.Addins, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
+    <Reference Include="Mono.Cecil, Version=0.6.9.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
+      <Package>monodevelop</Package>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BundleGeneration\BundleGenerator.cs" />
+    <Compile Include="BundleGeneration\ManagedBundleGenerator.cs" />
+    <Compile Include="BundleGeneration\NativeBundleGenerator.cs" />
+    <Compile Include="MonobjcBuildExtension.cs" />
+    <Compile Include="MonobjcCodeBehind.cs" />
+    <Compile Include="MonobjcExecutionCommand.cs" />
+    <Compile Include="MonobjcExecutionHandler.cs" />
+    <Compile Include="MonobjcProject.cs" />
+    <Compile Include="MonobjcProjectBinding.cs" />
+    <Compile Include="MonobjcProjectConfiguration.cs" />
+    <Compile Include="Command\ExportBundleCommandHandler.cs" />
+    <Compile Include="Utilities\BuildHelper.cs" />
+    <Compile Include="Utilities\BuildLogger.cs" />
+    <Compile Include="Utilities\FilePair.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="gtk-gui\generated.cs" />
+    <Compile Include="Gui\MonobjcDeploymentOptionsWidget.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsWidget.cs" />
+    <Compile Include="Gui\MonobjcGeneralOptionsWidget.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsWidget.cs" />
+    <Compile Include="Gui\MonobjcDeploymentOptionsPanel.cs" />
+    <Compile Include="Gui\MonobjcGeneralOptionsPanel.cs" />
+    <Compile Include="Gui\MonobjcExportDialog.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcExportDialog.cs" />
+    <Compile Include="CodeGeneration\BaseCodeBehindGenerator.cs" />
+    <Compile Include="CodeGeneration\CodeBehindGeneratorCodon.cs" />
+    <Compile Include="CodeGeneration\CodeBehindGeneratorLoader.cs" />
+    <Compile Include="CodeGeneration\CSharpCodeBehindGenerator.cs" />
+    <Compile Include="CodeGeneration\ICodeBehindGenerator.cs" />
+    <Compile Include="CodeGeneration\NullCodeBehindGenerator.cs" />
+    <Compile Include="CodeGeneration\VBNetCodeBehindGenerator.cs" />
+    <Compile Include="Utilities\PSNHelper.cs" />
+    <Compile Include="MonobjcProject.Internals.cs" />
+    <Compile Include="MonobjcProject.Properties.cs" />
+    <Compile Include="Utilities\AssemblyReader.cs" />
+    <Compile Include="Utilities\ProjectResolver.cs" />
+    <Compile Include="Utilities\AttributeHelper.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="addin.xml" />
+    <None Include="addin.xml.tmpl" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="gtk-gui\gui.stetic">
+      <LogicalName>gui.stetic</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-128.png">
+      <LogicalName>monobjc-128.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-16.png">
+      <LogicalName>monobjc-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-24.png">
+      <LogicalName>monobjc-24.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-32.png">
+      <LogicalName>monobjc-32.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-48.png">
+      <LogicalName>monobjc-48.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-64.png">
+      <LogicalName>monobjc-64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-logo-64.png">
+      <LogicalName>monobjc-logo-64.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-overlay-16.png">
+      <LogicalName>monobjc-overlay-16.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-overlay-24.png">
+      <LogicalName>monobjc-overlay-24.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-xib-32.png">
+      <LogicalName>monobjc-xib-32.png</LogicalName>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-fmk-16.png">
+      <LogicalName>monobjc-fmk-16.png</LogicalName>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\tools\Monobjc.Tools\Monobjc.Tools.csproj">
+      <Project>{C44005EC-E057-4636-96E2-637CA83F5170}</Project>
+      <Name>Monobjc.Tools</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Templates\MonobjcProjectEmpty.xpt.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MonobjcXibEmpty.xft.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MonobjcXibView.xft.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MonobjcXibWindow.xft.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MonobjcFileInfoPList.xft.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MonobjcProject.xpt.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MonobjcProjectDocument.xpt.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MonobjcFileNSObject.xft.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MonobjcFileNSView.xft.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MonobjcFileInfoPListDocument.xft.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Templates\MonobjcFileDefinitionPList.xft.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+</Project>

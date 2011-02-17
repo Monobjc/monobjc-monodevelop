@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<Template Originator="Laurent Etiemble" Created="2010/10/27">
+	
+	<!-- Template Header -->
+	<TemplateConfiguration>
+	  <_Name>NSView Subclass</_Name>
+    	<Icon>md-monobjc-class</Icon>
+	  <_Category>Monobjc</_Category>
+	  <LanguageName>C#</LanguageName>
+	  <ProjectType>Monobjc</ProjectType>
+	  <_Description>A .NET class that inherits NSView and is exposed to the Objective-C runtime.</_Description>
+	</TemplateConfiguration>
+	
+	<!-- Template Content -->
+	<TemplateFiles>
+	  <File name="${Name}.cs">
+<![CDATA[using System;
+using Monobjc;
+using Monobjc.AppKit;
+using Monobjc.Foundation;
+
+namespace ${Namespace}
+{
+	[ObjectiveCClass]
+	public partial class ${Name} : NSView
+	{
+		public static readonly Class ${Name}Class = Class.Get (typeof(${Name}));
+
+		public ${Name} () { }
+
+		public ${Name} (IntPtr nativePointer) : base(nativePointer) { }
+
+		public ${Name} (NSRect frameRect) : base(frameRect) { }
+		
+		[ObjectiveCMessage("initWithFrame:")]
+		public override Id InitWithFrame(NSRect frameRect)
+		{
+			this.SendMessageSuper<IntPtr>(${Name}Class, "initWithFrame:", frameRect);
+			
+			// Initialization code here.
+			
+			return this;
+		}
+		
+		[ObjectiveCMessage("drawRect:")]
+		public override void DrawRect (NSRect aRect)
+		{
+			// If you want to call the base implementation, uncomment
+            // this.SendMessageSuper(${Name}Class, "drawRect:", rect);
+			
+			// Drawing code here.
+		}
+	}
+}]]>
+		</File>
+	</TemplateFiles>
+	
+</Template>
