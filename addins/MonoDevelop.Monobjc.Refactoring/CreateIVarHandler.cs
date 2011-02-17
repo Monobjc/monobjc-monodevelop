@@ -25,11 +25,10 @@ namespace MonoDevelop.Monobjc.Refactoring
 		protected override void Run (RefactoringOptions options)
 		{
 			RefactoringOperation operation = new CreateIVarOperation ();
-			if (operation.IsValid (options))
-			{
+			if (operation.IsValid (options)) {
 				operation.Run (options);
 			}
 		}
 	}
-
+	
 }

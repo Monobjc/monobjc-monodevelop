@@ -75,6 +75,13 @@ namespace MonoDevelop.Monobjc
 		public String SigningIdentity { get; set; }
 
 		/// <summary>
+		/// Gets or sets the archive.
+		/// </summary>
+		/// <value>The archive.</value>
+		[ItemProperty("Archive")]
+		public bool Archive { get; set; }
+
+		/// <summary>
 		/// Gets or sets the archive identity.
 		/// </summary>
 		/// <value>The archive identity.</value>

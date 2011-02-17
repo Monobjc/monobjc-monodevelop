@@ -86,9 +86,7 @@ namespace MonoDevelop.Monobjc.Gui
 			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetOutputProgressMonitor (GettextCatalog.GetString ("Monobjc"), MonoDevelop.Ide.Gui.Stock.RunProgramIcon, true, true);
 			Thread thread = new Thread (delegate() {
 				using (monitor) {
-					DispatchService.GuiDispatch (delegate() {
-						this.EnableWidgets (false); 
-					});
+					DispatchService.GuiDispatch (delegate() { this.EnableWidgets (false); });
 					
 					try {
 						generator.Generate (monitor, this.project);
@@ -96,9 +94,7 @@ namespace MonoDevelop.Monobjc.Gui
 						monitor.ReportError (GettextCatalog.GetString ("Error while generating the bundle."), ex);
 					}
 					
-					DispatchService.GuiDispatch (delegate() {
-						this.EnableWidgets (true);
-					});
+					DispatchService.GuiDispatch (delegate() { this.EnableWidgets (true); });
 				}
 			});
 			thread.IsBackground = true;

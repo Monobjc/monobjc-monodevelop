@@ -16,8 +16,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Debugger.Soft.M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Monobjc.Refactoring", "addins\MonoDevelop.Monobjc.Refactoring\MonoDevelop.Monobjc.Refactoring.csproj", "{2B862B1F-8921-4789-9B6F-15F4C59596F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorld", "HelloWorld\HelloWorld.csproj", "{45442CF6-69EA-4BD1-82F4-BEC6B0C1DD56}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -28,10 +26,6 @@ Global
 		{2B862B1F-8921-4789-9B6F-15F4C59596F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B862B1F-8921-4789-9B6F-15F4C59596F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B862B1F-8921-4789-9B6F-15F4C59596F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{45442CF6-69EA-4BD1-82F4-BEC6B0C1DD56}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{45442CF6-69EA-4BD1-82F4-BEC6B0C1DD56}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{45442CF6-69EA-4BD1-82F4-BEC6B0C1DD56}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{45442CF6-69EA-4BD1-82F4-BEC6B0C1DD56}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6216C823-55A2-47D4-96A0-B1461EE66B1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6216C823-55A2-47D4-96A0-B1461EE66B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6216C823-55A2-47D4-96A0-B1461EE66B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU

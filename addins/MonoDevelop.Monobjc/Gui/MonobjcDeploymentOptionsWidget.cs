@@ -69,6 +69,9 @@ namespace MonoDevelop.Monobjc.Gui
 			
 			// Retrieve the signing certificate
 			this.SigningIdentity = project.SigningIdentity;
+
+			// Retrieve the package generation
+			this.Archive = project.Archive;
 			
 			// Retrieve the packaging certificate
 			this.ArchiveIdentity = project.ArchiveIdentity;
@@ -98,6 +101,9 @@ namespace MonoDevelop.Monobjc.Gui
 			// Save the signing certificate
 			project.SigningIdentity = this.SigningIdentity;
 			
+			// Retrieve the package generation
+			project.Archive = this.Archive;
+
 			// Save the packaging certificate
 			project.ArchiveIdentity = this.ArchiveIdentity;
 		}
@@ -137,6 +143,14 @@ namespace MonoDevelop.Monobjc.Gui
 		private String SigningIdentity {
 			get { return GetIdentity (this.comboboxSigningCertificates); }
 			set { SetIdentity (this.comboboxSigningCertificates, value); }
+		}
+
+		/// <summary>
+		///   Gets or sets the archive.
+		/// </summary>
+		private bool Archive {
+			get { return this.checkbuttonPackage.Active; }
+			set { this.checkbuttonPackage.Active = value; }
 		}
 
 		/// <summary>

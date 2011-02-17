@@ -26,7 +26,7 @@ namespace MonoDevelop.Monobjc.Utilities
 	public static class PSNHelper
 	{
 		private const uint kProcessTransformToForegroundApplication = 1;
-		
+
 		/// <summary>
 		/// Pass the application running as the given pid as a front application.
 		/// </summary>
@@ -38,16 +38,13 @@ namespace MonoDevelop.Monobjc.Utilities
 			// Make sure the process is tranformed to UI on the foreground, even when launched from the command line.
 			// See http://cocoadev.com/index.pl?TransformProcessType for details
 			IntPtr psn = IntPtr.Zero;
-			if (GetProcessForPID(pid, ref psn) != 0)
-			{
+			if (GetProcessForPID (pid, ref psn) != 0) {
 				//return;
 			}
-			if (TransformProcessType (ref psn, kProcessTransformToForegroundApplication) != 0)
-			{
+			if (TransformProcessType (ref psn, kProcessTransformToForegroundApplication) != 0) {
 				//return;
 			}
-			if (SetFrontProcess (ref psn) != 0)
-			{
+			if (SetFrontProcess (ref psn) != 0) {
 				//return;
 			}
 		}

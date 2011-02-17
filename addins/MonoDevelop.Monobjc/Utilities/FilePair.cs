@@ -20,74 +20,70 @@ using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
-    /// <summary>
-    ///   A construct that holds a source and a destination file.
-    /// </summary>
-    public class FilePair
-    {
-        /// <summary>
-        ///   Initializes a new instance of the <see cref = "FilePair" /> struct.
-        /// </summary>
-        /// <param name = "source">The source.</param>
-        /// <param name = "output">The destination.</param>
-        public FilePair(FilePath source, FilePath destination)
-        {
-            this.Source = source;
-            this.Destination = destination;
-        }
+	/// <summary>
+	///   A construct that holds a source and a destination file.
+	/// </summary>
+	public class FilePair
+	{
+		/// <summary>
+		///   Initializes a new instance of the <see cref = "FilePair" /> struct.
+		/// </summary>
+		/// <param name = "source">The source.</param>
+		/// <param name = "output">The destination.</param>
+		public FilePair (FilePath source, FilePath destination)
+		{
+			this.Source = source;
+			this.Destination = destination;
+		}
 
-        /// <summary>
-        ///   Gets or sets the input file.
-        /// </summary>
-        /// <value>The input file.</value>
-        public FilePath Source { get; private set; }
+		/// <summary>
+		///   Gets or sets the input file.
+		/// </summary>
+		/// <value>The input file.</value>
+		public FilePath Source { get; private set; }
 
-        /// <summary>
-        ///   Gets or sets the output file.
-        /// </summary>
-        /// <value>The output file.</value>
-        public FilePath Destination { get; private set; }
-		
+		/// <summary>
+		///   Gets or sets the output file.
+		/// </summary>
+		/// <value>The output file.</value>
+		public FilePath Destination { get; private set; }
+
 		/// <summary>
 		/// Gets the destination directory.
 		/// </summary>
 		/// <value>The destination directory.</value>
-		public FilePath DestinationDir
-		{
-			get { return this.Destination.ParentDirectory; }	
+		public FilePath DestinationDir {
+			get { return this.Destination.ParentDirectory; }
 		}
-		
-        /// <summary>
-        ///   Returns whether this file pair needs building.
-        /// </summary>
-        /// <returns></returns>
-        public bool NeedsBuilding
-        {
-            get { return !File.Exists(this.Destination) || File.GetLastWriteTime(this.Source) > File.GetLastWriteTime(this.Destination); }
-        }
 
-        /// <summary>
-        ///   Ensures the output directory exists by creating it if needed..
-        /// </summary>
-        public void EnsureOutputDirectory()
-        {
-            if (!Directory.Exists(this.Destination.ParentDirectory))
-            {
-                Directory.CreateDirectory(this.Destination.ParentDirectory);
-            }
-        }
+		/// <summary>
+		///   Returns whether this file pair needs building.
+		/// </summary>
+		/// <returns></returns>
+		public bool NeedsBuilding {
+			get { return !File.Exists (this.Destination) || File.GetLastWriteTime (this.Source) > File.GetLastWriteTime (this.Destination); }
+		}
 
-        /// <summary>
-        ///   Copies the specified pair.
-        /// </summary>
-        /// <param name = "allowsOverride">if set to <c>true</c> allows override.</param>
-        public void Copy(bool allowsOverride)
-        {
-            if (this.NeedsBuilding || allowsOverride)
-            {
-                this.EnsureOutputDirectory();
-                File.Copy(this.Source, this.Destination, true);
-            }
-        }
-    }
+		/// <summary>
+		///   Ensures the output directory exists by creating it if needed..
+		/// </summary>
+		public void EnsureOutputDirectory ()
+		{
+			if (!Directory.Exists (this.Destination.ParentDirectory)) {
+				Directory.CreateDirectory (this.Destination.ParentDirectory);
+			}
+		}
+
+		/// <summary>
+		///   Copies the specified pair.
+		/// </summary>
+		/// <param name = "allowsOverride">if set to <c>true</c> allows override.</param>
+		public void Copy (bool allowsOverride)
+		{
+			if (this.NeedsBuilding || allowsOverride) {
+				this.EnsureOutputDirectory ();
+				File.Copy (this.Source, this.Destination, true);
+			}
+		}
+	}
 }

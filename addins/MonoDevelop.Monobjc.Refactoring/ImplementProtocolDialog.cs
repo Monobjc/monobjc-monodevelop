@@ -304,7 +304,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 			
 			// Create a "throw" statement
 			ThrowStatement throwStatement = new ThrowStatement (new ObjectCreateExpression (new TypeReference ("System.NotImplementedException"), new List<Expression> ()));
-				
+			
 			if (property.HasGet && getterMethod != null) {
 				// Retrieve the Objective-C message in the attribute
 				String message = AttributeHelper.GetAttributeValue (getterMethod, AttributeHelper.OBJECTIVE_C_MESSAGE);
@@ -313,7 +313,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 					ICSharpCode.NRefactory.Ast.Attribute attribute = new ICSharpCode.NRefactory.Ast.Attribute ("ObjectiveCMessage", new List<Expression> { new PrimitiveExpression (message) }, null);
 					attributeSection.Attributes.Add (attribute);
 				}
-
+				
 				// Create the "set" region
 				propertyDeclaration.GetRegion = new PropertyGetRegion (new BlockStatement (), new List<AttributeSection> { attributeSection });
 				propertyDeclaration.GetRegion.Block.AddChild (throwStatement);

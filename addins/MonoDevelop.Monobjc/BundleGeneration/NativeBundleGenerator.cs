@@ -38,26 +38,26 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 			
 			// Infer application name from configuration
 			string applicationName = project.GetApplicationName (configuration);
-
+			
 			// Create the bundle maker
 			BundleMaker maker = new BundleMaker (applicationName, this.Output);
 			
-            // Compile the XIB files
-			BuildHelper.CompileXIBFiles(monitor, project, maker, result);
+			// Compile the XIB files
+			BuildHelper.CompileXIBFiles (monitor, project, maker, result);
 			if (result.ErrorCount > 0) {
 				monitor.ReportError ("Failed to compile XIB files", null);
 				return result;
 			}
 			
-            // Copy the content files
-            BuildHelper.CopyContentFiles(monitor, project, configuration, maker);
-
+			// Copy the content files
+			BuildHelper.CopyContentFiles (monitor, project, configuration, maker);
+			
 			// Create the Info.plist
-			BuildHelper.CreateInfoPList(monitor, project, configuration, maker);
-
+			BuildHelper.CreateInfoPList (monitor, project, configuration, maker);
+			
 			// Create a directory for generation
-			String tempDir = Path.Combine(project.GetOutputFileName(configuration).ParentDirectory, ".native");
-			Directory.CreateDirectory(tempDir);
+			String tempDir = Path.Combine (project.GetOutputFileName (configuration).ParentDirectory, ".native");
+			Directory.CreateDirectory (tempDir);
 			
 			// Build a list of all folders to visit when collecting managed references
 			String mainAssembly = project.GetOutputFileName (configuration);
@@ -78,21 +78,21 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 			searchDirs = searchDirs.Distinct ().ToList ();
 			
 			// Collect all the assemblies
-			monitor.BeginTask (GettextCatalog.GetString("Collecting assemblies..."), 0);
+			monitor.BeginTask (GettextCatalog.GetString ("Collecting assemblies..."), 0);
 			ManagedReferenceCollector collector = new ManagedReferenceCollector ();
 			collector.Logger = new BuildLogger (monitor, result);
 			collector.SearchDirectories = searchDirs;
 			monitor.EndTask ();
-
+			
 			// Collect the main assembly references
 			List<String> assemblies = new List<String> ();
 			assemblies.AddRange (collector.Collect (mainAssembly));
-
+			
 			// Remove redundant entries
 			assemblies = assemblies.Distinct ().ToList ();
 			
 			// Generate the embedded executable
-			monitor.BeginTask (GettextCatalog.GetString("Generating native code..."), 0);
+			monitor.BeginTask (GettextCatalog.GetString ("Generating native code..."), 0);
 			NativeCodeGenerator codeGenerator = new NativeCodeGenerator ();
 			codeGenerator.Logger = new BuildLogger (monitor, result);
 			codeGenerator.Assemblies = assemblies;
@@ -100,8 +100,7 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 			codeGenerator.TargetArchitecture = project.TargetOSArch;
 			
 			// We embed the machine.config file; it depends on the target framework
-			switch(project.TargetFramework.ClrVersion)
-			{
+			switch (project.TargetFramework.ClrVersion) {
 			case ClrVersion.Net_2_0:
 				codeGenerator.MachineConfiguration = "/Library/Frameworks/Mono.framework/Home/etc/mono/2.0/machine.config";
 				break;
@@ -116,38 +115,38 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 			monitor.EndTask ();
 			
 			// Copy the native parts into the bundle
-			monitor.BeginTask (GettextCatalog.GetString("Copying native code..."), 0);
+			monitor.BeginTask (GettextCatalog.GetString ("Copying native code..."), 0);
 			maker.CopyTo (executableFile, maker.MacOSDirectory);
 			maker.CopyTo (libraryFile, maker.MacOSDirectory);
 			monitor.EndTask ();
 			
 			// Change the paths
-			executableFile = maker.Combine(maker.MacOSDirectory, executableFile);
-			libraryFile = maker.Combine(maker.MacOSDirectory, libraryFile);
-
+			executableFile = maker.Combine (maker.MacOSDirectory, executableFile);
+			libraryFile = maker.Combine (maker.MacOSDirectory, libraryFile);
+			
 			// Relocate the libraries
-			monitor.BeginTask (GettextCatalog.GetString("Relocating native code..."), 0);
+			monitor.BeginTask (GettextCatalog.GetString ("Relocating native code..."), 0);
 			NativeCodeRelocator relocator = new NativeCodeRelocator ();
 			relocator.Logger = new BuildLogger (monitor, result);
 			relocator.DependencyPattern = new List<string> { "Mono.framework" };
 			relocator.Relocate (executableFile, maker.MacOSDirectory);
 			relocator.Relocate (libraryFile, maker.MacOSDirectory);
 			monitor.EndTask ();
-
+			
 			// Sign the bundle if needed
 			if (this.SigningIdentity != null) {
-				monitor.BeginTask (GettextCatalog.GetString("Signing bundle..."), 0);
+				monitor.BeginTask (GettextCatalog.GetString ("Signing bundle..."), 0);
 				CodeSign.SignApplication (maker.ApplicationDirectory, this.SigningIdentity);
 				monitor.EndTask ();
 			}
 			
 			// Archive the product if needed
 			if (this.SigningIdentity != null) {
-				ProjectFile definitionFile = project.GetProjectFile("Definition.plist");
+				ProjectFile definitionFile = project.GetProjectFile ("Definition.plist");
 				String definitionFilename = (definitionFile != null) ? definitionFile.FilePath : null;
 				
-				monitor.BeginTask (GettextCatalog.GetString("Signing archive..."), 0);
-				ProductBuild.ArchiveApplication(maker.ApplicationDirectory, this.ArchiveIdentity, definitionFilename);
+				monitor.BeginTask (GettextCatalog.GetString ("Signing archive..."), 0);
+				ProductBuild.ArchiveApplication (maker.ApplicationDirectory, this.ArchiveIdentity, definitionFilename);
 				monitor.EndTask ();
 			}
 			

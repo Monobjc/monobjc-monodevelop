@@ -22,68 +22,64 @@ using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.Monobjc.CodeGeneration
 {
-    /// <summary>
-    ///   VBNet implementation for a code-behind generator.
-    /// </summary>
-    public class VBNetCodeBehindGenerator : BaseCodeBehindGenerator
-    {
-        /// <summary>
-        ///   Determines whether a line is a region delimiter.
-        /// </summary>
-        /// <param name = "line">The line.</param>
-        /// <param name = "start">if set to <c>true</c>, check for a region start.</param>
-        /// <returns>
-        ///   <c>true</c> if the line is a region delimiter; otherwise, <c>false</c>.
-        /// </returns>
-        protected override bool IsDesignerRegionDelimiter(String line, bool start)
-        {
-            if (start)
-            {
-                return (line.Contains("#region") && line.Contains("Monobjc Generated Code"));
-            }
-            else
-            {
-                return (line.Contains("#endregion"));
-            }
-        }
+	/// <summary>
+	///   VBNet implementation for a code-behind generator.
+	/// </summary>
+	public class VBNetCodeBehindGenerator : BaseCodeBehindGenerator
+	{
+		/// <summary>
+		///   Determines whether a line is a region delimiter.
+		/// </summary>
+		/// <param name = "line">The line.</param>
+		/// <param name = "start">if set to <c>true</c>, check for a region start.</param>
+		/// <returns>
+		///   <c>true</c> if the line is a region delimiter; otherwise, <c>false</c>.
+		/// </returns>
+		protected override bool IsDesignerRegionDelimiter (String line, bool start)
+		{
+			if (start) {
+				return (line.Contains ("#region") && line.Contains ("Monobjc Generated Code"));
+			} else {
+				return (line.Contains ("#endregion"));
+			}
+		}
 
-        /// <summary>
-        ///   Generates the framework loading code which is language specific.
-        /// </summary>
-        /// <param name = "frameworks">The frameworks.</param>
-        /// <returns>A list of lines for the code.</returns>
-        protected override IEnumerable<String> GenerateFrameworkLoadingcode(String[] frameworks)
-        {
-            List<String> lines = new List<String>();
+		/// <summary>
+		///   Generates the framework loading code which is language specific.
+		/// </summary>
+		/// <param name = "frameworks">The frameworks.</param>
+		/// <returns>A list of lines for the code.</returns>
+		protected override IEnumerable<String> GenerateFrameworkLoadingcode (String[] frameworks)
+		{
+			List<String> lines = new List<String> ();
+			
+			lines.Add ("			#region \"Monobjc Generated Code\"");
+			lines.Add ("			'");
+			lines.Add ("			' DO NOT ALTER OR REMOVE");
+			lines.Add ("			'");
+			foreach (String framework in frameworks) {
+				lines.Add ("			ObjectiveCRuntime.LoadFramework(\"" + framework + "\");");
+			}
+			lines.Add ("			#endregion");
+			
+			return lines;
+		}
 
-            lines.Add("			#region \"Monobjc Generated Code\"");
-            lines.Add("			'");
-            lines.Add("			' DO NOT ALTER OR REMOVE");
-            lines.Add("			'");
-            foreach (String framework in frameworks)
-            {
-                lines.Add("			ObjectiveCRuntime.LoadFramework(\"" + framework + "\");");
-            }
-            lines.Add("			#endregion");
-
-            return lines;
-        }
-
-        /// <summary>
-        ///   Generates the partial method for an action.
-        /// </summary>
-        /// <param name = "message">The message.</param>
-        /// <param name = "argumentType">Type of the argument.</param>
-        /// <returns>The type member.</returns>
-        protected override CodeTypeMember GenerateActionPartialMethod(string message, IType argumentType)
-        {
-            String selector = message;
-            String name = GenerateMethodName(selector);
-
-            // Partial method are only possible by using a snippet of code as CodeDom does not handle them
-            CodeSnippetTypeMember method = new CodeSnippetTypeMember("Partial Private Sub " + name + "(" + argumentType.Name + " sender)" + Environment.NewLine + "End Sub" + Environment.NewLine);
-
-            return method;
-        }
-    }
+		/// <summary>
+		///   Generates the partial method for an action.
+		/// </summary>
+		/// <param name = "message">The message.</param>
+		/// <param name = "argumentType">Type of the argument.</param>
+		/// <returns>The type member.</returns>
+		protected override CodeTypeMember GenerateActionPartialMethod (string message, IType argumentType)
+		{
+			String selector = message;
+			String name = GenerateMethodName (selector);
+			
+			// Partial method are only possible by using a snippet of code as CodeDom does not handle them
+			CodeSnippetTypeMember method = new CodeSnippetTypeMember ("Partial Private Sub " + name + "(" + argumentType.Name + " sender)" + Environment.NewLine + "End Sub" + Environment.NewLine);
+			
+			return method;
+		}
+	}
 }

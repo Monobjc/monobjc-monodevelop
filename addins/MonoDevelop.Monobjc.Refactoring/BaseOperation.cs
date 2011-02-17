@@ -19,6 +19,7 @@ using MonoDevelop.Refactoring;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	public class BaseOperation : RefactoringOperation {
+	public class BaseOperation : RefactoringOperation
+	{
 	}
 }

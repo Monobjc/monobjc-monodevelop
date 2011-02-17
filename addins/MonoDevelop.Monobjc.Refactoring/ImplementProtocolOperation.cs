@@ -24,6 +24,9 @@ using MonoDevelop.Refactoring;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
+	/// <summary>
+	/// Refactoring operation for the implementation of Objective-C protocol.
+	/// </summary>
 	public class ImplementProtocolOperation : BaseOperation
 	{
 		public override string GetMenuDescription (RefactoringOptions options)
@@ -41,7 +44,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 			if (project == null) {
 				return false;
 			}
-
+			
 			IType type = options.Dom.GetType (options.ResolveResult.ResolvedType);
 			if (type == null || type.ClassType != MonoDevelop.Projects.Dom.ClassType.Class) {
 				return false;
@@ -53,8 +56,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 		public override void Run (RefactoringOptions options)
 		{
 			MonobjcProject project = options.Document.Project as MonobjcProject;
-			LoggingService.LogInfo("Running on " + project);
-			MessageService.ShowCustomDialog (new ImplementProtocolDialog(this, options, project));
+			MessageService.ShowCustomDialog (new ImplementProtocolDialog (this, options, project));
 		}
 	}
 }

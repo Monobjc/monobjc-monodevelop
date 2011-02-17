@@ -27,7 +27,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 		protected readonly RefactoringOperation refactoring;
 		protected readonly RefactoringOptions options;
 		protected readonly MonobjcProject project;
-		
+
 		public BaseDialog (RefactoringOperation refactoring, RefactoringOptions options, MonobjcProject project)
 		{
 			this.refactoring = refactoring;

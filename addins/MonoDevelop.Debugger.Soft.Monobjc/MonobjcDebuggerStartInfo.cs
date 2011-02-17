@@ -20,24 +20,23 @@ using MonoDevelop.Monobjc;
 
 namespace MonoDevelop.Debugger.Soft.Monobjc
 {
-    /// <summary>
-    /// </summary>
-    public class MonobjcDebuggerStartInfo : RemoteDebuggerStartInfo
-    {
-        /// <summary>
-        ///   Initializes a new instance of the <see cref = "MonobjcDebuggerStartInfo" /> class.
-        /// </summary>
-        /// <param name = "command">The CMD.</param>
-        public MonobjcDebuggerStartInfo(MonobjcExecutionCommand command)
-            : base(command.ApplicationName, IPAddress.Loopback, 8901)
-        {
-            this.ExecutionCommand = command;
-        }
+	/// <summary>
+	/// </summary>
+	public class MonobjcDebuggerStartInfo : RemoteDebuggerStartInfo
+	{
+		/// <summary>
+		///   Initializes a new instance of the <see cref = "MonobjcDebuggerStartInfo" /> class.
+		/// </summary>
+		/// <param name = "command">The CMD.</param>
+		public MonobjcDebuggerStartInfo (MonobjcExecutionCommand command) : base(command.ApplicationName, IPAddress.Loopback, 8901)
+		{
+			this.ExecutionCommand = command;
+		}
 
-        /// <summary>
-        ///   Gets or sets the execution command.
-        /// </summary>
-        /// <value>The execution command.</value>
-        public MonobjcExecutionCommand ExecutionCommand { get; private set; }
-    }
+		/// <summary>
+		///   Gets or sets the execution command.
+		/// </summary>
+		/// <value>The execution command.</value>
+		public MonobjcExecutionCommand ExecutionCommand { get; private set; }
+	}
 }

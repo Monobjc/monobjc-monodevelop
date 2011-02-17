@@ -47,13 +47,10 @@ namespace MonoDevelop.Monobjc
 		/// <param name="file">The file.</param>
 		internal void GenerateDesignCode (FilePath file)
 		{
-			LoggingService.LogInfo ("MonobjcProject::GenerateDesignCode " + file);
-			
+			// Only deal with IB files
 			if (!BuildHelper.IsXIBFile (file)) {
 				return;
 			}
-			
-			LoggingService.LogInfo ("MonobjcProject::GenerateDesignCode2 " + file);
 			
 			// Defer IB extract in a separate thread
 			ThreadPool.QueueUserWorkItem (delegate { this.CodeBehind.GenerateDesignCodeForIB (file); });

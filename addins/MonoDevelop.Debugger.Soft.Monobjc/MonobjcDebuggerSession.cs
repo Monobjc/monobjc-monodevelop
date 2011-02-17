@@ -25,87 +25,74 @@ using MonoDevelop.Monobjc.Utilities;
 
 namespace MonoDevelop.Debugger.Soft.Monobjc
 {
-    /// <summary>
-    /// </summary>
-    public class MonobjcDebuggerSession : RemoteSoftDebuggerSession
-    {
-        private Process process;
+	/// <summary>
+	/// </summary>
+	public class MonobjcDebuggerSession : RemoteSoftDebuggerSession
+	{
+		private Process process;
 
-        /// <summary>
-        ///   Called when debugger runs.
-        /// </summary>
-        /// <param name = "startInfo">The start info.</param>
-        protected override void OnRun(DebuggerStartInfo startInfo)
-        {
-            MonobjcDebuggerStartInfo dsi = (MonobjcDebuggerStartInfo) startInfo;
-            MonobjcExecutionCommand command = dsi.ExecutionCommand;
-
-            LoggingService.LogWarning("OnRun " + startInfo);
-
-            this.StartListening(dsi);
-
-            // Create the start information
-            ProcessStartInfo psi = new ProcessStartInfo(command.CommandString)
-                                       {
-                                           Arguments = String.Empty,
-                                           RedirectStandardOutput = true,
-                                           RedirectStandardError = true,
-                                           RedirectStandardInput = true,
-                                           UseShellExecute = false
-                                       };
-            psi.EnvironmentVariables["MONO_OPTIONS"] = string.Format("--debug --debugger-agent=transport=dt_socket,address={0}:{1}", dsi.Address, dsi.DebugPort);
-
-            // Try to start the process
-            this.process = Process.Start(psi);
-            if (this.process == null)
-            {
-                this.EndSession();
-                return;
-            }
+		/// <summary>
+		///   Called when debugger runs.
+		/// </summary>
+		/// <param name = "startInfo">The start info.</param>
+		protected override void OnRun (DebuggerStartInfo startInfo)
+		{
+			MonobjcDebuggerStartInfo dsi = (MonobjcDebuggerStartInfo)startInfo;
+			MonobjcExecutionCommand command = dsi.ExecutionCommand;
+			
+			LoggingService.LogWarning ("OnRun " + startInfo);
+			
+			this.StartListening (dsi);
+			
+			// Create the start information
+			ProcessStartInfo psi = new ProcessStartInfo (command.CommandString) { Arguments = String.Empty, RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true, UseShellExecute = false };
+			psi.EnvironmentVariables["MONO_OPTIONS"] = string.Format ("--debug --debugger-agent=transport=dt_socket,address={0}:{1}", dsi.Address, dsi.DebugPort);
+			
+			// Try to start the process
+			this.process = Process.Start (psi);
+			if (this.process == null) {
+				this.EndSession ();
+				return;
+			}
 			
 			// Make sure the process is the front application
-			LoggingService.LogInfo("Debuggin application (pid={0})", this.process.Id);
-			PSNHelper.SetFront(this.process.Id);
-
-            // Connect the stdout and stderr to the MonoDevelop's output
-            this.ConnectOutput(this.process.StandardOutput, false);
-            this.ConnectOutput(this.process.StandardError, true);
+			LoggingService.LogInfo ("Debuggin application (pid={0})", this.process.Id);
+			PSNHelper.SetFront (this.process.Id);
 			
-            // When process exits, end the session
-            this.process.EnableRaisingEvents = true;
-            this.process.Exited += delegate
-                                       {
-                                           this.EndSession();
-                                           this.process = null;
-                                       };
-        }
+			// Connect the stdout and stderr to the MonoDevelop's output
+			this.ConnectOutput (this.process.StandardOutput, false);
+			this.ConnectOutput (this.process.StandardError, true);
+			
+			// When process exits, end the session
+			this.process.EnableRaisingEvents = true;
+			this.process.Exited += delegate {
+				this.EndSession ();
+				this.process = null;
+			};
+		}
 
-        /// <summary>
-        ///   Ensures that the process has exited.
-        /// </summary>
-        protected override void EnsureExited()
-        {
-            try
-            {
-                if (this.process != null && !this.process.HasExited)
-                {
-                    this.process.Kill();
-                }
-            }
-            catch (Exception ex)
-            {
-                LoggingService.LogError(GettextCatalog.GetString("Error force-terminating soft debugger process"), ex);
-            }
-        }
+		/// <summary>
+		///   Ensures that the process has exited.
+		/// </summary>
+		protected override void EnsureExited ()
+		{
+			try {
+				if (this.process != null && !this.process.HasExited) {
+					this.process.Kill ();
+				}
+			} catch (Exception ex) {
+				LoggingService.LogError (GettextCatalog.GetString ("Error force-terminating soft debugger process"), ex);
+			}
+		}
 
-        /// <summary>
-        /// Get the waiting message.
-        /// </summary>
-        /// <param name="dsi">The start info.</param>
-        /// <returns>The message.</returns>
-        protected override string GetListenMessage(RemoteDebuggerStartInfo dsi)
-        {
-            return GettextCatalog.GetString("Waiting for app to connect to: {0}:{1}", dsi.Address, dsi.DebugPort);
-        }
-    }
+		/// <summary>
+		/// Get the waiting message.
+		/// </summary>
+		/// <param name="dsi">The start info.</param>
+		/// <returns>The message.</returns>
+		protected override string GetListenMessage (RemoteDebuggerStartInfo dsi)
+		{
+			return GettextCatalog.GetString ("Waiting for app to connect to: {0}:{1}", dsi.Address, dsi.DebugPort);
+		}
+	}
 }

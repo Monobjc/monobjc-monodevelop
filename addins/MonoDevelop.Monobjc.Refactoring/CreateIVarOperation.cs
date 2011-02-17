@@ -41,7 +41,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 			if (project == null) {
 				return false;
 			}
-
+			
 			IType type = options.Dom.GetType (options.ResolveResult.ResolvedType);
 			if (type == null || type.ClassType != MonoDevelop.Projects.Dom.ClassType.Class) {
 				return false;

@@ -20,33 +20,32 @@ using MonoDevelop.Ide.Gui.Dialogs;
 
 namespace MonoDevelop.Monobjc.Gui
 {
-    /// <summary>
-    /// The options panel for general.
-    /// </summary>
-    public class MonobjcGeneralOptionsPanel : ItemOptionsPanel
-    {
-        private MonobjcGeneralOptionsWidget widget;
+	/// <summary>
+	/// The options panel for general.
+	/// </summary>
+	public class MonobjcGeneralOptionsPanel : ItemOptionsPanel
+	{
+		private MonobjcGeneralOptionsWidget widget;
 
-        /// <summary>
-        ///   Creates the panel widget.
-        /// </summary>
-        /// <returns></returns>
-        public override Widget CreatePanelWidget()
-        {
-            if (this.widget == null)
-            {
-                this.widget = new MonobjcGeneralOptionsWidget();
-            }
-            this.widget.Load(this.ConfiguredProject as MonobjcProject);
-            return this.widget;
-        }
+		/// <summary>
+		///   Creates the panel widget.
+		/// </summary>
+		/// <returns></returns>
+		public override Widget CreatePanelWidget ()
+		{
+			if (this.widget == null) {
+				this.widget = new MonobjcGeneralOptionsWidget ();
+			}
+			this.widget.Load (this.ConfiguredProject as MonobjcProject);
+			return this.widget;
+		}
 
-        /// <summary>
-        ///   Applies the changes.
-        /// </summary>
-        public override void ApplyChanges()
-        {
-            this.widget.Save(this.ConfiguredProject as MonobjcProject);
-        }
-    }
+		/// <summary>
+		///   Applies the changes.
+		/// </summary>
+		public override void ApplyChanges ()
+		{
+			this.widget.Save (this.ConfiguredProject as MonobjcProject);
+		}
+	}
 }

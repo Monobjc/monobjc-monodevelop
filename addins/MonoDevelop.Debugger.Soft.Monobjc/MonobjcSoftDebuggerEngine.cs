@@ -21,55 +21,55 @@ using MonoDevelop.Core.Execution;
 
 namespace MonoDevelop.Debugger.Soft.Monobjc
 {
-    /// <summary>
-    /// </summary>
-    public class MonobjcSoftDebuggerEngine : IDebuggerEngine
-    {
-        /// <summary>
-        ///   Determines whether this instance can debug the specified command.
-        /// </summary>
-        /// <param name = "command">The command.</param>
-        /// <returns>
-        ///   <c>true</c> if this instance can debug the specified command; otherwise, <c>false</c>.
-        /// </returns>
-        public bool CanDebugCommand(ExecutionCommand command)
-        {
-            MonobjcExecutionCommand executionCommand = command as MonobjcExecutionCommand;
-            return executionCommand != null && executionCommand.DebugMode;
-        }
+	/// <summary>
+	/// </summary>
+	public class MonobjcSoftDebuggerEngine : IDebuggerEngine
+	{
+		/// <summary>
+		///   Determines whether this instance can debug the specified command.
+		/// </summary>
+		/// <param name = "command">The command.</param>
+		/// <returns>
+		///   <c>true</c> if this instance can debug the specified command; otherwise, <c>false</c>.
+		/// </returns>
+		public bool CanDebugCommand (ExecutionCommand command)
+		{
+			MonobjcExecutionCommand executionCommand = command as MonobjcExecutionCommand;
+			return executionCommand != null && executionCommand.DebugMode;
+		}
 
-        /// <summary>
-        ///   Creates the debugger start info.
-        /// </summary>
-        /// <param name = "command">The command.</param>
-        /// <returns></returns>
-        public DebuggerStartInfo CreateDebuggerStartInfo(ExecutionCommand command)
-        {
-            MonobjcExecutionCommand executionCommand = (MonobjcExecutionCommand) command;
+		/// <summary>
+		///   Creates the debugger start info.
+		/// </summary>
+		/// <param name = "command">The command.</param>
+		/// <returns></returns>
+		public DebuggerStartInfo CreateDebuggerStartInfo (ExecutionCommand command)
+		{
+			MonobjcExecutionCommand executionCommand = (MonobjcExecutionCommand)command;
+			
+			MonobjcDebuggerStartInfo startInfo = new MonobjcDebuggerStartInfo (executionCommand);
+			startInfo.SetUserAssemblies (executionCommand.UserAssemblyPaths);
+			
+			return startInfo;
+		}
 
-            MonobjcDebuggerStartInfo startInfo = new MonobjcDebuggerStartInfo(executionCommand);
-            startInfo.SetUserAssemblies(executionCommand.UserAssemblyPaths);
+		/// <summary>
+		///   Creates the session.
+		/// </summary>
+		/// <returns></returns>
+		public DebuggerSession CreateSession ()
+		{
+			return new MonobjcDebuggerSession ();
+		}
 
-            return startInfo;
-        }
-
-        /// <summary>
-        ///   Creates the session.
-        /// </summary>
-        /// <returns></returns>
-        public DebuggerSession CreateSession()
-        {
-            return new MonobjcDebuggerSession();
-        }
-
-        /// <summary>
-        ///   Gets the attachable processes.
-        /// </summary>
-        /// <returns></returns>
-        public ProcessInfo[] GetAttachableProcesses()
-        {
-            // TODO: Scan process for debuggable processes
-            return new ProcessInfo[0];
-        }
-    }
+		/// <summary>
+		///   Gets the attachable processes.
+		/// </summary>
+		/// <returns></returns>
+		public ProcessInfo[] GetAttachableProcesses ()
+		{
+			// TODO: Scan process for debuggable processes
+			return new ProcessInfo[0];
+		}
+	}
 }

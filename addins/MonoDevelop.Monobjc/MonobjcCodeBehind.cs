@@ -170,7 +170,7 @@ namespace MonoDevelop.Monobjc
 
 		private static bool ShouldGenerate (ClassDescriptionCollector visitor, String className)
 		{
-			if (String.Equlas("FirstResponder", className)) {
+			if (String.Equals ("FirstResponder", className)) {
 				return false;
 			}
 			IEnumerable<IBPartialClassDescription> enumerable = visitor[className];

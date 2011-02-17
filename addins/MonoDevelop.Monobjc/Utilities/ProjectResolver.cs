@@ -23,30 +23,30 @@ using MonoDevelop.Projects.Dom.Parser;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
-    /// <summary>
-    ///   Type resolver for CodeBehind generation.
-    /// </summary>
-    public class ProjectResolver
-    {
-        private readonly List<ProjectDom> projectDoms;
+	/// <summary>
+	///   Type resolver for CodeBehind generation.
+	/// </summary>
+	public class ProjectResolver
+	{
+		private readonly List<ProjectDom> projectDoms;
 
-        /// <summary>
-        ///   Initializes a new instance of the <see cref = "CodeBehindResolver" /> class.
-        /// </summary>
-        /// <param name = "project">The project.</param>
-        public ProjectResolver(MonobjcProject project)
-        {
-            this.Project = project;
-            ProjectDom projectDom = ProjectDomService.GetProjectDom(this.Project);
-            this.projectDoms = new List<ProjectDom>();
-            CollectReference(this.projectDoms, projectDom);
-        }
+		/// <summary>
+		///   Initializes a new instance of the <see cref = "CodeBehindResolver" /> class.
+		/// </summary>
+		/// <param name = "project">The project.</param>
+		public ProjectResolver (MonobjcProject project)
+		{
+			this.Project = project;
+			ProjectDom projectDom = ProjectDomService.GetProjectDom (this.Project);
+			this.projectDoms = new List<ProjectDom> ();
+			CollectReference (this.projectDoms, projectDom);
+		}
 
-        /// <summary>
-        ///   Gets or sets the project.
-        /// </summary>
-        /// <value>The project.</value>
-        public MonobjcProject Project { get; private set; }
+		/// <summary>
+		///   Gets or sets the project.
+		/// </summary>
+		/// <value>The project.</value>
+		public MonobjcProject Project { get; private set; }
 
 		/// <summary>
 		/// Gets all the known classes.

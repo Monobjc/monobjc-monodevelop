@@ -27,42 +27,41 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.BundleGeneration
 {
-    public class ManagedBundleGenerator : BundleGenerator
-    {
-        public override BuildResult Generate(IProgressMonitor monitor, MonobjcProject project)
-        {
-            BuildResult result = new BuildResult();
+	public class ManagedBundleGenerator : BundleGenerator
+	{
+		public override BuildResult Generate (IProgressMonitor monitor, MonobjcProject project)
+		{
+			BuildResult result = new BuildResult ();
 			ConfigurationSelector configuration = IdeApp.Workspace.ActiveConfiguration;
-            
-            // Infer application name from configuration
-            string applicationName = project.GetApplicationName(configuration);
-
-            // Create the bundle maker
-            BundleMaker maker = new BundleMaker(applicationName, this.Output);
 			
-            // Compile the XIB files
-			BuildHelper.CompileXIBFiles(monitor, project, maker, result);
-            if (result.ErrorCount > 0)
-            {
-				monitor.ReportError(GettextCatalog.GetString("Failed to compile XIB files"), null);
-                return result;
-            }
-
-            // Copy the output and dependencies
-            BuildHelper.CopyOutputFiles(monitor, project, configuration, maker);
-
-            // Copy the content files
-            BuildHelper.CopyContentFiles(monitor, project, configuration, maker);
-
+			// Infer application name from configuration
+			string applicationName = project.GetApplicationName (configuration);
+			
+			// Create the bundle maker
+			BundleMaker maker = new BundleMaker (applicationName, this.Output);
+			
+			// Compile the XIB files
+			BuildHelper.CompileXIBFiles (monitor, project, maker, result);
+			if (result.ErrorCount > 0) {
+				monitor.ReportError (GettextCatalog.GetString ("Failed to compile XIB files"), null);
+				return result;
+			}
+			
+			// Copy the output and dependencies
+			BuildHelper.CopyOutputFiles (monitor, project, configuration, maker);
+			
+			// Copy the content files
+			BuildHelper.CopyContentFiles (monitor, project, configuration, maker);
+			
 			// Create the Info.plist
-			BuildHelper.CreateInfoPList(monitor, project, configuration, maker);
-
-            // Write the native runtime
-            monitor.BeginTask(GettextCatalog.GetString("Copying native launcher..."), 0);
-            maker.WriteRuntime(project.TargetOSVersion);
-            monitor.EndTask();
+			BuildHelper.CreateInfoPList (monitor, project, configuration, maker);
 			
-            return result;
-        }
-    }
+			// Write the native runtime
+			monitor.BeginTask (GettextCatalog.GetString ("Copying native launcher..."), 0);
+			maker.WriteRuntime (project.TargetOSVersion);
+			monitor.EndTask ();
+			
+			return result;
+		}
+	}
 }
