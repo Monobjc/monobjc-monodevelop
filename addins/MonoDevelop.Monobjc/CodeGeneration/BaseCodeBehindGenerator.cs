@@ -155,7 +155,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 				outletType = outletType ?? resolver.ResolvePartialType ("id");
 				outletType = outletType ?? new DomType ("System.IntPtr");
 				
-				LoggingService.LogInfo ("Resolving outlet '" + outlet.Name + "' of type '" + outlet.ClassName + "' => '" + outletType + "'");
+				LoggingService.LogInfo ("Resolving outlet '" + outlet.Name + "' of type '" + outlet.ClassName + "' => '" + outletType.FullName + "'");
 				
 				imports.Add (outletType.Namespace);
 				
@@ -169,7 +169,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 				argumentType = argumentType ?? resolver.ResolvePartialType ("id");
 				argumentType = argumentType ?? new DomType ("System.IntPtr");
 				
-				LoggingService.LogInfo ("Resolving action '" + action.Message + "' with argument '" + action.Argument + "' => '" + argumentType + "'");
+				LoggingService.LogInfo ("Resolving action '" + action.Message + "' with argument '" + action.Argument + "' => '" + argumentType.FullName + "'");
 				
 				imports.Add (argumentType.Namespace);
 				

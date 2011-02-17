@@ -3618,39 +3618,7 @@ namespace ${Namespace}
         }
 	}
 }]]></File>
-	      <File name="Info.plist">
-<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>CFBundleDevelopmentRegion</key>
-	<string>English</string>
-	<key>CFBundleExecutable</key>
-	<string>${CFBundleExecutable}</string>
-	<key>CFBundleIconFile</key>
-	<string>${CFBundleIconFile}</string>
-	<key>CFBundleIdentifier</key>
-	<string>${CFBundleIdentifier}</string>
-	<key>CFBundleInfoDictionaryVersion</key>
-	<string>6.0</string>
-	<key>CFBundleName</key>
-	<string>${CFBundleName}</string>
-	<key>CFBundlePackageType</key>
-	<string>APPL</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
-	<key>CFBundleSignature</key>
-	<string>????</string>
-	<key>CFBundleVersion</key>
-	<string>1</string>
-	<key>LSMinimumSystemVersion</key>
-	<string>${LSMinimumSystemVersion}</string>
-	<key>NSMainNibFile</key>
-	<string>${NSMainNibFile}</string>
-	<key>NSPrincipalClass</key>
-	<string>NSApplication</string>
-</dict>
-</plist>]]></File>
+          <FileTemplateReference TemplateID="MonobjcFileInfoPList" />
       </Files>
     </Project>
   </Combine>
