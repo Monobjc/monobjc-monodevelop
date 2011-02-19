@@ -179,10 +179,8 @@ namespace MonoDevelop.Monobjc.Utilities
 			
 			// If an Info.plist exists in the project then use it
 			FilePath infoPListFile = project.BaseDirectory.Combine("Info.plist");
-			LoggingService.LogInfo("Found plist file " + infoPListFile);
-			if (!infoPListFile.IsNullOrEmpty) {
+			if (File.Exists(infoPListFile)) {
 				pListGenerator.Content = File.ReadAllText (infoPListFile);
-				LoggingService.LogInfo("Generator content " + pListGenerator.Content);
 			}
 			
 			pListGenerator.ApplicationName = project.GetApplicationName (configuration);

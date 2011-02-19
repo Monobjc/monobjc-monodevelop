@@ -140,7 +140,7 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 			// Archive the product if needed
 			if (this.Archive) {
 				FilePath definitionFile = project.BaseDirectory.Combine("Definition.plist");
-				String definitionFilename = definitionFile.IsNullOrEmpty ? null : definitionFile.ToString();
+				String definitionFilename = File.Exists(definitionFile) ? definitionFile.ToString() : null;
 				monitor.BeginTask (GettextCatalog.GetString ("Signing archive..."), 0);
 				ProductBuild.ArchiveApplication (maker.ApplicationDirectory, this.ArchiveIdentity, definitionFilename);
 				monitor.EndTask ();
