@@ -21,9 +21,7 @@ using System.IO;
 using System.Linq;
 using Monobjc.Tools.External;
 using Monobjc.Tools.Generators;
-using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
-using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 
@@ -31,10 +29,9 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 {
 	public class NativeBundleGenerator2 : BundleGenerator
 	{
-		public override BuildResult Generate (IProgressMonitor monitor, MonobjcProject project)
+		public override BuildResult Generate (IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration)
 		{
 			BuildResult result = new BuildResult ();
-			ConfigurationSelector configuration = IdeApp.Workspace.ActiveConfiguration;
 			
 			// Infer application name from configuration
 			string applicationName = project.GetApplicationName (configuration);
@@ -141,10 +138,9 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 			}
 			
 			// Archive the product if needed
-			if (this.SigningIdentity != null) {
-				ProjectFile definitionFile = project.GetProjectFile ("Definition.plist");
-				String definitionFilename = (definitionFile != null) ? definitionFile.FilePath : null;
-				
+			if (this.Archive) {
+				FilePath definitionFile = project.BaseDirectory.Combine("Definition.plist");
+				String definitionFilename = definitionFile.IsNullOrEmpty ? null : definitionFile.ToString();
 				monitor.BeginTask (GettextCatalog.GetString ("Signing archive..."), 0);
 				ProductBuild.ArchiveApplication (maker.ApplicationDirectory, this.ArchiveIdentity, definitionFilename);
 				monitor.EndTask ();

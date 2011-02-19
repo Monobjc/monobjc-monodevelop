@@ -49,7 +49,7 @@ namespace MonoDevelop.Monobjc
 			MonobjcExecutionCommand executionCommand = (MonobjcExecutionCommand)command;
 			
 			IProcessAsyncOperation operation = Runtime.ProcessService.StartConsoleProcess (executionCommand.CommandString, executionCommand.CommandLineParameters, null, executionCommand.EnvironmentVariables, console, null);
-			
+
 			// Make sure the process is the front application
 			LoggingService.LogInfo ("Running application (pid={0})", operation.ProcessId);
 			PSNHelper.SetFront (operation.ProcessId);

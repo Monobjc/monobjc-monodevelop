@@ -55,10 +55,6 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 				return;
 			}
 			
-			// Make sure the process is the front application
-			LoggingService.LogInfo ("Debuggin application (pid={0})", this.process.Id);
-			PSNHelper.SetFront (this.process.Id);
-			
 			// Connect the stdout and stderr to the MonoDevelop's output
 			this.ConnectOutput (this.process.StandardOutput, false);
 			this.ConnectOutput (this.process.StandardError, true);
@@ -69,6 +65,10 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 				this.EndSession ();
 				this.process = null;
 			};
+			
+			// Make sure the process is the front application
+			LoggingService.LogInfo ("Debuggin application (pid={0})", this.process.Id);
+			PSNHelper.SetFront (this.process.Id);
 		}
 
 		/// <summary>

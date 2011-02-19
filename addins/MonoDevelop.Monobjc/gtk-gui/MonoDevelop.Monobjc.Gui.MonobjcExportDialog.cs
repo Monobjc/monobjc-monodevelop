@@ -148,6 +148,7 @@ namespace MonoDevelop.Monobjc.Gui
 			// Container child vbox.Gtk.Box+BoxChild
 			this.progressbar = new global::Gtk.ProgressBar ();
 			this.progressbar.Name = "progressbar";
+			this.progressbar.Fraction = 0.5;
 			this.vbox.Add (this.progressbar);
 			global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.vbox[this.progressbar]));
 			w11.Position = 7;

@@ -1,4 +1,4 @@
-﻿//
+//
 // This file is part of Monobjc, a .NET/Objective-C bridge
 // Copyright (C) 2007-2011 - Laurent Etiemble
 //
@@ -16,21 +16,20 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using Monobjc.Tools.External;
 using MonoDevelop.Core;
-using MonoDevelop.Core.Serialization;
-using MonoDevelop.Deployment;
 using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.BundleGeneration
 {
 	public abstract class BundleGenerator
 	{
-		public abstract BuildResult Generate (IProgressMonitor monitor, MonobjcProject project);
+		public abstract BuildResult Generate (IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration);
 
 		public String Output { get; set; }
 
 		public String SigningIdentity { get; set; }
+
+		public bool Archive { get; set; }
 
 		public String ArchiveIdentity { get; set; }
 	}

@@ -23,6 +23,7 @@ using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.BundleGeneration;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -43,7 +44,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.radiobuttonManaged.Toggled += HandleRadiobuttonManagedhandleToggled;
 			this.radiobuttonNative.Toggled += HandleRadiobuttonNativehandleToggled;
 			
-			this.HandleRadiobuttonManagedhandleToggled (this, EventArgs.Empty);
+			this.EnableWidgets (true);
 		}
 
 		/// <summary>
@@ -74,23 +75,38 @@ namespace MonoDevelop.Monobjc.Gui
 			// Set the output directory
 			generator.Output = this.filechooserbuttonOutput.Filename;
 			
-			// Pass the identifiy for signing
+			// Pass the info for signing
 			generator.SigningIdentity = String.IsNullOrEmpty (this.project.SigningIdentity) ? null : this.project.SigningIdentity;
 			
-			// Pass the identifiy for archiving
+			// Pass the info for archiving
+			generator.Archive = this.project.Archive;
 			generator.ArchiveIdentity = String.IsNullOrEmpty (this.project.ArchiveIdentity) ? null : this.project.ArchiveIdentity;
 			
 			// Launch the bundle creation
-			
-			
 			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetOutputProgressMonitor (GettextCatalog.GetString ("Monobjc"), MonoDevelop.Ide.Gui.Stock.RunProgramIcon, true, true);
 			Thread thread = new Thread (delegate() {
 				using (monitor) {
 					DispatchService.GuiDispatch (delegate() { this.EnableWidgets (false); });
 					
 					try {
-						generator.Generate (monitor, this.project);
+						ConfigurationSelector configuration = IdeApp.Workspace.ActiveConfiguration;
+						
+						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Cleaning Project...", 20); });
+						this.project.Clean (monitor, configuration);
+						
+						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Building Project...", 40); });
+						this.project.Build (monitor, configuration);
+						
+						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Generating Bundle...", 60); });
+						generator.Generate (monitor, this.project, configuration);
+						
+						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Cleaning Project...", 80); });
+						this.project.Clean (monitor, configuration);
+						
+						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Finished", 100); });
+						this.project.Clean (monitor, configuration);
 					} catch (Exception ex) {
+						LoggingService.LogError ("Error while generating the bundle.", ex);
 						monitor.ReportError (GettextCatalog.GetString ("Error while generating the bundle."), ex);
 					}
 					
@@ -106,7 +122,15 @@ namespace MonoDevelop.Monobjc.Gui
 			this.radiobuttonManaged.Sensitive = value;
 			this.radiobuttonNative.Sensitive = value;
 			
-			this.HandleRadiobuttonManagedhandleToggled (this, EventArgs.Empty);
+			if (value) {
+				this.ReportProgress ("Ready", 0);
+			}
+		}
+
+		private void ReportProgress (String key, int value)
+		{
+			this.progressbar.Fraction = value / 100.0d;
+			this.progressbar.Text = GettextCatalog.GetString (key);
 		}
 
 		private void HandleRadiobuttonManagedhandleToggled (object sender, EventArgs e)

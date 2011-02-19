@@ -15,13 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Monobjc.Tools.External;
 using Monobjc.Tools.Generators;
 using MonoDevelop.Core;
-using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 
@@ -29,10 +24,9 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 {
 	public class ManagedBundleGenerator : BundleGenerator
 	{
-		public override BuildResult Generate (IProgressMonitor monitor, MonobjcProject project)
+		public override BuildResult Generate (IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration)
 		{
 			BuildResult result = new BuildResult ();
-			ConfigurationSelector configuration = IdeApp.Workspace.ActiveConfiguration;
 			
 			// Infer application name from configuration
 			string applicationName = project.GetApplicationName (configuration);
