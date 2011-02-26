@@ -31,6 +31,7 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 	{
 		public override BuildResult Generate (IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration)
 		{
+			String output;
 			BuildResult result = new BuildResult ();
 			
 			// Infer application name from configuration
@@ -133,7 +134,8 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 			// Sign the bundle if needed
 			if (this.SigningIdentity != null) {
 				monitor.BeginTask (GettextCatalog.GetString ("Signing bundle..."), 0);
-				CodeSign.SignApplication (maker.ApplicationDirectory, this.SigningIdentity);
+				output = CodeSign.SignApplication (maker.ApplicationDirectory, this.SigningIdentity);
+				LoggingService.LogInfo("CodeSign returns: " + output);
 				monitor.EndTask ();
 			}
 			
@@ -142,7 +144,8 @@ namespace MonoDevelop.Monobjc.BundleGeneration
 				FilePath definitionFile = project.BaseDirectory.Combine("Definition.plist");
 				String definitionFilename = File.Exists(definitionFile) ? definitionFile.ToString() : null;
 				monitor.BeginTask (GettextCatalog.GetString ("Signing archive..."), 0);
-				ProductBuild.ArchiveApplication (maker.ApplicationDirectory, this.ArchiveIdentity, definitionFilename);
+				output = ProductBuild.ArchiveApplication (maker.ApplicationDirectory, this.ArchiveIdentity, definitionFilename);
+				LoggingService.LogInfo("ProductBuild returns: " + output);
 				monitor.EndTask ();
 			}
 			

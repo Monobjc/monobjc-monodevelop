@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
 using Gtk;
+using Monobjc.Tools.External;
 using Monobjc.Tools.Utilities;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Core;
@@ -52,6 +53,9 @@ namespace MonoDevelop.Monobjc.Gui
 			
 			PopulateCertificates (this.comboboxSigningCertificates, this.identities, GettextCatalog.GetString ("(Don't Sign Application)"));
 			PopulateCertificates (this.comboboxPackagingCertificates, this.identities, GettextCatalog.GetString ("(Don't Sign Package)"));
+			
+			this.checkbuttonPackage.Toggled += this.HandleCheckbuttonPackagehandleToggled;
+			this.HandleCheckbuttonPackagehandleToggled(this, EventArgs.Empty);
 		}
 
 		/// <summary>
@@ -150,7 +154,10 @@ namespace MonoDevelop.Monobjc.Gui
 		/// </summary>
 		private bool Archive {
 			get { return this.checkbuttonPackage.Active; }
-			set { this.checkbuttonPackage.Active = value; }
+			set { 
+				this.checkbuttonPackage.Active = value; 
+				this.HandleCheckbuttonPackagehandleToggled(this, EventArgs.Empty);
+			}
 		}
 
 		/// <summary>
@@ -194,9 +201,31 @@ namespace MonoDevelop.Monobjc.Gui
 			// Set up the architectures
 			ListStore archStore = (ListStore)combobox.Model;
 			archStore.Clear ();
-			archStore.AppendValues ("Intel i386 (32 bits)", MacOSArchitecture.X86);
-			archStore.AppendValues ("Power PC (32 bits)", MacOSArchitecture.PPC);
-			archStore.AppendValues ("Universal PowerPC/Intel (32 bits)", MacOSArchitecture.Universal32);
+			
+			MacOSArchitecture architecture = Lipo.GetArchitecture("/usr/bin/mono");
+			if (architecture == MacOSArchitecture.None) {
+				// Humm, there was an error, so add only i386
+				archStore.AppendValues ("Intel i386 (32 bits)", MacOSArchitecture.X86);
+			} else {
+				LoggingService.LogInfo("Detected architecture " + architecture);
+			}
+			
+			// Add all the detected architectures
+			if ((architecture & MacOSArchitecture.X86) == MacOSArchitecture.X86) {
+				archStore.AppendValues ("Intel i386 (32 bits)", MacOSArchitecture.X86);
+			}
+			if ((architecture & MacOSArchitecture.X8664) == MacOSArchitecture.X8664) {
+				archStore.AppendValues ("Intel x86_64 (64 bits)", MacOSArchitecture.X8664);
+			}
+			if ((architecture & MacOSArchitecture.PPC) == MacOSArchitecture.PPC) {
+				archStore.AppendValues ("Power PC (32 bits)", MacOSArchitecture.PPC);
+			}
+			if ((architecture & MacOSArchitecture.Universal32) == MacOSArchitecture.Universal32) {
+				archStore.AppendValues ("Universal PowerPC/Intel (32 bits)", MacOSArchitecture.Universal32);
+			}
+			if ((architecture & MacOSArchitecture.Universal3264) == MacOSArchitecture.Universal3264) {
+				archStore.AppendValues ("Universal PowerPC/Intel (32/64 bits)", MacOSArchitecture.Universal3264);
+			}
 		}
 
 		private static void PopulateCertificates (ComboBox comboBox, IList<String> identities, String defaultText)
@@ -221,6 +250,11 @@ namespace MonoDevelop.Monobjc.Gui
 			if (store.GetIterFirst (out iter)) {
 				comboBox.SetActiveIter (iter);
 			}
+		}
+		
+		private void HandleCheckbuttonPackagehandleToggled (object sender, EventArgs e)
+		{
+			this.comboboxPackagingCertificates.Sensitive = this.checkbuttonPackage.Active;
 		}
 	}
 }
