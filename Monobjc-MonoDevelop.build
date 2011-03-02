@@ -13,8 +13,8 @@
   <property name="repository.dir" value="${dist.dir}/repository"/>
 
   <!-- Define some properties related to MonoDevelop -->
-  <property name="md.app" value="/Applications/MonoDevelop.app" overwrite="false"/>
-  <property name="md.version" value="2.4" overwrite="false"/>
+  <property name="md.app" value="/Applications/MonoDevelop.app" unless="${property::exists('md.app')}"/>
+  <property name="md.version" value="2.4" unless="${property::exists('md.version')}"/>
   <property name="md.config" value="${md.app}/Contents/MacOS/lib/pkgconfig"/>
   <property name="md.tool" value="${md.app}/Contents/MacOS/mdtool"/>
 
