@@ -22,6 +22,7 @@ using System.Text;
 using Gtk;
 using ICSharpCode.NRefactory.Ast;
 using Mono.TextEditor;
+using Mono.TextEditor.PopupWindow;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
@@ -165,6 +166,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 					}
 				}
 				
+#if MD_2_4
 				// Prompt for an insertion point
 				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, HelperMethods.GetInsertionPoints (editor.Document, declaringType));
 				mode.CurIndex = 0;
@@ -174,6 +176,26 @@ namespace MonoDevelop.Monobjc.Refactoring
 						args.InsertionPoint.Insert (editor, code.ToString ());
 					}
 				};
+#endif
+#if MD_2_6
+				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, MonoDevelop.Refactoring.HelperMethods.GetInsertionPoints (options.Document, declaringType));
+				ModeHelpWindow helpWindow = new ModeHelpWindow ();
+				helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
+				helpWindow.TitleText = GettextCatalog.GetString ("<b>Implement Protocol -- Targeting</b>");
+				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Key</b>"), GettextCatalog.GetString ("<b>Behavior</b>")));
+				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Up</b>"), GettextCatalog.GetString ("Move to <b>previous</b> target point.")));
+				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Down</b>"), GettextCatalog.GetString ("Move to <b>next</b> target point.")));
+				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Enter</b>"), GettextCatalog.GetString ("<b>Declare interface implementation</b> at target point.")));
+				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Esc</b>"), GettextCatalog.GetString ("<b>Cancel</b> this refactoring.")));
+				mode.HelpWindow = helpWindow;
+				mode.CurIndex = mode.InsertionPoints.Count - 1;
+				mode.StartMode ();
+				mode.Exited += delegate(object s, InsertionCursorEventArgs args) {
+					if (args.Success) {
+						args.InsertionPoint.Insert (editor, code.ToString ());
+					}
+				};
+#endif
 			} finally {
 				this.Destroy ();
 			}

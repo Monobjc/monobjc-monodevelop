@@ -17,7 +17,10 @@
   <property name="md.version" value="2.4" unless="${property::exists('md.version')}"/>
   <property name="md.config" value="${md.app}/Contents/MacOS/lib/pkgconfig"/>
   <property name="md.tool" value="${md.app}/Contents/MacOS/mdtool"/>
-
+  
+  <!-- Load the properties -->
+  <include buildfile="profile-${md.version}.config"/>
+  
   <!-- ===============================================================================
   Build the tools libraries
   ================================================================================ -->
@@ -31,7 +34,11 @@
   <target name="build-addins" depends="build-tools">
     <!-- Update the addin descriptors with the versions -->
     <property name="build.version" value="${revision}"/>
+	<call target="gen-projects" />
     <call target="gen-descriptors" />
+
+	<!-- Make sure that MonoDevelop is found -->
+	<fail message="MonoDevelop installation not found. Check the 'md.app' property." unless="${directory::exists(md.app)}" />
 
     <!-- Builds the addins -->
     <exec workingdir="."
@@ -68,7 +75,7 @@
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${repository.dir}"/>
-
+	
     <!-- Compute the revision -->
     <property name="revision" value="${timespan::get-days(datetime::now() - datetime::parse('2007-07-01'))}"/>
   </target>
@@ -82,6 +89,7 @@
 
     <!-- Revert descriptors -->
     <property name="build.version" value="9999"/>
+	<call target="gen-projects" />
     <call target="gen-descriptors" />
 
     <!-- Clean the addins -->
@@ -101,6 +109,30 @@
 
   <!-- *************************************************************************** -->
   
+  <!-- Generate the addin.xml descriptors -->
+  <target name="gen-projects">
+    <foreach item="File" property="filename">
+      <in>
+        <items>
+          <include name="${addins.dir}/**/*.csproj.tmpl" />
+        </items>
+      </in>
+      <do>
+        <copy file="${filename}" tofile="${directory::get-parent-directory(filename)}/${path::get-file-name-without-extension(filename)}" overwrite="true">
+          <filterchain>
+            <replacetokens>
+              <token key="MD_ADDINS" value="${md.addins}" />
+              <token key="MD_CECIL" value="${md.cecil}" />
+              <token key="MD_DEFINE" value="${md.define}" />
+              <token key="MD_FRAMEWORK" value="${md.framework}" />
+              <token key="MD_VERSION" value="${md.version}" />
+            </replacetokens>
+          </filterchain>
+        </copy>
+      </do>
+    </foreach>
+  </target>
+
   <!-- Generate the addin.xml descriptors -->
   <target name="gen-descriptors">
     <foreach item="File" property="filename">

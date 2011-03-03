@@ -6,7 +6,7 @@
        description="Development of Mac OS X applications using Monobjc."
        copyright="GPL"
        category="Mac Development"
-       version="2.4.1340.0">
+       version="2.4.9999.0">
 
   <Runtime>
     <!-- Assemblies -->

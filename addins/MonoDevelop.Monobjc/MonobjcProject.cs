@@ -117,7 +117,7 @@ namespace MonoDevelop.Monobjc
 			
 			return configuration;
 		}
-
+		
 		/// <summary>
 		///   Supportses the framework.
 		/// </summary>
@@ -125,7 +125,12 @@ namespace MonoDevelop.Monobjc
 		/// <returns></returns>
 		public override bool SupportsFramework (TargetFramework framework)
 		{
+#if MD_2_4
 			return framework.IsCompatibleWithFramework ("3.5");
+#endif
+#if MD_2_6
+			return framework.IsCompatibleWithFramework (TargetFrameworkMoniker.NET_3_5);
+#endif
 		}
 
 		/// <summary>

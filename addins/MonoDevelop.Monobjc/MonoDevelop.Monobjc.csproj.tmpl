@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,14 +9,14 @@
     <OutputType>Library</OutputType>
     <RootNamespace>MonoDevelop.Monobjc</RootNamespace>
     <AssemblyName>MonoDevelop.Monobjc</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>@MD_FRAMEWORK@</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;MD_2_4</DefineConstants>
+    <DefineConstants>DEBUG;@MD_DEFINE@</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -28,7 +28,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <DefineConstants>MD_2_4</DefineConstants>
+    <DefineConstants>@MD_DEFINE@</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -37,14 +37,14 @@
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Mono.Addins, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Mono.Addins.Setup, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Mono.Cecil, Version=0.6.9.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Mono.Addins, Version=@MD_ADDINS@, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Mono.Addins.Setup, Version=@MD_ADDINS@, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Mono.Cecil, Version=@MD_CECIL@, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="Mono.Posix" />
-    <Reference Include="MonoDevelop.Core, Version=2.4.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
-    <Reference Include="MonoDevelop.Deployment, Version=2.4.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
-    <Reference Include="MonoDevelop.DesignerSupport, Version=2.4.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
-    <Reference Include="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
+    <Reference Include="MonoDevelop.Core, Version=@MD_VERSION@.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
+    <Reference Include="MonoDevelop.Deployment, Version=@MD_VERSION@.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
+    <Reference Include="MonoDevelop.DesignerSupport, Version=@MD_VERSION@.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
+    <Reference Include="MonoDevelop.Ide, Version=@MD_VERSION@.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BundleGeneration\BundleGenerator.cs" />
