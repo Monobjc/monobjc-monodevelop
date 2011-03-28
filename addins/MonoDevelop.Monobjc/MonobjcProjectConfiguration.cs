@@ -20,36 +20,32 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc
 {
-	/// <summary>
-	/// A Monobjc project configuration.
-	/// </summary>
-	public class MonobjcProjectConfiguration : DotNetProjectConfiguration
-	{
-		/// <summary>
-		///   Initializes a new instance of the <see cref = "MonobjcProjectConfiguration" /> class.
-		/// </summary>
-		public MonobjcProjectConfiguration ()
-		{
-		}
+    /// <summary>
+    ///   A Monobjc project configuration.
+    /// </summary>
+    public class MonobjcProjectConfiguration : DotNetProjectConfiguration
+    {
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "MonobjcProjectConfiguration" /> class.
+        /// </summary>
+        public MonobjcProjectConfiguration() {}
 
-		/// <summary>
-		///   Initializes a new instance of the <see cref = "MonobjcProjectConfiguration" /> class.
-		/// </summary>
-		/// <param name = "name">The name.</param>
-		public MonobjcProjectConfiguration (String name) : base(name)
-		{
-		}
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "MonobjcProjectConfiguration" /> class.
+        /// </summary>
+        /// <param name = "name">The name.</param>
+        public MonobjcProjectConfiguration(String name) : base(name) {}
 
-		/// <summary>
-		/// Gets or sets the name of the application.
-		/// </summary>
-		/// <value>The name of the application.</value>
-		public String ApplicationName { get; set; }
+        /// <summary>
+        ///   Gets or sets the name of the application.
+        /// </summary>
+        /// <value>The name of the application.</value>
+        public String ApplicationName { get; set; }
 
-		/// <summary>
-		/// Gets or sets the runtime.
-		/// </summary>
-		/// <value>The runtime.</value>
-		public String Runtime { get; set; }
-	}
+        /// <summary>
+        ///   Gets or sets the runtime.
+        /// </summary>
+        /// <value>The runtime.</value>
+        public String Runtime { get; set; }
+    }
 }

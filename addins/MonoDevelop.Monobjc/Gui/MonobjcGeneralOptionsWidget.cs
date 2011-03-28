@@ -98,7 +98,7 @@ namespace MonoDevelop.Monobjc.Gui
 			// Set the framework list
 			TreeStore frameworkStore = (TreeStore)this.treeviewFrameworks.Model;
 			frameworkStore.Clear ();
-			IEnumerable<String> assemblies = (from a in project.MonobjcAssemblies
+			IEnumerable<String> assemblies = (from a in project.EveryMonobjcAssemblies
 				where a.Name.Contains ("Monobjc.")
 				select a.Name.Substring ("Monobjc.".Length)).Distinct ();
 			foreach (String assembly in assemblies) {

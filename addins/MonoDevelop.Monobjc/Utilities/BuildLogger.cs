@@ -21,81 +21,85 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
-	/// <summary>
-	/// An implementation of <see cref="IExecutionLogger"/> for MonoDevelop.
-	/// </summary>
-	public class BuildLogger : IExecutionLogger
-	{
-		private readonly FilePath projectFile;
-		private readonly IProgressMonitor monitor;
-		private readonly BuildResult result;
+    /// <summary>
+    ///   An implementation of <see cref = "IExecutionLogger" /> for MonoDevelop.
+    /// </summary>
+    public class BuildLogger : IExecutionLogger
+    {
+        private readonly FilePath projectFile;
+        private readonly IProgressMonitor monitor;
+        private readonly BuildResult result;
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="BuildLogger"/> class.
-		/// </summary>
-		/// <param name="monitor">The monitor.</param>
-		/// <param name="result">The result.</param>
-		public BuildLogger (IProgressMonitor monitor, BuildResult result) : this(FilePath.Null, monitor, result)
-		{
-		}
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "BuildLogger" /> class.
+        /// </summary>
+        /// <param name = "monitor">The monitor.</param>
+        /// <param name = "result">The result.</param>
+        public BuildLogger(IProgressMonitor monitor, BuildResult result) : this(FilePath.Null, monitor, result) {}
 
-		/// <summary>
-		/// Initializes a new instance of the <see cref="BuildLogger"/> class.
-		/// </summary>
-		/// <param name="projectFile">The project file.</param>
-		/// <param name="monitor">The monitor.</param>
-		/// <param name="result">The result.</param>
-		public BuildLogger (FilePath projectFile, IProgressMonitor monitor, BuildResult result)
-		{
-			this.projectFile = projectFile;
-			this.monitor = monitor;
-			this.result = result;
-		}
+        /// <summary>
+        ///   Initializes a new instance of the <see cref = "BuildLogger" /> class.
+        /// </summary>
+        /// <param name = "projectFile">The project file.</param>
+        /// <param name = "monitor">The monitor.</param>
+        /// <param name = "result">The result.</param>
+        public BuildLogger(FilePath projectFile, IProgressMonitor monitor, BuildResult result)
+        {
+            this.projectFile = projectFile;
+            this.monitor = monitor;
+            this.result = result;
+        }
 
-		/// <summary>
-		/// Logs the debug message.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		public void LogDebug (string message)
-		{
-			this.monitor.Log.WriteLine (message);
-		}
+        /// <summary>
+        ///   Logs the debug message.
+        /// </summary>
+        /// <param name = "message">The message.</param>
+        public void LogDebug(string message)
+        {
+            this.monitor.Log.WriteLine(message);
+        }
 
-		/// <summary>
-		/// Logs the info message.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		public void LogInfo (string message)
-		{
-			this.monitor.Log.WriteLine (message);
-		}
+        /// <summary>
+        ///   Logs the info message.
+        /// </summary>
+        /// <param name = "message">The message.</param>
+        public void LogInfo(string message)
+        {
+            this.monitor.Log.WriteLine(message);
+        }
 
-		/// <summary>
-		/// Logs the warning message.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		public void LogWarning (string message)
-		{
-			this.monitor.Log.WriteLine (message);
-			if (this.projectFile != FilePath.Null) {
-				this.result.AddWarning (this.projectFile, 0, 0, "0", message);
-			} else {
-				this.result.AddWarning (message);
-			}
-		}
+        /// <summary>
+        ///   Logs the warning message.
+        /// </summary>
+        /// <param name = "message">The message.</param>
+        public void LogWarning(string message)
+        {
+            this.monitor.Log.WriteLine(message);
+            if (this.projectFile != FilePath.Null)
+            {
+                this.result.AddWarning(this.projectFile, 0, 0, "0", message);
+            }
+            else
+            {
+                this.result.AddWarning(message);
+            }
+        }
 
-		/// <summary>
-		/// Logs the error message.
-		/// </summary>
-		/// <param name="message">The message.</param>
-		public void LogError (string message)
-		{
-			this.monitor.Log.WriteLine (message);
-			if (this.projectFile != FilePath.Null) {
-				this.result.AddError (this.projectFile, 0, 0, "0", message);
-			} else {
-				this.result.AddError (message);
-			}
-		}
-	}
+        /// <summary>
+        ///   Logs the error message.
+        /// </summary>
+        /// <param name = "message">The message.</param>
+        public void LogError(string message)
+        {
+            this.monitor.Log.WriteLine(message);
+            if (this.projectFile != FilePath.Null)
+            {
+                this.result.AddError(this.projectFile, 0, 0, "0", message);
+            }
+            else
+            {
+                this.result.AddError(message);
+            }
+        }
+    }
 }

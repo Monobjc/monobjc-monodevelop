@@ -3,7 +3,7 @@
   <description>Monobjc MonoDevelop Build File</description>
 
   <property name="configuration" value="Release" overwrite="false"/>
-  
+
   <!-- Define some properties if they are missing -->
   <property name="addins.dir" value="${path::get-full-path('./addins')}"/>
   <property name="tools.dir" value="${path::get-full-path('./tools')}"/>
@@ -17,10 +17,10 @@
   <property name="md.version" value="2.4" unless="${property::exists('md.version')}"/>
   <property name="md.config" value="${md.app}/Contents/MacOS/lib/pkgconfig"/>
   <property name="md.tool" value="${md.app}/Contents/MacOS/mdtool"/>
-  
+
   <!-- Load the properties -->
   <include buildfile="profile-${md.version}.config"/>
-  
+
   <!-- ===============================================================================
   Build the tools libraries
   ================================================================================ -->
@@ -34,11 +34,11 @@
   <target name="build-addins" depends="build-tools">
     <!-- Update the addin descriptors with the versions -->
     <property name="build.version" value="${revision}"/>
-	<call target="gen-projects" />
+    <call target="gen-projects" />
     <call target="gen-descriptors" />
 
-	<!-- Make sure that MonoDevelop is found -->
-	<fail message="MonoDevelop installation not found. Check the 'md.app' property." unless="${directory::exists(md.app)}" />
+    <!-- Make sure that MonoDevelop is found -->
+    <fail message="MonoDevelop installation not found. Check the 'md.app' property." unless="${directory::exists(md.app)}" />
 
     <!-- Builds the addins -->
     <exec workingdir="."
@@ -55,7 +55,7 @@
   <!-- ===============================================================================
   Package the addins libraries
   ================================================================================ -->
-  
+
   <target name="package" depends="build-addins">
     <!-- Copy the material that will form the addins -->
     <call target="copy-descriptors" />
@@ -69,19 +69,19 @@
   </target>
 
   <!-- *************************************************************************** -->
-  
+
   <!-- Prepare the directories -->
   <target name="prepare">
     <mkdir dir="${build.dir}"/>
     <mkdir dir="${dist.dir}"/>
     <mkdir dir="${repository.dir}"/>
-	
+
     <!-- Compute the revision -->
     <property name="revision" value="${timespan::get-days(datetime::now() - datetime::parse('2007-07-01'))}"/>
   </target>
 
   <!-- *************************************************************************** -->
-  
+
   <!-- Clean the directories -->
   <target name="clean">
     <delete dir="${build.dir}" failonerror="false" />
@@ -89,7 +89,7 @@
 
     <!-- Revert descriptors -->
     <property name="build.version" value="9999"/>
-	<call target="gen-projects" />
+    <call target="gen-projects" />
     <call target="gen-descriptors" />
 
     <!-- Clean the addins -->
@@ -102,13 +102,13 @@
         <variable name="PKG_CONFIG_PATH" value="PKG_CONFIG_PATH:${md.config}"/>
       </environment>
     </exec>
-	
+
     <!-- Clean sub-projects -->
     <nant buildfile="${tools.dir}/Monobjc-Tools.build" target="clean"/>
   </target>
 
   <!-- *************************************************************************** -->
-  
+
   <!-- Generate the addin.xml descriptors -->
   <target name="gen-projects">
     <foreach item="File" property="filename">
@@ -155,7 +155,7 @@
   </target>
 
   <!-- *************************************************************************** -->
-  
+
   <!-- Copy the addin.xml descriptors -->
   <target name="copy-descriptors">
     <foreach item="File" property="filename">
@@ -172,7 +172,7 @@
   </target>
 
   <!-- *************************************************************************** -->
-  
+
   <!-- Generate the addins content -->
   <target name="copy-addins">
     <foreach item="Folder" property="folder">
@@ -195,7 +195,7 @@
   </target>
 
   <!-- *************************************************************************** -->
-  
+
   <!-- Pack the addins -->
   <target name="pack-addins">
     <foreach item="File" property="filename">
@@ -215,7 +215,7 @@
   </target>
 
   <!-- *************************************************************************** -->
-  
+
   <!-- Build the repository -->
   <target name="build-repository">
     <exec workingdir="."

@@ -19,18 +19,19 @@ using Mono.Addins;
 
 namespace MonoDevelop.Monobjc.CodeGeneration
 {
-	/// <summary>
-	///   An extension codon for a code-behind implementation.
-	/// </summary>
-	[ExtensionNode(Description = "A codon for CodeBehind generation.")]
-	public class CodeBehindGeneratorCodon : TypeExtensionNode
-	{
-		/// <summary>
-		///   Gets the generator.
-		/// </summary>
-		/// <value>The generator.</value>
-		public ICodeBehindGenerator Generator {
-			get { return (ICodeBehindGenerator)this.CreateInstance (); }
-		}
-	}
+    /// <summary>
+    ///   An extension codon for a code-behind implementation.
+    /// </summary>
+    [ExtensionNode(Description = "A codon for CodeBehind generation.")]
+    public class CodeBehindGeneratorCodon : TypeExtensionNode
+    {
+        /// <summary>
+        ///   Gets the generator.
+        /// </summary>
+        /// <value>The generator.</value>
+        public ICodeBehindGenerator Generator
+        {
+            get { return (ICodeBehindGenerator) this.CreateInstance(); }
+        }
+    }
 }

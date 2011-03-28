@@ -21,41 +21,41 @@ using MonoDevelop.Monobjc.Utilities;
 
 namespace MonoDevelop.Monobjc
 {
-	/// <summary>
-	/// A Monobjc's version of a execution handler.
-	/// </summary>
-	public class MonobjcExecutionHandler : IExecutionHandler
-	{
-		/// <summary>
-		///   Determines whether this instance can execute the specified command.
-		/// </summary>
-		/// <param name = "command">The command.</param>
-		/// <returns>
-		///   <c>true</c> if this instance can execute the specified command; otherwise, <c>false</c>.
-		/// </returns>
-		public bool CanExecute (ExecutionCommand command)
-		{
-			return (command is MonobjcExecutionCommand);
-		}
+    /// <summary>
+    ///   A Monobjc's version of a execution handler.
+    /// </summary>
+    public class MonobjcExecutionHandler : IExecutionHandler
+    {
+        /// <summary>
+        ///   Determines whether this instance can execute the specified command.
+        /// </summary>
+        /// <param name = "command">The command.</param>
+        /// <returns>
+        ///   <c>true</c> if this instance can execute the specified command; otherwise, <c>false</c>.
+        /// </returns>
+        public bool CanExecute(ExecutionCommand command)
+        {
+            return (command is MonobjcExecutionCommand);
+        }
 
-		/// <summary>
-		///   Executes the specified command.
-		/// </summary>
-		/// <param name = "command">The command.</param>
-		/// <param name = "console">The console.</param>
-		/// <returns></returns>
-		public IProcessAsyncOperation Execute (ExecutionCommand command, IConsole console)
-		{
-			MonobjcExecutionCommand executionCommand = (MonobjcExecutionCommand)command;
-			
-			ProcessService service = Runtime.ProcessService;
-			IProcessAsyncOperation operation = service.StartConsoleProcess (executionCommand.CommandString, executionCommand.CommandLineParameters, null, executionCommand.EnvironmentVariables, console, null);
+        /// <summary>
+        ///   Executes the specified command.
+        /// </summary>
+        /// <param name = "command">The command.</param>
+        /// <param name = "console">The console.</param>
+        /// <returns></returns>
+        public IProcessAsyncOperation Execute(ExecutionCommand command, IConsole console)
+        {
+            MonobjcExecutionCommand executionCommand = (MonobjcExecutionCommand) command;
 
-			// Make sure the process is the front application
-			LoggingService.LogInfo ("Running application (pid={0})", operation.ProcessId);
-			PSNHelper.SetFront (operation.ProcessId);
-			
-			return operation;
-		}
-	}
+            ProcessService service = Runtime.ProcessService;
+            IProcessAsyncOperation operation = service.StartConsoleProcess(executionCommand.CommandString, executionCommand.CommandLineParameters, null, executionCommand.EnvironmentVariables, console, null);
+
+            // Make sure the process is the front application
+            LoggingService.LogInfo("Running application (pid={0})", operation.ProcessId);
+            PSNHelper.SetFront(operation.ProcessId);
+
+            return operation;
+        }
+    }
 }

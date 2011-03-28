@@ -1,6 +1,7 @@
 bin/
 build/
 dist/
+external/
 obj/
 _ReSharper*
 *.Cache
@@ -10,3 +11,4 @@ _ReSharper*
 *.suo
 *.user
 *.userprefs
+*.vs

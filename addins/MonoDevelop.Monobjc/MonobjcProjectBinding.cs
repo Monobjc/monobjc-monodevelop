@@ -21,51 +21,52 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc
 {
-	/// <summary>
-	/// Monobjc project binding.
-	/// </summary>
-	public class MonobjcProjectBinding : IProjectBinding
-	{
-		/// <summary>
-		///   Creates the project.
-		/// </summary>
-		/// <param name = "info">The info.</param>
-		/// <param name = "projectOptions">The project options.</param>
-		/// <returns></returns>
-		public Project CreateProject (ProjectCreateInformation info, XmlElement projectOptions)
-		{
-			String language = projectOptions.GetAttribute ("language");
-			return new MonobjcProject (language, info, projectOptions);
-		}
+    /// <summary>
+    ///   Monobjc project binding.
+    /// </summary>
+    public class MonobjcProjectBinding : IProjectBinding
+    {
+        /// <summary>
+        ///   Creates the project.
+        /// </summary>
+        /// <param name = "info">The info.</param>
+        /// <param name = "projectOptions">The project options.</param>
+        /// <returns></returns>
+        public Project CreateProject(ProjectCreateInformation info, XmlElement projectOptions)
+        {
+            String language = projectOptions.GetAttribute("language");
+            return new MonobjcProject(language, info, projectOptions);
+        }
 
-		/// <summary>
-		///   Creates the single file project.
-		/// </summary>
-		/// <param name = "sourceFile">The source file.</param>
-		/// <returns></returns>
-		public Project CreateSingleFileProject (string sourceFile)
-		{
-			throw new InvalidOperationException ();
-		}
+        /// <summary>
+        ///   Creates the single file project.
+        /// </summary>
+        /// <param name = "sourceFile">The source file.</param>
+        /// <returns></returns>
+        public Project CreateSingleFileProject(string sourceFile)
+        {
+            throw new InvalidOperationException();
+        }
 
-		/// <summary>
-		///   Determines whether this instance can create a single file project.
-		/// </summary>
-		/// <param name = "sourceFile">The source file.</param>
-		/// <returns>
-		///   <c>true</c> if this instance can create single file project; otherwise, <c>false</c>.
-		/// </returns>
-		public bool CanCreateSingleFileProject (string sourceFile)
-		{
-			return false;
-		}
+        /// <summary>
+        ///   Determines whether this instance can create a single file project.
+        /// </summary>
+        /// <param name = "sourceFile">The source file.</param>
+        /// <returns>
+        ///   <c>true</c> if this instance can create single file project; otherwise, <c>false</c>.
+        /// </returns>
+        public bool CanCreateSingleFileProject(string sourceFile)
+        {
+            return false;
+        }
 
-		/// <summary>
-		///   Gets the name.
-		/// </summary>
-		/// <value>The name.</value>
-		public string Name {
-			get { return "Monobjc"; }
-		}
-	}
+        /// <summary>
+        ///   Gets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public string Name
+        {
+            get { return "Monobjc"; }
+        }
+    }
 }

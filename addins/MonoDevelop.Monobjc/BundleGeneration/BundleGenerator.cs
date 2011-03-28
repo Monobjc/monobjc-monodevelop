@@ -21,16 +21,16 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.BundleGeneration
 {
-	public abstract class BundleGenerator
-	{
-		public abstract BuildResult Generate (IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration);
+    public abstract class BundleGenerator
+    {
+        public abstract BuildResult Generate(IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration);
 
-		public String Output { get; set; }
+        public String Output { get; set; }
 
-		public String SigningIdentity { get; set; }
+        public String SigningIdentity { get; set; }
 
-		public bool Archive { get; set; }
+        public bool Archive { get; set; }
 
-		public String ArchiveIdentity { get; set; }
-	}
+        public String ArchiveIdentity { get; set; }
+    }
 }

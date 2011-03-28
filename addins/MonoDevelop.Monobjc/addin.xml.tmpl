@@ -115,13 +115,18 @@
     </Condition>
   </Extension>
 
+  <!-- General Options -->
+  <Extension path = "/MonoDevelop/Ide/GlobalOptionsDialog/Preferences">
+    <Section id = "MonobjcGeneralOptions" _label = "Monobjc" fill="true" class="MonoDevelop.Monobjc.Gui.MonobjcOptionsPanel" />
+  </Extension>
+
   <!-- Project General Options -->
   <Extension path="/MonoDevelop/ProjectModel/Gui/ItemOptionPanels/Common">
     <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
-      <Section id="MonobjcGeneralOptions"
+      <Section id="MonobjcProjectGeneralOptions"
                icon="md-monobjc"
                _label="Monobjc Settings">
-        <Panel id="MonobjcGeneralOptionsPanel"
+        <Panel id="MonobjcProjectGeneralOptionsPanel"
                class="MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsPanel"
                fill="true" />
       </Section>
@@ -131,10 +136,10 @@
   <!-- Project Deployment Options -->
   <Extension path="/MonoDevelop/ProjectModel/Gui/ItemOptionPanels/Deployment">
     <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
-      <Section id="MonobjcDeploymentOptions"
+      <Section id="MonobjcProjectDeploymentOptions"
                icon="md-monobjc"
                _label="Monobjc Deployment">
-        <Panel id="MonobjcDeploymentOptionsPanel"
+        <Panel id="MonobjcProjectDeploymentOptionsPanel"
                class="MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsPanel"
                fill="true" />
       </Section>

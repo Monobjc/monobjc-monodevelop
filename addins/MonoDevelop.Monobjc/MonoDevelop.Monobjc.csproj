@@ -63,8 +63,9 @@
     <Compile Include="Gui\MonobjcExportDialog.cs" />
     <Compile Include="Gui\MonobjcGeneralOptionsPanel.cs" />
     <Compile Include="Gui\MonobjcGeneralOptionsWidget.cs" />
+    <Compile Include="Gui\MonobjcPreferencesWidget.cs" />
+    <Compile Include="Gui\MonobjcPreferencesPanel.cs" />
     <Compile Include="MonobjcBuildExtension.cs" />
-    <Compile Include="MonobjcCodeBehind.cs" />
     <Compile Include="MonobjcExecutionCommand.cs" />
     <Compile Include="MonobjcExecutionHandler.cs" />
     <Compile Include="MonobjcProject.Internals.cs" />
@@ -73,6 +74,9 @@
     <Compile Include="MonobjcProjectBinding.cs" />
     <Compile Include="MonobjcProjectConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tracking\CodeBehindProjectTracker.cs" />
+    <Compile Include="Tracking\ProjectTracker.cs" />
+    <Compile Include="Tracking\XcodeProjectTracker.cs" />
     <Compile Include="Utilities\AttributeHelper.cs" />
     <Compile Include="Utilities\BuildHelper.cs" />
     <Compile Include="Utilities\BuildLogger.cs" />
@@ -82,8 +86,9 @@
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsWidget.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcExportDialog.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsWidget.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcPreferencesWidget.cs" />
     <Compile Include="gtk-gui\generated.cs" />
-  </ItemGroup>
+  </ItemGroup>  
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="addin.xml" />
