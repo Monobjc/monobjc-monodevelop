@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using MonoDevelop.Core;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
+using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
 
 namespace MonoDevelop.Monobjc.Tracking
@@ -20,18 +21,18 @@ namespace MonoDevelop.Monobjc.Tracking
         /// <param name="project">The project.</param>
         public XcodeProjectTracker(MonobjcProject project) : base(project)
         {
-            this.Project.Modified += this.Project_Modified;
             PropertyService.PropertyChanged += this.PropertyService_PropertyChanged;
+			ProjectDomService.TypesUpdated += this.ProjectDomService_TypesUpdated;
         }
-
+		
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public override void Dispose()
         {
-            this.Project.Modified -= this.Project_Modified;
             PropertyService.PropertyChanged -= this.PropertyService_PropertyChanged;
-            base.Dispose();
+			ProjectDomService.TypesUpdated -= this.ProjectDomService_TypesUpdated;
+			base.Dispose();
         }
 
         protected override void Project_FileAddedToProject(object sender, ProjectFileEventArgs e)
@@ -55,12 +56,14 @@ namespace MonoDevelop.Monobjc.Tracking
 #endif
         }
 
-        private void Project_Modified(object sender, SolutionItemModifiedEventArgs e)
-        {
-#if DEBUG
-//            LoggingService.LogInfo("XcodeProjectTracker::Project_Modified " + e.Hint);
-#endif
-        }
+		private bool Enabled
+		{
+			get
+			{
+				// Only enable Xcode tracking if Xcode 4.0 if selected
+				return true;
+			}
+		}
 
         private void PropertyService_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
@@ -75,6 +78,35 @@ namespace MonoDevelop.Monobjc.Tracking
                 default:
                     break;
             }
+        }
+		
+        private void ProjectDomService_TypesUpdated(object sender, TypeUpdateInformationEventArgs e)
+        {
+			if (e.Project != this.Project)
+			{
+				return;
+			}
+#if DEBUG
+//            LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated");
+#endif
+			foreach (IType cls in e.TypeUpdateInformation.Removed) 
+			{
+#if DEBUG
+				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Removed " + cls);
+#endif
+			}
+			foreach (IType cls in e.TypeUpdateInformation.Modified) 
+			{
+#if DEBUG
+				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Modified " + cls);
+#endif
+			}
+			foreach (IType cls in e.TypeUpdateInformation.Added) 
+			{
+#if DEBUG
+				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Added " + cls);
+#endif
+			}
         }
     }
 }

@@ -39,6 +39,8 @@ namespace MonoDevelop.Monobjc.Gui
         public MonobjcPreferencesWidget()
 		{
 			this.Build ();
+
+            this.comboboxXcodeVersion.Model = new ListStore(typeof(String), typeof(int));
 		}
 
 		/// <summary>
@@ -47,7 +49,16 @@ namespace MonoDevelop.Monobjc.Gui
 		/// <param name = "project">The project.</param>
 		public void Load ()
 		{
-		}
+            // Set up the SDKs
+            ListStore versionStore = (ListStore)this.comboboxXcodeVersion.Model;
+            versionStore.Clear();
+            versionStore.AppendValues("Xcode 3.2", 320);
+            versionStore.AppendValues("Xcode 4.0", 400);
+			
+			// Load values
+			this.filechooserbuttonDeveloperTools.SetFilename(PropertyService.Get<String>(Tracking.XcodeProjectTracker.DEVELOPER_TOOLS_ROOT, "/Developer"));
+			this.XcodeVersion = PropertyService.Get<int>(Tracking.XcodeProjectTracker.XCODE_VERSION, 320);
+        }
 
 		/// <summary>
 		///   Saves the specified project.
@@ -55,6 +66,35 @@ namespace MonoDevelop.Monobjc.Gui
 		/// <param name = "project">The project.</param>
 		public void Save ()
 		{
+			// Save value
+			PropertyService.Set(Tracking.XcodeProjectTracker.DEVELOPER_TOOLS_ROOT, this.filechooserbuttonDeveloperTools.Filename);
+			PropertyService.Set(Tracking.XcodeProjectTracker.XCODE_VERSION, this.XcodeVersion);
+		}
+		
+		private int XcodeVersion {
+			get {
+				TreeIter iter;
+				if (this.comboboxXcodeVersion.GetActiveIter (out iter)) {
+					ListStore listStore = (ListStore)this.comboboxXcodeVersion.Model;
+					return (int)listStore.GetValue (iter, 1);
+				}
+				throw new InvalidOperationException ("Unrecognized Target Version");
+			}
+			set {
+				ListStore store = (ListStore)this.comboboxXcodeVersion.Model;
+				TreeIter iter;
+				store.GetIterFirst (out iter);
+				do {
+					if ((int)store.GetValue (iter, 1) == value) {
+						this.comboboxXcodeVersion.SetActiveIter (iter);
+						return;
+					}
+					if (!store.IterNext (ref iter)) {
+						break;
+					}
+				} while (true);
+				this.comboboxXcodeVersion.Active = 0;
+			}
 		}
 	}
 }

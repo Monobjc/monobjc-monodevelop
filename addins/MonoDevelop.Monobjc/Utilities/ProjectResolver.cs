@@ -41,6 +41,7 @@ namespace MonoDevelop.Monobjc.Utilities
         public ProjectResolver(MonobjcProject project)
         {
             this.Project = project;
+			// TODO: Move to lazy instantiation
             this.projectDom = ProjectDomService.GetProjectDom(this.Project);
             this.projectDoms = new List<ProjectDom>();
             CollectReference(this.projectDoms, this.projectDom);

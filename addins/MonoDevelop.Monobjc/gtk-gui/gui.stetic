@@ -848,7 +848,7 @@
           <placeholder />
         </child>
         <child>
-          <widget class="Gtk.ComboBox" id="comboboxVersion">
+          <widget class="Gtk.ComboBox" id="comboboxXcodeVersion">
             <property name="MemberName" />
             <property name="IsTextCombo">True</property>
             <property name="Items" translatable="yes" />
@@ -869,7 +869,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.FileChooserButton" id="filechooserbuttonBundleIcon">
+          <widget class="Gtk.FileChooserButton" id="filechooserbuttonDeveloperTools">
             <property name="MemberName" />
             <property name="Title" translatable="yes">Select Developer Tools Folder</property>
             <property name="Action">SelectFolder</property>
@@ -890,7 +890,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Label" id="labelBundleIcon">
+          <widget class="Gtk.Label" id="labelDeveloperTools">
             <property name="MemberName" />
             <property name="Xalign">1</property>
             <property name="LabelProp" translatable="yes">Developer Tools:</property>
@@ -930,7 +930,7 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Label" id="labelVersion">
+          <widget class="Gtk.Label" id="labelXcodeVersion">
             <property name="MemberName" />
             <property name="Xalign">1</property>
             <property name="LabelProp" translatable="yes">Xcode Version:</property>
