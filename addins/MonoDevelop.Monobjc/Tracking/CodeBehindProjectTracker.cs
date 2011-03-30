@@ -42,7 +42,7 @@ namespace MonoDevelop.Monobjc.Tracking
                 return;
             }
 #if DEBUG
-            LoggingService.LogInfo("CodeBehindProjectTracker::GenerateFrameworkLoadingCode");
+//            LoggingService.LogInfo("CodeBehindProjectTracker::GenerateFrameworkLoadingCode");
 #endif
             // Create the resolver
             ProjectResolver resolver = new ProjectResolver(this.Project);
@@ -75,7 +75,7 @@ namespace MonoDevelop.Monobjc.Tracking
                 return;
             }
 #if DEBUG
-            LoggingService.LogInfo("CodeBehindProjectTracker::GenerateDesignCode");
+//            LoggingService.LogInfo("CodeBehindProjectTracker::GenerateDesignCode");
 #endif
             // Create the resolver
             ProjectResolver resolver = new ProjectResolver(this.Project);
@@ -112,13 +112,10 @@ namespace MonoDevelop.Monobjc.Tracking
             }
 
             // Run CodeBehind if it is a XIB file
-            FilePath filePath = e.ProjectFile.FilePath;
-            if (BuildHelper.IsXIBFile(filePath))
+            ProjectFile projectFile = e.ProjectFile;
+            if (BuildHelper.IsXIBFile(projectFile))
             {
-#if DEBUG
-                LoggingService.LogInfo("CodeBehindProjectTracker::Project_FileAddedToProject " + filePath);
-#endif
-                this.GenerateDesignCode(filePath, true);
+                this.GenerateDesignCode(projectFile.FilePath, true);
             }
         }
 
@@ -148,13 +145,10 @@ namespace MonoDevelop.Monobjc.Tracking
             }
 
             // Run CodeBehind if it is a XIB file
-            FilePath filePath = e.ProjectFile.FilePath;
-            if (BuildHelper.IsXIBFile(filePath))
+            ProjectFile projectFile = e.ProjectFile;
+            if (BuildHelper.IsXIBFile(projectFile))
             {
-#if DEBUG
-                LoggingService.LogInfo("CodeBehindProjectTracker::Project_FileChangedInProject " + filePath);
-#endif
-                this.GenerateDesignCode(filePath, true);
+                this.GenerateDesignCode(projectFile.FilePath, true);
             }
         }
 

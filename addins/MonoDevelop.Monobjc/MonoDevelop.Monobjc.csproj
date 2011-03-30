@@ -58,6 +58,7 @@
     <Compile Include="CodeGeneration\NullCodeBehindGenerator.cs" />
     <Compile Include="CodeGeneration\VBNetCodeBehindGenerator.cs" />
     <Compile Include="Command\ExportBundleCommandHandler.cs" />
+    <Compile Include="Command\OpenWithDeveloperToolsCommandHandler.cs" />
     <Compile Include="Gui\MonobjcDeploymentOptionsPanel.cs" />
     <Compile Include="Gui\MonobjcDeploymentOptionsWidget.cs" />
     <Compile Include="Gui\MonobjcExportDialog.cs" />

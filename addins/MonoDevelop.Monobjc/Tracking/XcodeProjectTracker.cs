@@ -34,7 +34,32 @@ namespace MonoDevelop.Monobjc.Tracking
 			ProjectDomService.TypesUpdated -= this.ProjectDomService_TypesUpdated;
 			base.Dispose();
         }
-
+		
+		internal void GenerateSurrogateProject()
+		{
+			// 1. Collect references information
+			
+			// 2. For each Monobjc project, ask for surrogate project generation
+			
+			// 3. Gather types information in this project
+			
+			// 4. Generate the header files
+			
+			// 5. Construct the surrogate project
+			
+			// 6. Return the path to the surrogate project
+			
+			var references = this.Project.References;
+			foreach(var reference in references)
+			{
+				if (reference.ReferenceType == ReferenceType.Project) 
+				{
+					// If this is a Monobjc project, ask for surrogate project generation
+					
+				}
+			}
+		}
+		
         protected override void Project_FileAddedToProject(object sender, ProjectFileEventArgs e)
         {
 #if DEBUG
@@ -67,13 +92,13 @@ namespace MonoDevelop.Monobjc.Tracking
 
         private void PropertyService_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-#if DEBUG
-//            LoggingService.LogInfo("XcodeProjectTracker::PropertyService_PropertyChanged " + e.Key);
-#endif
             switch (e.Key)
             {
                 case DEVELOPER_TOOLS_ROOT:
                 case XCODE_VERSION:
+#if DEBUG
+		            LoggingService.LogInfo("XcodeProjectTracker::PropertyService_PropertyChanged " + e.Key);
+#endif
                     break;
                 default:
                     break;
@@ -92,19 +117,19 @@ namespace MonoDevelop.Monobjc.Tracking
 			foreach (IType cls in e.TypeUpdateInformation.Removed) 
 			{
 #if DEBUG
-				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Removed " + cls);
+//				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Removed " + cls);
 #endif
 			}
 			foreach (IType cls in e.TypeUpdateInformation.Modified) 
 			{
 #if DEBUG
-				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Modified " + cls);
+//				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Modified " + cls);
 #endif
 			}
 			foreach (IType cls in e.TypeUpdateInformation.Added) 
 			{
 #if DEBUG
-				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Added " + cls);
+//				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Added " + cls);
 #endif
 			}
         }
