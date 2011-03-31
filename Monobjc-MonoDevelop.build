@@ -34,6 +34,7 @@
   <target name="build-addins" depends="build-tools">
     <!-- Update the addin descriptors with the versions -->
     <property name="build.version" value="${revision}"/>
+    <property name="build.number" value="0" unless="${property::exists('build.number')}"/>
     <call target="gen-projects" />
     <call target="gen-descriptors" />
 
@@ -89,6 +90,7 @@
 
     <!-- Revert descriptors -->
     <property name="build.version" value="9999"/>
+    <property name="build.number" value="0"/>
     <call target="gen-projects" />
     <call target="gen-descriptors" />
 
@@ -146,7 +148,7 @@
           <filterchain>
             <replacetokens>
               <token key="MD_VERSION" value="${md.version}" />
-              <token key="ADDIN_VERSION" value="${build.version}" />
+              <token key="ADDIN_VERSION" value="${build.version}.${build.number}" />
             </replacetokens>
           </filterchain>
         </copy>

@@ -31,8 +31,8 @@ namespace MonoDevelop.Monobjc.Utilities
         private const String OBJECTIVECCLASSATTRIBUTE = "Monobjc.ObjectiveCClassAttribute";
         private const String OBJECTIVECPROTOCOLATTRIBUTE = "Monobjc.ObjectiveCProtocolAttribute";
 
-        private readonly ProjectDom projectDom;
-        private readonly List<ProjectDom> projectDoms;
+        private ProjectDom projectDom;
+        private List<ProjectDom> projectDoms;
 
         /// <summary>
         ///   Initializes a new instance of the <see cref = "ProjectResolver" /> class.
@@ -41,10 +41,9 @@ namespace MonoDevelop.Monobjc.Utilities
         public ProjectResolver(MonobjcProject project)
         {
             this.Project = project;
-			// TODO: Move to lazy instantiation
-            this.projectDom = ProjectDomService.GetProjectDom(this.Project);
-            this.projectDoms = new List<ProjectDom>();
-            CollectReference(this.projectDoms, this.projectDom);
+			this.projectDom = ProjectDomService.GetProjectDom(this.Project);
+			this.projectDoms = new List<ProjectDom>();
+			CollectReference(this.projectDoms, this.projectDom);
         }
 
         /// <summary>
@@ -52,7 +51,7 @@ namespace MonoDevelop.Monobjc.Utilities
         /// </summary>
         /// <value>The project.</value>
         public MonobjcProject Project { get; private set; }
-
+		
         /// <summary>
         ///   Gets all the known classes.
         /// </summary>

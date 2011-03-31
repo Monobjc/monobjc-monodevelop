@@ -91,7 +91,7 @@ namespace MonoDevelop.Monobjc.Tracking
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="MonoDevelop.Projects.ProjectFileEventArgs"/> instance containing the event data.</param>
-        protected override void Project_FileAddedToProject(object sender, ProjectFileEventArgs e)
+        protected override void HandleFileAddedToProject(object sender, ProjectFileEventArgs e)
         {
             // Balk if the project is being deserialized
             if (this.Project.Loading)
@@ -124,7 +124,7 @@ namespace MonoDevelop.Monobjc.Tracking
         /// </summary>
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="MonoDevelop.Projects.ProjectFileEventArgs"/> instance containing the event data.</param>
-        protected override void Project_FileChangedInProject(object sender, ProjectFileEventArgs e)
+        protected override void HandleFileChangedInProject(object sender, ProjectFileEventArgs e)
         {
             // Balk if the project is being deserialized
             if (this.Project.Loading)

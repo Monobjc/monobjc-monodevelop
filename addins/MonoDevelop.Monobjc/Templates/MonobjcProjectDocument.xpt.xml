@@ -5,8 +5,8 @@
   <TemplateConfiguration>
     <_Name>Document Based Cocoa Application</_Name>
     <Icon>md-monobjc-project</Icon>
-    <_Category>Monobjc</_Category>
-    <LanguageName>*</LanguageName>
+    <_Category>C#/Monobjc</_Category>
+    <LanguageName>C#</LanguageName>
     <_Description>This project builds a document based Cocoa-based application.</_Description>
   </TemplateConfiguration>
 	

@@ -13,8 +13,6 @@ namespace MonoDevelop.Monobjc.Tracking
         public const String DEVELOPER_TOOLS_ROOT = "MonoDevelop.Monobjc.DeveloperToolsRoot";
         public const String XCODE_VERSION = "MonoDevelop.Monobjc.XcodeVersion";
 
-        private ProjectResolver resolver;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="XcodeProjectTracker"/> class.
         /// </summary>
@@ -60,27 +58,20 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 		}
 		
-        protected override void Project_FileAddedToProject(object sender, ProjectFileEventArgs e)
-        {
+		protected override void HandleReferenceAddedToProject (object sender, ProjectReferenceEventArgs e)
+		{
 #if DEBUG
-//            LoggingService.LogInfo("XcodeProjectTracker::Project_FileAddedToProject " + e.ProjectFile);
+			LoggingService.LogInfo("XcodeProjectTracker::HandleReferenceAddedToProject " + e.ProjectReference.ReferenceType);
 #endif
-        }
-
-        protected override void Project_FileChangedInProject(object sender, ProjectFileEventArgs e)
-        {
+		}
+		
+		protected override void HandleReferenceRemovedFromProject (object sender, ProjectReferenceEventArgs e)
+		{
 #if DEBUG
-//            LoggingService.LogInfo("XcodeProjectTracker::Project_FileChangedInProject " + e.ProjectFile);
+			LoggingService.LogInfo("XcodeProjectTracker::HandleReferenceRemovedFromProject " + e.ProjectReference.ReferenceType);
 #endif
-        }
-
-        protected override void Project_FileRemovedFromProject(object sender, ProjectFileEventArgs e)
-        {
-#if DEBUG
-//            LoggingService.LogInfo("XcodeProjectTracker::Project_FileRemovedFromProject " + e.ProjectFile);
-#endif
-        }
-
+		}
+		
 		private bool Enabled
 		{
 			get
