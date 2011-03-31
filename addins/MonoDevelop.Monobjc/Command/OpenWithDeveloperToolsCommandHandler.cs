@@ -19,6 +19,7 @@ using System;
 using System.Text;
 using Monobjc.Tools.Utilities;
 using MonoDevelop.Components.Commands;
+using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
@@ -69,12 +70,11 @@ namespace MonoDevelop.Monobjc
 			switch (xcodeVersion) {
 			case 320:
 				program += "/Application/Interface Builder.app";
-				target = file.FilePath.ToAbsolute ();
+				target = file.FilePath.FullPath;
 				break;
 			case 400:
 				program += "/Application/Xcode.app";
 				// TODO: Get the surrogate project file
-				MonobjcProject project = file.Project as MonobjcProject;
 				target = null;
 				break;
 			default:
@@ -91,8 +91,8 @@ namespace MonoDevelop.Monobjc
 			arguments.Append ("\"");
 			
 			// Launch the developer tools
-			ProcessHelper helper = new ProcessHelper ("open", arguments.ToString ());
-			helper.Execute ();
+			//ProcessHelper helper = new ProcessHelper ("open", arguments.ToString ());
+			//helper.Execute ();
 		}
 	}
 }

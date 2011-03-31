@@ -19,6 +19,9 @@ namespace MonoDevelop.Monobjc.Tracking
             this.Project.FilePropertyChangedInProject += this.Project_FilePropertyChangedInProject;
             this.Project.FileRemovedFromProject += this.Project_FileRemovedFromProject;
             this.Project.FileRenamedInProject += this.Project_FileRenamedInProject;
+			
+			this.Project.ReferenceAddedToProject += this.Project_ReferenceAddedToProject;
+			this.Project.ReferenceRemovedFromProject += this.Project_ReferenceRemovedFromProject;
         }
 
         /// <summary>
@@ -32,6 +35,9 @@ namespace MonoDevelop.Monobjc.Tracking
             this.Project.FilePropertyChangedInProject -= this.Project_FilePropertyChangedInProject;
             this.Project.FileRemovedFromProject -= this.Project_FileRemovedFromProject;
             this.Project.FileRenamedInProject -= this.Project_FileRenamedInProject;
+			
+			this.Project.ReferenceAddedToProject -= this.Project_ReferenceAddedToProject;
+			this.Project.ReferenceRemovedFromProject -= this.Project_ReferenceRemovedFromProject;
         }
 
         /// <summary>
@@ -82,6 +88,24 @@ namespace MonoDevelop.Monobjc.Tracking
         /// <param name="sender">The source of the event.</param>
         /// <param name="e">The <see cref="MonoDevelop.Projects.ProjectFileRenamedEventArgs"/> instance containing the event data.</param>
         protected virtual void Project_FileRenamedInProject(object sender, Projects.ProjectFileRenamedEventArgs e)
+        {
+        }
+		
+        /// <summary>
+        /// Handles the ReferenceAddedToProject event of the Project control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MonoDevelop.Projects.ProjectReferenceEventArgs"/> instance containing the event data.</param>
+        protected virtual void Project_ReferenceAddedToProject (object sender, Projects.ProjectReferenceEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Handles the ReferenceRemovedFromProject event of the Project control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MonoDevelop.Projects.ProjectReferenceEventArgs"/> instance containing the event data.</param>
+        protected virtual void Project_ReferenceRemovedFromProject (object sender, Projects.ProjectReferenceEventArgs e)
         {
         }
     }
