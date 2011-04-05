@@ -21,11 +21,15 @@ using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
+using Monobjc.Tools.Xcode;
+using System.Collections.Generic;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
     public class XcodeProjectTracker : ProjectTracker
     {
+		private XcodeProject xcodeProject;
+		
         /// <summary>
         /// Initializes a new instance of the <see cref="XcodeProjectTracker"/> class.
         /// </summary>
@@ -33,7 +37,6 @@ namespace MonoDevelop.Monobjc.Tracking
         public XcodeProjectTracker(MonobjcProject project) : base(project)
         {
             PropertyService.PropertyChanged += this.PropertyService_PropertyChanged;
-			ProjectDomService.TypesUpdated += this.ProjectDomService_TypesUpdated;
         }
 		
         /// <summary>
@@ -42,13 +45,36 @@ namespace MonoDevelop.Monobjc.Tracking
         public override void Dispose()
         {
             PropertyService.PropertyChanged -= this.PropertyService_PropertyChanged;
-			ProjectDomService.TypesUpdated -= this.ProjectDomService_TypesUpdated;
 			base.Dispose();
         }
 		
 		internal void GenerateSurrogateProject()
 		{
-			// 1. Collect references information
+			LoggingService.LogInfo("GenerateSurrogateProject");
+			
+			// Collect references information
+			ProjectReferenceCollection references = this.Project.References;
+			
+			//if (this.xcodeProject == null) {
+	            this.xcodeProject = new XcodeProject(this.Project.BaseDirectory, this.Project.Name);
+				
+				//PBXProject pbxProject = this.xcodeProject.Document.Project;
+				//pbxProject.ProjectDirPath = ".";
+			//}
+			
+			this.xcodeProject.AddGroup("Classes");
+			IList<String> headerFiles = HeaderGenerator.GenerateHeaders(this.Project, this.Project.BaseDirectory);
+			foreach(String headerFile in headerFiles) {
+				this.xcodeProject.AddFile("Classes", headerFile);
+			}
+			
+            XCBuildConfiguration buildConfiguration1 = new XCBuildConfiguration("Release");
+            buildConfiguration1.BuildSettings.Add("ARCHS", "$(ARCHS_STANDARD_32_64_BIT)");
+            buildConfiguration1.BuildSettings.Add("MACOSX_DEPLOYMENT_TARGET", "10.6");
+            buildConfiguration1.BuildSettings.Add("SDKROOT", "macosx");
+            xcodeProject.AddBuildConfiguration(buildConfiguration1, null);
+			
+			xcodeProject.Save();
 			
 			// 2. For each Monobjc project, ask for surrogate project generation
 			
@@ -60,29 +86,31 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			// 6. Return the path to the surrogate project
 			
-			var references = this.Project.References;
-			foreach(var reference in references)
-			{
-				if (reference.ReferenceType == ReferenceType.Project) 
-				{
-					// If this is a Monobjc project, ask for surrogate project generation
-					
-				}
-			}
+		}
+		
+		protected override void HandleFileAddedToProject (object sender, ProjectFileEventArgs e)
+		{
+			this.GenerateSurrogateProject();
+		}
+		
+		protected override void HandleFileChangedInProject (object sender, ProjectFileEventArgs e)
+		{
+			this.GenerateSurrogateProject();
+		}
+		
+		protected override void HandleFileRemovedFromProject (object sender, ProjectFileEventArgs e)
+		{
+			this.GenerateSurrogateProject();
 		}
 		
 		protected override void HandleReferenceAddedToProject (object sender, ProjectReferenceEventArgs e)
 		{
-#if DEBUG
-			LoggingService.LogInfo("XcodeProjectTracker::HandleReferenceAddedToProject " + e.ProjectReference.ReferenceType);
-#endif
+			this.GenerateSurrogateProject();
 		}
 		
 		protected override void HandleReferenceRemovedFromProject (object sender, ProjectReferenceEventArgs e)
 		{
-#if DEBUG
-			LoggingService.LogInfo("XcodeProjectTracker::HandleReferenceRemovedFromProject " + e.ProjectReference.ReferenceType);
-#endif
+			this.GenerateSurrogateProject();
 		}
 		
 		private bool Enabled
@@ -106,35 +134,6 @@ namespace MonoDevelop.Monobjc.Tracking
                 default:
                     break;
             }
-        }
-		
-        private void ProjectDomService_TypesUpdated(object sender, TypeUpdateInformationEventArgs e)
-        {
-			if (e.Project != this.Project)
-			{
-				return;
-			}
-#if DEBUG
-//            LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated");
-#endif
-			foreach (IType cls in e.TypeUpdateInformation.Removed) 
-			{
-#if DEBUG
-//				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Removed " + cls);
-#endif
-			}
-			foreach (IType cls in e.TypeUpdateInformation.Modified) 
-			{
-#if DEBUG
-//				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Modified " + cls);
-#endif
-			}
-			foreach (IType cls in e.TypeUpdateInformation.Added) 
-			{
-#if DEBUG
-//				LoggingService.LogInfo("XcodeProjectTracker::ProjectDomService_TypesUpdated - Added " + cls);
-#endif
-			}
         }
     }
 }

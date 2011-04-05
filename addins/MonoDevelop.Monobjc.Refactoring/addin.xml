@@ -6,7 +6,7 @@
        description="Monobjc Refactoring"
        copyright="GPL"
        category="IDE extensions"
-       version="2.4.1374.6">
+       version="2.4.1375.17">
 	
   <Runtime>
     <!-- Assemblies -->

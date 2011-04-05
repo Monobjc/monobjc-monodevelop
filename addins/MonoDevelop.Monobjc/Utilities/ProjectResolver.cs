@@ -193,7 +193,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		private IEnumerable<IType> GetMatchingTypes (Func<ProjectDom, IEnumerable<IType>> matcher, bool projectOnly)
 		{
 			// Search only in the project dom
-			if (projectOnly) {
+			if (projectOnly && this.projectDom != null) {
 				return matcher (this.projectDom);
 			}
 			

@@ -23,16 +23,18 @@ using System.Text;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
-	public class HeaderGenerator
+	public static class HeaderGenerator
 	{
 		public static IList<String> GenerateHeaders (MonobjcProject project, String folder)
 		{
 			IList<String> result = new List<String> ();
 			ProjectResolver resolver = new ProjectResolver (project);
 			IEnumerable<IType> types = resolver.GetAllClasses (true);
+			LoggingService.LogInfo("GetAllClasses " + types.Count());
 			foreach (IType type in types) {
 				String file = GenerateHeader (project, type, folder);
 				result.Add (file);
@@ -42,17 +44,27 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		public static String GenerateHeader (MonobjcProject project, IType type, String folder)
 		{
+			LoggingService.LogInfo("GenerateHeader " + type);
+			
 			String typeName = GetTypeName (type);
 			String baseTypeName = GetTypeName (type.BaseType);
-			DomReturnType voidType = new DomReturnType("void");
+			DomReturnType voidType = new DomReturnType("System.Void");
+			
+			LoggingService.LogInfo("Collecting " + type);
 			
 			// Collect outlets/actions
+			LoggingService.LogInfo("properties=" + type.Properties);
+			LoggingService.LogInfo("methods=" + type.Methods);
+			
 			IEnumerable<IProperty> properties = (from p in type.Properties
 				where p.IsPublic && AttributeHelper.HasAttribute (p, AttributeHelper.OBJECTIVE_C_IVAR)
 				select p);
+			LoggingService.LogInfo("properties=" + properties.Count());
+			
 			IEnumerable<IMethod> methods = (from m in type.Methods
 				where m.IsPublic && !m.IsStatic && m.ReturnType == voidType && m.Parameters.Count == 1 && AttributeHelper.HasAttribute (m, AttributeHelper.OBJECTIVE_C_MESSAGE)
 				select m);
+			LoggingService.LogInfo("methods=" + properties.Count());
 			
 			// Create the filename
 			String file = Path.Combine (folder, typeName + ".h");
@@ -74,10 +86,10 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			// Add user-type imports (collect property types and methods parameters/return type)
 			List<String> typesNames = new List<String>();
-			typesNames.AddRange(properties.Select(p => GetTypeName(p.ReturnType)));
-			typesNames.AddRange(methods.Select(m => GetTypeName(m.ReturnType)));
-			typesNames.AddRange(methods.SelectMany(m => m.Parameters).Select(p => GetTypeName(p.ReturnType)));
-			typesNames.Sort();
+			//typesNames.AddRange(properties.Select(p => GetTypeName(p.ReturnType)));
+			//typesNames.AddRange(methods.Select(m => GetTypeName(m.ReturnType)));
+			//typesNames.AddRange(methods.SelectMany(m => m.Parameters).Select(p => GetTypeName(p.ReturnType)));
+			//typesNames.Sort();
 			foreach(String name in typesNames.Distinct()){
 				builder.AppendFormat ("#import \"{0}.h\"", name);
 				builder.AppendLine();
@@ -104,6 +116,8 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			builder.AppendLine ("@end");
 			
+			LoggingService.LogInfo("File " + file);
+			Directory.CreateDirectory(Path.GetDirectoryName(file));
 			File.WriteAllText(file, builder.ToString());
 			
 			return file;
@@ -111,6 +125,8 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		private static String GetTypeName (IType type)
 		{
+			LoggingService.LogInfo("GetTypeName1 " + type);
+			
 			var value = AttributeHelper.GetAttributeValue (type, AttributeHelper.OBJECTIVE_C_CLASS);
 			if (value == null) {
 				value = AttributeHelper.GetAttributeValue (type, AttributeHelper.OBJECTIVE_C_PROTOCOL);
@@ -120,6 +136,8 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		private static String GetTypeName (IReturnType type)
 		{
+			LoggingService.LogInfo("GetTypeName2 " + type);
+			
 			var value = AttributeHelper.GetAttributeValue (type.Type, AttributeHelper.OBJECTIVE_C_CLASS);
 			if (value == null) {
 				value = AttributeHelper.GetAttributeValue (type.Type, AttributeHelper.OBJECTIVE_C_PROTOCOL);
