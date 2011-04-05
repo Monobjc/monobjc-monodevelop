@@ -34,8 +34,8 @@ namespace MonoDevelop.Monobjc.Tracking
 	{
         public const String APPLICATION_TITLE = "Xcode/Interface Builder";
         public const String DEVELOPER_TOOLS = "MonoDevelop.Monobjc.DeveloperTools";
-		public const String XCODE_APPLICATION = "Xcode.app";
-		public const String INTERFACE_BUILDER_APPLICATION = "Interface Builder.app";
+		public const String XCODE_APPLICATION = "Applications/Xcode.app";
+		public const String INTERFACE_BUILDER_APPLICATION = "Applications/Interface Builder.app";
 
 		private static Version developerToolsVersion;
 		

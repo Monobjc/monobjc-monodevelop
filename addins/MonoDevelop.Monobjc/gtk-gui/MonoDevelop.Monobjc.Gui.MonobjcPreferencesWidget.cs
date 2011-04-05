@@ -6,15 +6,13 @@ namespace MonoDevelop.Monobjc.Gui
 	{
 		private global::Gtk.Table table1;
 
-		private global::Gtk.ComboBox comboboxXcodeVersion;
-
 		private global::Gtk.FileChooserButton filechooserbuttonDeveloperTools;
 
 		private global::Gtk.Label labelDeveloperTools;
 
-		private global::Gtk.Label labelMainNib;
+		private global::Gtk.Label labelTitle;
 
-		private global::Gtk.Label labelXcodeVersion;
+		private global::Gtk.Label labelVersion;
 
 		protected virtual void Build ()
 		{
@@ -28,58 +26,49 @@ namespace MonoDevelop.Monobjc.Gui
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
-			this.comboboxXcodeVersion = global::Gtk.ComboBox.NewText ();
-			this.comboboxXcodeVersion.Name = "comboboxXcodeVersion";
-			this.table1.Add (this.comboboxXcodeVersion);
-			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1[this.comboboxXcodeVersion]));
-			w1.TopAttach = ((uint)(2));
-			w1.BottomAttach = ((uint)(3));
-			w1.LeftAttach = ((uint)(1));
-			w1.RightAttach = ((uint)(2));
-			w1.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
 			this.filechooserbuttonDeveloperTools = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select Developer Tools Folder"), ((global::Gtk.FileChooserAction)(2)));
 			this.filechooserbuttonDeveloperTools.Name = "filechooserbuttonDeveloperTools";
 			this.table1.Add (this.filechooserbuttonDeveloperTools);
-			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1[this.filechooserbuttonDeveloperTools]));
-			w2.TopAttach = ((uint)(1));
-			w2.BottomAttach = ((uint)(2));
-			w2.LeftAttach = ((uint)(1));
-			w2.RightAttach = ((uint)(2));
-			w2.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1[this.filechooserbuttonDeveloperTools]));
+			w1.TopAttach = ((uint)(1));
+			w1.BottomAttach = ((uint)(2));
+			w1.LeftAttach = ((uint)(1));
+			w1.RightAttach = ((uint)(2));
+			w1.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.labelDeveloperTools = new global::Gtk.Label ();
 			this.labelDeveloperTools.Name = "labelDeveloperTools";
 			this.labelDeveloperTools.Xalign = 1f;
 			this.labelDeveloperTools.LabelProp = global::Mono.Unix.Catalog.GetString ("Developer Tools:");
 			this.table1.Add (this.labelDeveloperTools);
-			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1[this.labelDeveloperTools]));
-			w3.TopAttach = ((uint)(1));
-			w3.BottomAttach = ((uint)(2));
+			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1[this.labelDeveloperTools]));
+			w2.TopAttach = ((uint)(1));
+			w2.BottomAttach = ((uint)(2));
+			w2.XOptions = ((global::Gtk.AttachOptions)(4));
+			w2.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.labelTitle = new global::Gtk.Label ();
+			this.labelTitle.Name = "labelTitle";
+			this.labelTitle.Xalign = 0f;
+			this.labelTitle.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Developer Tools Integration</b>");
+			this.labelTitle.UseMarkup = true;
+			this.table1.Add (this.labelTitle);
+			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1[this.labelTitle]));
+			w3.RightAttach = ((uint)(2));
 			w3.XOptions = ((global::Gtk.AttachOptions)(4));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.labelMainNib = new global::Gtk.Label ();
-			this.labelMainNib.Name = "labelMainNib";
-			this.labelMainNib.Xalign = 0f;
-			this.labelMainNib.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Developer Tools Integration</b>");
-			this.labelMainNib.UseMarkup = true;
-			this.table1.Add (this.labelMainNib);
-			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1[this.labelMainNib]));
+			this.labelVersion = new global::Gtk.Label ();
+			this.labelVersion.Name = "labelVersion";
+			this.labelVersion.Xalign = 0f;
+			this.labelVersion.LabelProp = global::Mono.Unix.Catalog.GetString ("Xcode 1.2.3 detected");
+			this.table1.Add (this.labelVersion);
+			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1[this.labelVersion]));
+			w4.TopAttach = ((uint)(2));
+			w4.BottomAttach = ((uint)(3));
 			w4.RightAttach = ((uint)(2));
 			w4.XOptions = ((global::Gtk.AttachOptions)(4));
 			w4.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.labelXcodeVersion = new global::Gtk.Label ();
-			this.labelXcodeVersion.Name = "labelXcodeVersion";
-			this.labelXcodeVersion.Xalign = 1f;
-			this.labelXcodeVersion.LabelProp = global::Mono.Unix.Catalog.GetString ("Xcode Version:");
-			this.table1.Add (this.labelXcodeVersion);
-			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1[this.labelXcodeVersion]));
-			w5.TopAttach = ((uint)(2));
-			w5.BottomAttach = ((uint)(3));
-			w5.XOptions = ((global::Gtk.AttachOptions)(4));
-			w5.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.Add (this.table1);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();

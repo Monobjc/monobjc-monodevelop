@@ -6,7 +6,7 @@
        description="Development of Mac OS X applications using Monobjc."
        copyright="GPL"
        category="Mac Development"
-       version="2.4.9999.0">
+       version="2.4.1374.6">
 
   <Runtime>
     <!-- Assemblies -->
@@ -92,14 +92,14 @@
 
   <!-- ExecutionHandlers -->
   <Extension path="/MonoDevelop/Core/ExecutionHandlers">
-    <ExecutionHandler id="Monobjc"
+    <ExecutionHandler id="MonobjcExecutionHandler"
                       class="MonoDevelop.Monobjc.MonobjcExecutionHandler"/>
   </Extension>
 
   <!-- Commands -->
   <Extension path="/MonoDevelop/Ide/Commands/Project">
-    <Command id="MonoDevelop.Monobjc.Command.ExportBundle"
-             defaultHandler="MonoDevelop.Monobjc.Command.ExportBundleCommandHandler"
+    <Command id="MonoDevelop.Monobjc.Commands.ExportBundle"
+             defaultHandler="MonoDevelop.Monobjc.Commands.ExportBundleCommandHandler"
              _label="Create Monobjc Bundle"
              _description="Export a Monobjc application bundle"/>
   </Extension>
@@ -113,7 +113,7 @@
   <!-- Project Context Menu -->
   <Extension path="/MonoDevelop/Ide/ContextMenu/ProjectPad/Tools">
     <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
-      <CommandItem id="MonoDevelop.Monobjc.Command.ExportBundle"
+      <CommandItem id="MonoDevelop.Monobjc.Commands.ExportBundle"
                    insertafter="MonoDevelop.Ide.Commands.ProjectCommands.ExportProject"/>
     </Condition>
   </Extension>

@@ -26,10 +26,6 @@ namespace MonoDevelop.Monobjc.Tracking
 {
     public class XcodeProjectTracker : ProjectTracker
     {
-        // TODO: Move constant
-        public const String DEVELOPER_TOOLS_ROOT = "MonoDevelop.Monobjc.DeveloperToolsRoot";
-        public const String XCODE_VERSION = "MonoDevelop.Monobjc.XcodeVersion";
-
         /// <summary>
         /// Initializes a new instance of the <see cref="XcodeProjectTracker"/> class.
         /// </summary>
@@ -102,8 +98,7 @@ namespace MonoDevelop.Monobjc.Tracking
         {
             switch (e.Key)
             {
-                case DEVELOPER_TOOLS_ROOT:
-                case XCODE_VERSION:
+                case DeveloperToolsDesktopApplication.DEVELOPER_TOOLS:
 #if DEBUG
 		            LoggingService.LogInfo("XcodeProjectTracker::PropertyService_PropertyChanged " + e.Key);
 #endif

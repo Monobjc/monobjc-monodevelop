@@ -22,78 +22,76 @@ using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
-    /// <summary>
-    ///   Helper class for attribute.
-    /// </summary>
-    public static class AttributeHelper
-    {
-        public const String OBJECTIVE_C_CLASS = "Monobjc.ObjectiveCClassAttribute";
+	/// <summary>
+	///   Helper class for attribute.
+	/// </summary>
+	public static class AttributeHelper
+	{
+		public const String OBJECTIVE_C_CLASS = "Monobjc.ObjectiveCClassAttribute";
 
-        public const String OBJECTIVE_C_PROTOCOL = "Monobjc.ObjectiveCProtocolAttribute";
+		public const String OBJECTIVE_C_PROTOCOL = "Monobjc.ObjectiveCProtocolAttribute";
 
-        public const String OBJECTIVE_C_MESSAGE = "Monobjc.ObjectiveCMessageAttribute";
+		public const String OBJECTIVE_C_MESSAGE = "Monobjc.ObjectiveCMessageAttribute";
 
-        public const String OBJECTIVE_C_IVAR = "Monobjc.ObjectiveCIVarAttribute";
+		public const String OBJECTIVE_C_IVAR = "Monobjc.ObjectiveCIVarAttribute";
 
-        /// <summary>
-        ///   Returns the attribute with the given full name if it exists.
-        /// </summary>
-        /// <param name = "member">
-        ///   A <see cref = "IMember" /> where the attribute is
-        /// </param>
-        /// <param name = "attributeFullName">
-        ///   The attribute fullname.
-        /// </param>
-        /// <returns>
-        ///   A <see cref = "IAttribute" /> if it is found; <code>null</code> otherwise.
-        /// </returns>
-        public static IAttribute GetAttribute(IMember member, String attributeFullName)
-        {
-            return member.Attributes.FirstOrDefault(a => String.Equals(a.AttributeType.FullName, attributeFullName));
-        }
+		/// <summary>
+		///   Returns the attribute with the given full name if it exists.
+		/// </summary>
+		/// <param name = "member">
+		///   A <see cref = "IMember" /> where the attribute is
+		/// </param>
+		/// <param name = "attributeFullName">
+		///   The attribute fullname.
+		/// </param>
+		/// <returns>
+		///   A <see cref = "IAttribute" /> if it is found; <code>null</code> otherwise.
+		/// </returns>
+		public static IAttribute GetAttribute (IMember member, String attributeFullName)
+		{
+			return member.Attributes.FirstOrDefault (a => String.Equals (a.AttributeType.FullName, attributeFullName));
+		}
 
-        /// <summary>
-        ///   Checks if the attribute with the given full name exists.
-        /// </summary>
-        /// <param name = "member">
-        ///   A <see cref = "IMember" /> where the attribute is
-        /// </param>
-        /// <param name = "attributeFullName">
-        ///   The attribute fullname.
-        /// </param>
-        /// <returns>
-        ///   <code>true</code> if it is found; <code>false</code> otherwise.
-        /// </returns>
-        public static bool HasAttribute(IMember member, String attributeFullName)
-        {
-            return member.Attributes.Any(a => String.Equals(a.AttributeType.FullName, attributeFullName));
-        }
+		/// <summary>
+		///   Checks if the attribute with the given full name exists.
+		/// </summary>
+		/// <param name = "member">
+		///   A <see cref = "IMember" /> where the attribute is
+		/// </param>
+		/// <param name = "attributeFullName">
+		///   The attribute fullname.
+		/// </param>
+		/// <returns>
+		///   <code>true</code> if it is found; <code>false</code> otherwise.
+		/// </returns>
+		public static bool HasAttribute (IMember member, String attributeFullName)
+		{
+			return member.Attributes.Any (a => String.Equals (a.AttributeType.FullName, attributeFullName));
+		}
 
-        /// <summary>
-        ///   Returns the value of the attribute with the given full name if it exists.
-        /// </summary>
-        /// <param name = "member">
-        ///   A <see cref = "IMember" />
-        /// </param>
-        /// <param name = "attributeFullName">
-        ///   The attribute fullname.
-        /// </param>
-        /// <returns>
-        ///   The value if the attribute is found; <code>null</code> otherwise.
-        /// </returns>
-        public static String GetAttributeValue(IMember member, String attributeFullName)
-        {
-            IAttribute attribute = GetAttribute(member, attributeFullName);
-            if (attribute == null)
-            {
-                return null;
-            }
-            CodePrimitiveExpression expression = attribute.PositionalArguments.FirstOrDefault(pa => typeof (CodePrimitiveExpression).IsAssignableFrom(pa.GetType())) as CodePrimitiveExpression;
-            if (expression == null)
-            {
-                return null;
-            }
-            return expression.Value.ToString();
-        }
-    }
+		/// <summary>
+		///   Returns the value of the attribute with the given full name if it exists.
+		/// </summary>
+		/// <param name = "member">
+		///   A <see cref = "IMember" />
+		/// </param>
+		/// <param name = "attributeFullName">
+		///   The attribute fullname.
+		/// </param>
+		/// <returns>
+		///   The value if the attribute is found; <code>null</code> otherwise.
+		/// </returns>
+		public static String GetAttributeValue (IMember member, String attributeFullName)
+		{
+			IAttribute attribute = GetAttribute (member, attributeFullName);
+			if (attribute == null) {
+				return null;
+			}
+			CodePrimitiveExpression expression = attribute.PositionalArguments.FirstOrDefault (pa => typeof(CodePrimitiveExpression).IsAssignableFrom (pa.GetType ())) as CodePrimitiveExpression;
+			if (expression == null) {
+				return null;
+			}
+			return expression.Value.ToString ();
+		}
+	}
 }

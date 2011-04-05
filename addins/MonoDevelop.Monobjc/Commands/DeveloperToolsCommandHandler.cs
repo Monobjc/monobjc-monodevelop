@@ -26,7 +26,7 @@ using MonoDevelop.Monobjc.Tracking;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 
-namespace MonoDevelop.Monobjc
+namespace MonoDevelop.Monobjc.Commands
 {
 	/// <summary>
 	///   Command handler for opening XIB file with Developer Tools.

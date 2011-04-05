@@ -19,7 +19,7 @@ using MonoDevelop.Components.Commands;
 using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Gui;
 
-namespace MonoDevelop.Monobjc.Command
+namespace MonoDevelop.Monobjc.Commands
 {
     /// <summary>
     ///   Command handler for the export operation.

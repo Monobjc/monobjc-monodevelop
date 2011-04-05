@@ -24,6 +24,7 @@ using Monobjc.Tools.Utilities;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Ide;
 using MonoDevelop.Core;
+using MonoDevelop.Monobjc.Tracking;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -39,8 +40,7 @@ namespace MonoDevelop.Monobjc.Gui
         public MonobjcPreferencesWidget()
 		{
 			this.Build ();
-
-            this.comboboxXcodeVersion.Model = new ListStore(typeof(String), typeof(int));
+			this.filechooserbuttonDeveloperTools.SelectionChanged+= this.HandleFilechooserbuttonDeveloperToolshandleSelectionChanged;
 		}
 
 		/// <summary>
@@ -49,15 +49,11 @@ namespace MonoDevelop.Monobjc.Gui
 		/// <param name = "project">The project.</param>
 		public void Load ()
 		{
-            // Set up the SDKs
-            ListStore versionStore = (ListStore)this.comboboxXcodeVersion.Model;
-            versionStore.Clear();
-            versionStore.AppendValues("Xcode 3.2", 320);
-            versionStore.AppendValues("Xcode 4.0", 400);
-			
-			// Load values
-			this.filechooserbuttonDeveloperTools.SetFilename(PropertyService.Get<String>(Tracking.XcodeProjectTracker.DEVELOPER_TOOLS_ROOT, "/Developer"));
-			this.XcodeVersion = PropertyService.Get<int>(Tracking.XcodeProjectTracker.XCODE_VERSION, 320);
+			// Load value
+			String folder = DeveloperToolsDesktopApplication.DeveloperToolsFolder;
+			this.filechooserbuttonDeveloperTools.SetCurrentFolder(folder);
+			this.filechooserbuttonDeveloperTools.SetFilename(folder);
+			this.HandleFilechooserbuttonDeveloperToolshandleSelectionChanged(this, EventArgs.Empty);
         }
 
 		/// <summary>
@@ -67,33 +63,17 @@ namespace MonoDevelop.Monobjc.Gui
 		public void Save ()
 		{
 			// Save value
-			PropertyService.Set(Tracking.XcodeProjectTracker.DEVELOPER_TOOLS_ROOT, this.filechooserbuttonDeveloperTools.Filename);
-			PropertyService.Set(Tracking.XcodeProjectTracker.XCODE_VERSION, this.XcodeVersion);
+			DeveloperToolsDesktopApplication.DeveloperToolsFolder = this.filechooserbuttonDeveloperTools.Filename;
 		}
-		
-		private int XcodeVersion {
-			get {
-				TreeIter iter;
-				if (this.comboboxXcodeVersion.GetActiveIter (out iter)) {
-					ListStore listStore = (ListStore)this.comboboxXcodeVersion.Model;
-					return (int)listStore.GetValue (iter, 1);
-				}
-				throw new InvalidOperationException ("Unrecognized Target Version");
-			}
-			set {
-				ListStore store = (ListStore)this.comboboxXcodeVersion.Model;
-				TreeIter iter;
-				store.GetIterFirst (out iter);
-				do {
-					if ((int)store.GetValue (iter, 1) == value) {
-						this.comboboxXcodeVersion.SetActiveIter (iter);
-						return;
-					}
-					if (!store.IterNext (ref iter)) {
-						break;
-					}
-				} while (true);
-				this.comboboxXcodeVersion.Active = 0;
+
+		private void HandleFilechooserbuttonDeveloperToolshandleSelectionChanged (object sender, EventArgs e)
+		{
+			DeveloperToolsDesktopApplication.DeveloperToolsFolder = this.filechooserbuttonDeveloperTools.Filename;
+			Version version  = DeveloperToolsDesktopApplication.DeveloperToolsVersion;
+			if (version == null) {
+				this.labelVersion.Text = GettextCatalog.GetString("No Developer Tools found");
+			} else {
+				this.labelVersion.Text = GettextCatalog.GetString("Developer Tools {0} found", version);
 			}
 		}
 	}
