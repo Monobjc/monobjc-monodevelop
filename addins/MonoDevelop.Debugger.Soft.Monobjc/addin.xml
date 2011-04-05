@@ -6,7 +6,7 @@
        description="Mono Soft Debugger for Monobjc"
        copyright="GPL"
        category="Debugging"
-       version="2.4.1374.0">
+       version="2.4.9999.0">
 
   <Runtime>
     <!-- Assemblies -->
