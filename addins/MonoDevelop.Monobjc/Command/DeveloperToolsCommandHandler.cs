@@ -21,6 +21,8 @@ using Monobjc.Tools.Utilities;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
+using MonoDevelop.Ide.Desktop;
+using MonoDevelop.Monobjc.Tracking;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 
@@ -29,7 +31,7 @@ namespace MonoDevelop.Monobjc
 	/// <summary>
 	///   Command handler for opening XIB file with Developer Tools.
 	/// </summary>
-	public class OpenWithDeveloperToolsCommandHandler : CommandHandler
+	public class DeveloperToolsCommandHandler : CommandHandler
 	{
 		/// <summary>
 		///   Updates the command.
@@ -52,47 +54,22 @@ namespace MonoDevelop.Monobjc
 		/// <param name = "dataItem">The data item.</param>
 		protected override void Run (object dataItem)
 		{
+			// Make sure the file is valid
 			ProjectFile file = IdeApp.ProjectOperations.CurrentSelectedItem as ProjectFile;
 			if (file == null || !BuildHelper.IsXIBFile (file)) {
 				return;
 			}
 			
+			// Make sure the project is valid
 			MonobjcProject project = file.Project as MonobjcProject;
 			if (project == null) {
 				return;
 			}
 			
-			// Retrieve the configuration
-			String program = PropertyService.Get<String> (Tracking.XcodeProjectTracker.DEVELOPER_TOOLS_ROOT, "/Developer");
-			int xcodeVersion = PropertyService.Get<int> (Tracking.XcodeProjectTracker.XCODE_VERSION, 320);
-			String target;
-			
-			switch (xcodeVersion) {
-			case 320:
-				program += "/Application/Interface Builder.app";
-				target = file.FilePath.FullPath;
-				break;
-			case 400:
-				program += "/Application/Xcode.app";
-				// TODO: Get the surrogate project file
-				target = null;
-				break;
-			default:
-				return;
-			}
-			
-			// Build the arguments
-			StringBuilder arguments = new StringBuilder ();
-			arguments.Append ("-a");
-			arguments.Append (" \"");
-			arguments.Append (program);
-			arguments.Append ("\" \"");
-			arguments.Append (target);
-			arguments.Append ("\"");
-			
-			// Launch the developer tools
-			//ProcessHelper helper = new ProcessHelper ("open", arguments.ToString ());
-			//helper.Execute ();
+			// Launch the application
+			DesktopApplication application = DeveloperToolsDesktopApplication.GetDesktopApplication(project);
+			String[] files = DeveloperToolsDesktopApplication.GetFilesToOpen(project, file.FilePath);
+			application.Launch(files);
 		}
 	}
 }

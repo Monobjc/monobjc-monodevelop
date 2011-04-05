@@ -28,8 +28,9 @@ namespace MonoDevelop.Monobjc.Utilities
     /// </summary>
     public class ProjectResolver
     {
-        private const String OBJECTIVECCLASSATTRIBUTE = "Monobjc.ObjectiveCClassAttribute";
-        private const String OBJECTIVECPROTOCOLATTRIBUTE = "Monobjc.ObjectiveCProtocolAttribute";
+		// TODO: Use constants from AttributeHelper
+        public const String OBJECTIVECCLASSATTRIBUTE = "Monobjc.ObjectiveCClassAttribute";
+        public const String OBJECTIVECPROTOCOLATTRIBUTE = "Monobjc.ObjectiveCProtocolAttribute";
 
         private ProjectDom projectDom;
         private List<ProjectDom> projectDoms;

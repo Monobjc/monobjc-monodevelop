@@ -144,11 +144,15 @@
         </items>
       </in>
       <do>
-        <copy file="${filename}" tofile="${directory::get-parent-directory(filename)}/${path::get-file-name-without-extension(filename)}" overwrite="true">
+	    <property name="addin.xml" value="${directory::get-parent-directory(filename)}/${path::get-file-name-without-extension(filename)}"/>
+	    <loadfile property="addin.specific" file="${addin.xml}.${md.version}" failonerror="false"/>
+        <property name="addin.specific" value=" " unless="${property::exists('addin.specific')}"/>
+        <copy file="${filename}" tofile="${addin.xml}" overwrite="true">
           <filterchain>
             <replacetokens>
               <token key="MD_VERSION" value="${md.version}" />
               <token key="ADDIN_VERSION" value="${build.version}.${build.number}" />
+              <token key="ADDIN_SPECIFIC" value="${addin.specific}" />
             </replacetokens>
           </filterchain>
         </copy>

@@ -31,6 +31,116 @@
         <Reference type="Gac" refto="Monobjc.AppKit, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" SpecificVersion="false" />
       </References>
       <Files>
+          <FileTemplateReference TemplateID="MonobjcFileInfoPListDocument" />
+	      <File name="Program.cs">
+<![CDATA[using System;
+using Monobjc;
+using Monobjc.AppKit;
+using Monobjc.Foundation;
+
+namespace ${Namespace}
+{
+    internal class Program
+    {
+        private static void Main(String[] args)
+        {
+			#region --- Monobjc Generated Code ---
+			//
+			// DO NOT ALTER OR REMOVE
+			//
+			ObjectiveCRuntime.LoadFramework("AppKit");
+			ObjectiveCRuntime.LoadFramework("Foundation");
+			#endregion
+			
+            ObjectiveCRuntime.Initialize();
+
+            NSApplication.Bootstrap();
+            NSApplication.LoadNib("MainMenu.nib");
+            NSApplication.RunApplication();
+        }
+    }
+}]]></File>
+	      <File name="AppDelegate.cs">
+<![CDATA[using System;
+using Monobjc;
+using Monobjc.AppKit;
+using Monobjc.Foundation;
+
+namespace ${Namespace}
+{
+    [ObjectiveCClass]
+	public partial class AppDelegate : NSObject, INSNibAwaking
+	{
+		public static readonly Class AppDelegateClass = Class.Get(typeof(AppDelegate));
+		
+		public AppDelegate () { }
+		
+        public AppDelegate(IntPtr nativePointer) : base(nativePointer) { }
+		
+        [ObjectiveCMessage("awakeFromNib")]
+        public void AwakeFromNib()
+        {
+            // Do anything you want here
+        }
+	}
+}]]></File>
+	      <File name="MyDocument.cs">
+<![CDATA[using System;
+using Monobjc;
+using Monobjc.AppKit;
+using Monobjc.Foundation;
+
+namespace ${Namespace}
+{
+    [ObjectiveCClass]
+	public partial class MyDocument : NSDocument
+	{
+		public static readonly Class MyDocumentClass = Class.Get(typeof(MyDocument));
+		
+		public MyDocument () { }
+		
+        public MyDocument(IntPtr nativePointer) : base(nativePointer) { }
+		
+		public override NSString WindowNibName
+		{
+		    [ObjectiveCMessage("windowNibName")]
+			get
+			{
+				return "MyDocument";
+			}
+		}
+		
+	    [ObjectiveCMessage("windowControllerDidLoadNib:")]
+		public override void WindowControllerDidLoadNib (NSWindowController windowController)
+		{
+			this.SendMessageSuper(MyDocumentClass, "windowControllerDidLoadNib:");
+		}
+		
+	    [ObjectiveCMessage("dataOfType:error:")]
+		public override NSData DataOfTypeError (NSString typeName, out NSError outError)
+		{
+		    // Insert code here to write your document to data of the specified type.
+			
+			//if (outError != null)
+			{
+				outError = NSError.ErrorWithDomainCodeUserInfo(NSError.NSOSStatusErrorDomain, -4, null);
+			}
+			return null;
+		}
+		
+	    [ObjectiveCMessage("readFromData:ofType:error:")]
+		public override bool ReadFromDataOfTypeError (NSData data, NSString typeName, out NSError outError)
+		{
+			// Insert code here to read your document from the given data of the specified type.
+			
+			//if (outError != null)
+			{
+				outError = NSError.ErrorWithDomainCodeUserInfo(NSError.NSOSStatusErrorDomain, -4, null);
+			}
+			return true;
+		}
+	}
+}]]></File>
 	      <File name="en.lproj/MainMenu.xib">
 <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
@@ -3779,116 +3889,6 @@
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
 </archive>]]></File>
-	      <File name="Program.cs">
-<![CDATA[using System;
-using Monobjc;
-using Monobjc.AppKit;
-using Monobjc.Foundation;
-
-namespace ${Namespace}
-{
-    internal class Program
-    {
-        private static void Main(String[] args)
-        {
-			#region --- Monobjc Generated Code ---
-			//
-			// DO NOT ALTER OR REMOVE
-			//
-			ObjectiveCRuntime.LoadFramework("AppKit");
-			ObjectiveCRuntime.LoadFramework("Foundation");
-			#endregion
-			
-            ObjectiveCRuntime.Initialize();
-
-            NSApplication.Bootstrap();
-            NSApplication.LoadNib("MainMenu.nib");
-            NSApplication.RunApplication();
-        }
-    }
-}]]></File>
-	      <File name="AppDelegate.cs">
-<![CDATA[using System;
-using Monobjc;
-using Monobjc.AppKit;
-using Monobjc.Foundation;
-
-namespace ${Namespace}
-{
-    [ObjectiveCClass]
-	public partial class AppDelegate : NSObject, INSNibAwaking
-	{
-		public static readonly Class AppDelegateClass = Class.Get(typeof(AppDelegate));
-		
-		public AppDelegate () { }
-		
-        public AppDelegate(IntPtr nativePointer) : base(nativePointer) { }
-		
-        [ObjectiveCMessage("awakeFromNib")]
-        public void AwakeFromNib()
-        {
-            // Do anything you want here
-        }
-	}
-}]]></File>
-	      <File name="MyDocument.cs">
-<![CDATA[using System;
-using Monobjc;
-using Monobjc.AppKit;
-using Monobjc.Foundation;
-
-namespace ${Namespace}
-{
-    [ObjectiveCClass]
-	public partial class MyDocument : NSDocument
-	{
-		public static readonly Class MyDocumentClass = Class.Get(typeof(MyDocument));
-		
-		public MyDocument () { }
-		
-        public MyDocument(IntPtr nativePointer) : base(nativePointer) { }
-		
-		public override NSString WindowNibName
-		{
-		    [ObjectiveCMessage("windowNibName")]
-			get
-			{
-				return "MyDocument";
-			}
-		}
-		
-	    [ObjectiveCMessage("windowControllerDidLoadNib:")]
-		public override void WindowControllerDidLoadNib (NSWindowController windowController)
-		{
-			this.SendMessageSuper(MyDocumentClass, "windowControllerDidLoadNib:");
-		}
-		
-	    [ObjectiveCMessage("dataOfType:error:")]
-		public override NSData DataOfTypeError (NSString typeName, out NSError outError)
-		{
-		    // Insert code here to write your document to data of the specified type.
-			
-			//if (outError != null)
-			{
-				outError = NSError.ErrorWithDomainCodeUserInfo(NSError.NSOSStatusErrorDomain, -4, null);
-			}
-			return null;
-		}
-		
-	    [ObjectiveCMessage("readFromData:ofType:error:")]
-		public override bool ReadFromDataOfTypeError (NSData data, NSString typeName, out NSError outError)
-		{
-			// Insert code here to read your document from the given data of the specified type.
-			
-			//if (outError != null)
-			{
-				outError = NSError.ErrorWithDomainCodeUserInfo(NSError.NSOSStatusErrorDomain, -4, null);
-			}
-			return true;
-		}
-	}
-}]]></File>
-          <FileTemplateReference TemplateID="MonobjcFileInfoPListDocument" />
       </Files>
     </Project>
   </Combine>

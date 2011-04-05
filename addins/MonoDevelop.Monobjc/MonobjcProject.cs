@@ -163,6 +163,9 @@ namespace MonoDevelop.Monobjc
         /// <returns>The execution command.</returns>
         protected override ExecutionCommand CreateExecutionCommand(ConfigurationSelector configSel, DotNetProjectConfiguration configuration)
         {
+#if DEBUG
+            LoggingService.LogInfo("MonobjcProject::CreateExecutionCommand");
+#endif
             MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) configuration;
 
             // Infer application name from configuration

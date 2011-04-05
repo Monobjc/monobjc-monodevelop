@@ -120,7 +120,11 @@
 
   <!-- General Options -->
   <Extension path = "/MonoDevelop/Ide/GlobalOptionsDialog/Preferences">
-    <Section id = "MonobjcGeneralOptions" _label = "Monobjc" fill="true" class="MonoDevelop.Monobjc.Gui.MonobjcPreferencesPanel" />
+    <Section id = "MonobjcGeneralOptions"
+             icon="md-monobjc"
+	         _label = "Monobjc"
+			 class="MonoDevelop.Monobjc.Gui.MonobjcPreferencesPanel"
+			 fill="true"/>
   </Extension>
 
   <!-- Project General Options -->
@@ -176,4 +180,6 @@
                          class="MonoDevelop.Monobjc.CodeGeneration.VBNetCodeBehindGenerator"/>
   </Extension>
 
+@ADDIN_SPECIFIC@
+  
 </Addin>

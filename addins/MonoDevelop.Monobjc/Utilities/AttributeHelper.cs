@@ -64,7 +64,7 @@ namespace MonoDevelop.Monobjc.Utilities
         /// <returns>
         ///   <code>true</code> if it is found; <code>false</code> otherwise.
         /// </returns>
-        public static bool HetAttribute(IMember member, String attributeFullName)
+        public static bool HasAttribute(IMember member, String attributeFullName)
         {
             return member.Attributes.Any(a => String.Equals(a.AttributeType.FullName, attributeFullName));
         }

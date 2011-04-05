@@ -31,6 +31,59 @@
         <Reference type="Gac" refto="Monobjc.AppKit, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" SpecificVersion="false" />
       </References>
       <Files>
+          <FileTemplateReference TemplateID="MonobjcFileInfoPList" />
+	      <File name="Program.cs">
+<![CDATA[using System;
+using Monobjc;
+using Monobjc.AppKit;
+using Monobjc.Foundation;
+
+namespace ${Namespace}
+{
+    internal class Program
+    {
+        private static void Main(String[] args)
+        {
+			#region --- Monobjc Generated Code ---
+			//
+			// DO NOT ALTER OR REMOVE
+			//
+			ObjectiveCRuntime.LoadFramework("AppKit");
+			ObjectiveCRuntime.LoadFramework("Foundation");
+			#endregion
+			
+            ObjectiveCRuntime.Initialize();
+
+            NSApplication.Bootstrap();
+            NSApplication.LoadNib("MainMenu.nib");
+            NSApplication.RunApplication();
+        }
+    }
+}]]></File>
+	      <File name="AppDelegate.cs">
+<![CDATA[using System;
+using Monobjc;
+using Monobjc.AppKit;
+using Monobjc.Foundation;
+
+namespace ${Namespace}
+{
+    [ObjectiveCClass]
+	public partial class AppDelegate : NSObject, INSNibAwaking
+	{
+		public static readonly Class AppDelegateClass = Class.Get(typeof(AppDelegate));
+		
+		public AppDelegate () { }
+		
+        public AppDelegate(IntPtr nativePointer) : base(nativePointer) { }
+		
+        [ObjectiveCMessage("awakeFromNib")]
+        public void AwakeFromNib()
+        {
+            // Do anything you want here
+        }
+	}
+}]]></File>
 	      <File name="en.lproj/MainMenu.xib">
 <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
@@ -3577,59 +3630,6 @@
 		</object>
 	</data>
 </archive>]]></File>
-	      <File name="Program.cs">
-<![CDATA[using System;
-using Monobjc;
-using Monobjc.AppKit;
-using Monobjc.Foundation;
-
-namespace ${Namespace}
-{
-    internal class Program
-    {
-        private static void Main(String[] args)
-        {
-			#region --- Monobjc Generated Code ---
-			//
-			// DO NOT ALTER OR REMOVE
-			//
-			ObjectiveCRuntime.LoadFramework("AppKit");
-			ObjectiveCRuntime.LoadFramework("Foundation");
-			#endregion
-			
-            ObjectiveCRuntime.Initialize();
-
-            NSApplication.Bootstrap();
-            NSApplication.LoadNib("MainMenu.nib");
-            NSApplication.RunApplication();
-        }
-    }
-}]]></File>
-	      <File name="AppDelegate.cs">
-<![CDATA[using System;
-using Monobjc;
-using Monobjc.AppKit;
-using Monobjc.Foundation;
-
-namespace ${Namespace}
-{
-    [ObjectiveCClass]
-	public partial class AppDelegate : NSObject, INSNibAwaking
-	{
-		public static readonly Class AppDelegateClass = Class.Get(typeof(AppDelegate));
-		
-		public AppDelegate () { }
-		
-        public AppDelegate(IntPtr nativePointer) : base(nativePointer) { }
-		
-        [ObjectiveCMessage("awakeFromNib")]
-        public void AwakeFromNib()
-        {
-            // Do anything you want here
-        }
-	}
-}]]></File>
-          <FileTemplateReference TemplateID="MonobjcFileInfoPList" />
       </Files>
     </Project>
   </Combine>
