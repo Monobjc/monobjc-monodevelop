@@ -6,7 +6,7 @@
        description="Development of Mac OS X applications using Monobjc."
        copyright="GPL"
        category="Mac Development"
-       version="2.4.1375.17">
+       version="2.4.1376.13">
 
   <Runtime>
     <!-- Assemblies -->
@@ -106,7 +106,7 @@
 
   <!-- Project Menu -->
   <Extension path="/MonoDevelop/Ide/MainMenu/Project">
-    <CommandItem id="MonoDevelop.Monobjc.Command.ExportBundle"
+    <CommandItem id="MonoDevelop.Monobjc.Commands.ExportBundle"
                  insertafter="MonoDevelop.Ide.Commands.ProjectCommands.ExportProject"/>
   </Extension>
 

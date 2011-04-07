@@ -29,42 +29,39 @@ namespace MonoDevelop.Monobjc.Tracking
 {
 	public static class HeaderGenerator
 	{
-		public static IList<String> GenerateHeaders (MonobjcProject project, String folder)
+		public static IEnumerable<String> GenerateHeaders (MonobjcProject project, String folder)
 		{
 			IList<String> result = new List<String> ();
 			ProjectResolver resolver = new ProjectResolver (project);
 			IEnumerable<IType> types = resolver.GetAllClasses (true);
-			LoggingService.LogInfo("GetAllClasses " + types.Count());
 			foreach (IType type in types) {
-				String file = GenerateHeader (project, type, folder);
+				String file = GenerateHeader (project, resolver, type, folder);
 				result.Add (file);
 			}
 			return result;
 		}
 
-		public static String GenerateHeader (MonobjcProject project, IType type, String folder)
+		public static String GenerateHeader (MonobjcProject project, ProjectResolver resolver, IType type, String folder)
 		{
 			LoggingService.LogInfo("GenerateHeader " + type);
 			
-			String typeName = GetTypeName (type);
-			String baseTypeName = GetTypeName (type.BaseType);
-			DomReturnType voidType = new DomReturnType("System.Void");
+			ProjectDom projectDom = ProjectDomService.GetProjectDom(project);
 			
-			LoggingService.LogInfo("Collecting " + type);
+			String typeName = GetTypeName (type);
+			String baseTypeName = GetTypeName (projectDom.GetType(type.BaseType));
+			//DomReturnType voidType = new DomReturnType("System.Void");
 			
 			// Collect outlets/actions
-			LoggingService.LogInfo("properties=" + type.Properties);
-			LoggingService.LogInfo("methods=" + type.Methods);
-			
 			IEnumerable<IProperty> properties = (from p in type.Properties
-				where p.IsPublic && AttributeHelper.HasAttribute (p, AttributeHelper.OBJECTIVE_C_IVAR)
-				select p);
-			LoggingService.LogInfo("properties=" + properties.Count());
-			
+			                                     where p.IsPublic && AttributeHelper.HasAttribute (p, AttributeHelper.OBJECTIVE_C_IVAR)
+			                                     select p);
 			IEnumerable<IMethod> methods = (from m in type.Methods
-				where m.IsPublic && !m.IsStatic && m.ReturnType == voidType && m.Parameters.Count == 1 && AttributeHelper.HasAttribute (m, AttributeHelper.OBJECTIVE_C_MESSAGE)
-				select m);
-			LoggingService.LogInfo("methods=" + properties.Count());
+			                                where m.IsPublic 
+			                                && !m.IsStatic
+			                                //&& m.ReturnType == voidType 
+			                                && m.Parameters.Count == 1 
+			                                && AttributeHelper.HasAttribute (m, AttributeHelper.OBJECTIVE_C_MESSAGE)
+			                                select m);
 			
 			// Create the filename
 			String file = Path.Combine (folder, typeName + ".h");
@@ -82,7 +79,6 @@ namespace MonoDevelop.Monobjc.Tracking
 				builder.AppendFormat ("#import <{0}/{0}.h>", framework);
 				builder.AppendLine();
 			}
-			builder.AppendLine();
 			
 			// Add user-type imports (collect property types and methods parameters/return type)
 			List<String> typesNames = new List<String>();
@@ -94,15 +90,22 @@ namespace MonoDevelop.Monobjc.Tracking
 				builder.AppendFormat ("#import \"{0}.h\"", name);
 				builder.AppendLine();
 			}
+			
 			builder.AppendLine();
 			
 			// Output the interface declaration
-			builder.AppendFormat("@interface {0} : {1} {", typeName, baseTypeName);
+			builder.AppendFormat("@interface {0} : {1} {{", typeName, baseTypeName);
 			builder.AppendLine();
 			
 			// Output the outlets
 			foreach(var property in properties) {
-				builder.AppendFormat("IBOutlet {0} {1};", typeName, baseTypeName);
+				IType propertyType = projectDom.GetType(property.ReturnType);
+				if (propertyType.ClassType == ClassType.Class ||
+				    propertyType.ClassType == ClassType.Interface) {
+					builder.AppendFormat("\tIBOutlet {0} *{1};", propertyType.Name, property.Name);
+				} else {
+					builder.AppendFormat("\tIBOutlet {0} {1};", propertyType.Name, property.Name);
+				}
 				builder.AppendLine();
 			}
 			
@@ -110,13 +113,14 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			// Output the actions
 			foreach(var method in methods) {
-				builder.AppendFormat("- (IBAction){0}:({1}) sender;", typeName, baseTypeName);
-				builder.AppendLine();
+				//builder.AppendFormat("- (IBAction){0}:({1}) sender;", typeName, baseTypeName);
+				//builder.AppendLine();
 			}
 			
+			builder.AppendLine ();
 			builder.AppendLine ("@end");
 			
-			LoggingService.LogInfo("File " + file);
+			LoggingService.LogInfo("Writing file " + file);
 			Directory.CreateDirectory(Path.GetDirectoryName(file));
 			File.WriteAllText(file, builder.ToString());
 			
@@ -125,22 +129,9 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		private static String GetTypeName (IType type)
 		{
-			LoggingService.LogInfo("GetTypeName1 " + type);
-			
 			var value = AttributeHelper.GetAttributeValue (type, AttributeHelper.OBJECTIVE_C_CLASS);
 			if (value == null) {
 				value = AttributeHelper.GetAttributeValue (type, AttributeHelper.OBJECTIVE_C_PROTOCOL);
-			}
-			return value ?? type.Name;
-		}
-
-		private static String GetTypeName (IReturnType type)
-		{
-			LoggingService.LogInfo("GetTypeName2 " + type);
-			
-			var value = AttributeHelper.GetAttributeValue (type.Type, AttributeHelper.OBJECTIVE_C_CLASS);
-			if (value == null) {
-				value = AttributeHelper.GetAttributeValue (type.Type, AttributeHelper.OBJECTIVE_C_PROTOCOL);
 			}
 			return value ?? type.Name;
 		}

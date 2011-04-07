@@ -62,7 +62,12 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// </summary>
 		/// <value>The project.</value>
 		protected MonobjcProject Project { get; private set; }
-
+		
+		protected bool IsProjectReady
+		{
+			get { return ProjectDomService.HasDom(this.Project); }
+		}
+		
 		/// <summary>
 		/// Handles the FileAddedToProject event of the Project control.
 		/// </summary>

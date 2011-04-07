@@ -10,7 +10,6 @@
     <widget-library name="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral" />
     <widget-library name="MonoDevelop.Refactoring, Version=2.4.0.0, Culture=neutral" />
     <widget-library name="MonoDevelop.SourceEditor2, Version=2.4.0.0, Culture=neutral" />
-    <widget-library name="../../MonoDevelop.Monobjc/bin/Debug/MonoDevelop.Monobjc.dll" />
     <widget-library name="../bin/Debug/MonoDevelop.Monobjc.Refactoring.dll" internal="true" />
   </import>
   <widget class="Gtk.Dialog" id="MonoDevelop.Monobjc.Refactoring.CreateIVarDialog" design-size="400 175">

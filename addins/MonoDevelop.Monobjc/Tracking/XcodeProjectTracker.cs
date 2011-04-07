@@ -26,55 +26,88 @@ using System.Collections.Generic;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
-    public class XcodeProjectTracker : ProjectTracker
-    {
+	public class XcodeProjectTracker : ProjectTracker
+	{
 		private XcodeProject xcodeProject;
-		
-        /// <summary>
-        /// Initializes a new instance of the <see cref="XcodeProjectTracker"/> class.
-        /// </summary>
-        /// <param name="project">The project.</param>
-        public XcodeProjectTracker(MonobjcProject project) : base(project)
-        {
-            PropertyService.PropertyChanged += this.PropertyService_PropertyChanged;
-        }
-		
-        /// <summary>
-        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
-        /// </summary>
-        public override void Dispose()
-        {
-            PropertyService.PropertyChanged -= this.PropertyService_PropertyChanged;
-			base.Dispose();
-        }
-		
-		internal void GenerateSurrogateProject()
+
+		/// <summary>
+		/// Initializes a new instance of the <see cref="XcodeProjectTracker"/> class.
+		/// </summary>
+		/// <param name="project">The project.</param>
+		public XcodeProjectTracker (MonobjcProject project) : base(project)
 		{
-			LoggingService.LogInfo("GenerateSurrogateProject");
+			PropertyService.PropertyChanged += this.PropertyService_PropertyChanged;
+			ProjectDomService.TypesUpdated += HandleProjectDomServiceTypesUpdated;
+		}
+
+		void HandleProjectDomServiceTypesUpdated (object sender, TypeUpdateInformationEventArgs e)
+		{
+			if (e.Project != this.Project) {
+				return;
+			}
+			foreach (var type in e.TypeUpdateInformation.Added) {
+				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Added => " + type.Name);
+			}
+			foreach (var type in e.TypeUpdateInformation.Modified) {
+				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Modified => " + type.Name);
+			}
+			foreach (var type in e.TypeUpdateInformation.Removed) {
+				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Removed => " + type.Name);
+			}
+		}
+
+		/// <summary>
+		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+		/// </summary>
+		public override void Dispose ()
+		{
+			PropertyService.PropertyChanged -= this.PropertyService_PropertyChanged;
+			base.Dispose ();
+		}
+
+		internal void GenerateSurrogateProject ()
+		{
+			if (!this.IsProjectReady) {
+				return;
+			}
 			
+			LoggingService.LogInfo ("GenerateSurrogateProject " + this.Project.BaseDirectory + "/" + this.Project.Name);
+
 			// Collect references information
 			ProjectReferenceCollection references = this.Project.References;
 			
-			//if (this.xcodeProject == null) {
-	            this.xcodeProject = new XcodeProject(this.Project.BaseDirectory, this.Project.Name);
-				
-				//PBXProject pbxProject = this.xcodeProject.Document.Project;
-				//pbxProject.ProjectDirPath = ".";
-			//}
+
 			
-			this.xcodeProject.AddGroup("Classes");
-			IList<String> headerFiles = HeaderGenerator.GenerateHeaders(this.Project, this.Project.BaseDirectory);
-			foreach(String headerFile in headerFiles) {
-				this.xcodeProject.AddFile("Classes", headerFile);
+			this.xcodeProject = new XcodeProject (this.Project.BaseDirectory, this.Project.Name);
+			
+			foreach(var framework in this.Project.OSFrameworks.Split(';')) {
+				this.xcodeProject.AddFramework("Frameworks", framework);
 			}
 			
-            XCBuildConfiguration buildConfiguration1 = new XCBuildConfiguration("Release");
-            buildConfiguration1.BuildSettings.Add("ARCHS", "$(ARCHS_STANDARD_32_64_BIT)");
-            buildConfiguration1.BuildSettings.Add("MACOSX_DEPLOYMENT_TARGET", "10.6");
-            buildConfiguration1.BuildSettings.Add("SDKROOT", "macosx");
-            xcodeProject.AddBuildConfiguration(buildConfiguration1, null);
+			this.xcodeProject.AddGroup ("Classes");
+			IEnumerable<String> headerFiles = HeaderGenerator.GenerateHeaders (this.Project, this.Project.BaseDirectory);
+			foreach (String headerFile in headerFiles) {
+				LoggingService.LogInfo ("Adding " + headerFile);
+				this.xcodeProject.AddFile ("Classes", headerFile);
+			}
 			
-			xcodeProject.Save();
+			foreach (var xibFile in this.Project.Files) {
+				if (BuildHelper.IsXIBFile (xibFile)) {
+					this.xcodeProject.AddFile ("Resources", xibFile.FilePath);
+				}
+			}
+			
+			LoggingService.LogInfo ("Adding configuration");
+			
+			XCBuildConfiguration buildConfiguration1 = new XCBuildConfiguration ("Release");
+			buildConfiguration1.BuildSettings.Add ("ARCHS", "$(ARCHS_STANDARD_32_64_BIT)");
+			buildConfiguration1.BuildSettings.Add ("MACOSX_DEPLOYMENT_TARGET", "10.6");
+			buildConfiguration1.BuildSettings.Add ("SDKROOT", "macosx");
+			xcodeProject.AddBuildConfiguration (buildConfiguration1, null);
+			
+			LoggingService.LogInfo ("Saving project");
+			
+			xcodeProject.Save ();
 			
 			// 2. For each Monobjc project, ask for surrogate project generation
 			
@@ -85,55 +118,49 @@ namespace MonoDevelop.Monobjc.Tracking
 			// 5. Construct the surrogate project
 			
 			// 6. Return the path to the surrogate project
-			
-		}
-		
-		protected override void HandleFileAddedToProject (object sender, ProjectFileEventArgs e)
-		{
-			this.GenerateSurrogateProject();
-		}
-		
-		protected override void HandleFileChangedInProject (object sender, ProjectFileEventArgs e)
-		{
-			this.GenerateSurrogateProject();
-		}
-		
-		protected override void HandleFileRemovedFromProject (object sender, ProjectFileEventArgs e)
-		{
-			this.GenerateSurrogateProject();
-		}
-		
-		protected override void HandleReferenceAddedToProject (object sender, ProjectReferenceEventArgs e)
-		{
-			this.GenerateSurrogateProject();
-		}
-		
-		protected override void HandleReferenceRemovedFromProject (object sender, ProjectReferenceEventArgs e)
-		{
-			this.GenerateSurrogateProject();
-		}
-		
-		private bool Enabled
-		{
-			get
-			{
-				// Only enable Xcode tracking if Xcode 4.0 if selected
-				return true;
-			}
 		}
 
-        private void PropertyService_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.Key)
-            {
-                case DeveloperToolsDesktopApplication.DEVELOPER_TOOLS:
-#if DEBUG
-		            LoggingService.LogInfo("XcodeProjectTracker::PropertyService_PropertyChanged " + e.Key);
-#endif
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
+		protected override void HandleFileAddedToProject (object sender, ProjectFileEventArgs e)
+		{
+			this.GenerateSurrogateProject ();
+		}
+
+		protected override void HandleFileChangedInProject (object sender, ProjectFileEventArgs e)
+		{
+			this.GenerateSurrogateProject ();
+		}
+
+		protected override void HandleFileRemovedFromProject (object sender, ProjectFileEventArgs e)
+		{
+			this.GenerateSurrogateProject ();
+		}
+
+		protected override void HandleReferenceAddedToProject (object sender, ProjectReferenceEventArgs e)
+		{
+			this.GenerateSurrogateProject ();
+		}
+
+		protected override void HandleReferenceRemovedFromProject (object sender, ProjectReferenceEventArgs e)
+		{
+			this.GenerateSurrogateProject ();
+		}
+
+		private bool Enabled {
+// Only enable Xcode tracking if Xcode 4.0 if selected
+			get { return true; }
+		}
+
+		private void PropertyService_PropertyChanged (object sender, PropertyChangedEventArgs e)
+		{
+			switch (e.Key) {
+			case DeveloperToolsDesktopApplication.DEVELOPER_TOOLS:
+				#if DEBUG
+				LoggingService.LogInfo ("XcodeProjectTracker::PropertyService_PropertyChanged " + e.Key);
+				#endif
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }
