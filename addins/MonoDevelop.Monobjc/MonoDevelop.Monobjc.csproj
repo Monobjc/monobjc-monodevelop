@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -39,112 +39,78 @@
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Addins, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="Mono.Addins.Setup, Version=0.5.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Mono.Cecil, Version=0.6.9.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>monodevelop</Package>
-    </Reference>
+    <Reference Include="Mono.Cecil, Version=0.6.9.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
     <Reference Include="Mono.Posix" />
-    <Reference Include="MonoDevelop.Core, Version=2.4.0.0, Culture=neutral">
-      <Package>monodevelop</Package>
-    </Reference>
-    <Reference Include="MonoDevelop.Deployment, Version=2.4.0.0, Culture=neutral">
-      <Package>monodevelop-core-addins</Package>
-    </Reference>
-    <Reference Include="MonoDevelop.DesignerSupport, Version=2.4.0.0, Culture=neutral">
-      <Package>monodevelop-core-addins</Package>
-    </Reference>
-    <Reference Include="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral">
-      <Package>monodevelop</Package>
-    </Reference>
+    <Reference Include="MonoDevelop.Core, Version=2.4.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
+    <Reference Include="MonoDevelop.Deployment, Version=2.4.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
+    <Reference Include="MonoDevelop.DesignerSupport, Version=2.4.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
+    <Reference Include="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BundleGeneration\BundleGenerator.cs" />
-    <Compile Include="BundleGeneration\ManagedBundleGenerator.cs" />
-    <Compile Include="BundleGeneration\NativeBundleGenerator.cs" />
-    <Compile Include="CodeGeneration\BaseCodeBehindGenerator.cs" />
-    <Compile Include="CodeGeneration\CSharpCodeBehindGenerator.cs" />
-    <Compile Include="CodeGeneration\CodeBehindGeneratorCodon.cs" />
-    <Compile Include="CodeGeneration\CodeBehindGeneratorLoader.cs" />
-    <Compile Include="CodeGeneration\ICodeBehindGenerator.cs" />
-    <Compile Include="CodeGeneration\NullCodeBehindGenerator.cs" />
-    <Compile Include="CodeGeneration\VBNetCodeBehindGenerator.cs" />
-    <Compile Include="Commands\DeveloperToolsCommandHandler.cs" />
-    <Compile Include="Commands\ExportBundleCommandHandler.cs" />
-    <Compile Include="Gui\MonobjcDeploymentOptionsPanel.cs" />
-    <Compile Include="Gui\MonobjcDeploymentOptionsWidget.cs" />
-    <Compile Include="Gui\MonobjcExportDialog.cs" />
-    <Compile Include="Gui\MonobjcGeneralOptionsPanel.cs" />
-    <Compile Include="Gui\MonobjcGeneralOptionsWidget.cs" />
-    <Compile Include="Gui\MonobjcPreferencesPanel.cs" />
-    <Compile Include="Gui\MonobjcPreferencesWidget.cs" />
-    <Compile Include="MonobjcBuildExtension.cs" />
-    <Compile Include="MonobjcExecutionCommand.cs" />
-    <Compile Include="MonobjcExecutionHandler.cs" />
-    <Compile Include="MonobjcProject.Internals.cs" />
-    <Compile Include="MonobjcProject.Properties.cs" />
-    <Compile Include="MonobjcProject.cs" />
-    <Compile Include="MonobjcProjectBinding.cs" />
-    <Compile Include="MonobjcProjectConfiguration.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Tracking\CodeBehindProjectTracker.cs" />
-    <Compile Include="Tracking\DeveloperToolsDesktopApplication.cs" />
-    <Compile Include="Tracking\DeveloperToolsDisplayBinding.cs" />
-    <Compile Include="Tracking\HeaderGenerator.cs" />
-    <Compile Include="Tracking\ProjectTracker.cs" />
-    <Compile Include="Tracking\XcodeProjectTracker.cs" />
-    <Compile Include="Utilities\AttributeHelper.cs" />
-    <Compile Include="Utilities\BuildHelper.cs" />
-    <Compile Include="Utilities\BuildLogger.cs" />
-    <Compile Include="Utilities\FilePair.cs" />
-    <Compile Include="Utilities\PSNHelper.cs" />
-    <Compile Include="Utilities\ProjectResolver.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsWidget.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcExportDialog.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsWidget.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcPreferencesWidget.cs" />
-    <Compile Include="gtk-gui\generated.cs" />
-  </ItemGroup>
+	<Compile Include="BundleGeneration\BundleGenerator.cs"/>
+	<Compile Include="BundleGeneration\ManagedBundleGenerator.cs"/>
+	<Compile Include="BundleGeneration\NativeBundleGenerator.cs"/>
+	<Compile Include="CodeGeneration\BaseCodeBehindGenerator.cs"/>
+	<Compile Include="CodeGeneration\CSharpCodeBehindGenerator.cs"/>
+	<Compile Include="CodeGeneration\CodeBehindGeneratorCodon.cs"/>
+	<Compile Include="CodeGeneration\CodeBehindGeneratorLoader.cs"/>
+	<Compile Include="CodeGeneration\ICodeBehindGenerator.cs"/>
+	<Compile Include="CodeGeneration\NullCodeBehindGenerator.cs"/>
+	<Compile Include="CodeGeneration\VBNetCodeBehindGenerator.cs"/>
+	<Compile Include="Commands\DeveloperToolsCommandHandler.cs"/>
+	<Compile Include="Commands\ExportBundleCommandHandler.cs"/>
+	<Compile Include="Gui\MonobjcDeploymentOptionsPanel.cs"/>
+	<Compile Include="Gui\MonobjcDeploymentOptionsWidget.cs"/>
+	<Compile Include="Gui\MonobjcExportDialog.cs"/>
+	<Compile Include="Gui\MonobjcGeneralOptionsPanel.cs"/>
+	<Compile Include="Gui\MonobjcGeneralOptionsWidget.cs"/>
+	<Compile Include="Gui\MonobjcPreferencesPanel.cs"/>
+	<Compile Include="Gui\MonobjcPreferencesWidget.cs"/>
+	<Compile Include="MonobjcBuildExtension.cs"/>
+	<Compile Include="MonobjcExecutionCommand.cs"/>
+	<Compile Include="MonobjcExecutionHandler.cs"/>
+	<Compile Include="MonobjcProject.Internals.cs"/>
+	<Compile Include="MonobjcProject.Properties.cs"/>
+	<Compile Include="MonobjcProject.cs"/>
+	<Compile Include="MonobjcProjectBinding.cs"/>
+	<Compile Include="MonobjcProjectConfiguration.cs"/>
+	<Compile Include="Properties\AssemblyInfo.cs"/>
+	<Compile Include="Tracking\CodeBehindProjectTracker.cs"/>
+	<Compile Include="Tracking\DeveloperToolsDesktopApplication.cs"/>
+	<Compile Include="Tracking\DeveloperToolsDisplayBinding.cs"/>
+	<Compile Include="Tracking\HeaderGenerator.cs"/>
+	<Compile Include="Tracking\ProjectTracker.cs"/>
+	<Compile Include="Tracking\XcodeProjectTracker.cs"/>
+	<Compile Include="Utilities\AttributeHelper.cs"/>
+	<Compile Include="Utilities\BuildHelper.cs"/>
+	<Compile Include="Utilities\BuildLogger.cs"/>
+	<Compile Include="Utilities\FilePair.cs"/>
+	<Compile Include="Utilities\PSNHelper.cs"/>
+	<Compile Include="Utilities\ProjectResolver.cs"/>
+	<Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsWidget.cs"/>
+	<Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcExportDialog.cs"/>
+	<Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsWidget.cs"/>
+	<Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcPreferencesWidget.cs"/>
+	<Compile Include="gtk-gui\generated.cs"/>
+  </ItemGroup>  
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
     <None Include="addin.xml" />
     <None Include="addin.xml.tmpl" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Icons\monobjc-128.png">
-      <LogicalName>monobjc-128.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Icons\monobjc-16.png">
-      <LogicalName>monobjc-16.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Icons\monobjc-24.png">
-      <LogicalName>monobjc-24.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Icons\monobjc-32.png">
-      <LogicalName>monobjc-32.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Icons\monobjc-48.png">
-      <LogicalName>monobjc-48.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Icons\monobjc-64.png">
-      <LogicalName>monobjc-64.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Icons\monobjc-fmk-16.png">
-      <LogicalName>monobjc-fmk-16.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Icons\monobjc-logo-64.png">
-      <LogicalName>monobjc-logo-64.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Icons\monobjc-overlay-16.png">
-      <LogicalName>monobjc-overlay-16.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Icons\monobjc-overlay-24.png">
-      <LogicalName>monobjc-overlay-24.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Icons\monobjc-xib-32.png">
-      <LogicalName>monobjc-xib-32.png</LogicalName>
-    </EmbeddedResource>
-    <EmbeddedResource Include="gtk-gui\gui.stetic">
-      <LogicalName>gui.stetic</LogicalName>
-    </EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-128.png"><LogicalName>monobjc-128.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-16.png"><LogicalName>monobjc-16.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-24.png"><LogicalName>monobjc-24.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-32.png"><LogicalName>monobjc-32.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-48.png"><LogicalName>monobjc-48.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-64.png"><LogicalName>monobjc-64.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-fmk-16.png"><LogicalName>monobjc-fmk-16.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-logo-64.png"><LogicalName>monobjc-logo-64.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-overlay-16.png"><LogicalName>monobjc-overlay-16.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-overlay-24.png"><LogicalName>monobjc-overlay-24.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="Icons\monobjc-xib-32.png"><LogicalName>monobjc-xib-32.png</LogicalName></EmbeddedResource>
+    <EmbeddedResource Include="gtk-gui\gui.stetic"><LogicalName>gui.stetic</LogicalName></EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\tools\Monobjc.Tools\Monobjc.Tools.csproj">
@@ -153,41 +119,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Templates\MonobjcFileDefinitionPList.xft.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcFileInfoPList.xft.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcFileInfoPListDocument.xft.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcFileNSObject.xft.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcFileNSView.xft.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcProject.xpt.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcProjectDocument.xpt.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcProjectEmpty.xpt.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcProjectLibrary.xpt.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcXibEmpty.xft.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcXibView.xft.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Templates\MonobjcXibWindow.xft.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Templates\MonobjcFileDefinitionPList.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcFileInfoPList.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcFileInfoPListDocument.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcFileNSObject.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcFileNSView.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcProject.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcProjectDocument.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcProjectEmpty.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcProjectLibrary.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcXibEmpty.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcXibView.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\MonobjcXibWindow.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
   </ItemGroup>
 </Project>

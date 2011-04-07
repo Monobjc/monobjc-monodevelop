@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -33,25 +33,13 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="Mono.Debugger.Soft, Version=0.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>monodevelop-core-addins</Package>
-    </Reference>
-    <Reference Include="Mono.Debugging, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f">
-      <Package>monodevelop</Package>
-    </Reference>
-    <Reference Include="Mono.Debugging.Soft, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f">
-      <Package>monodevelop-core-addins</Package>
-    </Reference>
+    <Reference Include="Mono.Debugger.Soft, Version=0.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"><Package>monodevelop-core-addins</Package></Reference>
+    <Reference Include="Mono.Debugging, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f"><Package>monodevelop</Package></Reference>
+    <Reference Include="Mono.Debugging.Soft, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f"><Package>monodevelop-core-addins</Package></Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="MonoDevelop.Core, Version=2.4.0.0, Culture=neutral">
-      <Package>monodevelop</Package>
-    </Reference>
-    <Reference Include="MonoDevelop.Debugger, Version=2.4.0.0, Culture=neutral">
-      <Package>monodevelop-core-addins</Package>
-    </Reference>
-    <Reference Include="MonoDevelop.Debugger.Soft, Version=2.4.0.0, Culture=neutral">
-      <Package>monodevelop-core-addins</Package>
-    </Reference>
+    <Reference Include="MonoDevelop.Core, Version=2.4.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
+    <Reference Include="MonoDevelop.Debugger, Version=2.4.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
+    <Reference Include="MonoDevelop.Debugger.Soft, Version=2.4.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MonobjcDebuggerSession.cs" />
