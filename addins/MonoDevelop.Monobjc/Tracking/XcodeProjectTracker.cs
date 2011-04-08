@@ -39,23 +39,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			PropertyService.PropertyChanged += this.PropertyService_PropertyChanged;
 			ProjectDomService.TypesUpdated += HandleProjectDomServiceTypesUpdated;
 		}
-
-		void HandleProjectDomServiceTypesUpdated (object sender, TypeUpdateInformationEventArgs e)
-		{
-			if (e.Project != this.Project) {
-				return;
-			}
-			foreach (var type in e.TypeUpdateInformation.Added) {
-				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Added => " + type.Name);
-			}
-			foreach (var type in e.TypeUpdateInformation.Modified) {
-				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Modified => " + type.Name);
-			}
-			foreach (var type in e.TypeUpdateInformation.Removed) {
-				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Removed => " + type.Name);
-			}
-		}
-
+		
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
@@ -67,7 +51,7 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		internal void GenerateSurrogateProject ()
 		{
-			if (!this.IsProjectReady) {
+			if (this.IsEnabled && !this.IsProjectReady) {
 				return;
 			}
 			
@@ -145,11 +129,6 @@ namespace MonoDevelop.Monobjc.Tracking
 			this.GenerateSurrogateProject ();
 		}
 
-		private bool Enabled {
-// Only enable Xcode tracking if Xcode 4.0 if selected
-			get { return true; }
-		}
-
 		private void PropertyService_PropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			switch (e.Key) {
@@ -157,9 +136,39 @@ namespace MonoDevelop.Monobjc.Tracking
 				#if DEBUG
 				LoggingService.LogInfo ("XcodeProjectTracker::PropertyService_PropertyChanged " + e.Key);
 				#endif
+				this.GenerateSurrogateProject();
 				break;
 			default:
 				break;
+			}
+		}
+		
+		private void HandleProjectDomServiceTypesUpdated (object sender, TypeUpdateInformationEventArgs e)
+		{
+			if (e.Project != this.Project) {
+				return;
+			}
+			
+			// Maintain a map of the types
+			// Couple it to the XcodeProject
+			
+			foreach (var type in e.TypeUpdateInformation.Added) {
+				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Added => " + type.Name);
+			}
+			foreach (var type in e.TypeUpdateInformation.Modified) {
+				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Modified => " + type.Name);
+			}
+			foreach (var type in e.TypeUpdateInformation.Removed) {
+				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Removed => " + type.Name);
+			}
+		}
+
+		private bool IsEnabled
+		{
+			get
+			{ 
+				Version version = DeveloperToolsDesktopApplication.DeveloperToolsVersion;
+				return (version != null) && (version.Major == 4);
 			}
 		}
 	}

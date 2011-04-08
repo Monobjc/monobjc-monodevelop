@@ -52,6 +52,11 @@ namespace MonoDevelop.Monobjc.Tracking
         /// <param name="defer">if set to <c>true</c> [defer].</param>
         public void GenerateFrameworkLoadingCode(String[] frameworks, bool defer)
         {
+			// Don't generate anything if the project is not ready
+			if (!this.IsProjectReady) {
+				return;
+			}
+			
             // Queue the generation in another thread if defer is wanted
             if (defer)
             {
@@ -85,6 +90,11 @@ namespace MonoDevelop.Monobjc.Tracking
         /// <param name="defer">if set to <c>true</c> defer generation in a separate thread.</param>
         public void GenerateDesignCode(FilePath file, bool defer)
         {
+			// Don't generate anything if the project is not ready
+			if (!this.IsProjectReady) {
+				return;
+			}
+			
             // Queue the generation in another thread if defer is wanted
             if (defer)
             {
