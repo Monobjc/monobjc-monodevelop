@@ -76,10 +76,19 @@ namespace MonoDevelop.Monobjc.Gui
 				throw new ArgumentNullException ("project");
 			}
 			
+			// Retrieve some information about the developer tools
+			// - Xcode 3.2 => 10.5/10.6 - ppc/i386/x86_64
+			// - Xcode 4.0 => 10.6 - i386/x86_64
+			// - Xcode 4.1 => 10.6/10.7 - i386/x86_64
+			Version version = DeveloperToolsDesktopApplication.DeveloperToolsVersion;
+			bool isXcode4 = version != null && version.Major >= 4;
+			
 			// Set up the SDKs
 			ListStore versionStore = (ListStore)this.comboboxVersion.Model;
 			versionStore.Clear ();
-			versionStore.AppendValues ("Mac OS X 10.5", MacOSVersion.MacOS105);
+			if (!isXcode4) {
+				versionStore.AppendValues ("Mac OS X 10.5", MacOSVersion.MacOS105);
+			}
 			versionStore.AppendValues ("Mac OS X 10.6", MacOSVersion.MacOS106);
 			
 			// Set the base folder and retrieve the main NIB file
@@ -99,8 +108,8 @@ namespace MonoDevelop.Monobjc.Gui
 			TreeStore frameworkStore = (TreeStore)this.treeviewFrameworks.Model;
 			frameworkStore.Clear ();
 			IEnumerable<String> assemblies = (from a in project.EveryMonobjcAssemblies
-				where a.Name.Contains ("Monobjc.")
-				select a.Name.Substring ("Monobjc.".Length)).Distinct ();
+			                                  where a.Name.Contains ("Monobjc.")
+			                                  select a.Name.Substring ("Monobjc.".Length)).Distinct ();
 			foreach (String assembly in assemblies) {
 				frameworkStore.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), assembly);
 			}

@@ -25,7 +25,7 @@ using MonoDevelop.Ide.Gui;
 using MonoDevelop.Ide.Desktop;
 using MonoDevelop.Projects;
 
-namespace MonoDevelop.Monobjc.Tracking
+namespace MonoDevelop.Monobjc
 {
 	public class DeveloperToolsDesktopApplication
 #if MD_2_6

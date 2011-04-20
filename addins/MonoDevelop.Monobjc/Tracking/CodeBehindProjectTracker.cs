@@ -54,6 +54,7 @@ namespace MonoDevelop.Monobjc.Tracking
         {
 			// Don't generate anything if the project is not ready
 			if (!this.IsProjectReady) {
+				LoggingService.LogInfo("Project is not ready yet");
 				return;
 			}
 			
@@ -92,6 +93,7 @@ namespace MonoDevelop.Monobjc.Tracking
         {
 			// Don't generate anything if the project is not ready
 			if (!this.IsProjectReady) {
+				LoggingService.LogInfo("Project is not ready yet");
 				return;
 			}
 			

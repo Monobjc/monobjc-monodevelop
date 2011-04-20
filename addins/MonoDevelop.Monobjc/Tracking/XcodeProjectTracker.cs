@@ -51,7 +51,8 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		internal void GenerateSurrogateProject ()
 		{
-			if (this.IsEnabled && !this.IsProjectReady) {
+			if (!this.IsEnabled || !this.IsProjectReady) {
+				LoggingService.LogInfo("Project is not ready yet");
 				return;
 			}
 			
@@ -60,39 +61,51 @@ namespace MonoDevelop.Monobjc.Tracking
 			// Collect references information
 			ProjectReferenceCollection references = this.Project.References;
 			
+			
+			
+			
+			// Create the main project
+			String projectName = this.Project.Name;
+			this.xcodeProject = new XcodeProject (this.Project.BaseDirectory, projectName);
 
-			
-			this.xcodeProject = new XcodeProject (this.Project.BaseDirectory, this.Project.Name);
-			
+            xcodeProject.AddTarget(projectName, PBXProductType.Application);
+
 			foreach(var framework in this.Project.OSFrameworks.Split(';')) {
-				this.xcodeProject.AddFramework("Frameworks", framework);
+				this.xcodeProject.AddFramework("Frameworks", framework, projectName);
 			}
-			
-			this.xcodeProject.AddGroup ("Classes");
+
 			IEnumerable<String> headerFiles = HeaderGenerator.GenerateHeaders (this.Project, this.Project.BaseDirectory);
 			foreach (String headerFile in headerFiles) {
 				LoggingService.LogInfo ("Adding " + headerFile);
-				this.xcodeProject.AddFile ("Classes", headerFile);
+				this.xcodeProject.AddFile ("Files", headerFile, projectName);
 			}
 			
 			foreach (var xibFile in this.Project.Files) {
 				if (BuildHelper.IsXIBFile (xibFile)) {
-					this.xcodeProject.AddFile ("Resources", xibFile.FilePath);
+					this.xcodeProject.AddFile ("Files", xibFile.FilePath, projectName);
 				}
 			}
 			
-			LoggingService.LogInfo ("Adding configuration");
-			
-			XCBuildConfiguration buildConfiguration1 = new XCBuildConfiguration ("Release");
-			buildConfiguration1.BuildSettings.Add ("ARCHS", "$(ARCHS_STANDARD_32_64_BIT)");
-			buildConfiguration1.BuildSettings.Add ("MACOSX_DEPLOYMENT_TARGET", "10.6");
-			buildConfiguration1.BuildSettings.Add ("SDKROOT", "macosx");
-			xcodeProject.AddBuildConfiguration (buildConfiguration1, null);
-			
-			LoggingService.LogInfo ("Saving project");
-			
-			xcodeProject.Save ();
-			
+            xcodeProject.AddBuildConfigurationSettings("Release", null, "ARCHS", "$(ARCHS_STANDARD_32_64_BIT)");
+            xcodeProject.AddBuildConfigurationSettings("Release", null, "SDKROOT", "macosx");
+            xcodeProject.AddBuildConfigurationSettings("Release", null, "GCC_VERSION", "com.apple.compilers.llvm.clang.1_0");
+            xcodeProject.AddBuildConfigurationSettings("Release", null, "MACOSX_DEPLOYMENT_TARGET", "10.6");
+            xcodeProject.AddBuildConfigurationSettings("Release", null, "GCC_C_LANGUAGE_STANDARD", "gnu99");
+            xcodeProject.AddBuildConfigurationSettings("Release", null, "GCC_WARN_64_TO_32_BIT_CONVERSION", "YES");
+            xcodeProject.AddBuildConfigurationSettings("Release", null, "GCC_WARN_ABOUT_RETURN_TYPE", "YES");
+            xcodeProject.AddBuildConfigurationSettings("Release", null, "GCC_WARN_UNUSED_VARIABLE", "YES");
+
+            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
+            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "COPY_PHASE_STRIP", "YES");
+            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "INFOPLIST_FILE", "Info.plist");
+            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "PRODUCT_NAME", "$(TARGET_NAME)");
+            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "WRAPPER_EXTENSION", "app");
+            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "ALWAYS_SEARCH_USER_PATHS", "NO");
+            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "GCC_ENABLE_OBJC_EXCEPTIONS", "YES");
+
+            xcodeProject.Save();
+
+						
 			// 2. For each Monobjc project, ask for surrogate project generation
 			
 			// 3. Gather types information in this project

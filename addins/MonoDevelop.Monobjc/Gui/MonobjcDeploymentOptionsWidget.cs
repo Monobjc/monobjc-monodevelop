@@ -210,6 +210,13 @@ namespace MonoDevelop.Monobjc.Gui
 				LoggingService.LogInfo("Detected architecture " + architecture);
 			}
 			
+			// Retrieve some information about the developer tools
+			// - Xcode 3.2 => 10.5/10.6 - ppc/i386/x86_64
+			// - Xcode 4.0 => 10.6 - i386/x86_64
+			// - Xcode 4.1 => 10.6/10.7 - i386/x86_64
+			Version version = DeveloperToolsDesktopApplication.DeveloperToolsVersion;
+			bool isXcode4 = version != null && version.Major >= 4;
+			
 			// Add all the detected architectures
 			if ((architecture & MacOSArchitecture.X86) == MacOSArchitecture.X86) {
 				archStore.AppendValues ("Intel i386 (32 bits)", MacOSArchitecture.X86);
@@ -217,13 +224,16 @@ namespace MonoDevelop.Monobjc.Gui
 			if ((architecture & MacOSArchitecture.X8664) == MacOSArchitecture.X8664) {
 				archStore.AppendValues ("Intel x86_64 (64 bits)", MacOSArchitecture.X8664);
 			}
-			if ((architecture & MacOSArchitecture.PPC) == MacOSArchitecture.PPC) {
+			if ((architecture & MacOSArchitecture.Intel) == MacOSArchitecture.Intel) {
+				archStore.AppendValues ("Intel (32/64 bits)", MacOSArchitecture.Intel);
+			}
+			if (((architecture & MacOSArchitecture.PPC) == MacOSArchitecture.PPC) && !isXcode4) {
 				archStore.AppendValues ("Power PC (32 bits)", MacOSArchitecture.PPC);
 			}
-			if ((architecture & MacOSArchitecture.Universal32) == MacOSArchitecture.Universal32) {
+			if (((architecture & MacOSArchitecture.Universal32) == MacOSArchitecture.Universal32) && !isXcode4) {
 				archStore.AppendValues ("Universal PowerPC/Intel (32 bits)", MacOSArchitecture.Universal32);
 			}
-			if ((architecture & MacOSArchitecture.Universal3264) == MacOSArchitecture.Universal3264) {
+			if (((architecture & MacOSArchitecture.Universal3264) == MacOSArchitecture.Universal3264) && !isXcode4) {
 				archStore.AppendValues ("Universal PowerPC/Intel (32/64 bits)", MacOSArchitecture.Universal3264);
 			}
 		}
