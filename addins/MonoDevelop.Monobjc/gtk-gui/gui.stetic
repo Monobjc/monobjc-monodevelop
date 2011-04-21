@@ -912,7 +912,7 @@
           <widget class="Gtk.Label" id="labelVersion">
             <property name="MemberName" />
             <property name="Xalign">0</property>
-            <property name="LabelProp" translatable="yes">Xcode 1.2.3 detected</property>
+            <property name="LabelProp" translatable="yes">No Xcode detected</property>
           </widget>
           <packing>
             <property name="TopAttach">2</property>

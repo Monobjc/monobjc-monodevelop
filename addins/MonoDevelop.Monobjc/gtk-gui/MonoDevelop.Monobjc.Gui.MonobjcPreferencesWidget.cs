@@ -61,7 +61,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelVersion = new global::Gtk.Label ();
 			this.labelVersion.Name = "labelVersion";
 			this.labelVersion.Xalign = 0f;
-			this.labelVersion.LabelProp = global::Mono.Unix.Catalog.GetString ("Xcode 1.2.3 detected");
+			this.labelVersion.LabelProp = global::Mono.Unix.Catalog.GetString ("No Xcode detected");
 			this.table1.Add (this.labelVersion);
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1[this.labelVersion]));
 			w4.TopAttach = ((uint)(2));

@@ -127,10 +127,17 @@ namespace MonoDevelop.Monobjc.Tracking
             {
                 return;
             }
-
+			
             // Collect dependencies
-            IEnumerable<string> filesToAdd = GuessDependencies(this.Project, e.ProjectFile);
-
+			List<String> filesToAdd = new List<String>();
+#if MD_2_4
+			filesToAdd.AddRange(GuessDependencies(this.Project, e.ProjectFile));
+#endif
+#if MD_2_6
+			foreach(ProjectFileEventInfo info in e) {
+				filesToAdd.AddRange(GuessDependencies(this.Project, info.ProjectFile));
+			}
+#endif
             // Add dependencies
             if (filesToAdd != null)
             {
@@ -141,11 +148,22 @@ namespace MonoDevelop.Monobjc.Tracking
             }
 
             // Run CodeBehind if it is a XIB file
+#if MD_2_4
             ProjectFile projectFile = e.ProjectFile;
             if (BuildHelper.IsXIBFile(projectFile))
             {
                 this.GenerateDesignCode(projectFile.FilePath, true);
             }
+#endif
+#if MD_2_6
+			foreach(ProjectFileEventInfo info in e) {
+	            ProjectFile projectFile = info.ProjectFile;
+	            if (BuildHelper.IsXIBFile(projectFile))
+	            {
+	                this.GenerateDesignCode(projectFile.FilePath, true);
+	            }
+			}
+#endif
         }
 
         /// <summary>
@@ -162,8 +180,15 @@ namespace MonoDevelop.Monobjc.Tracking
             }
 
             // Collect dependencies
-            IEnumerable<string> filesToAdd = GuessDependencies(this.Project, e.ProjectFile);
-
+			List<String> filesToAdd = new List<String>();
+#if MD_2_4
+			filesToAdd.AddRange(GuessDependencies(this.Project, e.ProjectFile));
+#endif
+#if MD_2_6
+			foreach(ProjectFileEventInfo info in e) {
+				filesToAdd.AddRange(GuessDependencies(this.Project, info.ProjectFile));
+			}
+#endif
             // Add dependencies
             if (filesToAdd != null)
             {
@@ -174,11 +199,22 @@ namespace MonoDevelop.Monobjc.Tracking
             }
 
             // Run CodeBehind if it is a XIB file
+#if MD_2_4
             ProjectFile projectFile = e.ProjectFile;
             if (BuildHelper.IsXIBFile(projectFile))
             {
                 this.GenerateDesignCode(projectFile.FilePath, true);
             }
+#endif
+#if MD_2_6
+			foreach(ProjectFileEventInfo info in e) {
+	            ProjectFile projectFile = info.ProjectFile;
+	            if (BuildHelper.IsXIBFile(projectFile))
+	            {
+	                this.GenerateDesignCode(projectFile.FilePath, true);
+	            }
+			}
+#endif
         }
 
         /// <summary>

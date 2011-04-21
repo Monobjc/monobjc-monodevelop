@@ -178,10 +178,10 @@ namespace MonoDevelop.Monobjc.Refactoring
 				};
 #endif
 #if MD_2_6
-				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, MonoDevelop.Refactoring.HelperMethods.GetInsertionPoints (options.Document, declaringType));
+				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (options.Document, declaringType));
 				ModeHelpWindow helpWindow = new ModeHelpWindow ();
 				helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
-				helpWindow.TitleText = GettextCatalog.GetString ("<b>Implement Protocol -- Targeting</b>");
+				helpWindow.TitleText = GettextCatalog.GetString ("<b>Implement Interface -- Targeting</b>");
 				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Key</b>"), GettextCatalog.GetString ("<b>Behavior</b>")));
 				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Up</b>"), GettextCatalog.GetString ("Move to <b>previous</b> target point.")));
 				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Down</b>"), GettextCatalog.GetString ("Move to <b>next</b> target point.")));
@@ -192,7 +192,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 				mode.StartMode ();
 				mode.Exited += delegate(object s, InsertionCursorEventArgs args) {
 					if (args.Success) {
-						args.InsertionPoint.Insert (editor, code.ToString ());
+						args.InsertionPoint.Insert (data, code.ToString ());
 					}
 				};
 #endif
