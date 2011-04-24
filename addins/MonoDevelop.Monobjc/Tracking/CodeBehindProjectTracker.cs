@@ -54,7 +54,7 @@ namespace MonoDevelop.Monobjc.Tracking
         {
 			// Don't generate anything if the project is not ready
 			if (!this.IsProjectReady) {
-				LoggingService.LogInfo("Project is not ready yet");
+				LoggingService.LogInfo("CodeBehindProjectTracker => Project is not ready yet");
 				return;
 			}
 			
@@ -65,7 +65,7 @@ namespace MonoDevelop.Monobjc.Tracking
                 return;
             }
 #if DEBUG
-//            LoggingService.LogInfo("CodeBehindProjectTracker::GenerateFrameworkLoadingCode");
+            LoggingService.LogInfo("CodeBehindProjectTracker::GenerateFrameworkLoadingCode");
 #endif
             // Create the resolver
             ProjectResolver resolver = new ProjectResolver(this.Project);
@@ -104,7 +104,7 @@ namespace MonoDevelop.Monobjc.Tracking
                 return;
             }
 #if DEBUG
-//            LoggingService.LogInfo("CodeBehindProjectTracker::GenerateDesignCode");
+            LoggingService.LogInfo("CodeBehindProjectTracker::GenerateDesignCode");
 #endif
             // Create the resolver
             ProjectResolver resolver = new ProjectResolver(this.Project);
@@ -131,11 +131,17 @@ namespace MonoDevelop.Monobjc.Tracking
             // Collect dependencies
 			List<String> filesToAdd = new List<String>();
 #if MD_2_4
-			filesToAdd.AddRange(GuessDependencies(this.Project, e.ProjectFile));
+			IEnumerable<String> files = GuessDependencies(this.Project, e.ProjectFile);
+			if (files != null) {
+				filesToAdd.AddRange(files);
+			}
 #endif
 #if MD_2_6
 			foreach(ProjectFileEventInfo info in e) {
-				filesToAdd.AddRange(GuessDependencies(this.Project, info.ProjectFile));
+				IEnumerable<String> files = GuessDependencies(this.Project, e.ProjectFile);
+				if (files != null) {
+					filesToAdd.AddRange(files);
+				}
 			}
 #endif
             // Add dependencies
@@ -182,11 +188,17 @@ namespace MonoDevelop.Monobjc.Tracking
             // Collect dependencies
 			List<String> filesToAdd = new List<String>();
 #if MD_2_4
-			filesToAdd.AddRange(GuessDependencies(this.Project, e.ProjectFile));
+			IEnumerable<String> files = GuessDependencies(this.Project, e.ProjectFile);
+			if (files != null) {
+				filesToAdd.AddRange(files);
+			}
 #endif
 #if MD_2_6
 			foreach(ProjectFileEventInfo info in e) {
-				filesToAdd.AddRange(GuessDependencies(this.Project, info.ProjectFile));
+				IEnumerable<String> files = GuessDependencies(this.Project, e.ProjectFile);
+				if (files != null) {
+					filesToAdd.AddRange(files);
+				}
 			}
 #endif
             // Add dependencies
@@ -297,7 +309,7 @@ namespace MonoDevelop.Monobjc.Tracking
         /// <param name="project">The project.</param>
         /// <param name="file">The file.</param>
         /// <returns></returns>
-        private static IEnumerable<string> GuessDependencies(MonobjcProject project, ProjectFile file)
+        private static IEnumerable<String> GuessDependencies(MonobjcProject project, ProjectFile file)
         {
             String extension = project.LanguageBinding.GetFileName("abc");
             extension = extension.Substring(3);

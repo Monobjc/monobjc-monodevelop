@@ -40,7 +40,7 @@ namespace MonoDevelop.Monobjc.Gui
         public MonobjcPreferencesWidget()
 		{
 			this.Build ();
-			this.filechooserbuttonDeveloperTools.SelectionChanged+= this.HandleFilechooserbuttonDeveloperToolshandleSelectionChanged;
+			this.filechooserbuttonDeveloperTools.SelectionChanged += this.HandleFilechooserbuttonDeveloperToolshandleSelectionChanged;
 		}
 
 		/// <summary>

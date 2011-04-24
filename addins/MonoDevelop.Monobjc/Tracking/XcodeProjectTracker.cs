@@ -52,7 +52,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		internal void GenerateSurrogateProject ()
 		{
 			if (!this.IsEnabled || !this.IsProjectReady) {
-				LoggingService.LogInfo("Project is not ready yet");
+				LoggingService.LogInfo("XcodeProjectTracker => Project is not ready yet");
 				return;
 			}
 			
@@ -119,36 +119,36 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		protected override void HandleFileAddedToProject (object sender, ProjectFileEventArgs e)
 		{
-			this.GenerateSurrogateProject ();
+			//this.GenerateSurrogateProject ();
 		}
 
 		protected override void HandleFileChangedInProject (object sender, ProjectFileEventArgs e)
 		{
-			this.GenerateSurrogateProject ();
+			//this.GenerateSurrogateProject ();
 		}
 
 		protected override void HandleFileRemovedFromProject (object sender, ProjectFileEventArgs e)
 		{
-			this.GenerateSurrogateProject ();
+			//this.GenerateSurrogateProject ();
 		}
 
 		protected override void HandleReferenceAddedToProject (object sender, ProjectReferenceEventArgs e)
 		{
-			this.GenerateSurrogateProject ();
+			//this.GenerateSurrogateProject ();
 		}
 
 		protected override void HandleReferenceRemovedFromProject (object sender, ProjectReferenceEventArgs e)
 		{
-			this.GenerateSurrogateProject ();
+			//this.GenerateSurrogateProject ();
 		}
 
 		private void PropertyService_PropertyChanged (object sender, PropertyChangedEventArgs e)
 		{
 			switch (e.Key) {
 			case DeveloperToolsDesktopApplication.DEVELOPER_TOOLS:
-				#if DEBUG
+#if DEBUG
 				LoggingService.LogInfo ("XcodeProjectTracker::PropertyService_PropertyChanged " + e.Key);
-				#endif
+#endif
 				this.GenerateSurrogateProject();
 				break;
 			default:
@@ -181,7 +181,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			get
 			{ 
 				Version version = DeveloperToolsDesktopApplication.DeveloperToolsVersion;
-				return (version != null) && (version.Major == 4);
+				return (version != null) && (version.Major >= 4);
 			}
 		}
 	}
