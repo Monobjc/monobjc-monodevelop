@@ -138,7 +138,7 @@ namespace MonoDevelop.Monobjc.Tracking
 #endif
 #if MD_2_6
 			foreach(ProjectFileEventInfo info in e) {
-				IEnumerable<String> files = GuessDependencies(this.Project, e.ProjectFile);
+				IEnumerable<String> files = GuessDependencies(this.Project, info.ProjectFile);
 				if (files != null) {
 					filesToAdd.AddRange(files);
 				}
@@ -195,7 +195,7 @@ namespace MonoDevelop.Monobjc.Tracking
 #endif
 #if MD_2_6
 			foreach(ProjectFileEventInfo info in e) {
-				IEnumerable<String> files = GuessDependencies(this.Project, e.ProjectFile);
+				IEnumerable<String> files = GuessDependencies(this.Project, info.ProjectFile);
 				if (files != null) {
 					filesToAdd.AddRange(files);
 				}
