@@ -170,11 +170,27 @@ namespace MonoDevelop.Monobjc
 
             // Infer application name from configuration
             String applicationName = this.GetApplicationName(configSel);
-
-            // Create the bundle maker
-            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
-            conf.ApplicationName = applicationName;
-            conf.Runtime = maker.Runtime;
+			conf.ApplicationName = applicationName;
+			
+			switch(this.ApplicationType)
+			{
+				case MonobjcApplicationType.CocoaApplication:
+				{
+		            // Create the bundle maker to get the path to the runtime
+		            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
+		            conf.Runtime = maker.Runtime;
+				}
+				break;
+				case MonobjcApplicationType.ConsoleApplication:
+				{
+					// Build the command line
+					conf.Runtime = FileProvider.GetPath(this.TargetOSVersion, "runtime");
+					conf.CommandLineParameters = this.GetOutputFileName(configSel);
+				}
+				break;
+				default:
+					throw new NotSupportedException("Unsupported application type " + this.ApplicationType);
+			}
 
             // Create the command
             MonobjcExecutionCommand command = new MonobjcExecutionCommand(conf);

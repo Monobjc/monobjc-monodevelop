@@ -21,6 +21,7 @@ using Monobjc.Tools.Generators;
 using MonoDevelop.Core;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
+using System;
 
 namespace MonoDevelop.Monobjc
 {
@@ -43,43 +44,58 @@ namespace MonoDevelop.Monobjc
             {
                 return base.Build(monitor, item, configuration);
             }
-
-            MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
-
-            // Infer application name from configuration
-            string applicationName = project.GetApplicationName(configuration);
-
-            // Create the bundle maker
-            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
-
+			
             // Do the base build
             BuildResult result = base.Build(monitor, item, configuration);
             if (result.ErrorCount > 0)
             {
                 return result;
             }
-
-            // Compile the XIB files
-            BuildHelper.CompileXIBFiles(monitor, project, maker, result);
-            if (result.ErrorCount > 0)
-            {
-                return result;
-            }
-
-            // Copy the output and dependencies
-            BuildHelper.CopyOutputFiles(monitor, project, configuration, maker);
-
-            // Copy the content files
-            BuildHelper.CopyContentFiles(monitor, project, configuration, maker);
-
-            // Create the Info.plist
-            BuildHelper.CreateInfoPList(monitor, project, configuration, maker);
-
-            // Write the native runtime
-            monitor.BeginTask(GettextCatalog.GetString("Copying native launcher..."), 0);
-            maker.WriteRuntime(project.TargetOSVersion);
-            monitor.EndTask();
-
+			
+			// Build according to the type
+			switch(project.ApplicationType)
+			{
+				case MonobjcApplicationType.CocoaApplication:
+				{
+		            MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
+		
+		            // Infer application name from configuration
+		            string applicationName = project.GetApplicationName(configuration);
+		
+		            // Create the bundle maker
+		            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
+		
+		            // Compile the XIB files
+		            BuildHelper.CompileXIBFiles(monitor, project, maker, result);
+		            if (result.ErrorCount > 0)
+		            {
+		                return result;
+		            }
+		
+		            // Copy the output and dependencies
+		            BuildHelper.CopyOutputFiles(monitor, project, configuration, maker);
+		
+		            // Copy the content files
+		            BuildHelper.CopyContentFiles(monitor, project, configuration, maker);
+		
+		            // Create the Info.plist
+		            BuildHelper.CreateInfoPList(monitor, project, configuration, maker);
+		
+		            // Write the native runtime
+		            monitor.BeginTask(GettextCatalog.GetString("Copying native launcher..."), 0);
+		            maker.WriteRuntime(project.TargetOSVersion);
+		            monitor.EndTask();				
+				}
+				break;
+				case MonobjcApplicationType.ConsoleApplication:
+				{
+					// Do nothing
+				}
+				break;
+				default:
+					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
+			}
+			
             return result;
         }
 
@@ -96,50 +112,65 @@ namespace MonoDevelop.Monobjc
                 return true;
             }
 
-            MonobjcProject proj = item as MonobjcProject;
-            if (proj == null || proj.CompileTarget != CompileTarget.Exe)
+            MonobjcProject project = item as MonobjcProject;
+            if (project == null || project.CompileTarget != CompileTarget.Exe)
             {
                 return false;
             }
 
-            MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) proj.GetConfiguration(configuration);
-
-            // Infer application name from configuration
-            string applicationName = proj.GetApplicationName(configuration);
-
-            // Create the bundle maker
-            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
-
-            // Info.plist
-            if (!File.Exists(Path.Combine(maker.ContentsDirectory, "Info.plist")))
-            {
-                return true;
-            }
-
-            // Runtime executable
-            if (!File.Exists(maker.Runtime))
-            {
-                return true;
-            }
-
-            // The IB files
-            if (proj.GetIBFiles(maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
-            {
-                return true;
-            }
-
-            // The output files (output assembly and references)
-            if (proj.GetOutputFiles(configuration, maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
-            {
-                return true;
-            }
-
-            // The content files (file marked as content)
-            if (proj.GetContentFiles(configuration, maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
-            {
-                return true;
-            }
-
+			// Build according to the type
+			switch(project.ApplicationType)
+			{
+				case MonobjcApplicationType.CocoaApplication:
+				{
+		            MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
+		
+		            // Infer application name from configuration
+		            string applicationName = project.GetApplicationName(configuration);
+		
+		            // Create the bundle maker
+		            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
+		
+		            // Info.plist
+		            if (!File.Exists(Path.Combine(maker.ContentsDirectory, "Info.plist")))
+		            {
+		                return true;
+		            }
+		
+		            // Runtime executable
+		            if (!File.Exists(maker.Runtime))
+		            {
+		                return true;
+		            }
+		
+		            // The IB files
+		            if (project.GetIBFiles(maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
+		            {
+		                return true;
+		            }
+		
+		            // The output files (output assembly and references)
+		            if (project.GetOutputFiles(configuration, maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
+		            {
+		                return true;
+		            }
+		
+		            // The content files (file marked as content)
+		            if (project.GetContentFiles(configuration, maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
+		            {
+		                return true;
+		            }
+				}
+				break;
+				case MonobjcApplicationType.ConsoleApplication:
+				{
+					// Do nothing
+				}
+				break;
+				default:
+					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
+			}
+			
             return false;
         }
 
@@ -153,22 +184,37 @@ namespace MonoDevelop.Monobjc
         {
             base.Clean(monitor, item, configuration);
 
-            MonobjcProject proj = item as MonobjcProject;
-            if (proj == null || proj.CompileTarget != CompileTarget.Exe)
+            MonobjcProject project = item as MonobjcProject;
+            if (project == null || project.CompileTarget != CompileTarget.Exe)
             {
                 return;
             }
-
-            MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) proj.GetConfiguration(configuration);
-
-            // Infer application name from configuration
-            string applicationName = proj.GetApplicationName(configuration);
-
-            // Create the bundle maker
-            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
-
-            // Remove the application bundle
-            Directory.Delete(maker.ApplicationDirectory, true);
+			
+			// Build according to the type
+			switch(project.ApplicationType)
+			{
+				case MonobjcApplicationType.CocoaApplication:
+				{
+		            MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
+		
+		            // Infer application name from configuration
+		            string applicationName = project.GetApplicationName(configuration);
+		
+		            // Create the bundle maker
+		            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
+		
+		            // Remove the application bundle
+		            Directory.Delete(maker.ApplicationDirectory, true);
+				}
+				break;
+				case MonobjcApplicationType.ConsoleApplication:
+				{
+					// Do nothing
+				}
+				break;
+				default:
+					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
+			}
         }
     }
 }

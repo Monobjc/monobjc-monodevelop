@@ -51,12 +51,10 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 			MonobjcDebuggerStartInfo dsi = (MonobjcDebuggerStartInfo)startInfo;
 			MonobjcExecutionCommand command = dsi.ExecutionCommand;
 			
-			LoggingService.LogWarning ("OnRun " + startInfo);
-			
 			this.StartListening (dsi);
 			
 			// Create the start information
-			ProcessStartInfo psi = new ProcessStartInfo (command.CommandString) { Arguments = String.Empty, RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true, UseShellExecute = false };
+			ProcessStartInfo psi = new ProcessStartInfo (command.CommandString) { Arguments = command.CommandLineParameters, RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true, UseShellExecute = false };
 			psi.EnvironmentVariables["MONO_OPTIONS"] = string.Format ("--debug --debugger-agent=transport=dt_socket,address={0}:{1}", dsi.Address, dsi.DebugPort);
 #endif
 #if MD_2_6
@@ -68,9 +66,11 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 			this.StartListening(dsi, out assignedPort);
 			
 			// Create the start information
-			ProcessStartInfo psi = new ProcessStartInfo (command.CommandString) { Arguments = String.Empty, RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true, UseShellExecute = false };
+			ProcessStartInfo psi = new ProcessStartInfo (command.CommandString) { Arguments = command.CommandLineParameters, RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true, UseShellExecute = false };
 			psi.EnvironmentVariables["MONO_OPTIONS"] = string.Format ("--debug --debugger-agent=transport=dt_socket,address={0}:{1}", startArgs.Address, assignedPort);
 #endif
+			LoggingService.LogWarning ("OnRun " + psi);
+			
 			// Try to start the process
 			this.process = Process.Start (psi);
 			if (this.process == null) {

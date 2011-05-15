@@ -29,6 +29,24 @@ namespace ${Namespace}
 		public ${Name} () { }
 		
         public ${Name} (IntPtr nativePointer) : base(nativePointer) { }
+		
+		[ObjectiveCMessage("init")]
+		public override Id Init()
+		{
+			this.SendMessageSuper<IntPtr>(${Name}Class, "init");
+			
+			// Initialization code here.
+			
+			return this;
+		}
+		
+		[ObjectiveCMessage("dealloc")]
+		public override void Dealloc()
+		{
+			// Clean-up code here.
+			
+			this.SendMessageSuper(${Name}Class, "dealloc");
+		}
 	}
 }]]>
 		</File>

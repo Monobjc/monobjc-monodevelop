@@ -44,6 +44,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.filechooserbuttonBundleIcon.SelectionChanged += this.HandleFilechooserbuttonBundleIconhandleSelectionChanged;
 			this.comboboxVersion.Changed += this.HandleComboboxVersionhandleChanged;
 			
+			this.comboboxType.Model = new ListStore (typeof(string), typeof(MonobjcApplicationType));
 			this.comboboxVersion.Model = new ListStore (typeof(string), typeof(MacOSVersion));
 			this.treeviewFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
 			
@@ -75,6 +76,13 @@ namespace MonoDevelop.Monobjc.Gui
 			if (project == null) {
 				throw new ArgumentNullException ("project");
 			}
+			
+			// Load the application type
+			ListStore typeStore = (ListStore)this.comboboxType.Model;
+			typeStore.Clear ();
+			typeStore.AppendValues (GettextCatalog.GetString("Cocoa Application"), MonobjcApplicationType.CocoaApplication);
+			typeStore.AppendValues (GettextCatalog.GetString("Console Application"), MonobjcApplicationType.CocoaApplication);
+			this.ApplicationType = project.ApplicationType;
 			
 			// Retrieve some information about the developer tools
 			// - Xcode 3.2 => 10.5/10.6 - ppc/i386/x86_64
@@ -108,8 +116,8 @@ namespace MonoDevelop.Monobjc.Gui
 			TreeStore frameworkStore = (TreeStore)this.treeviewFrameworks.Model;
 			frameworkStore.Clear ();
 			IEnumerable<String> assemblies = (from a in project.EveryMonobjcAssemblies
-			                                  where a.Name.Contains ("Monobjc.")
-			                                  select a.Name.Substring ("Monobjc.".Length)).Distinct ();
+				where a.Name.Contains ("Monobjc.")
+				select a.Name.Substring ("Monobjc.".Length)).Distinct ();
 			foreach (String assembly in assemblies) {
 				frameworkStore.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), assembly);
 			}
@@ -128,12 +136,42 @@ namespace MonoDevelop.Monobjc.Gui
 				throw new ArgumentNullException ("project");
 			}
 			
+			project.ApplicationType = this.ApplicationType;
 			project.MainNibFile = this.filechooserbuttonMainNib.Filename;
 			project.BundleIcon = this.filechooserbuttonBundleIcon.Filename;
 			project.TargetOSVersion = this.TargetOSVersion;
 			project.OSFrameworks = this.OSFrameworks;
 			
 			project.UpdateReferences ();
+		}
+
+		/// <summary>
+		/// Gets or sets the application type.
+		/// </summary>
+		private MonobjcApplicationType ApplicationType {
+			get {
+				TreeIter iter;
+				if (this.comboboxType.GetActiveIter (out iter)) {
+					ListStore listStore = (ListStore)this.comboboxType.Model;
+					return (MonobjcApplicationType)listStore.GetValue (iter, 1);
+				}
+				throw new InvalidOperationException ("Unrecognized Application type");
+			}
+			set {
+				ListStore store = (ListStore)this.comboboxType.Model;
+				TreeIter iter;
+				store.GetIterFirst (out iter);
+				do {
+					if ((MonobjcApplicationType)store.GetValue (iter, 1) == value) {
+						this.comboboxType.SetActiveIter (iter);
+						return;
+					}
+					if (!store.IterNext (ref iter)) {
+						break;
+					}
+				} while (true);
+				this.comboboxType.Active = 0;
+			}
 		}
 
 		/// <summary>

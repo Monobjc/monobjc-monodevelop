@@ -42,11 +42,19 @@ namespace ${Namespace}
 			return this;
 		}
 		
+		[ObjectiveCMessage("dealloc")]
+		public override void Dealloc()
+		{
+			// Clean-up code here.
+			
+			this.SendMessageSuper(${Name}Class, "init");
+		}
+		
 		[ObjectiveCMessage("drawRect:")]
 		public override void DrawRect (NSRect aRect)
 		{
-			// If you want to call the base implementation, uncomment
-            // this.SendMessageSuper(${Name}Class, "drawRect:", rect);
+			// If you want to call the base implementation, uncomment the following statement
+            // this.SendMessageSuper(${Name}Class, "drawRect:", aRect);
 			
 			// Drawing code here.
 		}

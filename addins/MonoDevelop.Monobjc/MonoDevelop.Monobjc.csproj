@@ -68,6 +68,7 @@
 	<Compile Include="Gui\MonobjcGeneralOptionsWidget.cs"/>
 	<Compile Include="Gui\MonobjcPreferencesPanel.cs"/>
 	<Compile Include="Gui\MonobjcPreferencesWidget.cs"/>
+	<Compile Include="MonobjcApplicationType.cs"/>
 	<Compile Include="MonobjcBuildExtension.cs"/>
 	<Compile Include="MonobjcExecutionCommand.cs"/>
 	<Compile Include="MonobjcExecutionHandler.cs"/>
