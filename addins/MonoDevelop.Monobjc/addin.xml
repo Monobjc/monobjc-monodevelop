@@ -18,10 +18,11 @@
     <Import file="Templates/MonobjcFileInfoPListDocument.xft.xml"/>
     <Import file="Templates/MonobjcFileNSObject.xft.xml"/>
     <Import file="Templates/MonobjcFileNSView.xft.xml"/>
-    <Import file="Templates/MonobjcProject.xpt.xml"/>
-    <Import file="Templates/MonobjcProjectDocument.xpt.xml"/>
+    <Import file="Templates/MonobjcProjectCocoaApplication.xpt.xml"/>
+    <Import file="Templates/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
+    <Import file="Templates/MonobjcProjectCocoaLibrary.xpt.xml"/>
+    <Import file="Templates/MonobjcProjectConsoleApplication.xpt.xml"/>
     <Import file="Templates/MonobjcProjectEmpty.xpt.xml"/>
-    <Import file="Templates/MonobjcProjectLibrary.xpt.xml"/>
     <Import file="Templates/MonobjcXibEmpty.xft.xml"/>
     <Import file="Templates/MonobjcXibView.xft.xml"/>
     <Import file="Templates/MonobjcXibWindow.xft.xml"/>
@@ -57,14 +58,16 @@
 
   <!-- Project Templates -->
   <Extension path="/MonoDevelop/Ide/ProjectTemplates">
-    <ProjectTemplate id="MonobjcProject"
-                     file="Templates/MonobjcProject.xpt.xml"/>
-    <ProjectTemplate id="MonobjcProjectDocument"
-                     file="Templates/MonobjcProjectDocument.xpt.xml"/>
+    <ProjectTemplate id="MonobjcProjectCocoaApplication"
+                     file="Templates/MonobjcProjectCocoaApplication.xpt.xml"/>
+    <ProjectTemplate id="MonobjcProjectCocoaApplicationDocument"
+                     file="Templates/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
+    <ProjectTemplate id="MonobjcProjectCocoaLibrary"
+                     file="Templates/MonobjcProjectCocoaLibrary.xpt.xml"/>
+    <ProjectTemplate id="MonobjcProjectConsoleApplication"
+                     file="Templates/MonobjcProjectConsoleApplication.xpt.xml"/>
     <ProjectTemplate id="MonobjcProjectEmpty"
                      file="Templates/MonobjcProjectEmpty.xpt.xml"/>
-    <ProjectTemplate id="MonobjcProjectLibrary"
-                     file="Templates/MonobjcProjectLibrary.xpt.xml"/>
   </Extension>
 
   <Extension path="/MonoDevelop/ProjectModel/MSBuildItemTypes">

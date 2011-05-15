@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<Template originator="Laurent Etiemble" created="2010/10/27">
+	
+  <!-- Template Header -->
+  <TemplateConfiguration>
+    <_Name>Console Application</_Name>
+    <Icon>md-monobjc-project</Icon>
+    <_Category>C#/Monobjc</_Category>
+    <LanguageName>C#</LanguageName>
+    <_Description>This project builds a command line based application.</_Description>
+  </TemplateConfiguration>
+	
+  <!-- Template Content -->
+  <Combine name="${ProjectName}" directory=".">
+	<Options>
+	  <StartupProject>${ProjectName}</StartupProject>
+	</Options>
+    <Project name="${ProjectName}" directory="." type="Monobjc">
+      <Options>
+        <MacOSApplicationType>ConsoleApplication</MacOSApplicationType>
+        <MacOSVersion>MacOS106</MacOSVersion>
+        <MacOSArch>X86</MacOSArch>
+        <MacOSFrameworks>Foundation</MacOSFrameworks>
+      </Options>
+      <References>
+        <Reference type="Gac" refto="System" />
+        <Reference type="Gac" refto="System.Core" />
+        <Reference type="Gac" refto="System.Xml" />
+        <Reference type="Gac" refto="Monobjc, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" SpecificVersion="false" />
+        <Reference type="Gac" refto="Monobjc.Foundation, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" SpecificVersion="false" />
+      </References>
+      <Files>
+	      <File name="Program.cs">
+<![CDATA[using System;
+using Monobjc;
+using Monobjc.Foundation;
+
+namespace ${Namespace}
+{
+    internal class Program
+    {
+        private static void Main(String[] args)
+        {
+			#region --- Monobjc Generated Code ---
+			//
+			// DO NOT ALTER OR REMOVE
+			//
+			ObjectiveCRuntime.LoadFramework("Foundation");
+			#endregion
+			
+            ObjectiveCRuntime.Initialize();
+
+			Run();
+        }
+        
+        private static void Run()
+        {
+			NSAutoreleasePool pool = new NSAutoreleasePool();
+			
+			Console.WriteLine("Hello World !!!");
+			
+			pool.Release();
+        }
+    }
+}]]></File>
+      </Files>
+    </Project>
+  </Combine>
+</Template>
