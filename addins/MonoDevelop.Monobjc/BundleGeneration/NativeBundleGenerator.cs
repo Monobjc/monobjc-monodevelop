@@ -35,7 +35,7 @@ namespace MonoDevelop.Monobjc.BundleGeneration
             BuildResult result = new BuildResult();
 
             // Infer application name from configuration
-            string applicationName = project.GetApplicationName(configuration);
+            String applicationName = project.GetApplicationName(configuration);
 
             // Create the bundle maker
             BundleMaker maker = new BundleMaker(applicationName, this.Output);
@@ -97,6 +97,7 @@ namespace MonoDevelop.Monobjc.BundleGeneration
             NativeCodeGenerator codeGenerator = new NativeCodeGenerator();
             codeGenerator.Logger = new BuildLogger(monitor, result);
             codeGenerator.Assemblies = assemblies;
+			codeGenerator.DeveloperToolsFolder = DeveloperToolsDesktopApplication.DeveloperToolsFolder;
             codeGenerator.TargetOSVersion = project.TargetOSVersion;
             codeGenerator.TargetArchitecture = project.TargetOSArch;
 
