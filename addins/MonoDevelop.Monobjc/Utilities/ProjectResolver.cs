@@ -101,6 +101,7 @@ namespace MonoDevelop.Monobjc.Utilities
 			
 			// Search for types matches in classes
 			IEnumerable<IType> types = this.InternalResolve (className);
+				
 			switch (types.Count ()) {
 			case 1:
 				return types.First ();

@@ -58,7 +58,10 @@ namespace MonoDevelop.Monobjc
 		
 		public static String DeveloperToolsFolder
 		{
-			get { return PropertyService.Get<String>(DEVELOPER_TOOLS, "/Developer"); }
+			get
+			{ 
+				return PropertyService.Get<String>(DEVELOPER_TOOLS, "/Developer");
+			}
 			set
 			{
 				PropertyService.Set(DEVELOPER_TOOLS, value);
@@ -72,11 +75,7 @@ namespace MonoDevelop.Monobjc
 			{
 				if (developerToolsVersion == null)
 				{
-					String path = Path.Combine(DeveloperToolsFolder, XCODE_APPLICATION);
-					if (Directory.Exists(path))
-					{
-						developerToolsVersion = NativeVersionExtractor.GetVersion(path);
-					}
+					developerToolsVersion = DeveloperToolsVersionForFolder(DeveloperToolsFolder);
 				}
 				return developerToolsVersion;
 			}
@@ -128,6 +127,16 @@ namespace MonoDevelop.Monobjc
 			}
 			
 			return files;
+		}
+		
+		internal static Version DeveloperToolsVersionForFolder(String folder)
+		{
+			String path = Path.Combine(folder, XCODE_APPLICATION);
+			if (Directory.Exists(path))
+			{
+				return NativeVersionExtractor.GetVersion(path);
+			}
+			return null;
 		}
 		
 		private static String GenerateCommandLine(MonobjcProject project, String file)

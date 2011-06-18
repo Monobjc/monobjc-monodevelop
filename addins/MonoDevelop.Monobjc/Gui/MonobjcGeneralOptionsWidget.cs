@@ -81,7 +81,7 @@ namespace MonoDevelop.Monobjc.Gui
 			ListStore typeStore = (ListStore)this.comboboxType.Model;
 			typeStore.Clear ();
 			typeStore.AppendValues (GettextCatalog.GetString("Cocoa Application"), MonobjcApplicationType.CocoaApplication);
-			typeStore.AppendValues (GettextCatalog.GetString("Console Application"), MonobjcApplicationType.CocoaApplication);
+			typeStore.AppendValues (GettextCatalog.GetString("Console Application"), MonobjcApplicationType.ConsoleApplication);
 			this.ApplicationType = project.ApplicationType;
 			
 			// Retrieve some information about the developer tools

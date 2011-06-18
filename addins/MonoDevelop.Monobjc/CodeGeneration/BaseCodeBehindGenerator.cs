@@ -125,23 +125,19 @@ namespace MonoDevelop.Monobjc.CodeGeneration
                     LoggingService.LogInfo("Skipping " + className + " as it comes from a DLL");
                     return FilePath.Null;
                 }
-
-                // Make sure that the right filename is taken
-                String filename = type.CompilationUnit.FileName.FileNameWithoutExtension;
-                String extension = type.CompilationUnit.FileName.Extension;
-                if (filename.EndsWith(DESIGNER))
-                {
-                    filename = filename.Substring(0, filename.Length - DESIGNER.Length);
-                }
-
-                // Combine the filename in the proper directory
-                designerFile = type.CompilationUnit.FileName.ParentDirectory.Combine(filename + DESIGNER + extension);
+				
+				// The filname is based on the compilation unit parent folder and the type name
+				FilePath parentDirectory = type.CompilationUnit.FileName.ParentDirectory;
+				FilePath filename = project.LanguageBinding.GetFileName(type.Name + DESIGNER);
+				designerFile = parentDirectory.Combine(filename);
                 defaultNamespace = type.Namespace;
             }
             else
             {
                 // Combine the filename in the default directory
-                designerFile = project.BaseDirectory.Combine(project.LanguageBinding.GetFileName(className + DESIGNER));
+				FilePath parentDirectory = project.BaseDirectory;
+				FilePath filename = project.LanguageBinding.GetFileName(className + DESIGNER);
+                designerFile = parentDirectory.Combine(filename);
                 defaultNamespace = project.GetDefaultNamespace(designerFile);
             }
 

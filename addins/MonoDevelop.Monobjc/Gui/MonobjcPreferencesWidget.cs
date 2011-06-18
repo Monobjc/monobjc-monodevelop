@@ -53,7 +53,7 @@ namespace MonoDevelop.Monobjc.Gui
 			String folder = DeveloperToolsDesktopApplication.DeveloperToolsFolder;
 			this.filechooserbuttonDeveloperTools.SetCurrentFolder(folder);
 			this.filechooserbuttonDeveloperTools.SetFilename(folder);
-			this.HandleFilechooserbuttonDeveloperToolshandleSelectionChanged(this, EventArgs.Empty);
+			this.UpdateVersion(folder);
         }
 
 		/// <summary>
@@ -68,8 +68,13 @@ namespace MonoDevelop.Monobjc.Gui
 
 		private void HandleFilechooserbuttonDeveloperToolshandleSelectionChanged (object sender, EventArgs e)
 		{
-			DeveloperToolsDesktopApplication.DeveloperToolsFolder = this.filechooserbuttonDeveloperTools.Filename;
-			Version version  = DeveloperToolsDesktopApplication.DeveloperToolsVersion;
+			String folder = this.filechooserbuttonDeveloperTools.Filename;
+			this.UpdateVersion(folder);
+		}
+		
+		private void UpdateVersion(String folder)
+		{
+			Version version  = DeveloperToolsDesktopApplication.DeveloperToolsVersionForFolder(folder);
 			if (version == null) {
 				this.labelVersion.Text = GettextCatalog.GetString("No Developer Tools found");
 			} else {

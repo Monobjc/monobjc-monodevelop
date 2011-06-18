@@ -51,18 +51,21 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		internal void GenerateSurrogateProject ()
 		{
-			if (!this.IsEnabled || !this.IsProjectReady) {
-				LoggingService.LogInfo("XcodeProjectTracker => Project is not ready yet");
+			if (!this.IsEnabled) {
+				return;
+			}
+			if (!this.IsProjectReady) {
 				return;
 			}
 			
-			LoggingService.LogInfo ("GenerateSurrogateProject " + this.Project.BaseDirectory + "/" + this.Project.Name);
-
+			//LoggingService.LogInfo ("GenerateSurrogateProject " + this.Project.BaseDirectory + "/" + this.Project.Name);
+			
+			//XcodeProject project = this.XcodeProject;
+            //project.Save();
+			
+			/*
 			// Collect references information
 			ProjectReferenceCollection references = this.Project.References;
-			
-			
-			
 			
 			// Create the main project
 			String projectName = this.Project.Name;
@@ -86,24 +89,6 @@ namespace MonoDevelop.Monobjc.Tracking
 				}
 			}
 			
-            xcodeProject.AddBuildConfigurationSettings("Release", null, "ARCHS", "$(ARCHS_STANDARD_32_64_BIT)");
-            xcodeProject.AddBuildConfigurationSettings("Release", null, "SDKROOT", "macosx");
-            xcodeProject.AddBuildConfigurationSettings("Release", null, "GCC_VERSION", "com.apple.compilers.llvm.clang.1_0");
-            xcodeProject.AddBuildConfigurationSettings("Release", null, "MACOSX_DEPLOYMENT_TARGET", "10.6");
-            xcodeProject.AddBuildConfigurationSettings("Release", null, "GCC_C_LANGUAGE_STANDARD", "gnu99");
-            xcodeProject.AddBuildConfigurationSettings("Release", null, "GCC_WARN_64_TO_32_BIT_CONVERSION", "YES");
-            xcodeProject.AddBuildConfigurationSettings("Release", null, "GCC_WARN_ABOUT_RETURN_TYPE", "YES");
-            xcodeProject.AddBuildConfigurationSettings("Release", null, "GCC_WARN_UNUSED_VARIABLE", "YES");
-
-            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
-            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "COPY_PHASE_STRIP", "YES");
-            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "INFOPLIST_FILE", "Info.plist");
-            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "PRODUCT_NAME", "$(TARGET_NAME)");
-            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "WRAPPER_EXTENSION", "app");
-            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "ALWAYS_SEARCH_USER_PATHS", "NO");
-            xcodeProject.AddBuildConfigurationSettings("Release", projectName, "GCC_ENABLE_OBJC_EXCEPTIONS", "YES");
-
-            xcodeProject.Save();
 
 						
 			// 2. For each Monobjc project, ask for surrogate project generation
@@ -115,10 +100,12 @@ namespace MonoDevelop.Monobjc.Tracking
 			// 5. Construct the surrogate project
 			
 			// 6. Return the path to the surrogate project
+			*/
 		}
 
 		protected override void HandleFileAddedToProject (object sender, ProjectFileEventArgs e)
 		{
+			// We are interested in XIB files
 			//this.GenerateSurrogateProject ();
 		}
 
@@ -149,7 +136,7 @@ namespace MonoDevelop.Monobjc.Tracking
 #if DEBUG
 				LoggingService.LogInfo ("XcodeProjectTracker::PropertyService_PropertyChanged " + e.Key);
 #endif
-				this.GenerateSurrogateProject();
+				this.GenerateSurrogateProject ();
 				break;
 			default:
 				break;
@@ -164,7 +151,6 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			// Maintain a map of the types
 			// Couple it to the XcodeProject
-			
 			foreach (var type in e.TypeUpdateInformation.Added) {
 				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Added => " + type.Name);
 			}
@@ -174,14 +160,59 @@ namespace MonoDevelop.Monobjc.Tracking
 			foreach (var type in e.TypeUpdateInformation.Removed) {
 				LoggingService.LogInfo ("HandleProjectDomServiceTypesUpdated :: Removed => " + type.Name);
 			}
+			
+			this.GenerateSurrogateProject ();
 		}
 
-		private bool IsEnabled
-		{
-			get
-			{ 
+		private bool IsEnabled {
+			get { 
 				Version version = DeveloperToolsDesktopApplication.DeveloperToolsVersion;
+				LoggingService.LogInfo ("get_IsEnabled=" + version);			
 				return (version != null) && (version.Major >= 4);
+			}
+		}
+		
+		private XcodeProject XcodeProject {
+			get {
+				if (this.xcodeProject == null) {
+					String name = this.Project.Name;
+					this.xcodeProject = new XcodeProject (this.Project.BaseDirectory, name);
+					
+					// Set default settings
+					this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "ARCHS", "$(ARCHS_STANDARD_32_64_BIT)");
+					this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "SDKROOT", "macosx");
+					this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "GCC_VERSION", "com.apple.compilers.llvm.clang.1_0");
+					this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "MACOSX_DEPLOYMENT_TARGET", "10.6");
+					this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "GCC_C_LANGUAGE_STANDARD", "gnu99");
+					this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "GCC_WARN_64_TO_32_BIT_CONVERSION", "YES");
+					this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "GCC_WARN_ABOUT_RETURN_TYPE", "YES");
+					this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "GCC_WARN_UNUSED_VARIABLE", "YES");
+
+					CompileTarget compileTarget = this.Project.CompileTarget;
+					switch (compileTarget) {
+					case CompileTarget.Exe:
+						this.xcodeProject.AddTarget (name, PBXProductType.Application);
+						
+						this.xcodeProject.AddBuildConfigurationSettings ("Release", name, "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
+						this.xcodeProject.AddBuildConfigurationSettings ("Release", name, "COPY_PHASE_STRIP", "YES");
+						this.xcodeProject.AddBuildConfigurationSettings ("Release", name, "INFOPLIST_FILE", "Info.plist");
+						this.xcodeProject.AddBuildConfigurationSettings ("Release", name, "PRODUCT_NAME", "$(TARGET_NAME)");
+						this.xcodeProject.AddBuildConfigurationSettings ("Release", name, "WRAPPER_EXTENSION", "app");
+						this.xcodeProject.AddBuildConfigurationSettings ("Release", name, "ALWAYS_SEARCH_USER_PATHS", "NO");
+						this.xcodeProject.AddBuildConfigurationSettings ("Release", name, "GCC_ENABLE_OBJC_EXCEPTIONS", "YES");
+						break;
+					case CompileTarget.Library:
+					default:
+						throw new NotSupportedException();
+						break;
+					}
+					
+				}
+				
+				return this.xcodeProject;
+			}
+			set {
+				this.xcodeProject = value;
 			}
 		}
 	}

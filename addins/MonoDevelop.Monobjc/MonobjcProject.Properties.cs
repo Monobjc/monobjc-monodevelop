@@ -31,69 +31,150 @@ namespace MonoDevelop.Monobjc
 	public partial class MonobjcProject
 	{
 		private IEnumerable<SystemAssembly> monobjcAssemblies;
-
+		private MonobjcApplicationType applicationType;
+		private FilePath mainNibFile;
+		private FilePath bundleIcon;
+		private String osFrameworks;
+		private MacOSVersion targetOSVersion;
+		private MacOSArchitecture targetOSArch;
+		private String signingIdentity;
+		private bool archive;
+		private String archiveIdentity;
+		
 		/// <summary>
 		///   Gets or sets the application type.
 		/// </summary>
 		/// <value>The application type.</value>
 		[ItemProperty("MacOSApplicationType")]
-		public MonobjcApplicationType ApplicationType { get; set; }
+		public MonobjcApplicationType ApplicationType
+		{
+			get { return this.applicationType; }
+			set
+			{
+				this.applicationType = value;
+				this.NotifyModified("ApplicationType");
+			}
+		}
 
 		/// <summary>
 		///   Gets or sets the main IB file.
 		/// </summary>
 		/// <value>The main nib file.</value>
 		[ProjectPathItemProperty("MainNibFile")]
-		public FilePath MainNibFile { get; set; }
+		public FilePath MainNibFile
+		{
+			get { return this.mainNibFile; }
+			set
+			{
+				this.mainNibFile = value;
+				this.NotifyModified("MainNibFile");
+			}
+		}
 
 		/// <summary>
 		///   Gets or sets the bundle icon.
 		/// </summary>
 		/// <value>The bundle icon.</value>
 		[ProjectPathItemProperty("BundleIcon")]
-		public FilePath BundleIcon { get; set; }
+		public FilePath BundleIcon
+		{
+			get { return this.bundleIcon; }
+			set
+			{
+				this.bundleIcon = value;
+				this.NotifyModified("BundleIcon");
+			}
+		}
 
 		/// <summary>
 		///   Gets or sets the OS frameworks.
 		/// </summary>
 		/// <value>The OS frameworks.</value>
 		[ItemProperty("MacOSFrameworks")]
-		public string OSFrameworks { get; set; }
+		public string OSFrameworks
+		{
+			get { return this.osFrameworks; }
+			set
+			{
+				this.osFrameworks = value;
+				this.NotifyModified("OSFrameworks");
+			}
+		}
 
 		/// <summary>
 		///   Gets or sets the target OS version.
 		/// </summary>
 		/// <value>The target OS version.</value>
 		[ItemProperty("MacOSVersion")]
-		public MacOSVersion TargetOSVersion { get; set; }
+		public MacOSVersion TargetOSVersion
+		{
+			get { return this.targetOSVersion; }
+			set
+			{
+				this.targetOSVersion = value;
+				this.NotifyModified("TargetOSVersion");
+			}
+		}
 
 		/// <summary>
 		///   Gets or sets the target OS arch.
 		/// </summary>
 		/// <value>The target OS arch.</value>
 		[ItemProperty("MacOSArch")]
-		public MacOSArchitecture TargetOSArch { get; set; }
+		public MacOSArchitecture TargetOSArch
+		{
+			get { return this.targetOSArch; }
+			set
+			{
+				this.targetOSArch = value;
+				this.NotifyModified("TargetOSArch");
+			}
+		}
 
 		/// <summary>
 		///   Gets or sets the signing identity.
 		/// </summary>
 		/// <value>The signing identity.</value>
 		[ItemProperty("SigningIdentity")]
-		public String SigningIdentity { get; set; }
+		public String SigningIdentity
+		{
+			get { return this.signingIdentity; }
+			set
+			{
+				this.signingIdentity = value;
+				this.NotifyModified("SigningIdentity");
+			}
+		}
 
 		/// <summary>
 		///   Gets or sets the archive.
 		/// </summary>
 		/// <value>The archive.</value>
 		[ItemProperty("Archive")]
-		public bool Archive { get; set; }
+		public bool Archive
+		{
+			get { return this.archive; }
+			set
+			{
+				this.archive = value;
+				this.NotifyModified("Archive");
+			}
+		}
 
 		/// <summary>
 		///   Gets or sets the archive identity.
 		/// </summary>
 		/// <value>The archive identity.</value>
 		[ItemProperty("ArchiveIdentity")]
-		public String ArchiveIdentity { get; set; }
+		public String ArchiveIdentity
+		{
+			get { return this.archiveIdentity; }
+			set
+			{
+				this.archiveIdentity = value;
+				this.NotifyModified("ArchiveIdentity");
+			}
+		}
 
 		/// <summary>
 		///   Gets or sets the code behind tracker.
