@@ -63,6 +63,12 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <value>The project.</value>
 		protected MonobjcProject Project { get; private set; }
 		
+		/// <summary>
+		/// Gets a value indicating whether this project ready.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if this project ready; otherwise, <c>false</c>.
+		/// </value>
 		protected bool IsProjectReady
 		{
 			get { return ProjectDomService.HasDom(this.Project); }

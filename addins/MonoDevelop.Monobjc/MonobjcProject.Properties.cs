@@ -97,7 +97,7 @@ namespace MonoDevelop.Monobjc
 			set
 			{
 				this.osFrameworks = value;
-				this.NotifyModified("OSFrameworks");
+				this.NotifyModified("MacOSFrameworks");
 			}
 		}
 
@@ -112,7 +112,7 @@ namespace MonoDevelop.Monobjc
 			set
 			{
 				this.targetOSVersion = value;
-				this.NotifyModified("TargetOSVersion");
+				this.NotifyModified("MacOSVersion");
 			}
 		}
 
@@ -127,7 +127,7 @@ namespace MonoDevelop.Monobjc
 			set
 			{
 				this.targetOSArch = value;
-				this.NotifyModified("TargetOSArch");
+				this.NotifyModified("MacOSArch");
 			}
 		}
 

@@ -5,9 +5,9 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="MonoDevelop.Deployment, Version=2.4.0.0, Culture=neutral" />
-    <widget-library name="MonoDevelop.DesignerSupport, Version=2.4.0.0, Culture=neutral" />
-    <widget-library name="MonoDevelop.Ide, Version=2.4.0.0, Culture=neutral" />
+    <widget-library name="MonoDevelop.Deployment, Version=2.6.0.0, Culture=neutral" />
+    <widget-library name="MonoDevelop.DesignerSupport, Version=2.6.0.0, Culture=neutral" />
+    <widget-library name="MonoDevelop.Ide, Version=2.6.0.0, Culture=neutral" />
     <widget-library name="../bin/Debug/MonoDevelop.Monobjc.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsWidget" design-size="373 631">

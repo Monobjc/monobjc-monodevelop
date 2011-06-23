@@ -183,6 +183,11 @@
                          class="MonoDevelop.Monobjc.CodeGeneration.VBNetCodeBehindGenerator"/>
   </Extension>
 
+	<Extension path="/MonoDevelop/Ide/DisplayBindings">
+		<DisplayBinding id = "MonobjcDeveloperTools"
+			insertafter ="DefaultDisplayBinding"
+			class = "MonoDevelop.Monobjc.DeveloperToolsDisplayBinding" />
+	</Extension>
 
   
 </Addin>

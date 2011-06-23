@@ -33,7 +33,13 @@ namespace MonoDevelop.Monobjc
 		
 		public bool CanHandle (FilePath fileName, string mimeType, Project ownerProject)
 		{
-			return false;
+			if (ownerProject == null || !(ownerProject is MonobjcProject)) {
+				return false;
+			}
+			if ("application/vnd.apple-interface-builder".Equals(mimeType)) {
+				return true;
+			}
+			return !fileName.IsNullOrEmpty && fileName.HasExtension("xib");
 		}
 
 		public bool CanUseAsDefault

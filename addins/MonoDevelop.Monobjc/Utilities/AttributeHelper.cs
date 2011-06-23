@@ -27,6 +27,10 @@ namespace MonoDevelop.Monobjc.Utilities
 	/// </summary>
 	public static class AttributeHelper
 	{
+		public const String IBACTION = "Monobjc.IBActionAttribute";
+
+		public const String IBOUTLET = "Monobjc.IBOutletAttribute";
+
 		public const String OBJECTIVE_C_CLASS = "Monobjc.ObjectiveCClassAttribute";
 
 		public const String OBJECTIVE_C_PROTOCOL = "Monobjc.ObjectiveCProtocolAttribute";
