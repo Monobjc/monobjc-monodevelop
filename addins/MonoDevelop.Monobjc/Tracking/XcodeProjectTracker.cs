@@ -31,7 +31,12 @@ namespace MonoDevelop.Monobjc.Tracking
 {
 	public class XcodeProjectTracker : ProjectTracker
 	{
+		private const String GROUP_CLASSES = "Classes";
+		private const String GROUP_RESOURCES = "Resources";
+		private const String GROUP_FRAMEWORKS = "Frameworks";
+		private const String CONFIGURATION_RELEASE = "Release";
 		private XcodeProject xcodeProject;
+		private Object syncRoot = new Object ();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="XcodeProjectTracker"/> class.
@@ -58,8 +63,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			base.Dispose ();
 		}
 		
-		internal FilePath ProjectFolder
-		{
+		internal FilePath ProjectFolder {
 			get { return this.XcodeProject.ProjectFolder; }
 		}
 		
@@ -84,22 +88,24 @@ namespace MonoDevelop.Monobjc.Tracking
 				return;
 			}
 			
-			foreach (IType type in types) {
-				FilePath headerFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".h");
-				FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
+			lock (this.syncRoot) {
+				foreach (IType type in types) {
+					FilePath headerFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".h");
+					FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
 				
-				using(StreamWriter writer = new StreamWriter(headerFile)) {
-					ObjectiveCHeaderWriter headerWriter = new ObjectiveCHeaderWriter(this.Project);
-					headerWriter.Write(writer, type);
+					using (StreamWriter writer = new StreamWriter(headerFile)) {
+						ObjectiveCHeaderWriter headerWriter = new ObjectiveCHeaderWriter (this.Project);
+						headerWriter.Write (writer, type);
+					}
+				
+					using (StreamWriter writer = new StreamWriter(sourceFile)) {
+						ObjectiveCSourceWriter headerWriter = new ObjectiveCSourceWriter (this.Project);
+						headerWriter.Write (writer, type);
+					}
+				
+					this.XcodeProject.AddFile (GROUP_CLASSES, headerFile, this.TargetName);
+					this.XcodeProject.AddFile (GROUP_CLASSES, sourceFile, this.TargetName);
 				}
-				
-				using(StreamWriter writer = new StreamWriter(sourceFile)) {
-					ObjectiveCSourceWriter headerWriter = new ObjectiveCSourceWriter(this.Project);
-					headerWriter.Write(writer, type);
-				}
-				
-				this.XcodeProject.AddFile ("Classes", headerFile, this.TargetName);
-				this.XcodeProject.AddFile ("Classes", sourceFile, this.TargetName);
 			}
 			
 			this.SaveProject (false);
@@ -114,15 +120,17 @@ namespace MonoDevelop.Monobjc.Tracking
 				return;
 			}
 			
-			foreach (IType type in types) {
-				FilePath headerFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".h");
-				FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
+			lock (this.syncRoot) {
+				foreach (IType type in types) {
+					FilePath headerFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".h");
+					FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
 				
-				File.Delete (headerFile);
-				File.Delete (sourceFile);
+					File.Delete (headerFile);
+					File.Delete (sourceFile);
 				
-				this.XcodeProject.RemoveFile ("Classes", headerFile, this.TargetName);
-				this.XcodeProject.RemoveFile ("Classes", sourceFile, this.TargetName);
+					this.XcodeProject.RemoveFile (GROUP_CLASSES, headerFile, this.TargetName);
+					this.XcodeProject.RemoveFile (GROUP_CLASSES, sourceFile, this.TargetName);
+				}
 			}
 			
 			this.SaveProject (false);
@@ -130,38 +138,19 @@ namespace MonoDevelop.Monobjc.Tracking
 		
 		protected override void HandleFileAddedToProject (object sender, ProjectFileEventArgs e)
 		{
-			if (!this.IsEnabled) {
+			if (!this.IsReady) {
 				return;
 			}
-			
-			// Balk if the project is being deserialized
-			if (this.Project.Loading) {
-				return;
-			}
-
-			// Handle the following:
-			// - *.xib files
-			// - Info.plist files
 #if MD_2_4
             ProjectFile projectFile = e.ProjectFile;
-            if (BuildHelper.IsXIBFile(projectFile))
-            {
-            }
+			this.AddResource(projectFile);
 #endif
 #if MD_2_6
 			foreach(ProjectFileEventInfo info in e)
 			{
 	            ProjectFile projectFile = info.ProjectFile;
 				LoggingService.LogInfo ("XcodeProjectTracker::HandleFileAddedToProject " + projectFile.FilePath);				
-				
-				if ("Info.plist".Equals(projectFile.FilePath.FileName))
-				{
-					this.XcodeProject.AddFile("Resources", projectFile.FilePath);
-				}
-	            else if (BuildHelper.IsXIBFile(projectFile))
-	            {
-					this.XcodeProject.AddFile("Resources", projectFile.FilePath, this.TargetName);
-	            }
+				this.AddResource(projectFile);
 			}
 #endif
 			this.SaveProject (true);
@@ -169,38 +158,19 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		protected override void HandleFileRemovedFromProject (object sender, ProjectFileEventArgs e)
 		{
-			if (!this.IsEnabled) {
+			if (!this.IsReady) {
 				return;
-			}
-			
-			// Balk if the project is being deserialized
-			if (this.Project.Loading) {
-				return;
-			}
-			
-			// Handle the following:
-			// - *.xib files
-			// - Info.plist files
+			}			
 #if MD_2_4
             ProjectFile projectFile = e.ProjectFile;
-            if (BuildHelper.IsXIBFile(projectFile))
-            {
-            }
+			this.RemoveResource(projectFile);
 #endif
 #if MD_2_6
 			foreach(ProjectFileEventInfo info in e)
 			{
 	            ProjectFile projectFile = info.ProjectFile;
 				LoggingService.LogInfo ("XcodeProjectTracker::HandleFileRemovedFromProject " + projectFile.FilePath);				
-				
-				if ("Info.plist".Equals(projectFile.FilePath.FileName))
-				{
-					this.XcodeProject.RemoveFile("Resources", projectFile.FilePath);
-				}
-	            else if (BuildHelper.IsXIBFile(projectFile))
-	            {
-					this.XcodeProject.RemoveFile("Resources", projectFile.FilePath, this.TargetName);
-	            }
+				this.RemoveResource(projectFile);
 			}
 #endif
 			this.SaveProject (false);
@@ -210,23 +180,22 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 			switch (e.Key) {
 			case DeveloperToolsDesktopApplication.DEVELOPER_TOOLS:
-#if DEBUG
 				LoggingService.LogInfo ("XcodeProjectTracker::PropertyService_PropertyChanged " + e.Key);
-#endif
-				this.SaveProject (true);
 				break;
 			default:
-				break;
+				return;
 			}
+			
+			if (!this.IsReady) {
+				return;
+			}
+			
+			this.SaveProject (true);
 		}
 		
 		private void HandleProjectDomServiceTypesUpdated (object sender, TypeUpdateInformationEventArgs e)
 		{
-			if (e.Project != this.Project) {
-				return;
-			}
-			
-			if (!this.IsEnabled) {
+			if (!this.IsEnabled || e.Project != this.Project) {
 				return;
 			}
 			
@@ -261,19 +230,13 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		private void HandleProjectNameChanged (object sender, SolutionItemRenamedEventArgs e)
 		{
-			if (!this.IsEnabled) {
+			if (!this.IsReady) {
 				return;
 			}
 			
-			// Balk if the project is being deserialized
-			if (this.Project.Loading) {
-				return;
-			}
-			
-			// Rename Xcode project
 			LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectNameChanged");
 			
-			this.XcodeProject.Delete();
+			this.XcodeProject.Delete ();
 			this.XcodeProject = null;
 			
 			this.SaveProject (true);
@@ -281,17 +244,16 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		private void HandleProjectModified (object sender, SolutionItemModifiedEventArgs e)
 		{
-			if (!this.IsEnabled) {
-				return;
-			}
-			
-			// Balk if the project is being deserialized
-			if (this.Project.Loading) {
+			if (!this.IsReady) {
 				return;
 			}
 			
 			bool frameworksChanged = false;
 #if MD_2_4
+			if (e.SolutionItem == this.Project &&
+				e.Hint == "MacOSFrameworks") {
+				frameworksChanged = true;
+			}
 #endif
 #if MD_2_6
 			foreach(SolutionItemModifiedEventInfo info in e) {
@@ -317,6 +279,12 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 		}
 		
+		private bool IsReady {
+			get {
+				return this.IsEnabled && !this.Project.Loading;
+			}
+		}
+		
 		private XcodeProject XcodeProject {
 			get {
 				lock (this) {
@@ -327,20 +295,19 @@ namespace MonoDevelop.Monobjc.Tracking
 						
 						this.xcodeProject.Document.Project.ProjectRoot = "../..";
 						
-						this.xcodeProject.AddGroup ("Classes");
-						this.xcodeProject.AddGroup ("Resources");
-						this.xcodeProject.AddGroup ("Frameworks");
+						this.xcodeProject.AddGroup (GROUP_CLASSES);
+						this.xcodeProject.AddGroup (GROUP_RESOURCES);
+						this.xcodeProject.AddGroup (GROUP_FRAMEWORKS);
 						
 						// Set default settings
-						// TODO: Constant
-						this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "ARCHS", "$(ARCHS_STANDARD_32_64_BIT)");
-						this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "SDKROOT", "macosx");
-						this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "GCC_VERSION", "com.apple.compilers.llvm.clang.1_0");
-						this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "MACOSX_DEPLOYMENT_TARGET", "10.6");
-						this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "GCC_C_LANGUAGE_STANDARD", "gnu99");
-						this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "GCC_WARN_64_TO_32_BIT_CONVERSION", "YES");
-						this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "GCC_WARN_ABOUT_RETURN_TYPE", "YES");
-						this.xcodeProject.AddBuildConfigurationSettings ("Release", null, "GCC_WARN_UNUSED_VARIABLE", "YES");
+						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "ARCHS", "$(ARCHS_STANDARD_32_64_BIT)");
+						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "SDKROOT", "macosx");
+						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "GCC_VERSION", "com.apple.compilers.llvm.clang.1_0");
+						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "MACOSX_DEPLOYMENT_TARGET", "10.6");
+						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "GCC_C_LANGUAGE_STANDARD", "gnu99");
+						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "GCC_WARN_64_TO_32_BIT_CONVERSION", "YES");
+						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "GCC_WARN_ABOUT_RETURN_TYPE", "YES");
+						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "GCC_WARN_UNUSED_VARIABLE", "YES");
 	
 						// Add the main target
 						CompileTarget compileTarget = this.Project.CompileTarget;
@@ -348,14 +315,13 @@ namespace MonoDevelop.Monobjc.Tracking
 						case CompileTarget.Exe:
 							this.xcodeProject.AddTarget (targetName, PBXProductType.Application);
 							
-							// TODO: Constant
-							this.xcodeProject.AddBuildConfigurationSettings ("Release", targetName, "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
-							this.xcodeProject.AddBuildConfigurationSettings ("Release", targetName, "COPY_PHASE_STRIP", "YES");
-							this.xcodeProject.AddBuildConfigurationSettings ("Release", targetName, "INFOPLIST_FILE", "../../Info.plist");
-							this.xcodeProject.AddBuildConfigurationSettings ("Release", targetName, "PRODUCT_NAME", "$(TARGET_NAME)");
-							this.xcodeProject.AddBuildConfigurationSettings ("Release", targetName, "WRAPPER_EXTENSION", "app");
-							this.xcodeProject.AddBuildConfigurationSettings ("Release", targetName, "ALWAYS_SEARCH_USER_PATHS", "NO");
-							this.xcodeProject.AddBuildConfigurationSettings ("Release", targetName, "GCC_ENABLE_OBJC_EXCEPTIONS", "YES");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "COPY_PHASE_STRIP", "YES");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "INFOPLIST_FILE", "../../Info.plist");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "PRODUCT_NAME", "$(TARGET_NAME)");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "WRAPPER_EXTENSION", "app");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "ALWAYS_SEARCH_USER_PATHS", "NO");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "GCC_ENABLE_OBJC_EXCEPTIONS", "YES");
 							break;
 						case CompileTarget.Library:
 							this.xcodeProject.AddTarget (targetName, PBXProductType.LibraryDynamic);
@@ -399,11 +365,21 @@ namespace MonoDevelop.Monobjc.Tracking
 		private void AddResources ()
 		{
 			foreach (ProjectFile projectFile in this.Project.Files) {
-				if ("Info.plist".Equals (projectFile.FilePath.FileName)) {
-					this.XcodeProject.AddFile ("Resources", projectFile.FilePath);
-				} else if (BuildHelper.IsXIBFile (projectFile)) {
-					this.XcodeProject.AddFile ("Resources", projectFile.FilePath, this.TargetName);
-				}
+				this.AddResource (projectFile);
+			}
+		}
+		
+		private void AddResource (ProjectFile projectFile)
+		{
+			if (BuildHelper.IsInfoPlist (projectFile) || BuildHelper.IsXIBFile (projectFile) || BuildHelper.IsStringsFile (projectFile)) {
+				this.XcodeProject.AddFile (GROUP_RESOURCES, projectFile.FilePath, this.TargetName);
+			}
+		}
+		
+		private void RemoveResource (ProjectFile projectFile)
+		{
+			if (BuildHelper.IsInfoPlist (projectFile) || BuildHelper.IsXIBFile (projectFile) || BuildHelper.IsStringsFile (projectFile)) {
+				this.XcodeProject.RemoveFile (GROUP_RESOURCES, projectFile.FilePath);
 			}
 		}
 		
@@ -411,15 +387,14 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 			IList<String > frameworks = new List<String> (this.XcodeProject.GetFrameworks (this.TargetName));
 			foreach (String framework in frameworks) {
-				this.XcodeProject.RemoveFramework ("Frameworks", framework, this.TargetName);
+				this.XcodeProject.RemoveFramework (GROUP_FRAMEWORKS, framework, this.TargetName);
 			}
 		}
 		
 		private void AddFrameworks ()
 		{
 			foreach (String framework in this.Project.OSFrameworks.Split(';')) {
-				// TODO: Constant
-				this.XcodeProject.AddFramework ("Frameworks", framework, this.TargetName);
+				this.XcodeProject.AddFramework (GROUP_FRAMEWORKS, framework, this.TargetName);
 			}
 		}
 	}

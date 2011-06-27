@@ -31,8 +31,22 @@ namespace MonoDevelop.Monobjc.Utilities
 	/// </summary>
 	public static class BuildHelper
 	{
+		private const String INFO_PLIST = "Info.plist";
+		
 		public static String[] groupedExtensions = new[] { ".cs" };
-
+		
+		/// <summary>
+		///   Determines whether the specified filename is an Info.plist file.
+		/// </summary>
+		/// <param name = "filename">The filename.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is an Info.plist file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsInfoPlist(ProjectFile projectFile)
+		{
+			return ("Info.plist".Equals (projectFile.FilePath.FileName));
+		}
+		
 		/// <summary>
 		///   Determines whether the specified filename is a XIB file.
 		/// </summary>
@@ -57,6 +71,32 @@ namespace MonoDevelop.Monobjc.Utilities
 		{
 			String extension = file.FilePath.Extension;
 			return String.Equals (".xib", extension) && (file.BuildAction == BuildAction.Page);
+		}
+		
+		/// <summary>
+		///   Determines whether the specified filename is a strings file.
+		/// </summary>
+		/// <param name = "filename">The file.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is a strings file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsStringsFile (String filename)
+		{
+			String extension = Path.GetExtension (filename);
+			return String.Equals (".strings", extension);
+		}
+		
+		/// <summary>
+		///   Determines whether the specified filename is a strings file.
+		/// </summary>
+		/// <param name = "file">The file.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is a strings file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsStringsFile (ProjectFile file)
+		{
+			String extension = file.FilePath.Extension;
+			return String.Equals (".strings", extension) && (file.BuildAction == BuildAction.Content);
 		}
 
 		/// <summary>

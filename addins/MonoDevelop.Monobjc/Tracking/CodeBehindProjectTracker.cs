@@ -53,7 +53,7 @@ namespace MonoDevelop.Monobjc.Tracking
         public void GenerateFrameworkLoadingCode(String[] frameworks, bool defer)
         {
 			// Don't generate anything if the project is not ready
-			if (!this.IsProjectReady) {
+			if (!this.IsDomReady) {
 				LoggingService.LogInfo("CodeBehindProjectTracker => Project is not ready yet");
 				return;
 			}
@@ -92,7 +92,7 @@ namespace MonoDevelop.Monobjc.Tracking
         public void GenerateDesignCode(FilePath file, bool defer)
         {
 			// Don't generate anything if the project is not ready
-			if (!this.IsProjectReady) {
+			if (!this.IsDomReady) {
 #if DEBUG
 				LoggingService.LogInfo("Project is not ready yet");
 #endif

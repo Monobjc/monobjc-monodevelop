@@ -152,7 +152,13 @@ namespace MonoDevelop.Monobjc
         /// <returns></returns>
         public override String GetDefaultBuildAction(String fileName)
         {
-            return BuildHelper.IsXIBFile(fileName) ? BuildAction.Page : base.GetDefaultBuildAction(fileName);
+			if (BuildHelper.IsXIBFile(fileName)) {
+				return BuildAction.Page;
+			}
+			if (BuildHelper.IsStringsFile(fileName)) {
+				return BuildAction.Content;
+			}
+            return base.GetDefaultBuildAction(fileName);
         }
 
         /// <summary>

@@ -69,7 +69,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <value>
 		/// <c>true</c> if this project ready; otherwise, <c>false</c>.
 		/// </value>
-		protected bool IsProjectReady
+		protected bool IsDomReady
 		{
 			get { return ProjectDomService.HasDom(this.Project); }
 		}
