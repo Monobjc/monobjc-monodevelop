@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<Template Originator="Laurent Etiemble" Created="2010/10/27">
+	
+	<!-- Template Header -->
+	<TemplateConfiguration>
+	  <_Name>Strings File</_Name>
+    	<Icon>md-monobjc-strings</Icon>
+	  <_Category>Monobjc</_Category>
+	  <LanguageName>*</LanguageName>
+	  <ProjectType>Monobjc</ProjectType>
+	  <_Description>A file that contains localizable content.</_Description>
+	</TemplateConfiguration>
+	
+	<!-- Template Content -->
+	<TemplateFiles>
+	  <File name="${Name}.strings">
+<![CDATA[/*
+ * ${Name}.strings file
+ *
+ * Insert your localized content as key/value pairs
+ */
+
+"Monobjc" = "Monobjc";]]>
+		</File>
+	</TemplateFiles>
+	
+</Template>

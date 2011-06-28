@@ -16,6 +16,7 @@
     <Import file="Templates/MonobjcFileDefinitionPList.xft.xml"/>
     <Import file="Templates/MonobjcFileInfoPList.xft.xml"/>
     <Import file="Templates/MonobjcFileInfoPListDocument.xft.xml"/>
+    <Import file="Templates/MonobjcFileLocalizableStrings.xft.xml"/>
     <Import file="Templates/MonobjcFileNSObject.xft.xml"/>
     <Import file="Templates/MonobjcFileNSView.xft.xml"/>
     <Import file="Templates/MonobjcProjectCocoaApplication.xpt.xml"/>
@@ -44,6 +45,8 @@
                   file="Templates/MonobjcFileInfoPListDocument.xft.xml"/>
     <FileTemplate id="MonobjcFileInfoPList"
                   file="Templates/MonobjcFileInfoPList.xft.xml"/>
+    <FileTemplate id="MonobjcFileLocalizableStrings"
+                  file="Templates/MonobjcFileLocalizableStrings.xft.xml"/>
     <FileTemplate id="MonobjcFileNSObject"
                   file="Templates/MonobjcFileNSObject.xft.xml"/>
     <FileTemplate id="MonobjcFileNSView"
@@ -167,6 +170,7 @@
     <StockIcon stockid="md-monobjc-class" icon="md-class-file" size="Dnd" />
     <StockIcon stockid="md-monobjc-protocol" icon="md-interface-file" size="Dnd" />
     <StockIcon stockid="md-monobjc-plist" icon="md-text-file-icon" size="Dnd" />
+    <StockIcon stockid="md-monobjc-strings" icon="md-text-file-icon" size="Dnd" />
   </Extension>
 
   <!-- Extension point for CodeBehind -->
