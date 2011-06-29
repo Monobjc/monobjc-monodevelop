@@ -172,6 +172,11 @@ namespace MonoDevelop.Monobjc
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::CreateExecutionCommand");
 #endif
+            if (this.CompileTarget != CompileTarget.Exe)
+            {
+                return base.CreateExecutionCommand(configSel, configuration);
+            }
+			
             MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) configuration;
 
             // Infer application name from configuration

@@ -253,25 +253,42 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 			
 			bool frameworksChanged = false;
+			bool referencesChanged = false;
 #if MD_2_4
-			if (e.SolutionItem == this.Project &&
-				e.Hint == "MacOSFrameworks") {
+			switch(e.Hint) {
+			case "References":
+				referencesChanged = true;
+				break;
+			case "MacOSFrameworks":
 				frameworksChanged = true;
+				break;
+			default:
+				break;
 			}
 #endif
 #if MD_2_6
 			foreach(SolutionItemModifiedEventInfo info in e) {
-				if (info.SolutionItem == this.Project &&
-					info.Hint == "MacOSFrameworks") {
+				switch(info.Hint) {
+				case "References":
+					referencesChanged = true;
+					break;
+				case "MacOSFrameworks":
 					frameworksChanged = true;
+					break;
+				default:
+					break;
 				}
 			}
 #endif
+			if (referencesChanged) {
+				this.ClearProjectReferences();
+				this.AddProjectReferences();
+			}
 			if (frameworksChanged) {
-				LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectModified");
-			
 				this.ClearFrameworks ();
 				this.AddFrameworks ();
+			}
+			if (referencesChanged || frameworksChanged) {
 				this.SaveProject (true);
 			}
 		}
@@ -318,7 +335,6 @@ namespace MonoDevelop.Monobjc.Tracking
 						switch (compileTarget) {
 						case CompileTarget.Exe:
 							this.xcodeProject.AddTarget (targetName, PBXProductType.Application);
-							
 							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
 							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "COPY_PHASE_STRIP", "YES");
 							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "INFOPLIST_FILE", "../../Info.plist");
@@ -329,7 +345,13 @@ namespace MonoDevelop.Monobjc.Tracking
 							break;
 						case CompileTarget.Library:
 							this.xcodeProject.AddTarget (targetName, PBXProductType.LibraryDynamic);
-							
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "ALWAYS_SEARCH_USER_PATHS", "NO");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "COPY_PHASE_STRIP", "YES");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "DEBUG_INFORMATION_FORMAT", "dwarf-with-dsym");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "DYLIB_COMPATIBILITY_VERSION", "1");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "DYLIB_CURRENT_VERSION", "1");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "GCC_ENABLE_OBJC_EXCEPTIONS", "YES");
+							this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, targetName, "PRODUCT_NAME", "$(TARGET_NAME)");
 							break;
 						default:
 							throw new NotSupportedException ();
@@ -338,6 +360,7 @@ namespace MonoDevelop.Monobjc.Tracking
 						this.AddClasses ();
 						this.AddResources ();
 						this.AddFrameworks ();
+						this.AddProjectReferences();
 					}
 					return this.xcodeProject;
 				}
@@ -400,6 +423,14 @@ namespace MonoDevelop.Monobjc.Tracking
 			foreach (String framework in this.Project.OSFrameworks.Split(';')) {
 				this.XcodeProject.AddFramework (GROUP_FRAMEWORKS, framework, this.TargetName);
 			}
+		}
+		
+		private void ClearProjectReferences ()
+		{
+		}
+		
+		private void AddProjectReferences ()
+		{
 		}
 	}
 }
