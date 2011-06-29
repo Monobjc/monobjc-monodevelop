@@ -90,9 +90,11 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			lock (this.syncRoot) {
 				foreach (IType type in types) {
+					Directory.CreateDirectory(this.OutputFolder);
+				
 					FilePath headerFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".h");
 					FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
-				
+					
 					using (StreamWriter writer = new StreamWriter(headerFile)) {
 						ObjectiveCHeaderWriter headerWriter = new ObjectiveCHeaderWriter (this.Project);
 						headerWriter.Write (writer, type);
@@ -122,6 +124,8 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			lock (this.syncRoot) {
 				foreach (IType type in types) {
+					Directory.CreateDirectory(this.OutputFolder);
+				
 					FilePath headerFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".h");
 					FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
 				
