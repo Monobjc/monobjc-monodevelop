@@ -90,6 +90,7 @@ namespace MonoDevelop.Monobjc.Gui
 			// - Xcode 4.1 => 10.6/10.7 - i386/x86_64
 			Version version = DeveloperToolsDesktopApplication.DeveloperToolsVersion;
 			bool isXcode4 = version != null && version.Major >= 4;
+			bool isXcode41 = isXcode4 && version.Minor >= 1;
 			
 			// Set up the SDKs
 			ListStore versionStore = (ListStore)this.comboboxVersion.Model;
@@ -98,6 +99,9 @@ namespace MonoDevelop.Monobjc.Gui
 				versionStore.AppendValues ("Mac OS X 10.5", MacOSVersion.MacOS105);
 			}
 			versionStore.AppendValues ("Mac OS X 10.6", MacOSVersion.MacOS106);
+			if (!isXcode41) {
+				versionStore.AppendValues ("Mac OS X 10.7", MacOSVersion.MacOS107);
+			}
 			
 			// Set the base folder and retrieve the main NIB file
 			this.filechooserbuttonMainNib.SetCurrentFolder (project.BaseDirectory.ToString ());

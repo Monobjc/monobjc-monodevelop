@@ -162,6 +162,9 @@ namespace MonoDevelop.Monobjc
                 case MacOSVersion.MacOS106:
                     version = new Version(10, 6);
                     break;
+                case MacOSVersion.MacOS107:
+                    version = new Version(10, 7);
+                    break;
                 default:
                     version = new Version(10, 0);
                     break;
