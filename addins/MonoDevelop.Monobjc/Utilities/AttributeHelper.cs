@@ -18,6 +18,8 @@
 using System;
 using System.CodeDom;
 using System.Linq;
+using Mono.Cecil;
+using Mono.Collections.Generic;
 using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.Monobjc.Utilities
@@ -38,6 +40,8 @@ namespace MonoDevelop.Monobjc.Utilities
 		public const String OBJECTIVE_C_MESSAGE = "Monobjc.ObjectiveCMessageAttribute";
 
 		public const String OBJECTIVE_C_IVAR = "Monobjc.ObjectiveCIVarAttribute";
+
+		public const String OBJECTIVE_C_FRAMEWORK = "Monobjc.ObjectiveCFrameworkAttribute";
 
 		/// <summary>
 		///   Returns the attribute with the given full name if it exists.
@@ -97,5 +101,48 @@ namespace MonoDevelop.Monobjc.Utilities
 			}
 			return expression.Value.ToString ();
 		}
+		
+		public static bool IsWrappingFramework(String assemblyPath, out bool systemFramework)
+        {
+            systemFramework = false;
+            AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyPath);
+
+            // Balk if the assembly has no custom attribute
+            if (!assemblyDefinition.HasCustomAttributes)
+            {
+                return false;
+            }
+
+            CustomAttribute frameworkAttribute = null;
+            Collection<CustomAttribute> attributes = assemblyDefinition.CustomAttributes;
+            foreach (CustomAttribute attribute in attributes)
+            {
+                String fullType = attribute.Constructor.DeclaringType.ToString();
+                if (String.Equals(fullType, OBJECTIVE_C_FRAMEWORK))
+                {
+                    frameworkAttribute = attribute;
+                    break;
+                }
+            }
+
+            // Return false if no framework attribute is found
+            if (frameworkAttribute == null)
+            {
+                return false;
+            }
+
+            // Retrieve the attribute parameters
+            Collection<CustomAttributeArgument> list = frameworkAttribute.ConstructorArguments;
+            if (list.Count == 0)
+            {
+                return false;
+            }
+
+            // Set if this assembly wraps a system framework
+            String value = list[0].Value.ToString();
+            systemFramework = Boolean.Parse(value);
+
+            return true;
+        }
 	}
 }

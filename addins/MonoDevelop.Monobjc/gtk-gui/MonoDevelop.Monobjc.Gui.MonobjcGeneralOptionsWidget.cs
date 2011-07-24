@@ -129,6 +129,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.treeviewFrameworks = new global::Gtk.TreeView ();
 			this.treeviewFrameworks.CanFocus = true;
 			this.treeviewFrameworks.Name = "treeviewFrameworks";
+			this.treeviewFrameworks.HeadersVisible = false;
 			this.scrolledwindowFrameworks.Add (this.treeviewFrameworks);
 			this.table1.Add (this.scrolledwindowFrameworks);
 			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.scrolledwindowFrameworks]));

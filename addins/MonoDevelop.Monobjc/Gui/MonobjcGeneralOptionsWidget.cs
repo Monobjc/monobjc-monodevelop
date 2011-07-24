@@ -64,7 +64,6 @@ namespace MonoDevelop.Monobjc.Gui
 			column.AddAttribute (nameRenderer, "text", 2);
 			
 			this.treeviewFrameworks.AppendColumn (column);
-			this.treeviewFrameworks.HeadersVisible = false;
 		}
 
 		/// <summary>
@@ -99,7 +98,7 @@ namespace MonoDevelop.Monobjc.Gui
 				versionStore.AppendValues ("Mac OS X 10.5", MacOSVersion.MacOS105);
 			}
 			versionStore.AppendValues ("Mac OS X 10.6", MacOSVersion.MacOS106);
-			if (!isXcode41) {
+			if (isXcode41) {
 				versionStore.AppendValues ("Mac OS X 10.7", MacOSVersion.MacOS107);
 			}
 			

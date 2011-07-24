@@ -18,6 +18,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Reflection;
 using Gtk;
 using Monobjc.Tools.External;
@@ -25,6 +27,8 @@ using Monobjc.Tools.Utilities;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
+using MonoDevelop.Ide;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -55,7 +59,30 @@ namespace MonoDevelop.Monobjc.Gui
 			PopulateCertificates (this.comboboxPackagingCertificates, this.identities, GettextCatalog.GetString ("(Don't Sign Package)"));
 			
 			this.checkbuttonPackage.Toggled += this.HandleCheckbuttonPackagehandleToggled;
-			this.HandleCheckbuttonPackagehandleToggled(this, EventArgs.Empty);
+			this.HandleCheckbuttonPackagehandleToggled (this, EventArgs.Empty);
+			
+			this.treeviewEmbeddedFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
+			
+			TreeViewColumn column = new TreeViewColumn ();
+			
+			CellRendererToggle checkRenderer = new CellRendererToggle ();
+			checkRenderer.Toggled += this.HandleCheckRendererToggled;
+			column.PackStart (checkRenderer, false);
+			column.AddAttribute (checkRenderer, "active", 0);
+			
+			CellRendererPixbuf iconRenderer = new CellRendererPixbuf ();
+			column.PackStart (iconRenderer, false);
+			column.AddAttribute (iconRenderer, "pixbuf", 1);
+			
+			CellRendererText nameRenderer = new CellRendererText ();
+			column.PackStart (nameRenderer, true);
+			column.AddAttribute (nameRenderer, "text", 2);
+			
+			this.treeviewEmbeddedFrameworks.AppendColumn (column);
+			
+			this.treeviewAdditionnalAssemblies.Model = new TreeStore (typeof(String));
+			this.treeviewExcludedAssemblies.Model = new TreeStore (typeof(String));
+			this.treeviewAdditionnalLibraries.Model = new TreeStore (typeof(String));
 		}
 
 		/// <summary>
@@ -67,6 +94,7 @@ namespace MonoDevelop.Monobjc.Gui
 			if (project == null) {
 				throw new ArgumentNullException ("project");
 			}
+			TreeStore store;
 			
 			// Retrieve the target architecture
 			this.TargetOSArch = project.TargetOSArch;
@@ -80,13 +108,46 @@ namespace MonoDevelop.Monobjc.Gui
 			// Retrieve the packaging certificate
 			this.ArchiveIdentity = project.ArchiveIdentity;
 			
-			// Retrieve the additionnal assemblies
-			
-			// Retrieve the excluded assemblies
+			// Populate the additional frameworks
+			store = (TreeStore)this.treeviewEmbeddedFrameworks.Model;
+			store.Clear ();
+			foreach (ProjectReference reference in project.ProjectMonobjcAssemblies) {
+				FilePath location = null;
+				String name = null;
+				if (reference.ReferenceType == ReferenceType.Assembly) {
+					location = reference.Reference;
+					name = location;
+				} else if (reference.ReferenceType == ReferenceType.Gac) {
+					location = project.AssemblyContext.GetAssemblyLocation (reference.Reference, project.TargetFramework);
+					name = location.FileNameWithoutExtension;
+				}
+				if (location == null) {
+					continue;
+				}
+				if (!File.Exists (location)) {
+					continue;
+				}
+				bool systemFramework;
+				if (!AttributeHelper.IsWrappingFramework (location, out systemFramework)) {
+					continue;
+				}
+				if (systemFramework) {
+					continue;
+				}
+				store.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), name.Substring ("Monobjc.".Length));
+			}
 			
 			// Retrieve the additional frameworks
+			this.EmbeddedFrameworks = project.EmbeddedFrameworks;
+			
+			// Retrieve the additionnal assemblies
+			this.AdditionalAssemblies = project.AdditionalAssemblies;
+			
+			// Retrieve the excluded assemblies
+			this.ExcludedAssemblies = project.ExcludedAssemblies;
 			
 			// Retrieve the additional libraries
+			this.AdditionalLibraries = project.AdditionalLibraries;			
 		}
 
 		/// <summary>
@@ -110,6 +171,18 @@ namespace MonoDevelop.Monobjc.Gui
 
 			// Save the packaging certificate
 			project.ArchiveIdentity = this.ArchiveIdentity;
+			
+			// Save the embedded frameworks
+			project.EmbeddedFrameworks = this.EmbeddedFrameworks;
+			
+			// Save the additionnal assemblies
+			project.AdditionalAssemblies = this.AdditionalAssemblies;
+			
+			// Save the excluded assemblies
+			project.ExcludedAssemblies = this.ExcludedAssemblies;
+			
+			// Save the additional libraries
+			project.AdditionalLibraries = this.AdditionalLibraries;
 		}
 
 		/// <summary>
@@ -156,7 +229,7 @@ namespace MonoDevelop.Monobjc.Gui
 			get { return this.checkbuttonPackage.Active; }
 			set { 
 				this.checkbuttonPackage.Active = value; 
-				this.HandleCheckbuttonPackagehandleToggled(this, EventArgs.Empty);
+				this.HandleCheckbuttonPackagehandleToggled (this, EventArgs.Empty);
 			}
 		}
 
@@ -202,12 +275,12 @@ namespace MonoDevelop.Monobjc.Gui
 			ListStore archStore = (ListStore)combobox.Model;
 			archStore.Clear ();
 			
-			MacOSArchitecture architecture = Lipo.GetArchitecture("/usr/bin/mono");
+			MacOSArchitecture architecture = Lipo.GetArchitecture ("/usr/bin/mono");
 			if (architecture == MacOSArchitecture.None) {
 				// Humm, there was an error, so add only i386
 				archStore.AppendValues ("Intel i386 (32 bits)", MacOSArchitecture.X86);
 			} else {
-				LoggingService.LogInfo("Detected architecture " + architecture);
+				LoggingService.LogInfo ("Detected architecture " + architecture);
 			}
 			
 			// Retrieve some information about the developer tools
@@ -265,6 +338,128 @@ namespace MonoDevelop.Monobjc.Gui
 		private void HandleCheckbuttonPackagehandleToggled (object sender, EventArgs e)
 		{
 			this.comboboxPackagingCertificates.Sensitive = this.checkbuttonPackage.Active;
+		}
+
+		/// <summary>
+		/// Gets or sets the embedded frameworks.
+		/// </summary>
+		private String EmbeddedFrameworks {
+			get {
+				IList<String > frameworks = new List<string> ();
+				TreeStore store = (TreeStore)this.treeviewEmbeddedFrameworks.Model;
+				TreeIter iter;
+				if (!store.GetIterFirst (out iter)) {
+					return null;
+				}
+				do {
+					String framework = (String)store.GetValue (iter, 2);
+					bool state = (bool)store.GetValue (iter, 0);
+					if (state) {
+						frameworks.Add (framework);
+					}
+					
+					if (!store.IterNext (ref iter)) {
+						break;
+					}
+				} while (true);
+				
+				return String.Join (";", frameworks.ToArray ());
+			}
+			set {
+				string[] frameworks = (value ?? "").Split (' ', ',', ';');
+				TreeStore store = (TreeStore)this.treeviewEmbeddedFrameworks.Model;
+				TreeIter iter;
+				if (!store.GetIterFirst (out iter)) {
+					return;
+				}
+				do {
+					String framework = (String)store.GetValue (iter, 2);
+					bool state = frameworks.Contains (framework);
+					store.SetValue (iter, 0, state);
+					
+					if (!store.IterNext (ref iter)) {
+						break;
+					}
+				} while (true);
+			}
+		}
+		
+		private void HandleCheckRendererToggled (object o, ToggledArgs args)
+		{
+			TreeStore store = (TreeStore)this.treeviewEmbeddedFrameworks.Model;
+			TreeIter iter;
+			if (!store.GetIterFromString (out iter, args.Path)) {
+				return;
+			}
+			bool value = (bool)store.GetValue (iter, 0);
+			store.SetValue (iter, 0, !value);
+		}
+		
+		/// <summary>
+		/// Gets or sets the additional assemblies.
+		/// </summary>
+		private String AdditionalAssemblies {
+			get {
+				return this.ExtractFromModel (this.treeviewAdditionnalAssemblies.Model);
+			}
+			set {
+				this.InjectIntoModel (this.treeviewAdditionnalAssemblies.Model, value);
+			}
+		}
+		
+		/// <summary>
+		/// Gets or sets the additional assemblies.
+		/// </summary>
+		private String ExcludedAssemblies {
+			get {
+				return this.ExtractFromModel (this.treeviewExcludedAssemblies.Model);
+			}
+			set {
+				this.InjectIntoModel (this.treeviewExcludedAssemblies.Model, value);
+			}
+		}
+		
+		/// <summary>
+		/// Gets or sets the additional assemblies.
+		/// </summary>
+		private String AdditionalLibraries {
+			get {
+				return this.ExtractFromModel (this.treeviewAdditionnalLibraries.Model);
+			}
+			set {
+				this.InjectIntoModel (this.treeviewAdditionnalLibraries.Model, value);
+			}
+		}
+		
+		private String ExtractFromModel (TreeModel model)
+		{
+			TreeStore store = (TreeStore) model;
+			TreeIter iter;
+			if (!store.GetIterFirst (out iter)) {
+				return String.Empty;
+			}
+			IList<String > parts = new List<String> ();
+			do {
+				String part = (String)store.GetValue (iter, 0);
+				parts.Add (part);
+				if (!store.IterNext (ref iter)) {
+					break;
+				}
+			} while (true);
+			return String.Join (":", parts.ToArray ());
+		}
+		
+		private String InjectIntoModel (TreeModel model, String value)
+		{
+			TreeStore store = (TreeStore) model;
+			store.Clear ();
+			if (value != null) {
+				String[] parts = value.Split (new []{':'}, StringSplitOptions.RemoveEmptyEntries);
+				foreach (String part in parts) {
+					store.AppendValues (part);
+				}
+			}
+			return String.Empty;
 		}
 	}
 }
