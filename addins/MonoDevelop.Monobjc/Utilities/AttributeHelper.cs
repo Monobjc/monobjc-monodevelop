@@ -18,8 +18,6 @@
 using System;
 using System.CodeDom;
 using System.Linq;
-using Mono.Cecil;
-using Mono.Collections.Generic;
 using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.Monobjc.Utilities
@@ -104,6 +102,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		
 		public static bool IsWrappingFramework(String assemblyPath, out bool systemFramework)
         {
+			/*
             systemFramework = false;
             AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyPath);
 
@@ -143,6 +142,10 @@ namespace MonoDevelop.Monobjc.Utilities
             systemFramework = Boolean.Parse(value);
 
             return true;
+            */
+			systemFramework = true;
+			
+			return false;
         }
 	}
 }
