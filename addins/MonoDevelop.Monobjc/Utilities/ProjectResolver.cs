@@ -150,7 +150,40 @@ namespace MonoDevelop.Monobjc.Utilities
 				select t;
 			return types;
 		}
-
+		
+		/// <summary>
+		///   Returns the ProjectDom that contains a type with the given type.
+		/// </summary>
+		/// <param name = "fullName">The fully qualified name of the type.</param>
+		/// <returns>The ProjectDom that contains the type or null.</returns>
+		public ProjectDom GetOwnerDom(IReturnType type) {
+			return GetOwnerDom(type.FullName);
+		}
+		
+		/// <summary>
+		///   Returns the ProjectDom that contains a type with the given type.
+		/// </summary>
+		/// <param name = "fullName">The fully qualified name of the type.</param>
+		/// <returns>The ProjectDom that contains the type or null.</returns>
+		public ProjectDom GetOwnerDom(IType type) {
+			return GetOwnerDom(type.FullName);
+		}
+		
+		/// <summary>
+		///   Returns the ProjectDom that contains a type with the given full name.
+		/// </summary>
+		/// <param name = "fullName">The fully qualified name of the type.</param>
+		/// <returns>The ProjectDom that contains the type or null.</returns>
+		public ProjectDom GetOwnerDom(String fullName) {
+			foreach (ProjectDom dom in this.projectDoms) {
+				dom.ForceUpdate (true);
+				if (dom.Types.Any(t => t.FullName.Equals(fullName))) {
+					return dom;
+				}
+			}
+			return null;
+		}
+		
 		/// <summary>
 		///   Search for a type that has the given name.
 		/// </summary>

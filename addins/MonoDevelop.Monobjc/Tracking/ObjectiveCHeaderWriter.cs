@@ -20,53 +20,39 @@ using System.Collections.Generic;
 using System.IO;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects.Dom;
+using MonoDevelop.Projects.Dom.Parser;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
 	public class ObjectiveCHeaderWriter : ObjectiveCWriter
 	{
+		private ProjectResolver resolver;
+		
 		public ObjectiveCHeaderWriter (MonobjcProject project) : base(project)
 		{
+			this.resolver = new ProjectResolver(project);
 		}
 		
-		protected override void WriteOtherIncludes (TextWriter writer, string name)
-		{
-		}
-
 		protected override void WritePrologue (TextWriter writer, string name, string baseName)
 		{
 			writer.WriteLine ("@interface {0} : {1}", name, baseName);
 		}
 
-		protected override void WriteProperties (TextWriter writer, IEnumerable<IProperty> properties)
+		protected override void WriteProperties (TextWriter writer, IType type)
 		{
 			writer.WriteLine ("{");
 			
-			foreach (IProperty property in properties) {
-				if (!AttributeHelper.HasAttribute (property, AttributeHelper.IBOUTLET)) {
-					continue;
-				}
-				if (!AttributeHelper.HasAttribute (property, AttributeHelper.OBJECTIVE_C_IVAR)) {
-					continue;
-				}
+			foreach (IProperty property in this.GetProperties(type)) {
 				writer.WriteLine ("\tIBOutlet {0} *{1};", property.ReturnType.Name, property.Name);
 			}
 			
 			writer.WriteLine ("}");
 		}
 
-		protected override void WriteMethods (TextWriter writer, IEnumerable<IMethod> methods)
+		protected override void WriteMethods (TextWriter writer, IType type)
 		{
-			foreach (IMethod method in methods) {
-				if (!AttributeHelper.HasAttribute (method, AttributeHelper.IBACTION)) {
-					continue;
-				}
-				if (!AttributeHelper.HasAttribute (method, AttributeHelper.OBJECTIVE_C_MESSAGE)) {
-					continue;
-				}
-				if (method.Parameters.Count != 1) {
-					continue;
-				}
+			foreach (IMethod method in this.GetMethods(type)) {
 				String selector = AttributeHelper.GetAttributeValue (method, AttributeHelper.OBJECTIVE_C_MESSAGE);
 				writer.WriteLine ();
 				writer.WriteLine ("{0}(IBAction) {1}(id) sender;", method.IsStatic ? "+" : "-", selector);
@@ -78,5 +64,16 @@ namespace MonoDevelop.Monobjc.Tracking
 			writer.WriteLine ();
 			writer.WriteLine ("@end");
 		}		
+		
+		protected override IEnumerable<String> GetOtherImports (IType type)
+		{
+			foreach (IProperty property in this.GetProperties(type)) {
+				ProjectDom dom = this.resolver.GetOwnerDom(property.ReturnType);
+				Project project = dom != null ? dom.Project : null;
+				if (dom.Project != null) {
+					yield return String.Format("#import \"{0}.h\"", property.ReturnType.Name);
+				}
+			}
+		}
 	}
 }

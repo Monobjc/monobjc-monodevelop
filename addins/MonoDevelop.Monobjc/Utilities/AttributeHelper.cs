@@ -17,8 +17,11 @@
 //
 using System;
 using System.CodeDom;
+using System.Collections;
 using System.Linq;
+using Mono.Cecil;
 using MonoDevelop.Projects.Dom;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
@@ -102,7 +105,48 @@ namespace MonoDevelop.Monobjc.Utilities
 		
 		public static bool IsWrappingFramework(String assemblyPath, out bool systemFramework)
         {
-			/*
+#if MD_2_4
+            systemFramework = false;
+            AssemblyDefinition assemblyDefinition = AssemblyFactory.GetAssembly(assemblyPath);
+			
+            // Balk if the assembly has no custom attribute
+            if (!assemblyDefinition.HasCustomAttributes)
+            {
+                return false;
+            }
+			
+            CustomAttribute frameworkAttribute = null;
+			CustomAttributeCollection attributes = assemblyDefinition.CustomAttributes;
+            foreach (CustomAttribute attribute in attributes)
+            {
+                String fullType = attribute.Constructor.DeclaringType.ToString();
+                if (String.Equals(fullType, OBJECTIVE_C_FRAMEWORK))
+                {
+                    frameworkAttribute = attribute;
+                    break;
+                }
+            }
+
+            // Return false if no framework attribute is found
+            if (frameworkAttribute == null)
+            {
+                return false;
+            }
+
+            // Retrieve the attribute parameters
+			IList list = frameworkAttribute.ConstructorParameters;
+            if (list.Count == 0)
+            {
+                return false;
+            }
+
+            // Set if this assembly wraps a system framework
+            String value = list[0].ToString();
+            systemFramework = Boolean.Parse(value);
+
+            return true;
+#endif
+#if MD_2_6
             systemFramework = false;
             AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyPath);
 
@@ -142,10 +186,7 @@ namespace MonoDevelop.Monobjc.Utilities
             systemFramework = Boolean.Parse(value);
 
             return true;
-            */
-			systemFramework = true;
-			
-			return false;
+#endif
         }
 	}
 }

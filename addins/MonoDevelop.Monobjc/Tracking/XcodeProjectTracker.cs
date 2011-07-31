@@ -427,10 +427,21 @@ namespace MonoDevelop.Monobjc.Tracking
 		
 		private void ClearProjectReferences ()
 		{
+			this.XcodeProject.ClearDependantProjects(this.TargetName);
 		}
 		
 		private void AddProjectReferences ()
 		{
+			foreach(var reference in this.Project.References) {
+				switch(reference.ReferenceType) {
+				case ReferenceType.Project:
+					MonobjcProject projectReference = this.Project.ParentSolution.FindProjectByName(reference.Reference) as MonobjcProject;
+					if (projectReference != null) {
+						this.XcodeProject.AddDependantProject(projectReference.XcodeTracker.XcodeProject, this.TargetName);
+					}
+					break;
+				}
+			}
 		}
 	}
 }

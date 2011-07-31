@@ -29,34 +29,19 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 		}
 
-		protected override void WriteOtherIncludes (TextWriter writer, string name)
-		{
-			writer.WriteLine ("#include \"{0}.h\"", name);
-			writer.WriteLine ();
-		}
-
 		protected override void WritePrologue (TextWriter writer, string name, string baseName)
 		{
 			writer.WriteLine ("@implementation {0}", name);
 			writer.WriteLine ();
 		}
 
-		protected override void WriteProperties (TextWriter writer, IEnumerable<IProperty> properties)
+		protected override void WriteProperties (TextWriter writer, IType type)
 		{
 		}
 
-		protected override void WriteMethods (TextWriter writer, IEnumerable<IMethod> methods)
+		protected override void WriteMethods (TextWriter writer, IType type)
 		{
-			foreach (IMethod method in methods) {
-				if (!AttributeHelper.HasAttribute (method, AttributeHelper.IBACTION)) {
-					continue;
-				}
-				if (!AttributeHelper.HasAttribute (method, AttributeHelper.OBJECTIVE_C_MESSAGE)) {
-					continue;
-				}
-				if (method.Parameters.Count != 1) {
-					continue;
-				}
+			foreach (IMethod method in this.GetMethods(type)) {
 				String selector = AttributeHelper.GetAttributeValue (method, AttributeHelper.OBJECTIVE_C_MESSAGE);
 				writer.WriteLine ("{0}(IBAction) {1}(id) sender {{ }}", method.IsStatic ? "+" : "-", selector);
 			}
@@ -66,6 +51,11 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 			writer.WriteLine ();
 			writer.WriteLine ("@end");
+		}
+		
+		protected override IEnumerable<String> GetOtherImports (IType type)
+		{
+			yield return String.Format("#import \"{0}.h\"", type.Name);
 		}
 	}
 }
