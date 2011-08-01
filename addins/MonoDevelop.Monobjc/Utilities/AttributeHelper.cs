@@ -23,6 +23,10 @@ using Mono.Cecil;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Core;
 
+#if MD_2_6
+using Mono.Collections.Generic;
+#endif
+
 namespace MonoDevelop.Monobjc.Utilities
 {
 	/// <summary>

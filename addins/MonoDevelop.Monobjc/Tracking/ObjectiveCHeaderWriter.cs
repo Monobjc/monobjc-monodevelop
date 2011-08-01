@@ -68,9 +68,12 @@ namespace MonoDevelop.Monobjc.Tracking
 		protected override IEnumerable<String> GetOtherImports (IType type)
 		{
 			foreach (IProperty property in this.GetProperties(type)) {
+				if (property.ReturnType == null) {
+					continue;
+				}
 				ProjectDom dom = this.resolver.GetOwnerDom(property.ReturnType);
-				Project project = dom != null ? dom.Project : null;
-				if (dom.Project != null) {
+				Project project = (dom != null) ? dom.Project : null;
+				if (project != null) {
 					yield return String.Format("#import \"{0}.h\"", property.ReturnType.Name);
 				}
 			}
