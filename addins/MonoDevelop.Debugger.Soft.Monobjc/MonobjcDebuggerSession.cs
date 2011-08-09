@@ -20,6 +20,7 @@ using System.Diagnostics;
 using Mono.Debugging.Client;
 using Mono.Unix;
 using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Monobjc;
 using MonoDevelop.Monobjc.Utilities;
 
@@ -87,9 +88,11 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 				this.process = null;
 			};
 			
-			// Make sure the process is the front application
-			MonoDevelop.Core.LoggingService.LogInfo ("Debuggin application (pid={0})", this.process.Id);
-			PSNHelper.SetFront (this.process.Id);
+			DispatchService.GuiDispatch(() => {
+				// Make sure the process is the front application
+				MonoDevelop.Core.LoggingService.LogInfo ("Debuggin application (pid={0})", this.process.Id);
+				PSNHelper.SetFront (this.process.Id);
+			});
 		}
 
 		/// <summary>

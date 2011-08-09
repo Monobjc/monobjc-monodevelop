@@ -126,6 +126,11 @@ namespace MonoDevelop.Monobjc.CodeGeneration
                     return FilePath.Null;
                 }
 				
+				if (type.SourceProject != resolver.Project) {
+                    LoggingService.LogInfo("Skipping " + className + " as it comes from another project");
+                    return FilePath.Null;
+				}
+				
 				// The filname is based on the compilation unit parent folder and the type name
 				FilePath parentDirectory = type.CompilationUnit.FileName.ParentDirectory;
 				FilePath filename = project.LanguageBinding.GetFileName(type.Name + DESIGNER);

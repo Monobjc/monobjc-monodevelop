@@ -30,6 +30,7 @@ using MonoDevelop.Ide.Gui;
 using MonoDevelop.Monobjc.CodeGeneration;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
+using MonoDevelop.Ide.Tasks;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
@@ -67,21 +68,28 @@ namespace MonoDevelop.Monobjc.Tracking
 #if DEBUG
             LoggingService.LogInfo("CodeBehindProjectTracker::GenerateFrameworkLoadingCode");
 #endif
+			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor("Monobjc", "md-monobjc", false);
+			monitor.BeginTask(GettextCatalog.GetString("Generating framework loading code..."), 3);
+			
             // Create the resolver
             ProjectResolver resolver = new ProjectResolver(this.Project);
-
-            // Generate loading code
+			monitor.Step(1);
+			
+			// Generate loading code
             FilePath entryPoint = this.CodeGenerator.GenerateFrameworkLoadingCode(resolver, frameworks);
-
-            // If generation was successfull, reload the document if is opened
-            DispatchService.GuiDispatch(() =>
-                                            {
-                                                foreach (Document doc in IdeApp.Workbench.Documents.Where(doc => String.Equals(doc.FileName, entryPoint)))
-                                                {
-                                                    doc.Reload();
-                                                    break;
-                                                }
-                                            });
+			monitor.Step(1);
+            
+			DispatchService.GuiDispatch(() => {
+	            // If generation was successfull, reload the document if is opened
+                foreach (Document doc in IdeApp.Workbench.Documents.Where(doc => String.Equals(doc.FileName, entryPoint)))
+                {
+                    doc.Reload();
+                    break;
+                }
+			
+				monitor.EndTask();
+				monitor.Dispose();
+			});
         }
 
         /// <summary>
@@ -108,13 +116,24 @@ namespace MonoDevelop.Monobjc.Tracking
 #if DEBUG
             LoggingService.LogInfo("CodeBehindProjectTracker::GenerateDesignCode");
 #endif
+			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor("Monobjc", "md-monobjc", false);
+			monitor.BeginTask(GettextCatalog.GetString("Generating design code..."), 3);
+			
             // Create the resolver
             ProjectResolver resolver = new ProjectResolver(this.Project);
+			monitor.Step(1);
 
             // Create the writer
-            CodeBehindWriter writer = CodeBehindWriter.CreateForProject(new NullProgressMonitor(), this.Project);
+            CodeBehindWriter writer = CodeBehindWriter.CreateForProject(monitor, this.Project);
+			monitor.Step(1);
 
+			// Perform the code generation
             this.GenerateCodeBehind(resolver, writer, file);
+			
+			DispatchService.GuiDispatch(() => {
+				monitor.EndTask();
+				monitor.Dispose();
+			});
         }
 
         /// <summary>

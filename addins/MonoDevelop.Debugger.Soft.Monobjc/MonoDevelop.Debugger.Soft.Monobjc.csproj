@@ -40,6 +40,7 @@
     <Reference Include="MonoDevelop.Core, Version=2.6.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
     <Reference Include="MonoDevelop.Debugger, Version=2.6.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
     <Reference Include="MonoDevelop.Debugger.Soft, Version=2.6.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
+    <Reference Include="MonoDevelop.Ide, Version=2.6.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MonobjcDebuggerSession.cs" />

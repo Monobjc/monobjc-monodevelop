@@ -18,6 +18,7 @@
 using MonoDevelop.Core;
 using MonoDevelop.Core.Execution;
 using MonoDevelop.Monobjc.Utilities;
+using MonoDevelop.Ide;
 
 namespace MonoDevelop.Monobjc
 {
@@ -52,10 +53,12 @@ namespace MonoDevelop.Monobjc
 			
             ProcessService service = Runtime.ProcessService;
             IProcessAsyncOperation operation = service.StartConsoleProcess(executionCommand.CommandString, executionCommand.CommandLineParameters, null, executionCommand.EnvironmentVariables, console, null);
-
-            // Make sure the process is the front application
-            LoggingService.LogInfo("Running application (pid={0})", operation.ProcessId);
-            PSNHelper.SetFront(operation.ProcessId);
+			
+			DispatchService.GuiDispatch(() => {
+	            // Make sure the process is the front application
+	            LoggingService.LogInfo("Running application (pid={0})", operation.ProcessId);
+	            PSNHelper.SetFront(operation.ProcessId);
+			});
 
             return operation;
         }

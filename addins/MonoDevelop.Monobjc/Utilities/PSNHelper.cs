@@ -17,6 +17,7 @@
 //
 using System;
 using System.Runtime.InteropServices;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
@@ -40,15 +41,15 @@ namespace MonoDevelop.Monobjc.Utilities
             IntPtr psn = IntPtr.Zero;
             if (GetProcessForPID(pid, ref psn) != 0)
             {
-                //return;
+                return;
             }
             if (TransformProcessType(ref psn, kProcessTransformToForegroundApplication) != 0)
             {
-                //return;
+                return;
             }
             if (SetFrontProcess(ref psn) != 0)
             {
-                //return;
+                return;
             }
         }
 
