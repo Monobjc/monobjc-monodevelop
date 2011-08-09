@@ -47,7 +47,7 @@ namespace ${Namespace}
 		{
 			// Clean-up code here.
 			
-			this.SendMessageSuper(${Name}Class, "init");
+			this.SendMessageSuper(${Name}Class, "dealloc");
 		}
 		
 		[ObjectiveCMessage("drawRect:")]
