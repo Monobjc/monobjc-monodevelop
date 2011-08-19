@@ -124,6 +124,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Icons\monobjc-logo-32.png"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcFileDefinitionPList.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcFileInfoPList.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcFileInfoPListDocument.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>

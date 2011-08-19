@@ -6,7 +6,7 @@
        description="Monobjc Refactoring"
        copyright="GPL"
        category="IDE extensions"
-       version="@MD_VERSION@.@ADDIN_VERSION@">
+       version="@ADDIN_VERSION@">
 	
   <Runtime>
     <!-- Assemblies -->
@@ -15,10 +15,10 @@
 
   <!-- Dependencies -->
   <Dependencies>
-    <Addin id="MonoDevelop.Core" version="@MD_VERSION@"/>
-    <Addin id="MonoDevelop.Ide" version="@MD_VERSION@"/>
-    <Addin id="MonoDevelop.Refactoring" version="@MD_VERSION@"/>
-    <Addin id="MonoDevelop.Monobjc" version="@MD_VERSION@"/>
+    <Addin id="MonoDevelop.Core" version="@MD_ADDINS_REFERENCE@"/>
+    <Addin id="MonoDevelop.Ide" version="@MD_ADDINS_REFERENCE@"/>
+    <Addin id="MonoDevelop.Refactoring" version="@MD_ADDINS_REFERENCE@"/>
+    <Addin id="MonoDevelop.Monobjc" version="@MD_ADDINS_REFERENCE@"/>
   </Dependencies>
 
   <Extension path="/MonoDevelop/Refactoring/Refactorings">
@@ -35,4 +35,6 @@
              _label="Implement Protocol"/>
   </Extension>
 
+@ADDIN_SPECIFIC@
+  
 </Addin>

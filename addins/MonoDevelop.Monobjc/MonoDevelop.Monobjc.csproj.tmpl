@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>MonoDevelop.Monobjc</RootNamespace>
     <AssemblyName>MonoDevelop.Monobjc</AssemblyName>
-    <TargetFrameworkVersion>@MD_FRAMEWORK@</TargetFrameworkVersion>
+    <TargetFrameworkVersion>@MONO_FRAMEWORK@</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,14 +37,14 @@
     <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Mono.Addins, Version=@MD_ADDINS@, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Mono.Addins.Setup, Version=@MD_ADDINS@, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Mono.Cecil, Version=@MD_CECIL@, Culture=neutral, PublicKeyToken=0738eb9f132ed756"><Package>monodevelop</Package></Reference>
+    <Reference Include="Mono.Addins, Version=@MONO_ADDINS@, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Mono.Addins.Setup, Version=@MONO_ADDINS@, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
+    <Reference Include="Mono.Cecil, Version=@MONO_CECIL@, Culture=neutral, PublicKeyToken=0738eb9f132ed756"><Package>monodevelop</Package></Reference>
     <Reference Include="Mono.Posix" />
-    <Reference Include="MonoDevelop.Core, Version=@MD_VERSION@.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
-    <Reference Include="MonoDevelop.Deployment, Version=@MD_VERSION@.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
-    <Reference Include="MonoDevelop.DesignerSupport, Version=@MD_VERSION@.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
-    <Reference Include="MonoDevelop.Ide, Version=@MD_VERSION@.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
+    <Reference Include="MonoDevelop.Core, Version=@MD_GAC_REFERENCE@, Culture=neutral"><Package>monodevelop</Package></Reference>
+    <Reference Include="MonoDevelop.Deployment, Version=@MD_GAC_REFERENCE@, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
+    <Reference Include="MonoDevelop.DesignerSupport, Version=@MD_GAC_REFERENCE@, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
+    <Reference Include="MonoDevelop.Ide, Version=@MD_GAC_REFERENCE@, Culture=neutral"><Package>monodevelop</Package></Reference>
   </ItemGroup>
   <ItemGroup>
 	<Compile Include="BundleGeneration\BundleGenerator.cs"/>
@@ -124,6 +124,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Icons\monobjc-logo-32.png"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcFileDefinitionPList.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcFileInfoPList.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcFileInfoPListDocument.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>

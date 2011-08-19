@@ -61,11 +61,17 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
+    <Folder Include="Icons\" />
     <Folder Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="addin.xml" />
+    <None Include="addin.xml.2.4" />
+    <None Include="addin.xml.2.6" />
     <None Include="addin.xml.tmpl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Icons\monobjc-logo-32.png"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoDevelop.Monobjc\MonoDevelop.Monobjc.csproj">
@@ -76,8 +82,5 @@
       <Project>{C44005EC-E057-4636-96E2-637CA83F5170}</Project>
       <Name>Monobjc.Tools</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="gtk-gui\gui.stetic"><LogicalName>gui.stetic</LogicalName></EmbeddedResource>
   </ItemGroup>
 </Project>

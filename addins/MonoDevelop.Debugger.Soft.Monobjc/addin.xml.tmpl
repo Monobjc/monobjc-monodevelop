@@ -6,7 +6,7 @@
        description="Mono Soft Debugger for Monobjc"
        copyright="GPL"
        category="Debugging"
-       version="@MD_VERSION@.@ADDIN_VERSION@">
+       version="@ADDIN_VERSION@">
 
   <Runtime>
     <!-- Assemblies -->
@@ -15,11 +15,11 @@
 
   <!-- Dependencies -->
   <Dependencies>
-    <Addin id="MonoDevelop.Core" version="@MD_VERSION@"/>
-    <Addin id="MonoDevelop.Ide" version="@MD_VERSION@" />
-    <Addin id="MonoDevelop.Debugger" version="@MD_VERSION@"/>
-    <Addin id="MonoDevelop.Debugger.Soft" version="@MD_VERSION@"/>
-    <Addin id="MonoDevelop.Monobjc" version="@MD_VERSION@"/>
+    <Addin id="MonoDevelop.Core" version="@MD_ADDINS_REFERENCE@"/>
+    <Addin id="MonoDevelop.Ide" version="@MD_ADDINS_REFERENCE@" />
+    <Addin id="MonoDevelop.Debugger" version="@MD_ADDINS_REFERENCE@"/>
+    <Addin id="MonoDevelop.Debugger.Soft" version="@MD_ADDINS_REFERENCE@"/>
+    <Addin id="MonoDevelop.Monobjc" version="@MD_ADDINS_REFERENCE@"/>
   </Dependencies>
 
   <Extension path="/MonoDevelop/Debugging/DebuggerEngines">
@@ -30,4 +30,6 @@
                     type="MonoDevelop.Debugger.Soft.Monobjc.MonobjcSoftDebuggerEngine" />
   </Extension>
 
+@ADDIN_SPECIFIC@
+  
 </Addin>
