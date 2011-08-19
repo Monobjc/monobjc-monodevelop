@@ -9,7 +9,7 @@ namespace MonoDevelop.Monobjc.Gui
 		private global::Gtk.Label labelDeveloperTools;
 		private global::Gtk.Label labelTitle;
 		private global::Gtk.Label labelVersion;
-        
+		
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);

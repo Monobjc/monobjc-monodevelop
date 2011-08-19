@@ -15,10 +15,10 @@
 
   <!-- Dependencies -->
   <Dependencies>
-    <Addin id="MonoDevelop.Core" version="2.6"/>
-    <Addin id="MonoDevelop.Ide" version="2.6"/>
-    <Addin id="MonoDevelop.Refactoring" version="2.6"/>
-    <Addin id="MonoDevelop.Monobjc" version="2.6"/>
+    <Addin id="MonoDevelop.Core" version="2.5.93"/>
+    <Addin id="MonoDevelop.Ide" version="2.5.93"/>
+    <Addin id="MonoDevelop.Refactoring" version="2.5.93"/>
+    <Addin id="MonoDevelop.Monobjc" version="2.5.93"/>
   </Dependencies>
 
   <Extension path="/MonoDevelop/Refactoring/Refactorings">

@@ -157,7 +157,7 @@ namespace MonoDevelop.Monobjc.Tracking
 				filesToAdd.AddRange(files);
 			}
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e) {
 				IEnumerable<String> files = GuessDependencies(this.Project, info.ProjectFile);
 				if (files != null) {
@@ -182,7 +182,7 @@ namespace MonoDevelop.Monobjc.Tracking
                 this.GenerateDesignCode(projectFile.FilePath, true);
             }
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e) {
 	            ProjectFile projectFile = info.ProjectFile;
 	            if (BuildHelper.IsXIBFile(projectFile))
@@ -214,7 +214,7 @@ namespace MonoDevelop.Monobjc.Tracking
 				filesToAdd.AddRange(files);
 			}
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e) {
 				IEnumerable<String> files = GuessDependencies(this.Project, info.ProjectFile);
 				if (files != null) {
@@ -239,7 +239,7 @@ namespace MonoDevelop.Monobjc.Tracking
                 this.GenerateDesignCode(projectFile.FilePath, true);
             }
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e) {
 	            ProjectFile projectFile = info.ProjectFile;
 	            if (BuildHelper.IsXIBFile(projectFile))

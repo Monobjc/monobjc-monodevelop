@@ -51,7 +51,7 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 			MonobjcDebuggerStartInfo startInfo = new MonobjcDebuggerStartInfo (executionCommand);
 			startInfo.SetUserAssemblies (executionCommand.UserAssemblyPaths);
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 			MonobjcDebuggerStartInfo startInfo = new MonobjcDebuggerStartInfo (executionCommand);
 			SoftDebuggerEngine.SetUserAssemblyNames (startInfo, executionCommand.UserAssemblyPaths);
 #endif

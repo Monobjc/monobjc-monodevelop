@@ -149,7 +149,7 @@ namespace MonoDevelop.Monobjc.Tracking
             ProjectFile projectFile = e.ProjectFile;
 			this.AddResource(projectFile);
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e)
 			{
 	            ProjectFile projectFile = info.ProjectFile;
@@ -169,7 +169,7 @@ namespace MonoDevelop.Monobjc.Tracking
             ProjectFile projectFile = e.ProjectFile;
 			this.RemoveResource(projectFile);
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e)
 			{
 	            ProjectFile projectFile = info.ProjectFile;
@@ -266,7 +266,7 @@ namespace MonoDevelop.Monobjc.Tracking
 				break;
 			}
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 			foreach(SolutionItemModifiedEventInfo info in e) {
 				switch(info.Hint) {
 				case "References":

@@ -140,7 +140,7 @@ namespace MonoDevelop.Monobjc
 #if MD_2_4
             return framework.IsCompatibleWithFramework("4.0");
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 			return framework.IsCompatibleWithFramework (TargetFrameworkMoniker.NET_4_0);
 #endif
         }

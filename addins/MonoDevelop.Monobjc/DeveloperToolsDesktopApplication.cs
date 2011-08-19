@@ -28,7 +28,7 @@ using MonoDevelop.Projects;
 namespace MonoDevelop.Monobjc
 {
 	public class DeveloperToolsDesktopApplication
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 		: DesktopApplication
 #endif
 	{
@@ -39,7 +39,7 @@ namespace MonoDevelop.Monobjc
 
 		private static Version developerToolsVersion;
 		
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 		private readonly MonobjcProject project;
 
 		public DeveloperToolsDesktopApplication(MonobjcProject project) : base(DEVELOPER_TOOLS, APPLICATION_TITLE, true)
@@ -48,7 +48,7 @@ namespace MonoDevelop.Monobjc
 		}
 #endif
 		
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 		public override void Launch(params string[] files)
 		{
 			String arguments = GetArguments(this.project, files[0]);

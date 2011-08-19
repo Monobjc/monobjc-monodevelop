@@ -23,7 +23,7 @@ using Mono.Cecil;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Core;
 
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 using Mono.Collections.Generic;
 #endif
 
@@ -150,7 +150,7 @@ namespace MonoDevelop.Monobjc.Utilities
 
             return true;
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
             systemFramework = false;
             AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyPath);
 

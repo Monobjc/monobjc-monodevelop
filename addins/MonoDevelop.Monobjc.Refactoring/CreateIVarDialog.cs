@@ -115,7 +115,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 					}
 				};
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (options.Document, declaringType));
 				ModeHelpWindow helpWindow = new ModeHelpWindow ();
 				helpWindow.TransientFor = IdeApp.Workbench.RootWindow;

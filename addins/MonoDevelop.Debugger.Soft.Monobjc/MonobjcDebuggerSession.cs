@@ -24,7 +24,7 @@ using MonoDevelop.Ide;
 using MonoDevelop.Monobjc;
 using MonoDevelop.Monobjc.Utilities;
 
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 using Mono.Debugging.Soft;
 #endif
 
@@ -36,7 +36,7 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 #if MD_2_4
 		RemoteSoftDebuggerSession
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 		SoftDebuggerSession
 #endif
 	{
@@ -58,7 +58,7 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 			ProcessStartInfo psi = new ProcessStartInfo (command.CommandString) { Arguments = command.CommandLineParameters, RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true, UseShellExecute = false };
 			psi.EnvironmentVariables["MONO_OPTIONS"] = string.Format ("--debug --debugger-agent=transport=dt_socket,address={0}:{1}", dsi.Address, dsi.DebugPort);
 #endif
-#if MD_2_6
+#if MD_2_6 || MD_2_8
 			MonobjcDebuggerStartInfo dsi = (MonobjcDebuggerStartInfo) startInfo;
 			SoftDebuggerRemoteArgs startArgs = (SoftDebuggerRemoteArgs) dsi.StartArgs;
 			MonobjcExecutionCommand command = dsi.ExecutionCommand;		
