@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gtk;
-using ICSharpCode.NRefactory.Ast;
 using Mono.TextEditor;
 using Mono.TextEditor.PopupWindow;
 using MonoDevelop.Core;
@@ -28,6 +27,13 @@ using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Refactoring;
+
+#if MD_2_4 || MD_2_6
+using ICSharpCode.NRefactory.Ast;
+#endif
+#if MD_2_8
+using ICSharpCode.NRefactory.CSharp;
+#endif
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
@@ -152,11 +158,11 @@ namespace MonoDevelop.Monobjc.Refactoring
 					}
 					
 					switch (member.MemberType) {
-					case MemberType.Method:
+					case MonoDevelop.Projects.Dom.MemberType.Method:
 						code.Append (this.GenerateMethod (declaringType, (IMethod)member, provider, indent));
 						code.AppendLine ();
 						break;
-					case MemberType.Property:
+					case MonoDevelop.Projects.Dom.MemberType.Property:
 						IMethod getter = member.DeclaringType.Members.FirstOrDefault (m => String.Equals (m.Name, "get_" + member.Name)) as IMethod;
 						IMethod setter = member.DeclaringType.Members.FirstOrDefault (m => String.Equals (m.Name, "set_" + member.Name)) as IMethod;
 						
@@ -249,7 +255,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 			
 			foreach (IMember member in type.Members) {
 				switch (member.MemberType) {
-				case MemberType.Method:
+				case MonoDevelop.Projects.Dom.MemberType.Method:
 					if (member.Name.StartsWith ("get_")) {
 						continue;
 					}
@@ -258,7 +264,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 					}
 					store.AppendValues (false, ImageService.GetPixbuf (MonoDevelop.Ide.Gui.Stock.Method, IconSize.Menu), member.Name, member);
 					break;
-				case MemberType.Property:
+				case MonoDevelop.Projects.Dom.MemberType.Property:
 					store.AppendValues (false, ImageService.GetPixbuf (MonoDevelop.Ide.Gui.Stock.Property, IconSize.Menu), member.Name, member);
 					break;
 				}
@@ -288,17 +294,25 @@ namespace MonoDevelop.Monobjc.Refactoring
 			String message = AttributeHelper.GetAttributeValue (method, AttributeHelper.OBJECTIVE_C_MESSAGE);
 			AttributeSection attributeSection = new AttributeSection ();
 			if (!String.IsNullOrEmpty (message)) {
-				ICSharpCode.NRefactory.Ast.Attribute attribute = new ICSharpCode.NRefactory.Ast.Attribute ("ObjectiveCMessage", new List<Expression> { new PrimitiveExpression (message) }, null);
+				var attribute = this.GetAttribute("ObjectiveCMessage", message);
 				attributeSection.Attributes.Add (attribute);
 			}
 			
 			// Create the method declaration
 			MethodDeclaration methodDeclaration = new MethodDeclaration ();
-			methodDeclaration.Attributes.Add (attributeSection);
-			methodDeclaration.Modifier = ICSharpCode.NRefactory.Ast.Modifiers.Public | ICSharpCode.NRefactory.Ast.Modifiers.Virtual;
 			methodDeclaration.Name = method.Name;
+			methodDeclaration.Attributes.Add (attributeSection);
+#if MD_2_4 || MD_2_6
+			methodDeclaration.Modifier = ICSharpCode.NRefactory.Ast.Modifiers.Public | ICSharpCode.NRefactory.Ast.Modifiers.Virtual;
 			methodDeclaration.TypeReference = this.Shorten (declaringType, method.ReturnType);
+#endif
+#if MD_2_8
+			methodDeclaration.Modifiers = ICSharpCode.NRefactory.CSharp.Modifiers.Public | ICSharpCode.NRefactory.CSharp.Modifiers.Virtual;
+			methodDeclaration.ReturnType = this.Shorten (declaringType, method.ReturnType);
+#endif
+			
 			foreach (var parameter in method.Parameters) {
+#if MD_2_4 || MD_2_6
 				ParameterDeclarationExpression parameterDeclarationExpression = new ParameterDeclarationExpression (this.Shorten (declaringType, parameter.ReturnType), parameter.Name);
 				if (parameter.IsOut) {
 					parameterDeclarationExpression.ParamModifier |= ICSharpCode.NRefactory.Ast.ParameterModifiers.Out;
@@ -307,12 +321,28 @@ namespace MonoDevelop.Monobjc.Refactoring
 					parameterDeclarationExpression.ParamModifier |= ICSharpCode.NRefactory.Ast.ParameterModifiers.Ref;
 				}
 				methodDeclaration.Parameters.Add (parameterDeclarationExpression);
+#endif
+#if MD_2_8
+				ParameterDeclaration parameterDeclaration = new ParameterDeclaration(this.Shorten (declaringType, parameter.ReturnType), parameter.Name);
+				if (parameter.IsOut) {
+					parameterDeclaration.ParameterModifier |= ParameterModifier.Out;
+				}
+				if (parameter.IsRef) {
+					parameterDeclaration.ParameterModifier |= ParameterModifier.Ref;
+				}
+				methodDeclaration.Parameters.Add (parameterDeclaration);
+#endif
 			}
 			
 			// Create the method body
 			methodDeclaration.Body = new BlockStatement ();
-			ThrowStatement throwStatement = new ThrowStatement (new ObjectCreateExpression (new TypeReference ("System.NotImplementedException"), new List<Expression> ()));
+			ThrowStatement throwStatement = this.GetThrowStatement ("System.NotImplementedException");
+#if MD_2_4 || MD_2_6
 			methodDeclaration.Body.AddChild (throwStatement);
+#endif
+#if MD_2_8
+			methodDeclaration.Body.Add (throwStatement);
+#endif
 			
 			// Return the result of the AST generation
 			return provider.OutputNode (this.options.Dom, methodDeclaration, indent);
@@ -321,38 +351,53 @@ namespace MonoDevelop.Monobjc.Refactoring
 		private String GenerateProperty (IType declaringType, IProperty property, IMethod getterMethod, IMethod setterMethod, INRefactoryASTProvider provider, String indent)
 		{
 			// Create the property declaration
-			PropertyDeclaration propertyDeclaration = new PropertyDeclaration (ICSharpCode.NRefactory.Ast.Modifiers.Public | ICSharpCode.NRefactory.Ast.Modifiers.Virtual, null, property.Name, null);
-			propertyDeclaration.TypeReference = this.Shorten (declaringType, property.ReturnType);
-			
-			// Create a "throw" statement
-			ThrowStatement throwStatement = new ThrowStatement (new ObjectCreateExpression (new TypeReference ("System.NotImplementedException"), new List<Expression> ()));
+			var propertyType = this.Shorten (declaringType, property.ReturnType);
+			PropertyDeclaration propertyDeclaration = this.GetPropertyDeclaration(property.Name, propertyType, null);
 			
 			if (property.HasGet && getterMethod != null) {
 				// Retrieve the Objective-C message in the attribute
 				String message = AttributeHelper.GetAttributeValue (getterMethod, AttributeHelper.OBJECTIVE_C_MESSAGE);
 				AttributeSection attributeSection = new AttributeSection ();
 				if (!String.IsNullOrEmpty (message)) {
-					ICSharpCode.NRefactory.Ast.Attribute attribute = new ICSharpCode.NRefactory.Ast.Attribute ("ObjectiveCMessage", new List<Expression> { new PrimitiveExpression (message) }, null);
+					var attribute = this.GetAttribute("ObjectiveCMessage", message);
 					attributeSection.Attributes.Add (attribute);
 				}
 				
-				// Create the "set" region
+				// Create the "get" region
+				ThrowStatement throwStatement = this.GetThrowStatement ("System.NotImplementedException");
+#if MD_2_4 || MD_2_6
 				propertyDeclaration.GetRegion = new PropertyGetRegion (new BlockStatement (), new List<AttributeSection> { attributeSection });
 				propertyDeclaration.GetRegion.Block.AddChild (throwStatement);
+#endif
+#if MD_2_8
+				propertyDeclaration.Getter = new Accessor();
+				propertyDeclaration.Getter.Attributes.Add(attributeSection);
+				propertyDeclaration.Getter.Body = new BlockStatement ();
+				propertyDeclaration.Getter.Body.Add(throwStatement);
+#endif
 			}
 			
 			if (property.HasSet && setterMethod != null) {
 				// Retrieve the Objective-C message in the attribute
-				String message = AttributeHelper.GetAttributeValue (getterMethod, AttributeHelper.OBJECTIVE_C_MESSAGE);
+				String message = AttributeHelper.GetAttributeValue (setterMethod, AttributeHelper.OBJECTIVE_C_MESSAGE);
 				AttributeSection attributeSection = new AttributeSection ();
 				if (!String.IsNullOrEmpty (message)) {
-					ICSharpCode.NRefactory.Ast.Attribute attribute = new ICSharpCode.NRefactory.Ast.Attribute ("ObjectiveCMessage", new List<Expression> { new PrimitiveExpression (message) }, null);
+					var attribute = this.GetAttribute("ObjectiveCMessage", message);
 					attributeSection.Attributes.Add (attribute);
 				}
 				
 				// Create the "set" region
+				ThrowStatement throwStatement = this.GetThrowStatement ("System.NotImplementedException");
+#if MD_2_4 || MD_2_6
 				propertyDeclaration.SetRegion = new PropertySetRegion (new BlockStatement (), new List<AttributeSection> { attributeSection });
 				propertyDeclaration.SetRegion.Block.AddChild (throwStatement);
+#endif
+#if MD_2_8
+				propertyDeclaration.Setter = new Accessor();
+				propertyDeclaration.Setter.Attributes.Add(attributeSection);
+				propertyDeclaration.Setter.Body = new BlockStatement ();
+				propertyDeclaration.Setter.Body.Add(throwStatement);
+#endif
 			}
 			
 			// Return the result of the AST generation

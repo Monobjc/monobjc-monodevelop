@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gtk;
-using ICSharpCode.NRefactory.Ast;
 using Mono.TextEditor;
 using Mono.TextEditor.PopupWindow;
 using MonoDevelop.Core;
@@ -30,6 +29,14 @@ using MonoDevelop.Projects;
 using MonoDevelop.Projects.CodeGeneration;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Refactoring;
+
+#if MD_2_4 || MD_2_6
+using ICSharpCode.NRefactory.Ast;
+#endif
+#if MD_2_8
+using ICSharpCode.NRefactory.CSharp;
+using TypeReference=ICSharpCode.NRefactory.CSharp.AstType;
+#endif
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
@@ -86,7 +93,12 @@ namespace MonoDevelop.Monobjc.Refactoring
 		{
 			try {
 				String propertyName = this.entryName.Text;
+#if MD_2_4 || MD_2_6
 				TypeReference propertyType = new TypeReference (this.entryType.Text);
+#endif
+#if MD_2_8
+				AstType propertyType = new SimpleType (this.entryType.Text);
+#endif
 				
 				// Get some useful objects
 				TextEditorData data = options.GetTextEditorData ();
@@ -138,55 +150,61 @@ namespace MonoDevelop.Monobjc.Refactoring
 				this.Destroy ();
 			}
 		}
-
+		
 		private string GenerateProperty (IType declaringType, string propertyName, TypeReference propertyType, INRefactoryASTProvider provider, string indent)
 		{
 			// Create the attribute
 			AttributeSection attributeSection = new AttributeSection ();
-			ICSharpCode.NRefactory.Ast.Attribute attribute = new ICSharpCode.NRefactory.Ast.Attribute ("ObjectiveCIVar", new List<Expression> { new PrimitiveExpression (propertyName) }, null);
+			var attribute = GetAttribute("ObjectiveCIVar", propertyName);
 			attributeSection.Attributes.Add (attribute);
 			
 			// Create the property declaration
-			PropertyDeclaration propertyDeclaration = new PropertyDeclaration (ICSharpCode.NRefactory.Ast.Modifiers.Public, new List<AttributeSection> { attributeSection }, propertyName, null);
-			propertyDeclaration.TypeReference = propertyType;
-			
-			// Create a "this" reference
-			ThisReferenceExpression thisReferenceExpression = new ThisReferenceExpression ();
-			
-			// Create the name of the property
-			PrimitiveExpression primitiveExpression = new PrimitiveExpression (propertyName);
+			PropertyDeclaration propertyDeclaration = GetPropertyDeclaration(propertyName, propertyType, attributeSection);
 			
 			{
 				// Create the member this.GetInstanceVariable<T>
-				MemberReferenceExpression memberReferenceExpression = new MemberReferenceExpression (thisReferenceExpression, "GetInstanceVariable");
-				memberReferenceExpression.TypeArguments.Add (propertyType);
+				MemberReferenceExpression memberReferenceExpression = new MemberReferenceExpression (new ThisReferenceExpression (), "GetInstanceVariable");
+				memberReferenceExpression.TypeArguments.Add (propertyType.Clone());
 				
 				// Create the invocation with arguments
-				InvocationExpression invocationExpression = new InvocationExpression (memberReferenceExpression, new List<Expression> { primitiveExpression });
+				InvocationExpression invocationExpression = new InvocationExpression (memberReferenceExpression, new List<Expression> { new PrimitiveExpression (propertyName) });
 				
 				// Wrap the invocation with a return
 				ReturnStatement returnStatement = new ReturnStatement (invocationExpression);
 				
 				// Create the "get" region
+#if MD_2_4 || MD_2_6				
 				propertyDeclaration.GetRegion = new PropertyGetRegion (new BlockStatement (), null);
 				propertyDeclaration.GetRegion.Block.AddChild (returnStatement);
+#endif
+#if MD_2_8
+				propertyDeclaration.Getter = new Accessor();
+				propertyDeclaration.Getter.Body = new BlockStatement ();
+				propertyDeclaration.Getter.Body.Add(returnStatement);
+#endif
 			}
 			
 			{
 				// Create the member this.SetInstanceVariable<T>
-				MemberReferenceExpression memberReferenceExpression = new MemberReferenceExpression (thisReferenceExpression, "SetInstanceVariable");
-				memberReferenceExpression.TypeArguments.Add (propertyType);
+				MemberReferenceExpression memberReferenceExpression = new MemberReferenceExpression (new ThisReferenceExpression (), "SetInstanceVariable");
+				memberReferenceExpression.TypeArguments.Add (propertyType.Clone());
 				
 				// Create the invocation with arguments
-				IdentifierExpression identifierExpression = new IdentifierExpression ("value");
-				InvocationExpression invocationExpression = new InvocationExpression (memberReferenceExpression, new List<Expression> { primitiveExpression, identifierExpression });
+				InvocationExpression invocationExpression = new InvocationExpression (memberReferenceExpression, new List<Expression> { new PrimitiveExpression (propertyName), new IdentifierExpression ("value") });
 				
 				// Wrap the invocation with an expression
 				ExpressionStatement expressionStatement = new ExpressionStatement (invocationExpression);
 				
 				// Create the "set" region
+#if MD_2_4 || MD_2_6
 				propertyDeclaration.SetRegion = new PropertySetRegion (new BlockStatement (), null);
 				propertyDeclaration.SetRegion.Block.AddChild (expressionStatement);
+#endif
+#if MD_2_8
+				propertyDeclaration.Setter = new Accessor();
+				propertyDeclaration.Setter.Body = new BlockStatement ();
+				propertyDeclaration.Setter.Body.Add(expressionStatement);
+#endif
 			}
 			
 			// Return the result of the AST generation

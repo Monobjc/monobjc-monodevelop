@@ -120,15 +120,13 @@
         </items>
       </in>
       <do>
+		<loadfile property="md.references" file="${directory::get-parent-directory(filename)}/references-${md.version}.config"/>
         <copy file="${filename}" tofile="${directory::get-parent-directory(filename)}/${path::get-file-name-without-extension(filename)}" overwrite="true">
           <filterchain>
             <replacetokens>
               <token key="MONO_FRAMEWORK" value="${mono.framework}" />
-              <token key="MONO_ADDINS" value="${mono.addins}" />
-              <token key="MONO_CECIL" value="${mono.cecil}" />
-							
               <token key="MD_DEFINE" value="${md.define}" />
-              <token key="MD_GAC_REFERENCE" value="${md.gac.reference}" />
+              <token key="MD_REFERENCES" value="${md.references}" />
             </replacetokens>
           </filterchain>
         </copy>
@@ -153,8 +151,6 @@
             <replacetokens>
               <token key="ADDIN_VERSION" value="${md.version}.${build.version}.${build.number}" />							
               <token key="ADDIN_SPECIFIC" value="${addin.specific}" />
-
-              <token key="MD_VERSION" value="${md.version}" />
               <token key="MD_ADDINS_REFERENCE" value="${md.addins.reference}" />
             </replacetokens>
           </filterchain>

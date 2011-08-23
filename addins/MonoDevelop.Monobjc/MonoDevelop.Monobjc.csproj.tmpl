@@ -31,20 +31,7 @@
     <DefineConstants>@MD_DEFINE@</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
-    <Reference Include="gdk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="glib-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="gtk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
-    <Reference Include="Mono.Addins, Version=@MONO_ADDINS@, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Mono.Addins.Setup, Version=@MONO_ADDINS@, Culture=neutral, PublicKeyToken=0738eb9f132ed756" />
-    <Reference Include="Mono.Cecil, Version=@MONO_CECIL@, Culture=neutral, PublicKeyToken=0738eb9f132ed756"><Package>monodevelop</Package></Reference>
-    <Reference Include="Mono.Posix" />
-    <Reference Include="MonoDevelop.Core, Version=@MD_GAC_REFERENCE@, Culture=neutral"><Package>monodevelop</Package></Reference>
-    <Reference Include="MonoDevelop.Deployment, Version=@MD_GAC_REFERENCE@, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
-    <Reference Include="MonoDevelop.DesignerSupport, Version=@MD_GAC_REFERENCE@, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
-    <Reference Include="MonoDevelop.Ide, Version=@MD_GAC_REFERENCE@, Culture=neutral"><Package>monodevelop</Package></Reference>
+@MD_REFERENCES@
   </ItemGroup>
   <ItemGroup>
 	<Compile Include="BundleGeneration\BundleGenerator.cs"/>
@@ -101,7 +88,11 @@
     <None Include="addin.xml" />
     <None Include="addin.xml.2.4" />
     <None Include="addin.xml.2.6" />
+    <None Include="addin.xml.2.8" />
     <None Include="addin.xml.tmpl" />
+    <None Include="references-2.4.config" />
+    <None Include="references-2.6.config" />
+    <None Include="references-2.8.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\monobjc-128.png"><LogicalName>monobjc-128.png</LogicalName></EmbeddedResource>
