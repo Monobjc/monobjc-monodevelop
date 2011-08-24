@@ -60,7 +60,11 @@ namespace MonoDevelop.Monobjc.Refactoring
 		protected PropertyDeclaration GetPropertyDeclaration(String propertyName, TypeReference propertyType, AttributeSection attributeSection)
 		{
 			var modifiers = ICSharpCode.NRefactory.Ast.Modifiers.Public | ICSharpCode.NRefactory.Ast.Modifiers.Virtual;
-			var propertyDeclaration = new PropertyDeclaration (modifiers, new List<AttributeSection> { attributeSection }, propertyName, null);
+			List<AttributeSection> attributes = null;
+			if (attributeSection != null) {
+				attributes = new List<AttributeSection> { attributeSection };
+			}
+			var propertyDeclaration = new PropertyDeclaration (modifiers, attributes, propertyName, null);
 			propertyDeclaration.TypeReference = propertyType;
 			return propertyDeclaration;
 		}

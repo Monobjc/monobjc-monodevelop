@@ -16,7 +16,7 @@ namespace MonoDevelop.Monobjc.Gui
 		private global::Gtk.Label labelVersion;
 		private global::Gtk.ScrolledWindow scrolledwindowFrameworks;
 		private global::Gtk.TreeView treeviewFrameworks;
-		
+        
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);

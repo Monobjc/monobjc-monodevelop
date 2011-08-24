@@ -12,7 +12,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 		private global::Gtk.HSeparator hseparator1;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
-		
+        
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
