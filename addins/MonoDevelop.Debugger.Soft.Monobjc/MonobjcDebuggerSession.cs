@@ -87,12 +87,6 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 				this.EndSession ();
 				this.process = null;
 			};
-			
-			DispatchService.GuiDispatch(() => {
-				// Make sure the process is the front application
-				MonoDevelop.Core.LoggingService.LogInfo ("Debuggin application (pid={0})", this.process.Id);
-				PSNHelper.SetFront (this.process.Id);
-			});
 		}
 
 		/// <summary>
