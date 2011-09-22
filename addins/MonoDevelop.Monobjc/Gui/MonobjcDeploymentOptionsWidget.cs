@@ -29,6 +29,9 @@ using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Ide;
 using MonoDevelop.Projects;
+using MonoDevelop.Ide.Gui.Dialogs;
+using MonoDevelop.Components;
+using MonoDevelop.Components.Extensions;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -83,6 +86,15 @@ namespace MonoDevelop.Monobjc.Gui
 			this.treeviewAdditionnalAssemblies.Model = new TreeStore (typeof(String));
 			this.treeviewExcludedAssemblies.Model = new TreeStore (typeof(String));
 			this.treeviewAdditionnalLibraries.Model = new TreeStore (typeof(String));
+			
+			this.buttonAddAdditionnalAssemblies.Clicked += HandleButtonAddAdditionnalAssemblieshandleClicked;
+			this.buttonRemoveAdditionnalAssemblies.Clicked += HandleButtonRemoveAdditionnalAssemblieshandleClicked;
+			
+			this.buttonAddExcludedAssemblies.Clicked += HandleButtonAddExcludedAssemblieshandleClicked;
+			this.buttonRemoveExcludedAssemblies.Clicked += HandleButtonRemoveExcludedAssemblieshandleClicked;
+			
+			this.buttonAddAdditionnalLibraries.Clicked += HandleButtonAddAdditionnalLibrarieshandleClicked;
+			this.buttonRemoveExcludedAssemblies.Clicked += HandleButtonRemoveExcludedAssemblieshandleClicked1;
 		}
 
 		/// <summary>
@@ -460,6 +472,96 @@ namespace MonoDevelop.Monobjc.Gui
 				}
 			}
 			return String.Empty;
+		}
+		
+		private void HandleButtonAddAdditionnalAssemblieshandleClicked (object sender, EventArgs e)
+		{
+			var dlg = new SelectFileDialog (GettextCatalog.GetString ("Select Assembly File"));
+			dlg.AddFilter (new SelectFileDialogFilter (
+				GettextCatalog.GetString ("Assemblies Files"),
+				new string[] { "*.dll" },
+				new string[] { "application/x-executable" }
+			));
+			
+			if (!dlg.Run ()) {
+				return;
+			}
+			
+			FilePath file = dlg.SelectedFile;
+			
+			TreeStore store = (TreeStore)this.treeviewAdditionnalAssemblies.Model;
+			store.AppendValues(file.ToString());
+		}
+
+		private void HandleButtonRemoveAdditionnalAssemblieshandleClicked (object sender, EventArgs e)
+		{
+			TreeIter iter;
+			if (!this.treeviewAdditionnalAssemblies.Selection.GetSelected (out iter)) {
+				return;
+			}
+			
+			TreeStore store = (TreeStore)this.treeviewAdditionnalAssemblies.Model;
+			store.Remove(ref iter);
+		}
+
+		private void HandleButtonAddExcludedAssemblieshandleClicked (object sender, EventArgs e)
+		{
+			var dlg = new SelectFileDialog (GettextCatalog.GetString ("Select Assembly File"));
+			dlg.AddFilter (new SelectFileDialogFilter (
+				GettextCatalog.GetString ("Assemblies Files"),
+				new string[] { "*.dll" },
+				new string[] { "application/x-executable" }
+			));
+			
+			if (!dlg.Run ()) {
+				return;
+			}
+			
+			FilePath file = dlg.SelectedFile;
+			
+			TreeStore store = (TreeStore)this.treeviewExcludedAssemblies.Model;
+			store.AppendValues(file.ToString());
+		}
+
+		private void HandleButtonRemoveExcludedAssemblieshandleClicked (object sender, EventArgs e)
+		{
+			TreeIter iter;
+			if (!this.treeviewExcludedAssemblies.Selection.GetSelected (out iter)) {
+				return;
+			}
+			
+			TreeStore store = (TreeStore)this.treeviewAdditionnalAssemblies.Model;
+			store.Remove(ref iter);
+		}
+		
+		private void HandleButtonAddAdditionnalLibrarieshandleClicked (object sender, EventArgs e)
+		{
+			var dlg = new SelectFileDialog (GettextCatalog.GetString ("Select Binary Library"));
+			dlg.AddFilter (new SelectFileDialogFilter (
+				GettextCatalog.GetString ("Binary Libraries"),
+				new string[] { "*.dylib" },
+				new string[] { "application/x-executable" }
+			));
+			
+			if (!dlg.Run ()) {
+				return;
+			}
+			
+			FilePath file = dlg.SelectedFile;
+			
+			TreeStore store = (TreeStore)this.treeviewAdditionnalLibraries.Model;
+			store.AppendValues(file.ToString());
+		}
+
+		private void HandleButtonRemoveExcludedAssemblieshandleClicked1 (object sender, EventArgs e)
+		{
+			TreeIter iter;
+			if (!this.treeviewExcludedAssemblies.Selection.GetSelected (out iter)) {
+				return;
+			}
+			
+			TreeStore store = (TreeStore)this.treeviewAdditionnalLibraries.Model;
+			store.Remove(ref iter);
 		}
 	}
 }

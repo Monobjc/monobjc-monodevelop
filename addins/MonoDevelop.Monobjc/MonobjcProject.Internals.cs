@@ -187,7 +187,10 @@ namespace MonoDevelop.Monobjc
                 {
                     SystemAssembly specificAssembly = matching.First();
                     ProjectReference reference = new ProjectReference(specificAssembly);
-                    reference.SpecificVersion = false;
+					// TRICK:
+					// Starting with Monobjc 4.0, assembly references use a fixed numbering scheme (ex: 10.7.0.0)
+					// In this case, we can require a specific version
+                    reference.SpecificVersion = specificAssembly.Version.EndsWith(".0.0");
                     this.References.Add(reference);
                 }
             }
