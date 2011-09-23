@@ -64,37 +64,60 @@ namespace MonoDevelop.Monobjc.Gui
 			this.checkbuttonPackage.Toggled += this.HandleCheckbuttonPackagehandleToggled;
 			this.HandleCheckbuttonPackagehandleToggled (this, EventArgs.Empty);
 			
+			CellRendererToggle checkRenderer;
+			CellRendererPixbuf iconRenderer;
+			CellRendererText nameRenderer;
+			
 			this.treeviewEmbeddedFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
-			
-			TreeViewColumn column = new TreeViewColumn ();
-			
-			CellRendererToggle checkRenderer = new CellRendererToggle ();
+
+			TreeViewColumn treeviewEmbeddedFrameworksColumn = new TreeViewColumn ();
+			checkRenderer = new CellRendererToggle ();
 			checkRenderer.Toggled += this.HandleCheckRendererToggled;
-			column.PackStart (checkRenderer, false);
-			column.AddAttribute (checkRenderer, "active", 0);
-			
-			CellRendererPixbuf iconRenderer = new CellRendererPixbuf ();
-			column.PackStart (iconRenderer, false);
-			column.AddAttribute (iconRenderer, "pixbuf", 1);
-			
-			CellRendererText nameRenderer = new CellRendererText ();
-			column.PackStart (nameRenderer, true);
-			column.AddAttribute (nameRenderer, "text", 2);
-			
-			this.treeviewEmbeddedFrameworks.AppendColumn (column);
+			treeviewEmbeddedFrameworksColumn.PackStart (checkRenderer, false);
+			treeviewEmbeddedFrameworksColumn.AddAttribute (checkRenderer, "active", 0);
+			iconRenderer = new CellRendererPixbuf ();
+			treeviewEmbeddedFrameworksColumn.PackStart (iconRenderer, false);
+			treeviewEmbeddedFrameworksColumn.AddAttribute (iconRenderer, "pixbuf", 1);
+			nameRenderer = new CellRendererText ();
+			treeviewEmbeddedFrameworksColumn.PackStart (nameRenderer, true);
+			treeviewEmbeddedFrameworksColumn.AddAttribute (nameRenderer, "text", 2);
+			this.treeviewEmbeddedFrameworks.AppendColumn (treeviewEmbeddedFrameworksColumn);
 			
 			this.treeviewAdditionnalAssemblies.Model = new TreeStore (typeof(String));
-			this.treeviewExcludedAssemblies.Model = new TreeStore (typeof(String));
-			this.treeviewAdditionnalLibraries.Model = new TreeStore (typeof(String));
+				
+			TreeViewColumn treeviewAdditionnalAssembliesColumn = new TreeViewColumn ();
+			nameRenderer = new CellRendererText ();
+			nameRenderer.Editable = true;
+			treeviewAdditionnalAssembliesColumn.PackStart (nameRenderer, true);
+			treeviewAdditionnalAssembliesColumn.AddAttribute (nameRenderer, "text", 0);
+			this.treeviewAdditionnalAssemblies.AppendColumn (treeviewAdditionnalAssembliesColumn);
 			
 			this.buttonAddAdditionnalAssemblies.Clicked += HandleButtonAddAdditionnalAssemblieshandleClicked;
 			this.buttonRemoveAdditionnalAssemblies.Clicked += HandleButtonRemoveAdditionnalAssemblieshandleClicked;
 			
+			this.treeviewExcludedAssemblies.Model = new TreeStore (typeof(String));
+			
+			TreeViewColumn treeviewExcludedAssembliesColumn = new TreeViewColumn ();
+			nameRenderer = new CellRendererText ();
+			nameRenderer.Editable = true;
+			treeviewExcludedAssembliesColumn.PackStart (nameRenderer, true);
+			treeviewExcludedAssembliesColumn.AddAttribute (nameRenderer, "text", 0);
+			this.treeviewExcludedAssemblies.AppendColumn (treeviewExcludedAssembliesColumn);
+			
 			this.buttonAddExcludedAssemblies.Clicked += HandleButtonAddExcludedAssemblieshandleClicked;
 			this.buttonRemoveExcludedAssemblies.Clicked += HandleButtonRemoveExcludedAssemblieshandleClicked;
 			
+			this.treeviewAdditionnalLibraries.Model = new TreeStore (typeof(String));
+			
+			TreeViewColumn treeviewAdditionnalLibrariesColumn = new TreeViewColumn ();
+			nameRenderer = new CellRendererText ();
+			nameRenderer.Editable = true;
+			treeviewAdditionnalLibrariesColumn.PackStart (nameRenderer, true);
+			treeviewAdditionnalLibrariesColumn.AddAttribute (nameRenderer, "text", 0);
+			this.treeviewAdditionnalLibraries.AppendColumn (treeviewAdditionnalLibrariesColumn);
+			
 			this.buttonAddAdditionnalLibraries.Clicked += HandleButtonAddAdditionnalLibrarieshandleClicked;
-			this.buttonRemoveExcludedAssemblies.Clicked += HandleButtonRemoveExcludedAssemblieshandleClicked1;
+			this.buttonRemoveAdditionnalLibraries.Clicked += HandleButtonRemoveAdditionnalLibrarieshandleClicked;
 		}
 
 		/// <summary>
@@ -445,7 +468,7 @@ namespace MonoDevelop.Monobjc.Gui
 		
 		private String ExtractFromModel (TreeModel model)
 		{
-			TreeStore store = (TreeStore) model;
+			TreeStore store = (TreeStore)model;
 			TreeIter iter;
 			if (!store.GetIterFirst (out iter)) {
 				return String.Empty;
@@ -463,7 +486,7 @@ namespace MonoDevelop.Monobjc.Gui
 		
 		private String InjectIntoModel (TreeModel model, String value)
 		{
-			TreeStore store = (TreeStore) model;
+			TreeStore store = (TreeStore)model;
 			store.Clear ();
 			if (value != null) {
 				String[] parts = value.Split (new []{':'}, StringSplitOptions.RemoveEmptyEntries);
@@ -476,92 +499,48 @@ namespace MonoDevelop.Monobjc.Gui
 		
 		private void HandleButtonAddAdditionnalAssemblieshandleClicked (object sender, EventArgs e)
 		{
-			var dlg = new SelectFileDialog (GettextCatalog.GetString ("Select Assembly File"));
-			dlg.AddFilter (new SelectFileDialogFilter (
-				GettextCatalog.GetString ("Assemblies Files"),
-				new string[] { "*.dll" },
-				new string[] { "application/x-executable" }
-			));
-			
-			if (!dlg.Run ()) {
-				return;
-			}
-			
-			FilePath file = dlg.SelectedFile;
-			
-			TreeStore store = (TreeStore)this.treeviewAdditionnalAssemblies.Model;
-			store.AppendValues(file.ToString());
+			AddEmptyItem(this.treeviewAdditionnalAssemblies, "myassembly.dll");
 		}
 
 		private void HandleButtonRemoveAdditionnalAssemblieshandleClicked (object sender, EventArgs e)
 		{
-			TreeIter iter;
-			if (!this.treeviewAdditionnalAssemblies.Selection.GetSelected (out iter)) {
-				return;
-			}
-			
-			TreeStore store = (TreeStore)this.treeviewAdditionnalAssemblies.Model;
-			store.Remove(ref iter);
+			Remove(this.treeviewAdditionnalAssemblies);
 		}
 
 		private void HandleButtonAddExcludedAssemblieshandleClicked (object sender, EventArgs e)
 		{
-			var dlg = new SelectFileDialog (GettextCatalog.GetString ("Select Assembly File"));
-			dlg.AddFilter (new SelectFileDialogFilter (
-				GettextCatalog.GetString ("Assemblies Files"),
-				new string[] { "*.dll" },
-				new string[] { "application/x-executable" }
-			));
-			
-			if (!dlg.Run ()) {
-				return;
-			}
-			
-			FilePath file = dlg.SelectedFile;
-			
-			TreeStore store = (TreeStore)this.treeviewExcludedAssemblies.Model;
-			store.AppendValues(file.ToString());
+			AddEmptyItem(this.treeviewExcludedAssemblies, "myassembly.dll");
 		}
 
 		private void HandleButtonRemoveExcludedAssemblieshandleClicked (object sender, EventArgs e)
 		{
-			TreeIter iter;
-			if (!this.treeviewExcludedAssemblies.Selection.GetSelected (out iter)) {
-				return;
-			}
-			
-			TreeStore store = (TreeStore)this.treeviewAdditionnalAssemblies.Model;
-			store.Remove(ref iter);
+			Remove(this.treeviewExcludedAssemblies);
 		}
 		
 		private void HandleButtonAddAdditionnalLibrarieshandleClicked (object sender, EventArgs e)
 		{
-			var dlg = new SelectFileDialog (GettextCatalog.GetString ("Select Binary Library"));
-			dlg.AddFilter (new SelectFileDialogFilter (
-				GettextCatalog.GetString ("Binary Libraries"),
-				new string[] { "*.dylib" },
-				new string[] { "application/x-executable" }
-			));
-			
-			if (!dlg.Run ()) {
-				return;
-			}
-			
-			FilePath file = dlg.SelectedFile;
-			
-			TreeStore store = (TreeStore)this.treeviewAdditionnalLibraries.Model;
-			store.AppendValues(file.ToString());
+			AddEmptyItem(this.treeviewAdditionnalLibraries, "mylib.dylib");
 		}
 
-		private void HandleButtonRemoveExcludedAssemblieshandleClicked1 (object sender, EventArgs e)
+		void HandleButtonRemoveAdditionnalLibrarieshandleClicked (object sender, EventArgs e)
 		{
+			Remove(this.treeviewAdditionnalLibraries);
+		}
+		
+		private static void AddEmptyItem(TreeView treeView, String defaultValue) {
+			TreeStore store = (TreeStore)treeView.Model;
+			store.AppendValues(defaultValue);
+		}
+		
+		private static void RemoveItem(TreeView treeView) {
 			TreeIter iter;
-			if (!this.treeviewExcludedAssemblies.Selection.GetSelected (out iter)) {
+			if (!treeView.Selection.GetSelectedRows (out iter)) {
+				LoggingService.LogInfo("No selection !!!");
 				return;
 			}
 			
-			TreeStore store = (TreeStore)this.treeviewAdditionnalLibraries.Model;
-			store.Remove(ref iter);
+			TreeStore store = (TreeStore)treeView.Model;
+			store.Remove (ref iter);
 		}
 	}
 }

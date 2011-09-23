@@ -105,6 +105,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.treeviewAdditionnalAssemblies = new global::Gtk.TreeView ();
 			this.treeviewAdditionnalAssemblies.CanFocus = true;
 			this.treeviewAdditionnalAssemblies.Name = "treeviewAdditionnalAssemblies";
+			this.treeviewAdditionnalAssemblies.HeadersVisible = false;
 			this.scrolledwindowAdditionnalAssemblies.Add (this.treeviewAdditionnalAssemblies);
 			this.hbox4.Add (this.scrolledwindowAdditionnalAssemblies);
 			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox4 [this.scrolledwindowAdditionnalAssemblies]));
@@ -190,6 +191,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.treeviewExcludedAssemblies = new global::Gtk.TreeView ();
 			this.treeviewExcludedAssemblies.CanFocus = true;
 			this.treeviewExcludedAssemblies.Name = "treeviewExcludedAssemblies";
+			this.treeviewExcludedAssemblies.HeadersVisible = false;
 			this.scrolledwindowExcludedAssemblies.Add (this.treeviewExcludedAssemblies);
 			this.hbox5.Add (this.scrolledwindowExcludedAssemblies);
 			global::Gtk.Box.BoxChild w28 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.scrolledwindowExcludedAssemblies]));
@@ -275,6 +277,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.treeviewAdditionnalLibraries = new global::Gtk.TreeView ();
 			this.treeviewAdditionnalLibraries.CanFocus = true;
 			this.treeviewAdditionnalLibraries.Name = "treeviewAdditionnalLibraries";
+			this.treeviewAdditionnalLibraries.HeadersVisible = false;
 			this.scrolledwindowAdditionnalLibraries.Add (this.treeviewAdditionnalLibraries);
 			this.hbox6.Add (this.scrolledwindowAdditionnalLibraries);
 			global::Gtk.Box.BoxChild w50 = ((global::Gtk.Box.BoxChild)(this.hbox6 [this.scrolledwindowAdditionnalLibraries]));

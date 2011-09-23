@@ -126,6 +126,7 @@
                   <widget class="Gtk.TreeView" id="treeviewAdditionnalAssemblies">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
+                    <property name="HeadersVisible">False</property>
                   </widget>
                 </child>
               </widget>
@@ -207,6 +208,7 @@
                   <widget class="Gtk.TreeView" id="treeviewExcludedAssemblies">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
+                    <property name="HeadersVisible">False</property>
                   </widget>
                 </child>
               </widget>
@@ -288,6 +290,7 @@
                   <widget class="Gtk.TreeView" id="treeviewAdditionnalLibraries">
                     <property name="MemberName" />
                     <property name="CanFocus">True</property>
+                    <property name="HeadersVisible">False</property>
                   </widget>
                 </child>
               </widget>
