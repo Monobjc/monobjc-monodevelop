@@ -88,36 +88,39 @@ namespace MonoDevelop.Monobjc.Gui
 			TreeViewColumn treeviewAdditionnalAssembliesColumn = new TreeViewColumn ();
 			nameRenderer = new CellRendererText ();
 			nameRenderer.Editable = true;
+			nameRenderer.Edited += HandleAdditionnalAssembliesEdited;
 			treeviewAdditionnalAssembliesColumn.PackStart (nameRenderer, true);
 			treeviewAdditionnalAssembliesColumn.AddAttribute (nameRenderer, "text", 0);
 			this.treeviewAdditionnalAssemblies.AppendColumn (treeviewAdditionnalAssembliesColumn);
 			
-			this.buttonAddAdditionnalAssemblies.Clicked += HandleButtonAddAdditionnalAssemblieshandleClicked;
-			this.buttonRemoveAdditionnalAssemblies.Clicked += HandleButtonRemoveAdditionnalAssemblieshandleClicked;
+			this.buttonAddAdditionnalAssemblies.Clicked += HandleButtonAddAdditionnalAssembliesHandleClicked;
+			this.buttonRemoveAdditionnalAssemblies.Clicked += HandleButtonRemoveAdditionnalAssembliesHandleClicked;
 			
 			this.treeviewExcludedAssemblies.Model = new TreeStore (typeof(String));
 			
 			TreeViewColumn treeviewExcludedAssembliesColumn = new TreeViewColumn ();
 			nameRenderer = new CellRendererText ();
 			nameRenderer.Editable = true;
+			nameRenderer.Edited += HandleExcludedAssembliesEdited;
 			treeviewExcludedAssembliesColumn.PackStart (nameRenderer, true);
 			treeviewExcludedAssembliesColumn.AddAttribute (nameRenderer, "text", 0);
 			this.treeviewExcludedAssemblies.AppendColumn (treeviewExcludedAssembliesColumn);
 			
-			this.buttonAddExcludedAssemblies.Clicked += HandleButtonAddExcludedAssemblieshandleClicked;
-			this.buttonRemoveExcludedAssemblies.Clicked += HandleButtonRemoveExcludedAssemblieshandleClicked;
+			this.buttonAddExcludedAssemblies.Clicked += HandleButtonAddExcludedAssembliesHandleClicked;
+			this.buttonRemoveExcludedAssemblies.Clicked += HandleButtonRemoveExcludedAssembliesHandleClicked;
 			
 			this.treeviewAdditionnalLibraries.Model = new TreeStore (typeof(String));
 			
 			TreeViewColumn treeviewAdditionnalLibrariesColumn = new TreeViewColumn ();
 			nameRenderer = new CellRendererText ();
 			nameRenderer.Editable = true;
+			nameRenderer.Edited += HandleAdditionnalLibrariesEdited;
 			treeviewAdditionnalLibrariesColumn.PackStart (nameRenderer, true);
 			treeviewAdditionnalLibrariesColumn.AddAttribute (nameRenderer, "text", 0);
 			this.treeviewAdditionnalLibraries.AppendColumn (treeviewAdditionnalLibrariesColumn);
 			
-			this.buttonAddAdditionnalLibraries.Clicked += HandleButtonAddAdditionnalLibrarieshandleClicked;
-			this.buttonRemoveAdditionnalLibraries.Clicked += HandleButtonRemoveAdditionnalLibrarieshandleClicked;
+			this.buttonAddAdditionnalLibraries.Clicked += HandleButtonAddAdditionnalLibrariesHandleClicked;
+			this.buttonRemoveAdditionnalLibraries.Clicked += HandleButtonRemoveAdditionnalLibrariesHandleClicked;
 		}
 
 		/// <summary>
@@ -497,36 +500,60 @@ namespace MonoDevelop.Monobjc.Gui
 			return String.Empty;
 		}
 		
-		private void HandleButtonAddAdditionnalAssemblieshandleClicked (object sender, EventArgs e)
+		private void HandleAdditionnalAssembliesEdited (object o, EditedArgs args)
+		{
+			EditItem(this.treeviewAdditionnalAssemblies, args);
+		}
+
+		private void HandleButtonAddAdditionnalAssembliesHandleClicked (object sender, EventArgs e)
 		{
 			AddEmptyItem(this.treeviewAdditionnalAssemblies, "myassembly.dll");
 		}
 
-		private void HandleButtonRemoveAdditionnalAssemblieshandleClicked (object sender, EventArgs e)
+		private void HandleButtonRemoveAdditionnalAssembliesHandleClicked (object sender, EventArgs e)
 		{
-			Remove(this.treeviewAdditionnalAssemblies);
+			RemoveItem(this.treeviewAdditionnalAssemblies);
 		}
 
-		private void HandleButtonAddExcludedAssemblieshandleClicked (object sender, EventArgs e)
+		private void HandleExcludedAssembliesEdited (object o, EditedArgs args)
+		{
+			EditItem(this.treeviewExcludedAssemblies, args);
+		}
+
+		private void HandleButtonAddExcludedAssembliesHandleClicked (object sender, EventArgs e)
 		{
 			AddEmptyItem(this.treeviewExcludedAssemblies, "myassembly.dll");
 		}
 
-		private void HandleButtonRemoveExcludedAssemblieshandleClicked (object sender, EventArgs e)
+		private void HandleButtonRemoveExcludedAssembliesHandleClicked (object sender, EventArgs e)
 		{
-			Remove(this.treeviewExcludedAssemblies);
+			RemoveItem(this.treeviewExcludedAssemblies);
 		}
 		
-		private void HandleButtonAddAdditionnalLibrarieshandleClicked (object sender, EventArgs e)
+		private void HandleAdditionnalLibrariesEdited (object o, EditedArgs args)
+		{
+			EditItem(this.treeviewAdditionnalLibraries, args);
+		}
+
+		private void HandleButtonAddAdditionnalLibrariesHandleClicked (object sender, EventArgs e)
 		{
 			AddEmptyItem(this.treeviewAdditionnalLibraries, "mylib.dylib");
 		}
 
-		void HandleButtonRemoveAdditionnalLibrarieshandleClicked (object sender, EventArgs e)
+		void HandleButtonRemoveAdditionnalLibrariesHandleClicked (object sender, EventArgs e)
 		{
-			Remove(this.treeviewAdditionnalLibraries);
+			RemoveItem(this.treeviewAdditionnalLibraries);
 		}
 		
+		private static void EditItem (TreeView treeView, EditedArgs args)
+		{
+			TreeStore store = (TreeStore)treeView.Model;
+			
+			TreeIter iter;
+			store.GetIter(out iter, new TreePath(args.Path));
+			store.SetValue(iter, 0, args.NewText);
+		}
+
 		private static void AddEmptyItem(TreeView treeView, String defaultValue) {
 			TreeStore store = (TreeStore)treeView.Model;
 			store.AppendValues(defaultValue);
@@ -534,8 +561,7 @@ namespace MonoDevelop.Monobjc.Gui
 		
 		private static void RemoveItem(TreeView treeView) {
 			TreeIter iter;
-			if (!treeView.Selection.GetSelectedRows (out iter)) {
-				LoggingService.LogInfo("No selection !!!");
+			if (!treeView.Selection.GetSelected(out iter)) {
 				return;
 			}
 			
