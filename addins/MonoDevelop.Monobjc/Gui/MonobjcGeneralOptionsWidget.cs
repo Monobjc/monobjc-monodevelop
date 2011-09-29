@@ -94,22 +94,18 @@ namespace MonoDevelop.Monobjc.Gui
 			// Set up the SDKs
 			ListStore versionStore = (ListStore)this.comboboxVersion.Model;
 			versionStore.Clear ();
-			if (!isXcode4) {
-				versionStore.AppendValues ("Mac OS X 10.5", MacOSVersion.MacOS105);
-			}
+			versionStore.AppendValues ("Mac OS X 10.5", MacOSVersion.MacOS105);
 			versionStore.AppendValues ("Mac OS X 10.6", MacOSVersion.MacOS106);
-			if (isXcode41) {
-				versionStore.AppendValues ("Mac OS X 10.7", MacOSVersion.MacOS107);
-			}
+			versionStore.AppendValues ("Mac OS X 10.7", MacOSVersion.MacOS107);
 			
 			// Set the base folder and retrieve the main NIB file
 			this.filechooserbuttonMainNib.SetCurrentFolder (project.BaseDirectory.ToString ());
-			String mainNibFile = project.MainNibFile.ToString () ?? System.IO.Path.Combine (project.BaseDirectory.ToString (), "MainMenu.xib");
+			String mainNibFile = project.MainNibFile.ToString () ?? project.BaseDirectory.Combine("en.lproj", "MainMenu.xib");
 			this.filechooserbuttonMainNib.SetFilename (mainNibFile);
 			
 			// Set the base folder and retrieve the bundle icon
 			this.filechooserbuttonBundleIcon.SetCurrentFolder (project.BaseDirectory.ToString ());
-			String bundleIcon = project.BundleIcon.ToString () ?? System.IO.Path.Combine (project.BaseDirectory.ToString (), "Monobjc.icns");
+			String bundleIcon = project.BundleIcon.ToString () ?? project.BaseDirectory.Combine("Monobjc.icns");
 			this.filechooserbuttonBundleIcon.SetFilename (bundleIcon);
 			
 			// Retrieve the target version
