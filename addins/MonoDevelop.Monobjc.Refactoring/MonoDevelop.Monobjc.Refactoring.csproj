@@ -16,7 +16,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;MD_2_6</DefineConstants>
+    <DefineConstants>DEBUG;MD_2_8</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
@@ -28,7 +28,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>false</ConsolePause>
-    <DefineConstants>MD_2_6</DefineConstants>
+    <DefineConstants>MD_2_8</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
 <Reference Include="System" />
@@ -43,7 +43,7 @@
 <Reference Include="MonoDevelop.Ide, Version=2.6.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
 <Reference Include="MonoDevelop.Refactoring, Version=2.6.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
 <Reference Include="MonoDevelop.SourceEditor2, Version=2.6.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
-<Reference Include="NRefactory, Version=2.1.1.0, Culture=neutral, PublicKeyToken=efe927acf176eea2"><Package>monodevelop</Package></Reference>
+<Reference Include="ICSharpCode.NRefactory, Version=1.0.0.0, Culture=neutral, PublicKeyToken=efe927acf176eea2"><Package>monodevelop</Package><SpecificVersion>False</SpecificVersion></Reference>
 
   </ItemGroup>
   <ItemGroup>
