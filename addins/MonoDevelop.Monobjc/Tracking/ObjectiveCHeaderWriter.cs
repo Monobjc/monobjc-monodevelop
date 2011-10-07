@@ -44,7 +44,11 @@ namespace MonoDevelop.Monobjc.Tracking
 			writer.WriteLine ("{");
 			
 			foreach (IProperty property in this.GetProperties(type)) {
-				writer.WriteLine ("\tIBOutlet {0} *{1};", property.ReturnType.Name, property.Name);
+				String propertyType = property.ReturnType.Name;
+				if (property.Equals("Id")) {
+					propertyType = "id";
+				}
+				writer.WriteLine ("\tIBOutlet {0} *{1};", propertyType, property.Name);
 			}
 			
 			writer.WriteLine ("}");
