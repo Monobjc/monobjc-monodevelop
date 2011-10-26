@@ -9,17 +9,17 @@
 	  <LanguageName>*</LanguageName>
 	  <ProjectType>Monobjc</ProjectType>
 	  <_Description>An XML property list file that list the application entitlements.</_Description>
-      <DefaultFilename IsFixed="true">Entitlements.plist</DefaultFilename>
+      <DefaultFilename IsFixed="true">App.entitlements</DefaultFilename>
 	</TemplateConfiguration>
 	
 	<!-- Conditions -->
 	<Conditions>
-		<ParentProject PermittedCreationPaths="" ExcludedFiles="Entitlements.plist" RequireProject="True"/>
+		<ParentProject PermittedCreationPaths="" ExcludedFiles="App.entitlements" RequireProject="True"/>
 	</Conditions>
 	
 	<!-- Template Content -->
 	<TemplateFiles>
-	  <File name="Entitlements.plist" SuppressAutoOpen="True">
+	  <File name="App.entitlements" SuppressAutoOpen="True">
 <![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">

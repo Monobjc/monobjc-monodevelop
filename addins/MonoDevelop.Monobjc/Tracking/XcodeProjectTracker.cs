@@ -324,6 +324,7 @@ namespace MonoDevelop.Monobjc.Tracking
 						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "ARCHS", "$(ARCHS_STANDARD_32_64_BIT)");
 						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "SDKROOT", "macosx");
 						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "GCC_VERSION", "com.apple.compilers.llvm.clang.1_0");
+						// TODO: Use specific version
 						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "MACOSX_DEPLOYMENT_TARGET", "10.6");
 						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "GCC_C_LANGUAGE_STANDARD", "gnu99");
 						this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "GCC_WARN_64_TO_32_BIT_CONVERSION", "YES");
