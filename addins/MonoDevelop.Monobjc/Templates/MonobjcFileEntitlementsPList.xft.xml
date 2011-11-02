@@ -95,9 +95,13 @@
 	<key>com.apple.security.temporary-exception.mach-lookup.global-name</key>
 	<true/>	
 	<key>com.apple.security.temporary-exception.files.home-relative-path.read-only</key>
-	<true/>	
+	<array>
+		<string>/</string>
+	</array>
 	<key>com.apple.security.temporary-exception.files.home-relative-path.read-write</key>
-	<true/>	
+	<array>
+		<string>/</string>
+	</array>
 	<key>com.apple.security.temporary-exception.files.absolute-path.read-only</key>
 	<array>
 		<string>/</string>

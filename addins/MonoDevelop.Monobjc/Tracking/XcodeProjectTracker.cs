@@ -314,7 +314,7 @@ namespace MonoDevelop.Monobjc.Tracking
 						String targetName = this.TargetName;
 						this.xcodeProject = new XcodeProject (this.OutputFolder, name);
 						
-						this.xcodeProject.Document.Project.ProjectRoot = "../..";
+						this.xcodeProject.BaseDir = "../..";
 						
 						this.xcodeProject.AddGroup (GROUP_CLASSES);
 						this.xcodeProject.AddGroup (GROUP_RESOURCES);
@@ -438,7 +438,9 @@ namespace MonoDevelop.Monobjc.Tracking
 				case ReferenceType.Project:
 					MonobjcProject projectReference = this.Project.ParentSolution.FindProjectByName(reference.Reference) as MonobjcProject;
 					if (projectReference != null) {
-						this.XcodeProject.AddDependantProject(projectReference.XcodeTracker.XcodeProject, this.TargetName);
+						XcodeProject xcodeProject = projectReference.XcodeTracker.XcodeProject;
+						xcodeProject.Save();
+						this.XcodeProject.AddDependantProject(xcodeProject, this.TargetName);
 					}
 					break;
 				}
