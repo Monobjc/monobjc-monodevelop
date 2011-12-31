@@ -220,7 +220,7 @@ namespace MonoDevelop.Monobjc.Utilities
 			foreach (String assembly in assemblies) {
 				String filename = Path.GetFileName (assembly);
 				monitor.Log.WriteLine (GettextCatalog.GetString ("Copying {0}", filename));
-				File.Copy (assembly, Path.Combine (maker.ResourcesFolder, filename));
+				File.Copy (assembly, Path.Combine (maker.ResourcesFolder, filename), true);
 				monitor.Step (1);
 			}
 			monitor.EndTask ();
