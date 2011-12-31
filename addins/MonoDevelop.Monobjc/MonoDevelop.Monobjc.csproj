@@ -48,9 +48,6 @@
 
   </ItemGroup>
   <ItemGroup>
-	<Compile Include="BundleGeneration\BundleGenerator.cs"/>
-	<Compile Include="BundleGeneration\ManagedBundleGenerator.cs"/>
-	<Compile Include="BundleGeneration\NativeBundleGenerator.cs"/>
 	<Compile Include="CodeGeneration\BaseCodeBehindGenerator.cs"/>
 	<Compile Include="CodeGeneration\CSharpCodeBehindGenerator.cs"/>
 	<Compile Include="CodeGeneration\CodeBehindGeneratorCodon.cs"/>
@@ -89,6 +86,7 @@
 	<Compile Include="Utilities\AttributeHelper.cs"/>
 	<Compile Include="Utilities\BuildHelper.cs"/>
 	<Compile Include="Utilities\BuildLogger.cs"/>
+	<Compile Include="Utilities\BundleGenerator.cs"/>
 	<Compile Include="Utilities\FilePair.cs"/>
 	<Compile Include="Utilities\ProjectResolver.cs"/>
 	<Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsWidget.cs"/>

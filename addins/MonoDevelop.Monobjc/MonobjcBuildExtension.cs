@@ -57,34 +57,8 @@ namespace MonoDevelop.Monobjc
 			{
 				case MonobjcApplicationType.CocoaApplication:
 				{
-		            MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
-		
-		            // Infer application name from configuration
-		            string applicationName = project.GetApplicationName(configuration);
-		
-		            // Create the bundle maker
-		            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
-		
-		            // Compile the XIB files
-		            BuildHelper.CompileXIBFiles(monitor, project, maker, result);
-		            if (result.ErrorCount > 0)
-		            {
-		                return result;
-		            }
-		
-		            // Copy the output and dependencies
-		            BuildHelper.CopyOutputFiles(monitor, project, configuration, maker);
-		
-		            // Copy the content files
-		            BuildHelper.CopyContentFiles(monitor, project, configuration, maker);
-		
-		            // Create the Info.plist
-		            BuildHelper.CreateInfoPList(monitor, project, configuration, maker);
-		
-		            // Write the native runtime
-		            monitor.BeginTask(GettextCatalog.GetString("Copying native launcher..."), 0);
-		            maker.WriteRuntime(project.TargetOSVersion);
-		            monitor.EndTask();				
+    		        MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
+					BundleGenerator.Generate(monitor, result, project, configuration, conf.OutputDirectory, false);
 				}
 				break;
 				case MonobjcApplicationType.ConsoleApplication:

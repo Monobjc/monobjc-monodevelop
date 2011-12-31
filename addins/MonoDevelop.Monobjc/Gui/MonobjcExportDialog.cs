@@ -22,8 +22,8 @@ using Gtk;
 using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
-using MonoDevelop.Monobjc.BundleGeneration;
 using MonoDevelop.Projects;
+using MonoDevelop.Monobjc.Utilities;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -63,27 +63,15 @@ namespace MonoDevelop.Monobjc.Gui
 		/// <param name = "e">The <see cref = "System.EventArgs" /> instance containing the event data.</param>
 		protected virtual void OnExport (object sender, EventArgs e)
 		{
-			BundleGenerator generator;
-			
-			// Select the correct generator
-			if (this.radiobuttonManaged.Active) {
-				generator = new ManagedBundleGenerator ();
-			} else {
-				generator = new NativeBundleGenerator2 ();
-			}
+			// Check if native generation is required
+			bool native = this.radiobuttonNative.Active;
 			
 			// Set the output directory
-			generator.Output = this.filechooserbuttonOutput.Filename;
-			
-			// Pass the info for signing
-			generator.SigningIdentity = String.IsNullOrEmpty (this.project.SigningIdentity) ? null : this.project.SigningIdentity;
-			
-			// Pass the info for archiving
-			generator.Archive = this.project.Archive;
-			generator.ArchiveIdentity = String.IsNullOrEmpty (this.project.ArchiveIdentity) ? null : this.project.ArchiveIdentity;
+			String outputDirectory = this.filechooserbuttonOutput.Filename;
 			
 			// Launch the bundle creation
 			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetOutputProgressMonitor (GettextCatalog.GetString ("Monobjc"), MonoDevelop.Ide.Gui.Stock.RunProgramIcon, true, true);
+			BuildResult result = new BuildResult();
 			Thread thread = new Thread (delegate() {
 				using (monitor) {
 					DispatchService.GuiDispatch (delegate() { this.EnableWidgets (false); });
@@ -98,19 +86,21 @@ namespace MonoDevelop.Monobjc.Gui
 						this.project.Build (monitor, configuration);
 						
 						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Generating Bundle...", 60); });
-						generator.Generate (monitor, this.project, configuration);
+						BundleGenerator.Generate(monitor, result, project, configuration, outputDirectory, native); 
+						
+						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Archiving Bundle...", 70); });
+						BundleGenerator.Archive(monitor, result, project, configuration, outputDirectory);
 						
 						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Cleaning Project...", 80); });
 						this.project.Clean (monitor, configuration);
 						
 						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Finished", 100); });
-						this.project.Clean (monitor, configuration);
 					} catch (Exception ex) {
 						LoggingService.LogError ("Error while generating the bundle.", ex);
 						monitor.ReportError (GettextCatalog.GetString ("Error while generating the bundle."), ex);
 					}
 					
-					DispatchService.GuiDispatch (delegate() { this.EnableWidgets (true); });
+					DispatchService.GuiDispatch (delegate() { this.EnableWidgets (true); this.OnClose(); });
 				}
 			});
 			thread.IsBackground = true;

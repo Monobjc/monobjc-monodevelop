@@ -79,17 +79,17 @@ namespace MonoDevelop.Monobjc.Gui
 			// Load the application type
 			ListStore typeStore = (ListStore)this.comboboxType.Model;
 			typeStore.Clear ();
-			typeStore.AppendValues (GettextCatalog.GetString("Cocoa Application"), MonobjcApplicationType.CocoaApplication);
-			typeStore.AppendValues (GettextCatalog.GetString("Console Application"), MonobjcApplicationType.ConsoleApplication);
+			typeStore.AppendValues (GettextCatalog.GetString ("Cocoa Application"), MonobjcApplicationType.CocoaApplication);
+			typeStore.AppendValues (GettextCatalog.GetString ("Console Application"), MonobjcApplicationType.ConsoleApplication);
 			this.ApplicationType = project.ApplicationType;
 			
 			// Retrieve some information about the developer tools
 			// - Xcode 3.2 => 10.5/10.6 - ppc/i386/x86_64
 			// - Xcode 4.0 => 10.6 - i386/x86_64
 			// - Xcode 4.1 => 10.6/10.7 - i386/x86_64
-			Version version = DeveloperToolsDesktopApplication.DeveloperToolsVersion;
-			bool isXcode4 = version != null && version.Major >= 4;
-			bool isXcode41 = isXcode4 && version.Minor >= 1;
+			//Version version = DeveloperToolsDesktopApplication.DeveloperToolsVersion;
+			//bool isXcode4 = version != null && version.Major >= 4;
+			//bool isXcode41 = isXcode4 && version.Minor >= 1;
 			
 			// Set up the SDKs
 			ListStore versionStore = (ListStore)this.comboboxVersion.Model;
@@ -100,12 +100,12 @@ namespace MonoDevelop.Monobjc.Gui
 			
 			// Set the base folder and retrieve the main NIB file
 			this.filechooserbuttonMainNib.SetCurrentFolder (project.BaseDirectory.ToString ());
-			String mainNibFile = project.MainNibFile.ToString () ?? project.BaseDirectory.Combine("en.lproj", "MainMenu.xib");
+			String mainNibFile = project.MainNibFile.ToString () ?? project.BaseDirectory.Combine ("en.lproj", "MainMenu.xib");
 			this.filechooserbuttonMainNib.SetFilename (mainNibFile);
 			
 			// Set the base folder and retrieve the bundle icon
 			this.filechooserbuttonBundleIcon.SetCurrentFolder (project.BaseDirectory.ToString ());
-			String bundleIcon = project.BundleIcon.ToString () ?? project.BaseDirectory.Combine("Monobjc.icns");
+			String bundleIcon = project.BundleIcon.ToString () ?? project.BaseDirectory.Combine ("Monobjc.icns");
 			this.filechooserbuttonBundleIcon.SetFilename (bundleIcon);
 			
 			// Retrieve the target version
@@ -258,7 +258,18 @@ namespace MonoDevelop.Monobjc.Gui
 
 		private void HandleComboboxVersionhandleChanged (object sender, EventArgs e)
 		{
-			// TODO
+			switch (this.ApplicationType) {
+			case MonobjcApplicationType.CocoaApplication:
+				this.filechooserbuttonMainNib.Sensitive = true;
+				this.filechooserbuttonBundleIcon.Sensitive = true;
+				break;
+			case MonobjcApplicationType.ConsoleApplication:
+				this.filechooserbuttonMainNib.Sensitive = false;
+				this.filechooserbuttonBundleIcon.Sensitive = false;
+				break;
+			default:
+				throw new NotSupportedException ("Unsupported application type " + this.ApplicationType);
+			}			
 		}
 
 		private void HandleCheckRendererToggled (object o, ToggledArgs args)

@@ -23,6 +23,8 @@ using Monobjc.Tools.Generators;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Projects;
+using Monobjc.Tools.External;
+using System.Reflection;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
@@ -242,17 +244,75 @@ namespace MonoDevelop.Monobjc.Utilities
 			if (File.Exists (infoPListFile)) {
 				pListGenerator.Content = File.ReadAllText (infoPListFile);
 			}
+
+            String mainAssembly = project.GetOutputFileName(configuration);
+			Assembly assembly = Assembly.ReflectionOnlyLoadFrom(mainAssembly);
+			AssemblyName assemblyName = assembly.GetName();
 			
-			pListGenerator.ApplicationName = project.GetApplicationName (configuration);
-			pListGenerator.Icon = project.BundleIcon.IsNullOrEmpty ? null : project.BundleIcon.FileNameWithoutExtension;
+			pListGenerator.ApplicationName = assemblyName.Name;
 			pListGenerator.Identifier = project.DefaultNamespace;
+			pListGenerator.Version = assemblyName.Version.ToString();
+			pListGenerator.Icon = project.BundleIcon.IsNullOrEmpty ? null : project.BundleIcon.FileNameWithoutExtension;
 			pListGenerator.MainNibFile = project.MainNibFile.IsNullOrEmpty ? null : project.MainNibFile.FileNameWithoutExtension;
 			pListGenerator.TargetOSVersion = project.TargetOSVersion;
 			pListGenerator.PrincipalClass = "NSApplication";
-			// TODO: Find a way to get the version
-			pListGenerator.Version = "1.0";
 			pListGenerator.WriteTo (Path.Combine (maker.ContentsDirectory, "Info.plist"));
+			
 			monitor.EndTask ();
+		}
+		
+		/// <summary>
+		///   Sign the application bundle.
+		/// </summary>
+		/// <param name = 'monitor'>The progress monitor.</param>
+		/// <param name = 'project'>The project.</param>
+		/// <param name = 'maker'>The bundle maker.</param>
+		public static void SignBundle(IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		{
+			if (project.SigningIdentity != null) {
+	            monitor.BeginTask(GettextCatalog.GetString("Signing bundle..."), 0);
+	            String output = CodeSign.SignApplication(maker.ApplicationDirectory, project.SigningIdentity);
+	            LoggingService.LogInfo("CodeSign returns: " + output);
+	            monitor.EndTask();
+			}
+		}
+		
+		/// <summary>
+		///   Sign the native libraries inside the bundle.
+		/// </summary>
+		/// <param name = 'monitor'>The progress monitor.</param>
+		/// <param name = 'project'>The project.</param>
+		/// <param name = 'maker'>The bundle maker.</param>
+		public static void SignNativeBinaries(IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		{
+			if (project.SigningIdentity != null) {
+				String[] files = Directory.GetFiles(maker.MacOSDirectory, "*.dylib");
+	            monitor.BeginTask(GettextCatalog.GetString("Signing native libraries..."), files.Length);
+				foreach(String file in files) {
+		            String output = CodeSign.SignApplication(file, project.SigningIdentity);
+		            LoggingService.LogInfo("CodeSign returns: " + output);
+					monitor.Step (1);
+				}
+	            monitor.EndTask();
+			}
+		}
+		
+		/// <summary>
+		///   Archive the application bundle.
+		/// </summary>
+		/// <param name = 'monitor'>The progress monitor.</param>
+		/// <param name = 'project'>The project.</param>
+		/// <param name = 'maker'>The bundle maker.</param>
+		public static void ArchiveBundle(IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		{
+			if (project.Archive && project.ArchiveIdentity != null) {
+	            FilePath definitionFile = project.BaseDirectory.Combine("Definition.plist");
+	            String definitionFilename = File.Exists(definitionFile) ? definitionFile.ToString() : null;
+	            monitor.BeginTask(GettextCatalog.GetString("Signing archive..."), 0);
+	            String output = ProductBuild.ArchiveApplication(maker.ApplicationDirectory, project.ArchiveIdentity, definitionFilename);
+	            LoggingService.LogInfo("ProductBuild returns: " + output);
+	            monitor.EndTask();
+			}
 		}
 	}
 }
