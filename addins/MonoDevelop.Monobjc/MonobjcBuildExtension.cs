@@ -66,6 +66,11 @@ namespace MonoDevelop.Monobjc
 					// Do nothing
 				}
 				break;
+				case MonobjcApplicationType.CocoaLibrary:
+				{
+					// Do nothing
+				}
+				break;
 				default:
 					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
 			}
@@ -141,6 +146,11 @@ namespace MonoDevelop.Monobjc
 					// Do nothing
 				}
 				break;
+				case MonobjcApplicationType.CocoaLibrary:
+				{
+					// TODO
+				}
+				break;
 				default:
 					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
 			}
@@ -182,6 +192,11 @@ namespace MonoDevelop.Monobjc
 				}
 				break;
 				case MonobjcApplicationType.ConsoleApplication:
+				{
+					// Do nothing
+				}
+				break;
+				case MonobjcApplicationType.CocoaLibrary:
 				{
 					// Do nothing
 				}

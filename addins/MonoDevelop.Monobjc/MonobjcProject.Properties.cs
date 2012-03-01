@@ -33,6 +33,7 @@ namespace MonoDevelop.Monobjc
 		private IEnumerable<SystemAssembly> monobjcAssemblies;
 		private MonobjcApplicationType applicationType;
 		
+		private String developmentLanguage;
 		private FilePath mainNibFile;
 		private FilePath bundleIcon;
 		private String osFrameworks;
@@ -60,6 +61,21 @@ namespace MonoDevelop.Monobjc
 			{
 				this.applicationType = value;
 				this.NotifyModified("ApplicationType");
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the development language.
+		/// </summary>
+		/// <value>The development language.</value>
+		[ItemProperty("DevelopmentLanguage")]
+		public String DevelopmentLanguage
+		{
+			get { return this.developmentLanguage; }
+			set
+			{
+				this.developmentLanguage = value;
+				this.NotifyModified("DevelopmentLanguage");
 			}
 		}
 

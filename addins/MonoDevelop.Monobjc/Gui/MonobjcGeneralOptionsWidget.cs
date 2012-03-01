@@ -45,6 +45,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.comboboxVersion.Changed += this.HandleComboboxVersionhandleChanged;
 			
 			this.comboboxType.Model = new ListStore (typeof(string), typeof(MonobjcApplicationType));
+			this.comboboxLanguage.Model = new ListStore (typeof(string), typeof(string));
 			this.comboboxVersion.Model = new ListStore (typeof(string), typeof(MacOSVersion));
 			this.treeviewFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
 			
@@ -81,7 +82,14 @@ namespace MonoDevelop.Monobjc.Gui
 			typeStore.Clear ();
 			typeStore.AppendValues (GettextCatalog.GetString ("Cocoa Application"), MonobjcApplicationType.CocoaApplication);
 			typeStore.AppendValues (GettextCatalog.GetString ("Console Application"), MonobjcApplicationType.ConsoleApplication);
+			typeStore.AppendValues (GettextCatalog.GetString ("Cocoa Library"), MonobjcApplicationType.CocoaLibrary);
 			this.ApplicationType = project.ApplicationType;
+			
+			// Load the development languages
+			ListStore languageStore = (ListStore)this.comboboxLanguage.Model;
+			languageStore.Clear ();
+			
+			this.DevelopmentLanguage = project.DevelopmentLanguage;
 			
 			// Retrieve some information about the developer tools
 			// - Xcode 3.2 => 10.5/10.6 - ppc/i386/x86_64
@@ -136,6 +144,7 @@ namespace MonoDevelop.Monobjc.Gui
 			}
 			
 			project.ApplicationType = this.ApplicationType;
+			project.DevelopmentLanguage = this.DevelopmentLanguage;
 			project.MainNibFile = this.filechooserbuttonMainNib.Filename;
 			project.BundleIcon = this.filechooserbuttonBundleIcon.Filename;
 			project.TargetOSVersion = this.TargetOSVersion;
@@ -170,6 +179,35 @@ namespace MonoDevelop.Monobjc.Gui
 					}
 				} while (true);
 				this.comboboxType.Active = 0;
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets the development language.
+		/// </summary>
+		private string DevelopmentLanguage {
+			get {
+				TreeIter iter;
+				if (this.comboboxLanguage.GetActiveIter (out iter)) {
+					ListStore listStore = (ListStore)this.comboboxLanguage.Model;
+					return (string)listStore.GetValue (iter, 1);
+				}
+				throw new InvalidOperationException ("Unrecognized Application type");
+			}
+			set {
+				ListStore store = (ListStore)this.comboboxLanguage.Model;
+				TreeIter iter;
+				store.GetIterFirst (out iter);
+				do {
+					if ((string)store.GetValue (iter, 1) == value) {
+						this.comboboxLanguage.SetActiveIter (iter);
+						return;
+					}
+					if (!store.IterNext (ref iter)) {
+						break;
+					}
+				} while (true);
+				this.comboboxLanguage.Active = 0;
 			}
 		}
 
@@ -264,6 +302,10 @@ namespace MonoDevelop.Monobjc.Gui
 				this.filechooserbuttonBundleIcon.Sensitive = true;
 				break;
 			case MonobjcApplicationType.ConsoleApplication:
+				this.filechooserbuttonMainNib.Sensitive = false;
+				this.filechooserbuttonBundleIcon.Sensitive = false;
+				break;
+			case MonobjcApplicationType.CocoaLibrary:
 				this.filechooserbuttonMainNib.Sensitive = false;
 				this.filechooserbuttonBundleIcon.Sensitive = false;
 				break;

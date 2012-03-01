@@ -25,6 +25,7 @@ using MonoDevelop.Core.Execution;
 using MonoDevelop.Monobjc.CodeGeneration;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
+using System.Collections.Generic;
 
 namespace MonoDevelop.Monobjc
 {
@@ -33,6 +34,9 @@ namespace MonoDevelop.Monobjc
     /// </summary>
     public partial class MonobjcProject : DotNetProject
     {
+		internal const String InterfaceDefinition = "InterfaceDefinition";
+		internal const String EmbeddedInterfaceDefinition = "EmbeddedInterfaceDefinition";
+		
         /// <summary>
         ///   Initializes the <see cref = "MonoDevelop.Monobjc.MonobjcProject" /> class.
         /// </summary>
@@ -153,7 +157,7 @@ namespace MonoDevelop.Monobjc
         public override String GetDefaultBuildAction(String fileName)
         {
 			if (BuildHelper.IsXIBFile(fileName)) {
-				return BuildAction.Page;
+				return InterfaceDefinition;
 			}
 			if (BuildHelper.IsStringsFile(fileName)) {
 				return BuildAction.Content;
@@ -233,5 +237,17 @@ namespace MonoDevelop.Monobjc
 #endif
             base.OnFileChangedInProject(e);
         }
+		
+		protected override IList<string> GetCommonBuildActions ()
+		{
+			IList<String> actions = new List<String>(base.GetCommonBuildActions());
+			if (!actions.Contains(InterfaceDefinition)) {
+				actions.Add (InterfaceDefinition);
+			}
+			if (!actions.Contains(EmbeddedInterfaceDefinition)) {
+				actions.Add (EmbeddedInterfaceDefinition);
+			}
+			return actions;
+		}
     }
 }

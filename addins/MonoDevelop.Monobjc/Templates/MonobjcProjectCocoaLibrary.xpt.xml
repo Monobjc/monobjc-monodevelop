@@ -17,6 +17,7 @@
 	</Options>
     <Project name="${ProjectName}" directory="." type="Monobjc">
       <Options Target="Library" PauseConsoleOutput="False">
+        <MacOSApplicationType>CocoaLibrary</MacOSApplicationType>
         <MacOSVersion>MacOS106</MacOSVersion>
         <MacOSArch>X86</MacOSArch>
         <MacOSFrameworks>Foundation;AppKit</MacOSFrameworks>

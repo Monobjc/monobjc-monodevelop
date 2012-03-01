@@ -26,8 +26,9 @@ namespace MonoDevelop.Monobjc
 	[Extension]
 	public class MonobjcMSBuildImportProvider : IMSBuildImportProvider
 	{
-		const string importCocoaApplication = @"$(MSBuildBinPath)\Monobjc.CocoaApplication.targets";
-		const string importConsoleApplication = @"$(MSBuildBinPath)\Monobjc.ConsoleApplication.targets";
+		private const string importCocoaApplication = @"$(MSBuildBinPath)\Monobjc.CocoaApplication.targets";
+		private const string importConsoleApplication = @"$(MSBuildBinPath)\Monobjc.ConsoleApplication.targets";
+		private const string importCocoaLibrary = @"$(MSBuildBinPath)\Monobjc.CocoaLibrary.targets";
 		
 		public void UpdateImports (SolutionEntityItem item, List<string> imports)
 		{
@@ -47,6 +48,9 @@ namespace MonoDevelop.Monobjc
 				break;
 			case MonobjcApplicationType.ConsoleApplication:
 				imports.Add (importConsoleApplication);
+				break;
+			case MonobjcApplicationType.CocoaLibrary:
+				imports.Add (importCocoaLibrary);
 				break;
 			}
 		}

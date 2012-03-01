@@ -5,6 +5,7 @@ namespace MonoDevelop.Monobjc.Gui
 	public partial class MonobjcGeneralOptionsWidget
 	{
 		private global::Gtk.Table table1;
+		private global::Gtk.ComboBox comboboxLanguage;
 		private global::Gtk.ComboBox comboboxType;
 		private global::Gtk.ComboBox comboboxVersion;
 		private global::Gtk.FileChooserButton filechooserbuttonBundleIcon;
@@ -12,6 +13,7 @@ namespace MonoDevelop.Monobjc.Gui
 		private global::Gtk.Label labelBundleIcon;
 		private global::Gtk.Label labelFrameworks;
 		private global::Gtk.Label labelMainNib;
+		private global::Gtk.Label labelMainNib1;
 		private global::Gtk.Label labelType;
 		private global::Gtk.Label labelVersion;
 		private global::Gtk.ScrolledWindow scrolledwindowFrameworks;
@@ -24,102 +26,124 @@ namespace MonoDevelop.Monobjc.Gui
 			global::Stetic.BinContainer.Attach (this);
 			this.Name = "MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsWidget";
 			// Container child MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsWidget.Gtk.Container+ContainerChild
-			this.table1 = new global::Gtk.Table (((uint)(7)), ((uint)(2)), false);
+			this.table1 = new global::Gtk.Table (((uint)(8)), ((uint)(2)), false);
 			this.table1.Name = "table1";
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
-			this.comboboxType = global::Gtk.ComboBox.NewText ();
-			this.comboboxType.Name = "comboboxType";
-			this.table1.Add (this.comboboxType);
-			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1 [this.comboboxType]));
+			this.comboboxLanguage = global::Gtk.ComboBox.NewText ();
+			this.comboboxLanguage.Name = "comboboxLanguage";
+			this.table1.Add (this.comboboxLanguage);
+			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1 [this.comboboxLanguage]));
+			w1.TopAttach = ((uint)(1));
+			w1.BottomAttach = ((uint)(2));
 			w1.LeftAttach = ((uint)(1));
 			w1.RightAttach = ((uint)(2));
 			w1.XOptions = ((global::Gtk.AttachOptions)(4));
 			w1.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
+			this.comboboxType = global::Gtk.ComboBox.NewText ();
+			this.comboboxType.Name = "comboboxType";
+			this.table1.Add (this.comboboxType);
+			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1 [this.comboboxType]));
+			w2.LeftAttach = ((uint)(1));
+			w2.RightAttach = ((uint)(2));
+			w2.XOptions = ((global::Gtk.AttachOptions)(4));
+			w2.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
 			this.comboboxVersion = global::Gtk.ComboBox.NewText ();
 			this.comboboxVersion.Name = "comboboxVersion";
 			this.table1.Add (this.comboboxVersion);
-			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1 [this.comboboxVersion]));
-			w2.TopAttach = ((uint)(3));
-			w2.BottomAttach = ((uint)(4));
-			w2.LeftAttach = ((uint)(1));
-			w2.RightAttach = ((uint)(2));
-			w2.YOptions = ((global::Gtk.AttachOptions)(4));
-			// Container child table1.Gtk.Table+TableChild
-			this.filechooserbuttonBundleIcon = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select Bundle Icon"), ((global::Gtk.FileChooserAction)(0)));
-			this.filechooserbuttonBundleIcon.Name = "filechooserbuttonBundleIcon";
-			this.table1.Add (this.filechooserbuttonBundleIcon);
-			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1 [this.filechooserbuttonBundleIcon]));
-			w3.TopAttach = ((uint)(2));
-			w3.BottomAttach = ((uint)(3));
+			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1 [this.comboboxVersion]));
+			w3.TopAttach = ((uint)(4));
+			w3.BottomAttach = ((uint)(5));
 			w3.LeftAttach = ((uint)(1));
 			w3.RightAttach = ((uint)(2));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.filechooserbuttonMainNib = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select Main NIB File"), ((global::Gtk.FileChooserAction)(0)));
-			this.filechooserbuttonMainNib.Name = "filechooserbuttonMainNib";
-			this.table1.Add (this.filechooserbuttonMainNib);
-			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.filechooserbuttonMainNib]));
-			w4.TopAttach = ((uint)(1));
-			w4.BottomAttach = ((uint)(2));
+			this.filechooserbuttonBundleIcon = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select Bundle Icon"), ((global::Gtk.FileChooserAction)(0)));
+			this.filechooserbuttonBundleIcon.Name = "filechooserbuttonBundleIcon";
+			this.table1.Add (this.filechooserbuttonBundleIcon);
+			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.filechooserbuttonBundleIcon]));
+			w4.TopAttach = ((uint)(3));
+			w4.BottomAttach = ((uint)(4));
 			w4.LeftAttach = ((uint)(1));
 			w4.RightAttach = ((uint)(2));
 			w4.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.filechooserbuttonMainNib = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select Main NIB File"), ((global::Gtk.FileChooserAction)(0)));
+			this.filechooserbuttonMainNib.Name = "filechooserbuttonMainNib";
+			this.table1.Add (this.filechooserbuttonMainNib);
+			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.filechooserbuttonMainNib]));
+			w5.TopAttach = ((uint)(2));
+			w5.BottomAttach = ((uint)(3));
+			w5.LeftAttach = ((uint)(1));
+			w5.RightAttach = ((uint)(2));
+			w5.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.labelBundleIcon = new global::Gtk.Label ();
 			this.labelBundleIcon.Name = "labelBundleIcon";
 			this.labelBundleIcon.Xalign = 1F;
 			this.labelBundleIcon.LabelProp = global::Mono.Unix.Catalog.GetString ("Bundle Icon:");
 			this.table1.Add (this.labelBundleIcon);
-			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelBundleIcon]));
-			w5.TopAttach = ((uint)(2));
-			w5.BottomAttach = ((uint)(3));
-			w5.XOptions = ((global::Gtk.AttachOptions)(4));
-			w5.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelBundleIcon]));
+			w6.TopAttach = ((uint)(3));
+			w6.BottomAttach = ((uint)(4));
+			w6.XOptions = ((global::Gtk.AttachOptions)(4));
+			w6.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.labelFrameworks = new global::Gtk.Label ();
 			this.labelFrameworks.Name = "labelFrameworks";
 			this.labelFrameworks.Xalign = 0F;
 			this.labelFrameworks.LabelProp = global::Mono.Unix.Catalog.GetString ("Frameworks:");
 			this.table1.Add (this.labelFrameworks);
-			global::Gtk.Table.TableChild w6 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelFrameworks]));
-			w6.TopAttach = ((uint)(4));
-			w6.BottomAttach = ((uint)(5));
-			w6.RightAttach = ((uint)(2));
-			w6.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelFrameworks]));
+			w7.TopAttach = ((uint)(5));
+			w7.BottomAttach = ((uint)(6));
+			w7.RightAttach = ((uint)(2));
+			w7.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.labelMainNib = new global::Gtk.Label ();
 			this.labelMainNib.Name = "labelMainNib";
 			this.labelMainNib.Xalign = 1F;
 			this.labelMainNib.LabelProp = global::Mono.Unix.Catalog.GetString ("Main NIB File:");
 			this.table1.Add (this.labelMainNib);
-			global::Gtk.Table.TableChild w7 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelMainNib]));
-			w7.TopAttach = ((uint)(1));
-			w7.BottomAttach = ((uint)(2));
-			w7.XOptions = ((global::Gtk.AttachOptions)(4));
-			w7.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelMainNib]));
+			w8.TopAttach = ((uint)(2));
+			w8.BottomAttach = ((uint)(3));
+			w8.XOptions = ((global::Gtk.AttachOptions)(4));
+			w8.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.labelMainNib1 = new global::Gtk.Label ();
+			this.labelMainNib1.Name = "labelMainNib1";
+			this.labelMainNib1.Xalign = 1F;
+			this.labelMainNib1.LabelProp = global::Mono.Unix.Catalog.GetString ("Development Language:");
+			this.table1.Add (this.labelMainNib1);
+			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelMainNib1]));
+			w9.TopAttach = ((uint)(1));
+			w9.BottomAttach = ((uint)(2));
+			w9.XOptions = ((global::Gtk.AttachOptions)(4));
+			w9.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.labelType = new global::Gtk.Label ();
 			this.labelType.Name = "labelType";
 			this.labelType.Xalign = 1F;
 			this.labelType.LabelProp = global::Mono.Unix.Catalog.GetString ("Type of Application:");
 			this.table1.Add (this.labelType);
-			global::Gtk.Table.TableChild w8 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelType]));
-			w8.XOptions = ((global::Gtk.AttachOptions)(4));
-			w8.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w10 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelType]));
+			w10.XOptions = ((global::Gtk.AttachOptions)(4));
+			w10.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.labelVersion = new global::Gtk.Label ();
 			this.labelVersion.Name = "labelVersion";
 			this.labelVersion.Xalign = 1F;
 			this.labelVersion.LabelProp = global::Mono.Unix.Catalog.GetString ("Target Mac OS Version:");
 			this.table1.Add (this.labelVersion);
-			global::Gtk.Table.TableChild w9 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelVersion]));
-			w9.TopAttach = ((uint)(3));
-			w9.BottomAttach = ((uint)(4));
-			w9.XOptions = ((global::Gtk.AttachOptions)(4));
-			w9.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelVersion]));
+			w11.TopAttach = ((uint)(4));
+			w11.BottomAttach = ((uint)(5));
+			w11.XOptions = ((global::Gtk.AttachOptions)(4));
+			w11.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
 			this.scrolledwindowFrameworks = new global::Gtk.ScrolledWindow ();
 			this.scrolledwindowFrameworks.CanFocus = true;
@@ -132,10 +156,10 @@ namespace MonoDevelop.Monobjc.Gui
 			this.treeviewFrameworks.HeadersVisible = false;
 			this.scrolledwindowFrameworks.Add (this.treeviewFrameworks);
 			this.table1.Add (this.scrolledwindowFrameworks);
-			global::Gtk.Table.TableChild w11 = ((global::Gtk.Table.TableChild)(this.table1 [this.scrolledwindowFrameworks]));
-			w11.TopAttach = ((uint)(5));
-			w11.BottomAttach = ((uint)(6));
-			w11.RightAttach = ((uint)(2));
+			global::Gtk.Table.TableChild w13 = ((global::Gtk.Table.TableChild)(this.table1 [this.scrolledwindowFrameworks]));
+			w13.TopAttach = ((uint)(6));
+			w13.BottomAttach = ((uint)(7));
+			w13.RightAttach = ((uint)(2));
 			this.Add (this.table1);
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();

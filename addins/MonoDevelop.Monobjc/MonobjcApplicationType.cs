@@ -33,5 +33,9 @@ namespace MonoDevelop.Monobjc
 		/// The project generates a console application.
 		/// </summary>
 		ConsoleApplication,
+		/// <summary>
+		/// The project generates a cocoa library.
+		/// </summary>
+		CocoaLibrary,
 	}
 }
