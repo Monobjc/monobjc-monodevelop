@@ -20,6 +20,8 @@
     <Import file="Templates/MonobjcFileLocalizableStrings.xft.xml"/>
     <Import file="Templates/MonobjcFileNSObject.xft.xml"/>
     <Import file="Templates/MonobjcFileNSView.xft.xml"/>
+    <Import file="Templates/MonobjcFileNSViewController.xft.xml"/>
+    <Import file="Templates/MonobjcFileNSWindowController.xft.xml"/>
     <Import file="Templates/MonobjcProjectCocoaApplication.xpt.xml"/>
     <Import file="Templates/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
     <Import file="Templates/MonobjcProjectCocoaLibrary.xpt.xml"/>
@@ -54,6 +56,10 @@
                   file="Templates/MonobjcFileNSObject.xft.xml"/>
     <FileTemplate id="MonobjcFileNSView"
                   file="Templates/MonobjcFileNSView.xft.xml"/>
+    <FileTemplate id="MonobjcFileNSViewController"
+                  file="Templates/MonobjcFileNSViewController.xft.xml"/>
+    <FileTemplate id="MonobjcFileNSWindowController"
+                  file="Templates/MonobjcFileNSWindowController.xft.xml"/>
     <FileTemplate id="MonobjcXibEmpty"
                   file="Templates/MonobjcXibEmpty.xft.xml"/>
     <FileTemplate id="MonobjcXibView"

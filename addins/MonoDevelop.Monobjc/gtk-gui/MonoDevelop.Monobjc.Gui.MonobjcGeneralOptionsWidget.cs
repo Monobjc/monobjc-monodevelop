@@ -5,7 +5,7 @@ namespace MonoDevelop.Monobjc.Gui
 	public partial class MonobjcGeneralOptionsWidget
 	{
 		private global::Gtk.Table table1;
-		private global::Gtk.ComboBox comboboxLanguage;
+		private global::Gtk.ComboBox comboboxRegion;
 		private global::Gtk.ComboBox comboboxType;
 		private global::Gtk.ComboBox comboboxVersion;
 		private global::Gtk.FileChooserButton filechooserbuttonBundleIcon;
@@ -31,10 +31,10 @@ namespace MonoDevelop.Monobjc.Gui
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
-			this.comboboxLanguage = global::Gtk.ComboBox.NewText ();
-			this.comboboxLanguage.Name = "comboboxLanguage";
-			this.table1.Add (this.comboboxLanguage);
-			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1 [this.comboboxLanguage]));
+			this.comboboxRegion = global::Gtk.ComboBox.NewText ();
+			this.comboboxRegion.Name = "comboboxRegion";
+			this.table1.Add (this.comboboxRegion);
+			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1 [this.comboboxRegion]));
 			w1.TopAttach = ((uint)(1));
 			w1.BottomAttach = ((uint)(2));
 			w1.LeftAttach = ((uint)(1));

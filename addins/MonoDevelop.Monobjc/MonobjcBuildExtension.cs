@@ -39,20 +39,42 @@ namespace MonoDevelop.Monobjc
         /// <returns>The build result.</returns>
         protected override BuildResult Build(IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
         {
+			BuildResult result = new BuildResult();
             MonobjcProject project = item as MonobjcProject;
-            if (project == null || project.CompileTarget != CompileTarget.Exe)
-            {
-                return base.Build(monitor, item, configuration);
-            }
+			if (project == null) {
+				return result;
+			}
 			
-            // Do the base build
-            BuildResult result = base.Build(monitor, item, configuration);
+			// Pre-build
+			switch(project.ApplicationType)
+			{
+				case MonobjcApplicationType.CocoaApplication:
+				{
+					BuildHelper.EmbedXIBFiles(monitor, project, result);
+				}
+				break;
+				case MonobjcApplicationType.ConsoleApplication:
+				{
+					// Do nothing
+				}
+				break;
+				case MonobjcApplicationType.CocoaLibrary:
+				{
+					BuildHelper.EmbedXIBFiles(monitor, project, result);
+				}
+				break;
+				default:
+					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
+			}
+			
+            // Build
+            result.Append(base.Build(monitor, item, configuration));
             if (result.ErrorCount > 0)
             {
                 return result;
             }
 			
-			// Build according to the type
+			// Post-build
 			switch(project.ApplicationType)
 			{
 				case MonobjcApplicationType.CocoaApplication:
@@ -86,18 +108,19 @@ namespace MonoDevelop.Monobjc
         /// <returns></returns>
         protected override bool GetNeedsBuilding(SolutionEntityItem item, ConfigurationSelector configuration)
         {
+            MonobjcProject project = item as MonobjcProject;
+            if (project == null)
+            {
+                return false;
+            }
+			
+			// Call base implementation
             if (base.GetNeedsBuilding(item, configuration))
             {
                 return true;
             }
 
-            MonobjcProject project = item as MonobjcProject;
-            if (project == null || project.CompileTarget != CompileTarget.Exe)
-            {
-                return false;
-            }
-
-			// Build according to the type
+			// Call specific implementation
 			switch(project.ApplicationType)
 			{
 				case MonobjcApplicationType.CocoaApplication:
@@ -123,7 +146,13 @@ namespace MonoDevelop.Monobjc
 		            }
 		
 		            // The IB files
-		            if (project.GetIBFiles(maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
+		            if (project.GetIBFiles(BuildHelper.InterfaceDefinition, maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
+		            {
+		                return true;
+		            }
+		
+		            // The IB files
+		            if (project.GetIBFiles(BuildHelper.EmbeddedInterfaceDefinition, null).Where(p => p.NeedsBuilding).Any())
 		            {
 		                return true;
 		            }
@@ -148,7 +177,11 @@ namespace MonoDevelop.Monobjc
 				break;
 				case MonobjcApplicationType.CocoaLibrary:
 				{
-					// TODO
+		            // The IB files
+		            if (project.GetIBFiles(BuildHelper.EmbeddedInterfaceDefinition, null).Where(p => p.NeedsBuilding).Any())
+		            {
+		                return true;
+		            }
 				}
 				break;
 				default:
@@ -166,15 +199,16 @@ namespace MonoDevelop.Monobjc
         /// <param name = "configuration">The configuration.</param>
         protected override void Clean(IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
         {
-            base.Clean(monitor, item, configuration);
-
             MonobjcProject project = item as MonobjcProject;
-            if (project == null || project.CompileTarget != CompileTarget.Exe)
+            if (project == null)
             {
                 return;
             }
 			
-			// Build according to the type
+			// Call base implementation
+            base.Clean(monitor, item, configuration);
+
+			// Call specific implementation
 			switch(project.ApplicationType)
 			{
 				case MonobjcApplicationType.CocoaApplication:

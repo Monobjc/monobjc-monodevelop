@@ -33,7 +33,7 @@ namespace MonoDevelop.Monobjc
 		private IEnumerable<SystemAssembly> monobjcAssemblies;
 		private MonobjcApplicationType applicationType;
 		
-		private String developmentLanguage;
+		private String developmentRegion;
 		private FilePath mainNibFile;
 		private FilePath bundleIcon;
 		private String osFrameworks;
@@ -65,17 +65,17 @@ namespace MonoDevelop.Monobjc
 		}
 
 		/// <summary>
-		/// Gets or sets the development language.
+		/// Gets or sets the development region.
 		/// </summary>
-		/// <value>The development language.</value>
-		[ItemProperty("DevelopmentLanguage")]
-		public String DevelopmentLanguage
+		/// <value>The development region.</value>
+		[ItemProperty("DevelopmentRegion", DefaultValue = "en")]
+		public String DevelopmentRegion
 		{
-			get { return this.developmentLanguage; }
+			get { return this.developmentRegion; }
 			set
 			{
-				this.developmentLanguage = value;
-				this.NotifyModified("DevelopmentLanguage");
+				this.developmentRegion = value;
+				this.NotifyModified("DevelopmentRegion");
 			}
 		}
 

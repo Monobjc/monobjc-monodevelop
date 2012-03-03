@@ -33,20 +33,25 @@ namespace MonoDevelop.Monobjc.Utilities
 	/// </summary>
 	public static class BuildHelper
 	{
-		private const String INFO_PLIST = "Info.plist";
+		internal const String InterfaceDefinition = "InterfaceDefinition";
+		internal const String EmbeddedInterfaceDefinition = "EmbeddedInterfaceDefinition";
+		internal const String INFO_PLIST = "Info.plist";
 		
-		public static String[] groupedExtensions = new[] { ".cs" };
+		internal static String[] groupedExtensions = new[] { ".cs" };
 		
 		/// <summary>
-		///   Determines whether the specified filename is an Info.plist file.
+		///   Determines whether the specified filename is a resource file.
 		/// </summary>
-		/// <param name = "filename">The filename.</param>
+		/// <param name = "file">The file.</param>
 		/// <returns>
-		///   <c>true</c> if the specified filename is an Info.plist file; otherwise, <c>false</c>.
+		///   <c>true</c> if the specified filename is a resource file; otherwise, <c>false</c>.
 		/// </returns>
-		public static bool IsInfoPlist(ProjectFile projectFile)
+		public static bool IsResourceFile(ProjectFile file)
 		{
-			return ("Info.plist".Equals (projectFile.FilePath.FileName));
+			return (BuildHelper.IsInfoPlist (file) || 
+			        BuildHelper.IsNormalXIBFile (file) ||
+			        BuildHelper.IsEmbeddedXIBFile (file) ||
+			        BuildHelper.IsStringsFile (file));
 		}
 		
 		/// <summary>
@@ -60,19 +65,6 @@ namespace MonoDevelop.Monobjc.Utilities
 		{
 			String extension = Path.GetExtension (filename);
 			return String.Equals (".xib", extension);
-		}
-
-		/// <summary>
-		///   Determines whether the specified filename is a XIB file.
-		/// </summary>
-		/// <param name = "file">The file.</param>
-		/// <returns>
-		///   <c>true</c> if the specified filename is a XIB file; otherwise, <c>false</c>.
-		/// </returns>
-		public static bool IsXIBFile (ProjectFile file)
-		{
-			String extension = file.FilePath.Extension;
-			return String.Equals (".xib", extension) && (file.BuildAction == BuildAction.Page);
 		}
 		
 		/// <summary>
@@ -89,6 +81,57 @@ namespace MonoDevelop.Monobjc.Utilities
 		}
 		
 		/// <summary>
+		///   Determines whether the specified filename is an Info.plist file.
+		/// </summary>
+		/// <param name = "file">The file.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is an Info.plist file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsInfoPlist(ProjectFile file)
+		{
+			return ("Info.plist".Equals (file.FilePath.FileName));
+		}
+		
+		/// <summary>
+		///   Determines whether the specified filename is a XIB file.
+		/// </summary>
+		/// <param name = "file">The file.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is a XIB file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsXIBFile (ProjectFile file)
+		{
+			return (BuildHelper.IsNormalXIBFile (file) ||
+			        BuildHelper.IsEmbeddedXIBFile (file));
+		}
+		
+		/// <summary>
+		///   Determines whether the specified filename is a XIB file.
+		/// </summary>
+		/// <param name = "file">The file.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is a XIB file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsNormalXIBFile (ProjectFile file)
+		{
+			String extension = file.FilePath.Extension;
+			return String.Equals (".xib", extension) && (file.BuildAction == InterfaceDefinition);
+		}
+		
+		/// <summary>
+		///   Determines whether the specified filename is a XIB file.
+		/// </summary>
+		/// <param name = "file">The file.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is a XIB file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsEmbeddedXIBFile (ProjectFile file)
+		{
+			String extension = file.FilePath.Extension;
+			return String.Equals (".xib", extension) && (file.BuildAction == EmbeddedInterfaceDefinition);
+		}
+
+		/// <summary>
 		///   Determines whether the specified filename is a strings file.
 		/// </summary>
 		/// <param name = "file">The file.</param>
@@ -100,7 +143,25 @@ namespace MonoDevelop.Monobjc.Utilities
 			String extension = file.FilePath.Extension;
 			return String.Equals (".strings", extension) && (file.BuildAction == BuildAction.Content);
 		}
-
+		
+		public static bool IsInDevelopmentRegion(MonobjcProject project, ProjectFile file)
+		{
+			String developmentRegion = project.DevelopmentRegion;
+			
+			FilePath baseDirectory = project.BaseDirectory;
+			FilePath localizedFolder = baseDirectory.Combine(developmentRegion + ".lproj");
+			FilePath nibFile = file.FilePath;
+			
+			if (nibFile.ParentDirectory.Equals(baseDirectory)) {
+				return true;
+			}
+			if (nibFile.ParentDirectory.Equals(localizedFolder)) {
+				return true;
+			}
+			
+			return false;
+		}
+		
 		/// <summary>
 		///   Determines whether the specified versions are compatible.
 		/// </summary>
@@ -148,15 +209,61 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static void CompileXIBFiles (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker, BuildResult result)
 		{
 			XibCompiler xibCompiler = new XibCompiler ();
-			IEnumerable<FilePair> files = project.GetIBFiles (maker.ResourcesFolder);
+			IEnumerable<FilePair> files = project.GetIBFiles (InterfaceDefinition, maker.ResourcesFolder);
 			if (files == null) {
 				return;
 			}
+			List<FilePair> pairs = new List<FilePair>(files);
 			monitor.BeginTask (GettextCatalog.GetString ("Compiling XIB files..."), files.Count ());
-			foreach (FilePair file in files) {
+			foreach (FilePair file in pairs) {
 				monitor.Log.WriteLine (GettextCatalog.GetString ("Compiling {0}", file.Source.ToRelative (project.BaseDirectory)));
 				xibCompiler.Logger = new BuildLogger (file.Source, monitor, result);
 				xibCompiler.Compile (file.Source, file.DestinationDir);
+				monitor.Step (1);
+			}
+			monitor.EndTask ();
+		}
+
+		/// <summary>
+		///   Embeds the XIB files.
+		/// </summary>
+		/// <param name = 'monitor'>The progress monitor.</param>
+		/// <param name = 'project'>The project.</param>
+		/// <param name = 'maker'>The bundle maker.</param>
+		/// <param name = 'result'>The build result.</param>
+		public static void EmbedXIBFiles (IProgressMonitor monitor, MonobjcProject project, BuildResult result)
+		{
+			XibCompiler xibCompiler = new XibCompiler ();
+			IEnumerable<FilePair> files = project.GetIBFiles (EmbeddedInterfaceDefinition, null);
+			if (files == null) {
+				return;
+			}
+			List<FilePair> pairs = new List<FilePair>(files);
+			monitor.BeginTask (GettextCatalog.GetString ("Embed XIB files..."), files.Count ());
+			foreach (FilePair file in pairs) {
+				FilePath relativeFile = file.Source.ToRelative (project.BaseDirectory);
+				monitor.Log.WriteLine (GettextCatalog.GetString ("Compiling {0}", relativeFile));
+				xibCompiler.Logger = new BuildLogger (file.Source, monitor, result);
+				xibCompiler.Compile (file.Source, file.DestinationDir);
+				
+				// Add file if needed
+				if (!project.IsFileInProject(file.Destination)) {
+					project.AddFile(file.Destination);
+				}
+				
+				// Make the NIB depends on the XIB file
+				ProjectFile destinationFile = project.GetProjectFile(file.Destination);
+				destinationFile.BuildAction = BuildAction.EmbeddedResource;
+				destinationFile.DependsOn = relativeFile;
+				
+				// Set the resource id (default namepace + name without extension + locale)
+				String resourceId = project.DefaultNamespace + "." + Path.GetFileNameWithoutExtension(file.Destination);
+				FilePath parentDirectory = destinationFile.FilePath.ParentDirectory;
+				if (parentDirectory.Extension == ".lproj") {
+					resourceId = resourceId + "." + parentDirectory.FileNameWithoutExtension;
+				}
+				destinationFile.ResourceId = resourceId;
+				
 				monitor.Step (1);
 			}
 			monitor.EndTask ();
@@ -249,6 +356,7 @@ namespace MonoDevelop.Monobjc.Utilities
 			Assembly assembly = Assembly.ReflectionOnlyLoadFrom(mainAssembly);
 			AssemblyName assemblyName = assembly.GetName();
 			
+			pListGenerator.DevelopmentRegion = project.DevelopmentRegion;
 			pListGenerator.ApplicationName = assemblyName.Name;
 			pListGenerator.Identifier = project.DefaultNamespace;
 			pListGenerator.Version = assemblyName.Version.ToString();

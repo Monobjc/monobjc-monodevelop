@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<Template Originator="Laurent Etiemble" Created="2010/10/27">
+	
+	<!-- Template Header -->
+	<TemplateConfiguration>
+	  <_Name>NSViewController Subclass</_Name>
+    	<Icon>md-monobjc-class</Icon>
+	  <_Category>Monobjc</_Category>
+	  <LanguageName>C#</LanguageName>
+	  <ProjectType>Monobjc</ProjectType>
+	  <_Description>A .NET class that inherits NSViewController and is exposed to the Objective-C runtime.</_Description>
+	</TemplateConfiguration>
+	
+	<!-- Template Content -->
+	<TemplateFiles>
+	  <File name="${Name}.cs">
+<![CDATA[using System;
+using Monobjc;
+using Monobjc.AppKit;
+using Monobjc.Foundation;
+
+namespace ${Namespace}
+{
+	[ObjectiveCClass]
+	public partial class ${Name} : NSViewController
+	{
+		public static readonly Class ${Name}Class = Class.Get (typeof(${Name}));
+
+		public ${Name} () { }
+
+		public ${Name} (IntPtr nativePointer) : base(nativePointer) { }
+
+        public ${Name}(NSString nibNameOrNil, NSBundle nibBundleOrNil) : base("initWithNibName:bundle:", nibNameOrNil, nibBundleOrNil) { }
+
+		[ObjectiveCMessage("initWithNibName:bundle:")]
+        public override Id InitWithNibNameBundle(NSString nibNameOrNil, NSBundle nibBundleOrNil)
+        {
+			this.SendMessageSuper<IntPtr>(${Name}Class, "initWithNibName:bundle:", nibNameOrNil, nibBundleOrNil);
+			
+			// Initialization code here.
+			
+			return this;
+        }
+			
+		[ObjectiveCMessage("dealloc")]
+		public override void Dealloc()
+		{
+			// Clean-up code here.
+			
+			this.SendMessageSuper(${Name}Class, "dealloc");
+		}
+	}
+}]]>
+		</File>
+	</TemplateFiles>
+	
+</Template>

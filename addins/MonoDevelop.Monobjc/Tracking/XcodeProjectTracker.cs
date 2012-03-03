@@ -21,11 +21,11 @@ using System.IO;
 using System.Threading;
 using Monobjc.Tools.Xcode;
 using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
-using MonoDevelop.Ide;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
@@ -399,14 +399,14 @@ namespace MonoDevelop.Monobjc.Tracking
 		
 		private void AddResource (ProjectFile projectFile)
 		{
-			if (BuildHelper.IsInfoPlist (projectFile) || BuildHelper.IsXIBFile (projectFile) || BuildHelper.IsStringsFile (projectFile)) {
+			if (BuildHelper.IsResourceFile (projectFile)) {
 				this.XcodeProject.AddFile (GROUP_RESOURCES, projectFile.FilePath, this.TargetName);
 			}
 		}
 		
 		private void RemoveResource (ProjectFile projectFile)
 		{
-			if (BuildHelper.IsInfoPlist (projectFile) || BuildHelper.IsXIBFile (projectFile) || BuildHelper.IsStringsFile (projectFile)) {
+			if (BuildHelper.IsResourceFile (projectFile)) {
 				this.XcodeProject.RemoveFile (GROUP_RESOURCES, projectFile.FilePath);
 			}
 		}

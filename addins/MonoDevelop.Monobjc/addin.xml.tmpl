@@ -20,6 +20,8 @@
     <Import file="Templates/MonobjcFileLocalizableStrings.xft.xml"/>
     <Import file="Templates/MonobjcFileNSObject.xft.xml"/>
     <Import file="Templates/MonobjcFileNSView.xft.xml"/>
+    <Import file="Templates/MonobjcFileNSViewController.xft.xml"/>
+    <Import file="Templates/MonobjcFileNSWindowController.xft.xml"/>
     <Import file="Templates/MonobjcProjectCocoaApplication.xpt.xml"/>
     <Import file="Templates/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
     <Import file="Templates/MonobjcProjectCocoaLibrary.xpt.xml"/>
@@ -54,6 +56,10 @@
                   file="Templates/MonobjcFileNSObject.xft.xml"/>
     <FileTemplate id="MonobjcFileNSView"
                   file="Templates/MonobjcFileNSView.xft.xml"/>
+    <FileTemplate id="MonobjcFileNSViewController"
+                  file="Templates/MonobjcFileNSViewController.xft.xml"/>
+    <FileTemplate id="MonobjcFileNSWindowController"
+                  file="Templates/MonobjcFileNSWindowController.xft.xml"/>
     <FileTemplate id="MonobjcXibEmpty"
                   file="Templates/MonobjcXibEmpty.xft.xml"/>
     <FileTemplate id="MonobjcXibView"
@@ -78,8 +84,7 @@
 
   <Extension path="/MonoDevelop/ProjectModel/MSBuildItemTypes">
     <DotNetProjectSubtype guid="{804445eb-57e1-4f64-8830-61a8701f1c25}"
-                          type="MonoDevelop.Monobjc.MonobjcProject"
-                          migrationHandler="MonoDevelop.Monobjc.MonobjcProjectMigrationHandler" />
+                          type="MonoDevelop.Monobjc.MonobjcProject" />
   </Extension>
 
   <!-- Project Bindings -->

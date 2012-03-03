@@ -46,7 +46,7 @@ namespace MonoDevelop.Monobjc
         /// </summary>
         /// <param name = "destinationDirectory">The destination directory.</param>
         /// <returns>A list of pairs.</returns>
-        internal IEnumerable<FilePair> GetIBFiles(FilePath destinationDirectory)
+        internal IEnumerable<FilePair> GetIBFiles(String buildAction, FilePath destinationDirectory)
         {
             // Return all the IB files
             foreach (ProjectFile file in this.Files)
@@ -55,10 +55,16 @@ namespace MonoDevelop.Monobjc
                 {
                     continue;
                 }
+				if (file.BuildAction != buildAction) {
+					continue;
+				}
 
                 // Compute destination file
                 FilePath relativePath = file.FilePath.ToRelative(this.BaseDirectory);
-                FilePath destination = destinationDirectory.Combine(relativePath);
+				FilePath destination = file.FilePath;
+				if (destinationDirectory != null) {
+					destination = destinationDirectory.Combine(relativePath);
+				}
                 yield return new FilePair(file.FilePath, destination.ChangeExtension("nib"));
             }
         }

@@ -24,6 +24,7 @@ using Monobjc.Tools.Utilities;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Ide;
 using MonoDevelop.Core;
+using System.IO;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -45,7 +46,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.comboboxVersion.Changed += this.HandleComboboxVersionhandleChanged;
 			
 			this.comboboxType.Model = new ListStore (typeof(string), typeof(MonobjcApplicationType));
-			this.comboboxLanguage.Model = new ListStore (typeof(string), typeof(string));
+			this.comboboxRegion.Model = new ListStore (typeof(string), typeof(String));
 			this.comboboxVersion.Model = new ListStore (typeof(string), typeof(MacOSVersion));
 			this.treeviewFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
 			
@@ -86,10 +87,22 @@ namespace MonoDevelop.Monobjc.Gui
 			this.ApplicationType = project.ApplicationType;
 			
 			// Load the development languages
-			ListStore languageStore = (ListStore)this.comboboxLanguage.Model;
-			languageStore.Clear ();
-			
-			this.DevelopmentLanguage = project.DevelopmentLanguage;
+			ListStore regionStore = (ListStore)this.comboboxRegion.Model;
+			regionStore.Clear ();
+			FilePath projectDir = project.BaseDirectory;
+			String[] folders = Directory.GetDirectories(projectDir, "*.lproj");
+			if (folders.Length == 0) {
+				regionStore.AppendValues (GettextCatalog.GetString ("en"), "en");
+			} else {
+				foreach(String folder in folders) {
+					if (!Directory.Exists(folder)) {
+						continue;
+					}
+					String language = System.IO.Path.GetFileNameWithoutExtension(folder);
+					regionStore.AppendValues (GettextCatalog.GetString (language), language);
+				}
+			}
+			this.DevelopmentRegion = project.DevelopmentRegion;
 			
 			// Retrieve some information about the developer tools
 			// - Xcode 3.2 => 10.5/10.6 - ppc/i386/x86_64
@@ -144,7 +157,7 @@ namespace MonoDevelop.Monobjc.Gui
 			}
 			
 			project.ApplicationType = this.ApplicationType;
-			project.DevelopmentLanguage = this.DevelopmentLanguage;
+			project.DevelopmentRegion = this.DevelopmentRegion;
 			project.MainNibFile = this.filechooserbuttonMainNib.Filename;
 			project.BundleIcon = this.filechooserbuttonBundleIcon.Filename;
 			project.TargetOSVersion = this.TargetOSVersion;
@@ -183,31 +196,31 @@ namespace MonoDevelop.Monobjc.Gui
 		}
 
 		/// <summary>
-		/// Gets or sets the development language.
+		/// Gets or sets the development region.
 		/// </summary>
-		private string DevelopmentLanguage {
+		private string DevelopmentRegion {
 			get {
 				TreeIter iter;
-				if (this.comboboxLanguage.GetActiveIter (out iter)) {
-					ListStore listStore = (ListStore)this.comboboxLanguage.Model;
+				if (this.comboboxRegion.GetActiveIter (out iter)) {
+					ListStore listStore = (ListStore)this.comboboxRegion.Model;
 					return (string)listStore.GetValue (iter, 1);
 				}
 				throw new InvalidOperationException ("Unrecognized Application type");
 			}
 			set {
-				ListStore store = (ListStore)this.comboboxLanguage.Model;
+				ListStore store = (ListStore)this.comboboxRegion.Model;
 				TreeIter iter;
 				store.GetIterFirst (out iter);
 				do {
 					if ((string)store.GetValue (iter, 1) == value) {
-						this.comboboxLanguage.SetActiveIter (iter);
+						this.comboboxRegion.SetActiveIter (iter);
 						return;
 					}
 					if (!store.IterNext (ref iter)) {
 						break;
 					}
 				} while (true);
-				this.comboboxLanguage.Active = 0;
+				this.comboboxRegion.Active = 0;
 			}
 		}
 

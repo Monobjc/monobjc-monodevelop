@@ -29,225 +29,242 @@ using System.Collections.Generic;
 
 namespace MonoDevelop.Monobjc
 {
-    /// <summary>
-    ///   A Monobjc project
-    /// </summary>
-    public partial class MonobjcProject : DotNetProject
-    {
-		internal const String InterfaceDefinition = "InterfaceDefinition";
-		internal const String EmbeddedInterfaceDefinition = "EmbeddedInterfaceDefinition";
-		
-        /// <summary>
-        ///   Initializes the <see cref = "MonoDevelop.Monobjc.MonobjcProject" /> class.
-        /// </summary>
-        static MonobjcProject()
-        {
-            CodeBehindGeneratorLoader.Init();
-        }
+	/// <summary>
+	///   A Monobjc project
+	/// </summary>
+	public partial class MonobjcProject : DotNetProject
+	{				
+		private IList<String> buildActions = null;
 
-        /// <summary>
-        ///   Initializes a new instance of the <see cref = "MonobjcProject" /> class.
-        /// </summary>
-        public MonobjcProject()
-        {
+		/// <summary>
+		///   Initializes the <see cref = "MonoDevelop.Monobjc.MonobjcProject" /> class.
+		/// </summary>
+		static MonobjcProject ()
+		{
+			CodeBehindGeneratorLoader.Init ();
+		}
+
+		/// <summary>
+		///   Initializes a new instance of the <see cref = "MonobjcProject" /> class.
+		/// </summary>
+		public MonobjcProject ()
+		{
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::ctor0");
 #endif
-            this.Initialize();
-        }
+			this.Initialize ();
+		}
 
-        /// <summary>
-        ///   Initializes a new instance of the <see cref = "MonobjcProject" /> class.
-        /// </summary>
-        /// <param name = "languageName">Name of the language.</param>
-        public MonobjcProject(String languageName) : base(languageName)
-        {
+		/// <summary>
+		///   Initializes a new instance of the <see cref = "MonobjcProject" /> class.
+		/// </summary>
+		/// <param name = "languageName">Name of the language.</param>
+		public MonobjcProject (String languageName) : base(languageName)
+		{
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::ctor1");
 #endif
-            this.Initialize();
-        }
+			this.Initialize ();
+		}
 
-        /// <summary>
-        ///   Initializes a new instance of the <see cref = "MonobjcProject" /> class.
-        /// </summary>
-        /// <param name = "language">The language.</param>
-        /// <param name = "info">The info.</param>
-        /// <param name = "projectOptions">The project options.</param>
-        public MonobjcProject(String language, ProjectCreateInformation info, XmlElement projectOptions) : base(language, info, projectOptions)
-        {
+		/// <summary>
+		///   Initializes a new instance of the <see cref = "MonobjcProject" /> class.
+		/// </summary>
+		/// <param name = "language">The language.</param>
+		/// <param name = "info">The info.</param>
+		/// <param name = "projectOptions">The project options.</param>
+		public MonobjcProject (String language, ProjectCreateInformation info, XmlElement projectOptions) : base(language, info, projectOptions)
+		{
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::ctor3");
 #endif
-            XmlNode node = projectOptions.SelectSingleNode("MacOSFrameworks");
-            if (node != null)
-            {
-                this.OSFrameworks = node.InnerText;
-            }
+			XmlNode node = projectOptions.SelectSingleNode ("MacOSFrameworks");
+			if (node != null) {
+				this.OSFrameworks = node.InnerText;
+			}
 
-            node = projectOptions.SelectSingleNode("MacOSVersion");
-            if (node != null)
-            {
-                this.TargetOSVersion = (MacOSVersion) Enum.Parse(typeof (MacOSVersion), node.InnerText);
-            }
+			node = projectOptions.SelectSingleNode ("MacOSVersion");
+			if (node != null) {
+				this.TargetOSVersion = (MacOSVersion)Enum.Parse (typeof(MacOSVersion), node.InnerText);
+			}
 
-            node = projectOptions.SelectSingleNode("MacOSArch");
-            if (node != null)
-            {
-                this.TargetOSArch = (MacOSArchitecture) Enum.Parse(typeof (MacOSArchitecture), node.InnerText);
-            }
+			node = projectOptions.SelectSingleNode ("MacOSArch");
+			if (node != null) {
+				this.TargetOSArch = (MacOSArchitecture)Enum.Parse (typeof(MacOSArchitecture), node.InnerText);
+			}
 
-            this.Initialize();
-        }
+			this.Initialize ();
+		}
 
-        /// <summary>
-        ///   Releases unmanaged and - optionally - managed resources
-        /// </summary>
-        public override void Dispose()
-        {
+		/// <summary>
+		///   Releases unmanaged and - optionally - managed resources
+		/// </summary>
+		public override void Dispose ()
+		{
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::Dispose");
 #endif
-            this.CodeBehindTracker.Dispose();
-            this.XcodeTracker.Dispose();
-            base.Dispose();
-        }
+			this.CodeBehindTracker.Dispose ();
+			this.XcodeTracker.Dispose ();
+			base.Dispose ();
+		}
 
-        /// <summary>
-        ///   Gets the type of the project.
-        /// </summary>
-        /// <value>The type of the project.</value>
-        public override string ProjectType
-        {
-            get { return "Monobjc"; }
-        }
+		/// <summary>
+		///   Gets the type of the project.
+		/// </summary>
+		/// <value>The type of the project.</value>
+		public override string ProjectType {
+			get { return "Monobjc"; }
+		}
 
-        /// <summary>
-        ///   Creates the configuration.
-        /// </summary>
-        /// <param name = "name">The name.</param>
-        /// <returns></returns>
-        public override SolutionItemConfiguration CreateConfiguration(string name)
-        {
-            MonobjcProjectConfiguration configuration = new MonobjcProjectConfiguration(name);
-            configuration.CopyFrom(base.CreateConfiguration(name));
-            return configuration;
-        }
+		/// <summary>
+		///   Creates the configuration.
+		/// </summary>
+		/// <param name = "name">The name.</param>
+		/// <returns></returns>
+		public override SolutionItemConfiguration CreateConfiguration (string name)
+		{
+			MonobjcProjectConfiguration configuration = new MonobjcProjectConfiguration (name);
+			configuration.CopyFrom (base.CreateConfiguration (name));
+			return configuration;
+		}
 
-        /// <summary>
-        ///   Supportses the framework.
-        /// </summary>
-        /// <param name = "framework">The framework.</param>
-        /// <returns></returns>
-        public override bool SupportsFramework(TargetFramework framework)
-        {
+		/// <summary>
+		///   Supportses the framework.
+		/// </summary>
+		/// <param name = "framework">The framework.</param>
+		/// <returns></returns>
+		public override bool SupportsFramework (TargetFramework framework)
+		{
 #if MD_2_4
             return framework.IsCompatibleWithFramework("4.0");
 #endif
 #if MD_2_6 || MD_2_8
 			return framework.IsCompatibleWithFramework (TargetFrameworkMoniker.NET_4_0);
 #endif
-        }
+		}
 
-        /// <summary>
-        ///   Gets the default build action.
-        /// </summary>
-        /// <param name = "fileName">Name of the file.</param>
-        /// <returns></returns>
-        public override String GetDefaultBuildAction(String fileName)
-        {
-			if (BuildHelper.IsXIBFile(fileName)) {
-				return InterfaceDefinition;
+		/// <summary>
+		///   Gets the default build action.
+		/// </summary>
+		/// <param name = "fileName">Name of the file.</param>
+		/// <returns></returns>
+		public override String GetDefaultBuildAction (String fileName)
+		{
+			if (BuildHelper.IsXIBFile (fileName)) {
+				return BuildHelper.InterfaceDefinition;
 			}
-			if (BuildHelper.IsStringsFile(fileName)) {
+			if (BuildHelper.IsStringsFile (fileName)) {
 				return BuildAction.Content;
 			}
-            return base.GetDefaultBuildAction(fileName);
-        }
+			return base.GetDefaultBuildAction (fileName);
+		}
 
-        /// <summary>
-        ///   Creates the execution command.
-        /// </summary>
-        /// <param name = "configSel">The configuration selector.</param>
-        /// <param name = "configuration">The configuration.</param>
-        /// <returns>The execution command.</returns>
-        protected override ExecutionCommand CreateExecutionCommand(ConfigurationSelector configSel, DotNetProjectConfiguration configuration)
-        {
+		/// <summary>
+		///   Creates the execution command.
+		/// </summary>
+		/// <param name = "configSel">The configuration selector.</param>
+		/// <param name = "configuration">The configuration.</param>
+		/// <returns>The execution command.</returns>
+		protected override ExecutionCommand CreateExecutionCommand (ConfigurationSelector configSel, DotNetProjectConfiguration configuration)
+		{
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::CreateExecutionCommand");
 #endif
-            if (this.CompileTarget != CompileTarget.Exe)
-            {
-                return base.CreateExecutionCommand(configSel, configuration);
-            }
+			if (this.CompileTarget != CompileTarget.Exe) {
+				return base.CreateExecutionCommand (configSel, configuration);
+			}
 			
-            MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) configuration;
+			MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)configuration;
 
-            // Infer application name from configuration
-            String applicationName = this.GetApplicationName(configSel);
+			// Infer application name from configuration
+			String applicationName = this.GetApplicationName (configSel);
 			conf.ApplicationName = applicationName;
 			
-			switch(this.ApplicationType)
-			{
-				case MonobjcApplicationType.CocoaApplication:
+			switch (this.ApplicationType) {
+			case MonobjcApplicationType.CocoaApplication:
 				{
-		            // Create the bundle maker to get the path to the runtime
-		            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
-		            conf.Runtime = maker.Runtime;
+					// Create the bundle maker to get the path to the runtime
+					BundleMaker maker = new BundleMaker (applicationName, conf.OutputDirectory);
+					conf.Runtime = maker.Runtime;
 				}
 				break;
-				case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcApplicationType.ConsoleApplication:
 				{
 					// Build the command line
-					conf.Runtime = FileProvider.GetPath(this.TargetOSVersion, "runtime");
-					conf.CommandLineParameters = this.GetOutputFileName(configSel);
+					conf.Runtime = FileProvider.GetPath (this.TargetOSVersion, "runtime");
+					conf.CommandLineParameters = this.GetOutputFileName (configSel);
 				}
 				break;
-				default:
-					throw new NotSupportedException("Unsupported application type " + this.ApplicationType);
+			default:
+				throw new NotSupportedException ("Unsupported application type " + this.ApplicationType);
 			}
 
-            // Create the command
-            MonobjcExecutionCommand command = new MonobjcExecutionCommand(conf);
-            command.UserAssemblyPaths = this.GetUserAssemblyPaths(configSel);
+			// Create the command
+			MonobjcExecutionCommand command = new MonobjcExecutionCommand (conf);
+			command.UserAssemblyPaths = this.GetUserAssemblyPaths (configSel);
 
-            return command;
-        }
+			return command;
+		}
 
-        /// <summary>
-        ///   Called when a project file is added to this instance.
-        /// </summary>
-        /// <param name = "e">The <see cref = "ProjectFileEventArgs" /> instance containing the event data.</param>
-        protected override void OnFileAddedToProject(ProjectFileEventArgs e)
-        {
+		/// <summary>
+		///   Called when a project file is added to this instance.
+		/// </summary>
+		/// <param name = "e">The <see cref = "ProjectFileEventArgs" /> instance containing the event data.</param>
+		protected override void OnFileAddedToProject (ProjectFileEventArgs e)
+		{
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::OnFileAddedToProject");
 #endif
-            base.OnFileAddedToProject(e);
-        }
+			// Migrate "Page" to "InterfaceDefinition"
+#if MD_2_4
+            ProjectFile projectFile = e.ProjectFile;
+			if (projectFile.BuildAction == BuildAction.Page) {
+				projectFile.BuildAction = BuildHelper.InterfaceDefinition;
+			}
+#endif
+#if MD_2_6 || MD_2_8
+			foreach(ProjectFileEventInfo info in e)
+			{
+	            ProjectFile projectFile = info.ProjectFile;
+				if (projectFile.BuildAction == BuildAction.Page) {
+					projectFile.BuildAction = BuildHelper.InterfaceDefinition;
+				}
+			}
+#endif
+			base.OnFileAddedToProject (e);
+		}
 
-        /// <summary>
-        ///   Called when a project file is changed into this instance.
-        /// </summary>
-        /// <param name = "e">The <see cref = "ProjectFileEventArgs" /> instance containing the event data.</param>
-        protected override void OnFileChangedInProject(ProjectFileEventArgs e)
-        {
+		/// <summary>
+		///   Called when a project file is changed into this instance.
+		/// </summary>
+		/// <param name = "e">The <see cref = "ProjectFileEventArgs" /> instance containing the event data.</param>
+		protected override void OnFileChangedInProject (ProjectFileEventArgs e)
+		{
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::OnFileChangedInProject");
 #endif
-            base.OnFileChangedInProject(e);
-        }
-		
-		protected override IList<string> GetCommonBuildActions ()
-		{
-			IList<String> actions = new List<String>(base.GetCommonBuildActions());
-			if (!actions.Contains(InterfaceDefinition)) {
-				actions.Add (InterfaceDefinition);
-			}
-			if (!actions.Contains(EmbeddedInterfaceDefinition)) {
-				actions.Add (EmbeddedInterfaceDefinition);
-			}
-			return actions;
+			base.OnFileChangedInProject (e);
 		}
-    }
+		
+		/// <summary>
+		/// Gets the common build actions.
+		/// </summary>
+		protected override IList<String> GetCommonBuildActions ()
+		{
+			if (buildActions == null) {
+				buildActions = new List<String> (base.GetCommonBuildActions ());
+				if (buildActions.Contains (BuildAction.Page)) {
+					buildActions.Remove (BuildAction.Page);
+				}
+				if (!buildActions.Contains (BuildHelper.InterfaceDefinition)) {
+					buildActions.Add (BuildHelper.InterfaceDefinition);
+				}
+				if (!buildActions.Contains (BuildHelper.EmbeddedInterfaceDefinition)) {
+					buildActions.Add (BuildHelper.EmbeddedInterfaceDefinition);
+				}
+			}
+			return buildActions;
+		}
+	}
 }

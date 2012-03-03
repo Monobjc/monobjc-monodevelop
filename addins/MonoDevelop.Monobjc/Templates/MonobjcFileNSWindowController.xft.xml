@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<Template Originator="Laurent Etiemble" Created="2010/10/27">
+	
+	<!-- Template Header -->
+	<TemplateConfiguration>
+	  <_Name>NSWindowController Subclass</_Name>
+    	<Icon>md-monobjc-class</Icon>
+	  <_Category>Monobjc</_Category>
+	  <LanguageName>C#</LanguageName>
+	  <ProjectType>Monobjc</ProjectType>
+	  <_Description>A .NET class that inherits NSWindowController and is exposed to the Objective-C runtime.</_Description>
+	</TemplateConfiguration>
+	
+	<!-- Template Content -->
+	<TemplateFiles>
+	  <File name="${Name}.cs">
+<![CDATA[using System;
+using Monobjc;
+using Monobjc.AppKit;
+using Monobjc.Foundation;
+
+namespace ${Namespace}
+{
+	[ObjectiveCClass]
+	public partial class ${Name} : NSWindowController
+	{
+		public static readonly Class ${Name}Class = Class.Get (typeof(${Name}));
+
+		public ${Name} () { }
+
+		public ${Name} (IntPtr nativePointer) : base(nativePointer) { }
+
+        public ${Name}(NSWindow window) : base("initWithWindow:", window) { }
+
+		[ObjectiveCMessage("initWithWindow:")]
+        public virtual Id InitWithWindow(NSWindow window)
+        {
+			this.SendMessageSuper<IntPtr>(${Name}Class, "initWithWindow:", window);
+			
+			// Initialization code here.
+			
+			return this;
+        }
+			
+		[ObjectiveCMessage("dealloc")]
+		public override void Dealloc()
+		{
+			// Clean-up code here.
+			
+			this.SendMessageSuper(${Name}Class, "dealloc");
+		}
+
+		[ObjectiveCMessage("windowDidLoad")]
+        public virtual void WindowDidLoad()
+        {
+			this.SendMessageSuper(${Name}Class, "windowDidLoad");
+			
+			// Add specific code here.
+        }
+	}
+}]]>
+		</File>
+	</TemplateFiles>
+	
+</Template>

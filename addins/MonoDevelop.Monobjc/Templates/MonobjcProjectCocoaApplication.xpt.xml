@@ -9,7 +9,7 @@
     <LanguageName>C#</LanguageName>
     <_Description>This project builds a Cocoa-based application.</_Description>
   </TemplateConfiguration>
-	
+
   <!-- Template Content -->
   <Combine name="${ProjectName}" directory=".">
 	<Options>
