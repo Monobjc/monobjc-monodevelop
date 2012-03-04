@@ -26,6 +26,7 @@ using MonoDevelop.Monobjc.CodeGeneration;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MonoDevelop.Monobjc
 {
@@ -106,6 +107,7 @@ namespace MonoDevelop.Monobjc
 #endif
 			this.CodeBehindTracker.Dispose ();
 			this.XcodeTracker.Dispose ();
+			this.EmbeddingTracker.Dispose ();
 			base.Dispose ();
 		}
 

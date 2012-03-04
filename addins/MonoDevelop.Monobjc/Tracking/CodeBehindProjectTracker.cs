@@ -55,7 +55,9 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 			// Don't generate anything if the project is not ready
 			if (!this.IsDomReady) {
+#if DEBUG
 				LoggingService.LogInfo ("CodeBehindProjectTracker => Project is not ready yet");
+#endif
 				return;
 			}
 			
@@ -101,7 +103,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			// Don't generate anything if the project is not ready
 			if (!this.IsDomReady) {
 #if DEBUG
-				LoggingService.LogInfo("Project is not ready yet");
+				LoggingService.LogInfo ("CodeBehindProjectTracker => Project is not ready yet");
 #endif
 				return;
 			}
@@ -297,7 +299,7 @@ namespace MonoDevelop.Monobjc.Tracking
 					// Add generated file if not in project
 					if (!this.Project.IsFileInProject (designerFile)) {
 						this.Project.AddFile (designerFile);
-						shouldSave = true;
+						shouldSave |= true;
 					}
 				}
 

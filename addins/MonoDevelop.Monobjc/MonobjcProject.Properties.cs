@@ -265,6 +265,11 @@ namespace MonoDevelop.Monobjc
 		internal CodeBehindProjectTracker CodeBehindTracker { get; private set; }
 
 		/// <summary>
+		///   Gets or sets the embedding tracker.
+		/// </summary>
+		internal EmbeddingProjectTracker EmbeddingTracker { get; private set; }
+
+		/// <summary>
 		///   Gets or sets the xcode tracker.
 		/// </summary>
 		internal XcodeProjectTracker XcodeTracker { get; private set; }

@@ -51,22 +51,37 @@ namespace MonoDevelop.Monobjc
             // Return all the IB files
             foreach (ProjectFile file in this.Files)
             {
-                if (!BuildHelper.IsXIBFile(file))
-                {
-                    continue;
-                }
-				if (file.BuildAction != buildAction) {
+				FilePair pair = this.GetIBFile(file, buildAction, destinationDirectory);
+				if (pair == null) {
 					continue;
 				}
-
-                // Compute destination file
-                FilePath relativePath = file.FilePath.ToRelative(this.BaseDirectory);
-				FilePath destination = file.FilePath;
-				if (destinationDirectory != null) {
-					destination = destinationDirectory.Combine(relativePath);
-				}
-                yield return new FilePair(file.FilePath, destination.ChangeExtension("nib"));
+                yield return pair;
             }
+        }
+		
+        /// <summary>
+        ///   Gets the IB file pairs.
+        /// </summary>
+        /// <param name = "destinationDirectory">The destination directory.</param>
+        /// <returns>A list of pairs.</returns>
+        internal FilePair GetIBFile(ProjectFile file, String buildAction, FilePath destinationDirectory)
+        {
+            if (!BuildHelper.IsXIBFile(file))
+            {
+				return null;
+            }
+			if (file.BuildAction != buildAction) {
+				return null;
+			}
+
+            // Compute destination file
+            FilePath relativePath = file.FilePath.ToRelative(this.BaseDirectory);
+			FilePath destination = file.FilePath;
+			if (destinationDirectory != null) {
+				destination = destinationDirectory.Combine(relativePath);
+			}
+			
+            return new FilePair(file.FilePath, destination.ChangeExtension("nib"));
         }
 
         /// <summary>
@@ -138,6 +153,7 @@ namespace MonoDevelop.Monobjc
             // Create the trackers
             this.CodeBehindTracker = new CodeBehindProjectTracker(this);
             this.XcodeTracker = new XcodeProjectTracker(this);
+			this.EmbeddingTracker = new EmbeddingProjectTracker(this);
         }
 
         /// <summary>

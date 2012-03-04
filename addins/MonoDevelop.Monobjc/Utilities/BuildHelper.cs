@@ -215,10 +215,10 @@ namespace MonoDevelop.Monobjc.Utilities
 			}
 			List<FilePair> pairs = new List<FilePair>(files);
 			monitor.BeginTask (GettextCatalog.GetString ("Compiling XIB files..."), files.Count ());
-			foreach (FilePair file in pairs) {
-				monitor.Log.WriteLine (GettextCatalog.GetString ("Compiling {0}", file.Source.ToRelative (project.BaseDirectory)));
-				xibCompiler.Logger = new BuildLogger (file.Source, monitor, result);
-				xibCompiler.Compile (file.Source, file.DestinationDir);
+			foreach (FilePair pair in pairs) {
+				monitor.Log.WriteLine (GettextCatalog.GetString ("Compiling {0}", pair.Source.ToRelative (project.BaseDirectory)));
+				xibCompiler.Logger = new BuildLogger (pair.Source, monitor, result);
+				xibCompiler.Compile (pair.Source, pair.DestinationDir);
 				monitor.Step (1);
 			}
 			monitor.EndTask ();
@@ -238,31 +238,23 @@ namespace MonoDevelop.Monobjc.Utilities
 			if (files == null) {
 				return;
 			}
-			List<FilePair> pairs = new List<FilePair>(files);
+			
 			monitor.BeginTask (GettextCatalog.GetString ("Embed XIB files..."), files.Count ());
-			foreach (FilePair file in pairs) {
-				FilePath relativeFile = file.Source.ToRelative (project.BaseDirectory);
+			foreach (FilePair pair in files) {
+				// If the destination file is a place-holder, change its dates
+				FileInfo sourceInfo = new FileInfo(pair.Source);
+				FileInfo destInfo = new FileInfo(pair.Destination);
+				if (destInfo.Length == 0) {
+					DateTime dateTime = sourceInfo.CreationTime.Subtract(new TimeSpan(0, 0, 1));
+					File.SetCreationTime(pair.Destination, dateTime);
+					File.SetLastAccessTime(pair.Destination, dateTime);
+					File.SetLastWriteTime(pair.Destination, dateTime);
+				}
+				
+				FilePath relativeFile = pair.Source.ToRelative (project.BaseDirectory);
 				monitor.Log.WriteLine (GettextCatalog.GetString ("Compiling {0}", relativeFile));
-				xibCompiler.Logger = new BuildLogger (file.Source, monitor, result);
-				xibCompiler.Compile (file.Source, file.DestinationDir);
-				
-				// Add file if needed
-				if (!project.IsFileInProject(file.Destination)) {
-					project.AddFile(file.Destination);
-				}
-				
-				// Make the NIB depends on the XIB file
-				ProjectFile destinationFile = project.GetProjectFile(file.Destination);
-				destinationFile.BuildAction = BuildAction.EmbeddedResource;
-				destinationFile.DependsOn = relativeFile;
-				
-				// Set the resource id (default namepace + name without extension + locale)
-				String resourceId = project.DefaultNamespace + "." + Path.GetFileNameWithoutExtension(file.Destination);
-				FilePath parentDirectory = destinationFile.FilePath.ParentDirectory;
-				if (parentDirectory.Extension == ".lproj") {
-					resourceId = resourceId + "." + parentDirectory.FileNameWithoutExtension;
-				}
-				destinationFile.ResourceId = resourceId;
+				xibCompiler.Logger = new BuildLogger (pair.Source, monitor, result);
+				xibCompiler.Compile (pair.Source, pair.DestinationDir);
 				
 				monitor.Step (1);
 			}
@@ -283,9 +275,9 @@ namespace MonoDevelop.Monobjc.Utilities
 				return;
 			}
 			monitor.BeginTask (GettextCatalog.GetString ("Copying output files..."), files.Count ());
-			foreach (FilePair file in files) {
-				monitor.Log.WriteLine (GettextCatalog.GetString ("Copying {0}", file.Source.ToRelative (project.BaseDirectory)));
-				file.Copy (false);
+			foreach (FilePair pair in files) {
+				monitor.Log.WriteLine (GettextCatalog.GetString ("Copying {0}", pair.Source.ToRelative (project.BaseDirectory)));
+				pair.Copy (false);
 				monitor.Step (1);
 			}
 			monitor.EndTask ();
@@ -305,9 +297,9 @@ namespace MonoDevelop.Monobjc.Utilities
 				return;
 			}
 			monitor.BeginTask (GettextCatalog.GetString ("Copying content files..."), files.Count ());
-			foreach (FilePair file in files) {
-				monitor.Log.WriteLine (GettextCatalog.GetString ("Copying {0}", file.Source.ToRelative (project.BaseDirectory)));
-				file.Copy (false);
+			foreach (FilePair pair in files) {
+				monitor.Log.WriteLine (GettextCatalog.GetString ("Copying {0}", pair.Source.ToRelative (project.BaseDirectory)));
+				pair.Copy (false);
 				monitor.Step (1);
 			}
 			monitor.EndTask ();

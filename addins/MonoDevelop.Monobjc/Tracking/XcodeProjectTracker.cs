@@ -153,7 +153,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			foreach(ProjectFileEventInfo info in e)
 			{
 	            ProjectFile projectFile = info.ProjectFile;
-				LoggingService.LogInfo ("XcodeProjectTracker::HandleFileAddedToProject " + projectFile.FilePath);				
+				//LoggingService.LogInfo ("XcodeProjectTracker::HandleFileAddedToProject " + projectFile.FilePath);				
 				this.AddResource(projectFile);
 			}
 #endif
@@ -173,7 +173,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			foreach(ProjectFileEventInfo info in e)
 			{
 	            ProjectFile projectFile = info.ProjectFile;
-				LoggingService.LogInfo ("XcodeProjectTracker::HandleFileRemovedFromProject " + projectFile.FilePath);				
+				//LoggingService.LogInfo ("XcodeProjectTracker::HandleFileRemovedFromProject " + projectFile.FilePath);				
 				this.RemoveResource(projectFile);
 			}
 #endif
@@ -210,21 +210,21 @@ namespace MonoDevelop.Monobjc.Tracking
 				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
 					continue;
 				}
-				LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectDomServiceTypesUpdated :: Added => " + type.Name);
+				//LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectDomServiceTypesUpdated :: Added => " + type.Name);
 				typesUpdated.Add (type);
 			}
 			foreach (var type in e.TypeUpdateInformation.Modified) {
 				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
 					continue;
 				}
-				LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectDomServiceTypesUpdated :: Modified => " + type.Name);
+				//LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectDomServiceTypesUpdated :: Modified => " + type.Name);
 				typesUpdated.Add (type);
 			}
 			foreach (var type in e.TypeUpdateInformation.Removed) {
 				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
 					continue;
 				}
-				LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectDomServiceTypesUpdated :: Removed => " + type.Name);
+				//LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectDomServiceTypesUpdated :: Removed => " + type.Name);
 				typesDeleted.Add (type);
 			}
 			
@@ -238,7 +238,7 @@ namespace MonoDevelop.Monobjc.Tracking
 				return;
 			}
 			
-			LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectNameChanged");
+			//LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectNameChanged");
 			
 			this.XcodeProject.Delete ();
 			this.XcodeProject = null;
