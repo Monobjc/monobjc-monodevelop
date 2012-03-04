@@ -18,27 +18,18 @@
 using System;
 using System.Diagnostics;
 using Mono.Debugging.Client;
+using Mono.Debugging.Soft;
 using Mono.Unix;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Monobjc;
 using MonoDevelop.Monobjc.Utilities;
 
-#if MD_2_6 || MD_2_8
-using Mono.Debugging.Soft;
-#endif
-
 namespace MonoDevelop.Debugger.Soft.Monobjc
 {
 	/// <summary>
 	/// </summary>
-	public class MonobjcDebuggerSession : 
-#if MD_2_4
-		RemoteSoftDebuggerSession
-#endif
-#if MD_2_6 || MD_2_8
-		SoftDebuggerSession
-#endif
+	public class MonobjcDebuggerSession : SoftDebuggerSession
 	{
 		private Process process;
 
@@ -48,17 +39,6 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 		/// <param name = "startInfo">The start info.</param>
 		protected override void OnRun (DebuggerStartInfo startInfo)
 		{
-#if MD_2_4
-			MonobjcDebuggerStartInfo dsi = (MonobjcDebuggerStartInfo)startInfo;
-			MonobjcExecutionCommand command = dsi.ExecutionCommand;
-			
-			this.StartListening (dsi);
-			
-			// Create the start information
-			ProcessStartInfo psi = new ProcessStartInfo (command.CommandString) { Arguments = command.CommandLineParameters, RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true, UseShellExecute = false };
-			psi.EnvironmentVariables["MONO_OPTIONS"] = string.Format ("--debug --debugger-agent=transport=dt_socket,address={0}:{1}", dsi.Address, dsi.DebugPort);
-#endif
-#if MD_2_6 || MD_2_8
 			MonobjcDebuggerStartInfo dsi = (MonobjcDebuggerStartInfo) startInfo;
 			SoftDebuggerRemoteArgs startArgs = (SoftDebuggerRemoteArgs) dsi.StartArgs;
 			MonobjcExecutionCommand command = dsi.ExecutionCommand;		
@@ -69,7 +49,7 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 			// Create the start information
 			ProcessStartInfo psi = new ProcessStartInfo (command.CommandString) { Arguments = command.CommandLineParameters, RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true, UseShellExecute = false };
 			psi.EnvironmentVariables["MONO_OPTIONS"] = string.Format ("--debug --debugger-agent=transport=dt_socket,address={0}:{1}", startArgs.Address, assignedPort);
-#endif
+
 			// Try to start the process
 			this.process = Process.Start (psi);
 			if (this.process == null) {
@@ -102,17 +82,5 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 				MonoDevelop.Core.LoggingService.LogError (GettextCatalog.GetString ("Error force-terminating soft debugger process"), ex);
 			}
 		}
-		
-#if MD_2_4
-		/// <summary>
-		/// Get the waiting message.
-		/// </summary>
-		/// <param name="dsi">The start info.</param>
-		/// <returns>The message.</returns>
-		protected override string GetListenMessage (RemoteDebuggerStartInfo dsi)
-		{
-			return GettextCatalog.GetString ("Waiting for app to connect to: {0}:{1}", dsi.Address, dsi.DebugPort);
-		}
-#endif
 	}
 }

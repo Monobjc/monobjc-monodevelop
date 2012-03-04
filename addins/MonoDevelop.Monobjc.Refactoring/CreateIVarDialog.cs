@@ -30,7 +30,7 @@ using MonoDevelop.Projects.CodeGeneration;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Refactoring;
 
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 using ICSharpCode.NRefactory.Ast;
 #endif
 #if MD_2_8
@@ -93,7 +93,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 		{
 			try {
 				String propertyName = this.entryName.Text;
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 				TypeReference propertyType = new TypeReference (this.entryType.Text);
 #endif
 #if MD_2_8
@@ -116,18 +116,6 @@ namespace MonoDevelop.Monobjc.Refactoring
 				code.Append (this.GenerateProperty (declaringType, propertyName, propertyType, provider, indent));
 				code.AppendLine ();
 				
-#if MD_2_4
-				// Prompt for an insertion point
-				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, HelperMethods.GetInsertionPoints (editor.Document, declaringType));
-				mode.CurIndex = 0;
-				mode.StartMode ();
-				mode.Exited += delegate(object s, InsertionCursorEventArgs args) {
-					if (args.Success) {
-						args.InsertionPoint.Insert (editor, code.ToString ());
-					}
-				};
-#endif
-#if MD_2_6 || MD_2_8
 				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (options.Document, declaringType));
 				ModeHelpWindow helpWindow = new ModeHelpWindow ();
 				helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
@@ -145,7 +133,6 @@ namespace MonoDevelop.Monobjc.Refactoring
 						args.InsertionPoint.Insert (data, code.ToString ());
 					}
 				};
-#endif
 			} finally {
 				this.Destroy ();
 			}
@@ -173,7 +160,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 				ReturnStatement returnStatement = new ReturnStatement (invocationExpression);
 				
 				// Create the "get" region
-#if MD_2_4 || MD_2_6				
+#if MD_2_6				
 				propertyDeclaration.GetRegion = new PropertyGetRegion (new BlockStatement (), null);
 				propertyDeclaration.GetRegion.Block.AddChild (returnStatement);
 #endif
@@ -196,7 +183,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 				ExpressionStatement expressionStatement = new ExpressionStatement (invocationExpression);
 				
 				// Create the "set" region
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 				propertyDeclaration.SetRegion = new PropertySetRegion (new BlockStatement (), null);
 				propertyDeclaration.SetRegion.Block.AddChild (expressionStatement);
 #endif

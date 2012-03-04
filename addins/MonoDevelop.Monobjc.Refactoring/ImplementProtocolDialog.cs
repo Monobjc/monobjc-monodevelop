@@ -28,7 +28,7 @@ using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Refactoring;
 
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 using ICSharpCode.NRefactory.Ast;
 #endif
 #if MD_2_8
@@ -172,18 +172,6 @@ namespace MonoDevelop.Monobjc.Refactoring
 					}
 				}
 				
-#if MD_2_4
-				// Prompt for an insertion point
-				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, HelperMethods.GetInsertionPoints (editor.Document, declaringType));
-				mode.CurIndex = 0;
-				mode.StartMode ();
-				mode.Exited += delegate(object s, InsertionCursorEventArgs args) {
-					if (args.Success) {
-						args.InsertionPoint.Insert (editor, code.ToString ());
-					}
-				};
-#endif
-#if MD_2_6 || MD_2_8
 				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (options.Document, declaringType));
 				ModeHelpWindow helpWindow = new ModeHelpWindow ();
 				helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
@@ -201,7 +189,6 @@ namespace MonoDevelop.Monobjc.Refactoring
 						args.InsertionPoint.Insert (data, code.ToString ());
 					}
 				};
-#endif
 			} finally {
 				this.Destroy ();
 			}
@@ -302,7 +289,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 			MethodDeclaration methodDeclaration = new MethodDeclaration ();
 			methodDeclaration.Name = method.Name;
 			methodDeclaration.Attributes.Add (attributeSection);
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 			methodDeclaration.Modifier = ICSharpCode.NRefactory.Ast.Modifiers.Public | ICSharpCode.NRefactory.Ast.Modifiers.Virtual;
 			methodDeclaration.TypeReference = this.Shorten (declaringType, method.ReturnType);
 #endif
@@ -312,7 +299,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 #endif
 			
 			foreach (var parameter in method.Parameters) {
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 				ParameterDeclarationExpression parameterDeclarationExpression = new ParameterDeclarationExpression (this.Shorten (declaringType, parameter.ReturnType), parameter.Name);
 				if (parameter.IsOut) {
 					parameterDeclarationExpression.ParamModifier |= ICSharpCode.NRefactory.Ast.ParameterModifiers.Out;
@@ -337,7 +324,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 			// Create the method body
 			methodDeclaration.Body = new BlockStatement ();
 			ThrowStatement throwStatement = this.GetThrowStatement ("System.NotImplementedException");
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 			methodDeclaration.Body.AddChild (throwStatement);
 #endif
 #if MD_2_8
@@ -365,7 +352,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 				
 				// Create the "get" region
 				ThrowStatement throwStatement = this.GetThrowStatement ("System.NotImplementedException");
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 				propertyDeclaration.GetRegion = new PropertyGetRegion (new BlockStatement (), new List<AttributeSection> { attributeSection });
 				propertyDeclaration.GetRegion.Block.AddChild (throwStatement);
 #endif
@@ -388,7 +375,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 				
 				// Create the "set" region
 				ThrowStatement throwStatement = this.GetThrowStatement ("System.NotImplementedException");
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 				propertyDeclaration.SetRegion = new PropertySetRegion (new BlockStatement (), new List<AttributeSection> { attributeSection });
 				propertyDeclaration.SetRegion.Block.AddChild (throwStatement);
 #endif

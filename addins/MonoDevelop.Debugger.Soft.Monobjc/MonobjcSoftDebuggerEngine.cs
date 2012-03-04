@@ -16,8 +16,8 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using Mono.Debugging.Client;
-using MonoDevelop.Monobjc;
 using MonoDevelop.Core.Execution;
+using MonoDevelop.Monobjc;
 
 namespace MonoDevelop.Debugger.Soft.Monobjc
 {
@@ -47,14 +47,9 @@ namespace MonoDevelop.Debugger.Soft.Monobjc
 		{
 			MonobjcExecutionCommand executionCommand = (MonobjcExecutionCommand)command;
 			
-#if MD_2_4
-			MonobjcDebuggerStartInfo startInfo = new MonobjcDebuggerStartInfo (executionCommand);
-			startInfo.SetUserAssemblies (executionCommand.UserAssemblyPaths);
-#endif
-#if MD_2_6 || MD_2_8
 			MonobjcDebuggerStartInfo startInfo = new MonobjcDebuggerStartInfo (executionCommand);
 			SoftDebuggerEngine.SetUserAssemblyNames (startInfo, executionCommand.UserAssemblyPaths);
-#endif
+
 			return startInfo;
 		}
 

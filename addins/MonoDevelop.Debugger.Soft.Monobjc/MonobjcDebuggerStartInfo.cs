@@ -16,36 +16,21 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System.Net;
-using MonoDevelop.Monobjc;
-
-#if MD_2_6 || MD_2_8
 using Mono.Debugging.Soft;
-#endif
+using MonoDevelop.Monobjc;
 
 namespace MonoDevelop.Debugger.Soft.Monobjc
 {
 	/// <summary>
 	/// The debugging start info.
 	/// </summary>
-	public class MonobjcDebuggerStartInfo : 
-#if MD_2_4
-		RemoteDebuggerStartInfo
-#endif
-#if MD_2_6 || MD_2_8
-		SoftDebuggerStartInfo
-#endif
+	public class MonobjcDebuggerStartInfo : SoftDebuggerStartInfo
 	{
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "MonobjcDebuggerStartInfo" /> class.
 		/// </summary>
 		/// <param name = "command">The CMD.</param>
-		public MonobjcDebuggerStartInfo (MonobjcExecutionCommand command) : 
-#if MD_2_4
-			base(command.ApplicationName, IPAddress.Loopback, 8901)
-#endif
-#if MD_2_6 || MD_2_8
-			base (new SoftDebuggerListenArgs (command.ApplicationName, IPAddress.Loopback, 0))
-#endif
+		public MonobjcDebuggerStartInfo (MonobjcExecutionCommand command) : base (new SoftDebuggerListenArgs (command.ApplicationName, IPAddress.Loopback, 0))
 		{
 			this.ExecutionCommand = command;
 		}

@@ -47,13 +47,6 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			// Collect file added
 			IList<ProjectFile> filesToAdd = new List<ProjectFile> ();
-#if MD_2_4
-			ProjectFile projectFile = e.ProjectFile;
-			if (BuildHelper.IsEmbeddedXIBFile(projectFile)) {
-				filesToAdd.Add(projectFile);
-			}
-#endif
-#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e)
 			{
 				ProjectFile projectFile = info.ProjectFile;
@@ -61,7 +54,7 @@ namespace MonoDevelop.Monobjc.Tracking
 					filesToAdd.Add(projectFile);
 				}
 			}
-#endif
+
 			if (filesToAdd.Count > 0) {
 				this.AddEmbedding (filesToAdd, true);
 			}
@@ -77,16 +70,6 @@ namespace MonoDevelop.Monobjc.Tracking
 			// Collect file added
 			IList<ProjectFile> filesToAdd = new List<ProjectFile> ();
 			IList<ProjectFile> filesToRemove = new List<ProjectFile> ();
-#if MD_2_4
-			ProjectFile projectFile = e.ProjectFile;
-			if (BuildHelper.IsEmbeddedXIBFile(projectFile)) {
-				filesToAdd.Add(projectFile);
-			}
-			if (BuildHelper.IsNormalXIBFile(projectFile)) {
-				filesToRemove.Add(projectFile);
-			}
-#endif
-#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e)
 			{
 				ProjectFile projectFile = info.ProjectFile;
@@ -97,7 +80,7 @@ namespace MonoDevelop.Monobjc.Tracking
 					filesToRemove.Add(projectFile);
 				}
 			}
-#endif
+
 			if (filesToAdd.Count > 0) {
 				this.AddEmbedding (filesToAdd, true);
 			}
@@ -106,34 +89,27 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 		}
 		
-//		protected override void HandleFileRenamedInProject (object sender, ProjectFileRenamedEventArgs e)
-//		{
-//			// Balk if the project is being deserialized
-//			if (this.Project.Loading) {
-//				return;
-//			}
-//			
-//			// Collect file renamed
-//			IList<ProjectFile> projectFiles = new List<ProjectFile> ();
-//#if MD_2_4
-//			ProjectFile projectFile = e.ProjectFile;
-//			if (BuildHelper.IsEmbeddedXIBFile(projectFile)) {
-//				projectFiles.Add(projectFile);
-//			}
-//#endif
-//#if MD_2_6 || MD_2_8
-//			foreach(ProjectFileEventInfo info in e)
-//			{
-//				ProjectFile projectFile = info.ProjectFile;
-//				if (BuildHelper.IsEmbeddedXIBFile(projectFile)) {
-//					projectFiles.Add(projectFile);
-//				}
-//			}
-//#endif
-//			if (projectFiles.Count > 0) {
-//				this.RenameEmbedding (projectFiles, true);
-//			}
-//		}
+		protected override void HandleFileRenamedInProject (object sender, ProjectFileRenamedEventArgs e)
+		{
+			// Balk if the project is being deserialized
+			if (this.Project.Loading) {
+				return;
+			}
+			
+			// Collect file renamed
+			IList<ProjectFile> projectFiles = new List<ProjectFile> ();
+			foreach(ProjectFileEventInfo info in e)
+			{
+				ProjectFile projectFile = info.ProjectFile;
+				if (BuildHelper.IsEmbeddedXIBFile(projectFile)) {
+					projectFiles.Add(projectFile);
+				}
+			}
+
+			if (projectFiles.Count > 0) {
+				//this.RenameEmbedding (projectFiles, true);
+			}
+		}
 		
 		private void AddEmbedding (IList<ProjectFile> projectFiles, bool defer)
 		{

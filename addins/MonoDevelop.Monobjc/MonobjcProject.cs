@@ -138,12 +138,7 @@ namespace MonoDevelop.Monobjc
 		/// <returns></returns>
 		public override bool SupportsFramework (TargetFramework framework)
 		{
-#if MD_2_4
-            return framework.IsCompatibleWithFramework("4.0");
-#endif
-#if MD_2_6 || MD_2_8
 			return framework.IsCompatibleWithFramework (TargetFrameworkMoniker.NET_4_0);
-#endif
 		}
 
 		/// <summary>
@@ -219,13 +214,6 @@ namespace MonoDevelop.Monobjc
             LoggingService.LogInfo("MonobjcProject::OnFileAddedToProject");
 #endif
 			// Migrate "Page" to "InterfaceDefinition"
-#if MD_2_4
-            ProjectFile projectFile = e.ProjectFile;
-			if (projectFile.BuildAction == BuildAction.Page) {
-				projectFile.BuildAction = BuildHelper.InterfaceDefinition;
-			}
-#endif
-#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e)
 			{
 	            ProjectFile projectFile = info.ProjectFile;
@@ -233,7 +221,7 @@ namespace MonoDevelop.Monobjc
 					projectFile.BuildAction = BuildHelper.InterfaceDefinition;
 				}
 			}
-#endif
+			
 			base.OnFileAddedToProject (e);
 		}
 

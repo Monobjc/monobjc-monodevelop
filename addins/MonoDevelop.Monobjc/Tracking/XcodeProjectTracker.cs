@@ -145,18 +145,14 @@ namespace MonoDevelop.Monobjc.Tracking
 			if (!this.IsReady) {
 				return;
 			}
-#if MD_2_4
-            ProjectFile projectFile = e.ProjectFile;
-			this.AddResource(projectFile);
-#endif
-#if MD_2_6 || MD_2_8
+
 			foreach(ProjectFileEventInfo info in e)
 			{
 	            ProjectFile projectFile = info.ProjectFile;
 				//LoggingService.LogInfo ("XcodeProjectTracker::HandleFileAddedToProject " + projectFile.FilePath);				
 				this.AddResource(projectFile);
 			}
-#endif
+
 			this.SaveProject (true);
 		}
 
@@ -165,18 +161,14 @@ namespace MonoDevelop.Monobjc.Tracking
 			if (!this.IsReady) {
 				return;
 			}			
-#if MD_2_4
-            ProjectFile projectFile = e.ProjectFile;
-			this.RemoveResource(projectFile);
-#endif
-#if MD_2_6 || MD_2_8
+
 			foreach(ProjectFileEventInfo info in e)
 			{
 	            ProjectFile projectFile = info.ProjectFile;
 				//LoggingService.LogInfo ("XcodeProjectTracker::HandleFileRemovedFromProject " + projectFile.FilePath);				
 				this.RemoveResource(projectFile);
 			}
-#endif
+
 			this.SaveProject (false);
 		}
 
@@ -254,19 +246,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			bool frameworksChanged = false;
 			bool referencesChanged = false;
-#if MD_2_4
-			switch(e.Hint) {
-			case "References":
-				referencesChanged = true;
-				break;
-			case "MacOSFrameworks":
-				frameworksChanged = true;
-				break;
-			default:
-				break;
-			}
-#endif
-#if MD_2_6 || MD_2_8
+
 			foreach(SolutionItemModifiedEventInfo info in e) {
 				switch(info.Hint) {
 				case "References":
@@ -279,7 +259,7 @@ namespace MonoDevelop.Monobjc.Tracking
 					break;
 				}
 			}
-#endif
+
 			if (referencesChanged) {
 				this.ClearProjectReferences();
 				this.AddProjectReferences();

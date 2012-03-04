@@ -21,7 +21,7 @@ using Gtk;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Refactoring;
 
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 using ICSharpCode.NRefactory.Ast;
 #endif
 #if MD_2_8
@@ -43,7 +43,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 			this.project = project;
 		}
 
-#if MD_2_4 || MD_2_6
+#if MD_2_6
 		protected TypeReference Shorten (IType declaringType, IReturnType type)
 		{
 			return this.options.Document.CompilationUnit.ShortenTypeName (type, declaringType.Location).ConvertToTypeReference ();

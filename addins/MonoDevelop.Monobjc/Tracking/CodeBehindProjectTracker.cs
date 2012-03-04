@@ -151,20 +151,13 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			// Collect dependencies
 			List<String> filesToAdd = new List<String> ();
-#if MD_2_4
-			IEnumerable<String> files = GuessDependencies(this.Project, e.ProjectFile);
-			if (files != null) {
-				filesToAdd.AddRange(files);
-			}
-#endif
-#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e) {
 				IEnumerable<String> files = GuessDependencies(this.Project, info.ProjectFile);
 				if (files != null) {
 					filesToAdd.AddRange(files);
 				}
 			}
-#endif
+
 			// Add dependencies
 			if (filesToAdd != null) {
 				foreach (string file in filesToAdd.Where(f => !this.Project.IsFileInProject(f))) {
@@ -173,14 +166,6 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 
 			// Run CodeBehind if it is a XIB file
-#if MD_2_4
-            ProjectFile projectFile = e.ProjectFile;
-            if (BuildHelper.IsXIBFile(projectFile) && BuildHelper.IsInDevelopmentRegion(this.Project, projectFile))
-            {
-                this.GenerateDesignCode(projectFile.FilePath, true);
-            }
-#endif
-#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e) {
 	            ProjectFile projectFile = info.ProjectFile;
 	            if (BuildHelper.IsXIBFile(projectFile) && BuildHelper.IsInDevelopmentRegion(this.Project, projectFile))
@@ -188,7 +173,6 @@ namespace MonoDevelop.Monobjc.Tracking
 	                this.GenerateDesignCode(projectFile.FilePath, true);
 	            }
 			}
-#endif
 		}
 
 		/// <summary>
@@ -205,20 +189,13 @@ namespace MonoDevelop.Monobjc.Tracking
 
 			// Collect dependencies
 			List<String> filesToAdd = new List<String> ();
-#if MD_2_4
-			IEnumerable<String> files = GuessDependencies(this.Project, e.ProjectFile);
-			if (files != null) {
-				filesToAdd.AddRange(files);
-			}
-#endif
-#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e) {
 				IEnumerable<String> files = GuessDependencies(this.Project, info.ProjectFile);
 				if (files != null) {
 					filesToAdd.AddRange(files);
 				}
 			}
-#endif
+			
 			// Add dependencies
 			if (filesToAdd != null) {
 				foreach (string file in filesToAdd.Where(f => !this.Project.IsFileInProject(f))) {
@@ -227,14 +204,6 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 
 			// Run CodeBehind if it is a XIB file
-#if MD_2_4
-            ProjectFile projectFile = e.ProjectFile;
-			if (BuildHelper.IsXIBFile(projectFile) && BuildHelper.IsInDevelopmentRegion(this.Project, projectFile))
-            {
-                this.GenerateDesignCode(projectFile.FilePath, true);
-            }
-#endif
-#if MD_2_6 || MD_2_8
 			foreach(ProjectFileEventInfo info in e) {
 	            ProjectFile projectFile = info.ProjectFile;
 				if (BuildHelper.IsXIBFile(projectFile) && BuildHelper.IsInDevelopmentRegion(this.Project, projectFile))
@@ -242,7 +211,6 @@ namespace MonoDevelop.Monobjc.Tracking
 	                this.GenerateDesignCode(projectFile.FilePath, true);
 	            }
 			}
-#endif
 		}
 
 		/// <summary>

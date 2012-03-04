@@ -203,7 +203,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
             ns.Types.Add(typeDeclaration);
 
             // Write the result
-#if MD_2_4 || MD_2_6
+#if MD_2_6
             writer.Write(ccu, designerFile);
 #endif
 #if MD_2_8
