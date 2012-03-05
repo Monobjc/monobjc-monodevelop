@@ -106,8 +106,10 @@ namespace MonoDevelop.Monobjc
             LoggingService.LogInfo("MonobjcProject::Dispose");
 #endif
 			this.CodeBehindTracker.Dispose ();
+			this.DependencyTracker.Dispose ();
 			this.XcodeTracker.Dispose ();
 			this.EmbeddingTracker.Dispose ();
+			
 			base.Dispose ();
 		}
 
@@ -150,6 +152,9 @@ namespace MonoDevelop.Monobjc
 		{
 			if (BuildHelper.IsXIBFile (fileName)) {
 				return BuildHelper.InterfaceDefinition;
+			}
+			if (BuildHelper.IsNIBFile (fileName)) {
+				return BuildAction.EmbeddedResource;
 			}
 			if (BuildHelper.IsStringsFile (fileName)) {
 				return BuildAction.Content;
@@ -213,7 +218,7 @@ namespace MonoDevelop.Monobjc
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::OnFileAddedToProject");
 #endif
-			// Migrate "Page" to "InterfaceDefinition"
+			// Migrate "Page" to "InterfaceDefinition" when project is loaded
 			foreach(ProjectFileEventInfo info in e)
 			{
 	            ProjectFile projectFile = info.ProjectFile;

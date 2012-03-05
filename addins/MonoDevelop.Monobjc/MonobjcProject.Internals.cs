@@ -149,8 +149,13 @@ namespace MonoDevelop.Monobjc
             {
                 this.TargetOSArch = MacOSArchitecture.X86;
             }
+            if (String.IsNullOrEmpty(this.DevelopmentRegion))
+            {
+                this.DevelopmentRegion = "en";
+            }
 
             // Create the trackers
+			this.DependencyTracker = new DependencyProjectTracker(this);
             this.CodeBehindTracker = new CodeBehindProjectTracker(this);
             this.XcodeTracker = new XcodeProjectTracker(this);
 			this.EmbeddingTracker = new EmbeddingProjectTracker(this);

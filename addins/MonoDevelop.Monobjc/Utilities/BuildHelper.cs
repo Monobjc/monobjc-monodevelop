@@ -37,8 +37,6 @@ namespace MonoDevelop.Monobjc.Utilities
 		internal const String EmbeddedInterfaceDefinition = "EmbeddedInterfaceDefinition";
 		internal const String INFO_PLIST = "Info.plist";
 		
-		internal static String[] groupedExtensions = new[] { ".cs" };
-		
 		/// <summary>
 		///   Determines whether the specified filename is a resource file.
 		/// </summary>
@@ -52,6 +50,19 @@ namespace MonoDevelop.Monobjc.Utilities
 			        BuildHelper.IsNormalXIBFile (file) ||
 			        BuildHelper.IsEmbeddedXIBFile (file) ||
 			        BuildHelper.IsStringsFile (file));
+		}
+		
+		/// <summary>
+		///   Determines whether the specified filename is a NIB file.
+		/// </summary>
+		/// <param name = "filename">The filename.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is a NIB file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsNIBFile (String filename)
+		{
+			String extension = Path.GetExtension (filename);
+			return String.Equals (".nib", extension);
 		}
 		
 		/// <summary>
@@ -147,15 +158,21 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsInDevelopmentRegion(MonobjcProject project, ProjectFile file)
 		{
 			String developmentRegion = project.DevelopmentRegion;
-			
+#if DEBUG
+			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 1 " + developmentRegion);
+#endif
 			FilePath baseDirectory = project.BaseDirectory;
 			FilePath localizedFolder = baseDirectory.Combine(developmentRegion + ".lproj");
-			FilePath nibFile = file.FilePath;
-			
-			if (nibFile.ParentDirectory.Equals(baseDirectory)) {
+			FilePath ibFile = file.FilePath;
+#if DEBUG
+			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 2 " + baseDirectory);
+			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 3 " + localizedFolder);
+			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 4 " + ibFile + " " + ibFile.ParentDirectory);
+#endif
+			if (ibFile.ParentDirectory.Equals(baseDirectory)) {
 				return true;
 			}
-			if (nibFile.ParentDirectory.Equals(localizedFolder)) {
+			if (ibFile.ParentDirectory.Equals(localizedFolder)) {
 				return true;
 			}
 			

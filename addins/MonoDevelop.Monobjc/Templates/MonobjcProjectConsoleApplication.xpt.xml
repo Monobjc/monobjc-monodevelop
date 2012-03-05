@@ -18,6 +18,7 @@
     <Project name="${ProjectName}" directory="." type="Monobjc">
       <Options>
         <MacOSApplicationType>ConsoleApplication</MacOSApplicationType>
+		<MacOSDevelopmentRegion>en</MacOSDevelopmentRegion>
         <MacOSVersion>MacOS106</MacOSVersion>
         <MacOSArch>X86</MacOSArch>
         <MacOSFrameworks>Foundation</MacOSFrameworks>

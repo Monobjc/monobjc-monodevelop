@@ -51,7 +51,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// </summary>
 		/// <param name="frameworks">The frameworks.</param>
 		/// <param name="defer">if set to <c>true</c> [defer].</param>
-		public void GenerateFrameworkLoadingCode (String[] frameworks, bool defer)
+		internal void GenerateFrameworkLoadingCode (String[] frameworks, bool defer)
 		{
 			// Don't generate anything if the project is not ready
 			if (!this.IsDomReady) {
@@ -98,7 +98,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// </summary>
 		/// <param name="file">The file.</param>
 		/// <param name="defer">if set to <c>true</c> defer generation in a separate thread.</param>
-		public void GenerateDesignCode (FilePath file, bool defer)
+		internal void GenerateDesignCode (IList<ProjectFile> projectFiles, bool defer)
 		{
 			// Don't generate anything if the project is not ready
 			if (!this.IsDomReady) {
@@ -111,25 +111,24 @@ namespace MonoDevelop.Monobjc.Tracking
 			// Queue the generation in another thread if defer is wanted
 			if (defer) {
 				ThreadPool.QueueUserWorkItem (delegate {
-					this.GenerateDesignCode (file, false); });
+					this.GenerateDesignCode (projectFiles, false); });
 				return;
 			}
-#if DEBUG
-            LoggingService.LogInfo("CodeBehindProjectTracker::GenerateDesignCode");
-#endif
+
 			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor ("Monobjc", "md-monobjc", false);
-			monitor.BeginTask (GettextCatalog.GetString ("Generating design code..."), 3);
+			monitor.BeginTask (GettextCatalog.GetString ("Generating design code..."), 1 + projectFiles.Count);
 			
 			// Create the resolver
 			ProjectResolver resolver = new ProjectResolver (this.Project);
-			monitor.Step (1);
 
 			// Create the writer
 			CodeBehindWriter writer = CodeBehindWriter.CreateForProject (monitor, this.Project);
-			monitor.Step (1);
 
 			// Perform the code generation
-			this.GenerateCodeBehind (resolver, writer, file);
+			foreach (ProjectFile file in projectFiles) {
+				this.GenerateCodeBehind (resolver, writer, file.FilePath);
+				monitor.Step (1);
+			}
 			
 			DispatchService.GuiDispatch (() => {
 				monitor.EndTask ();
@@ -144,35 +143,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <param name="e">The <see cref="MonoDevelop.Projects.ProjectFileEventArgs"/> instance containing the event data.</param>
 		protected override void HandleFileAddedToProject (object sender, ProjectFileEventArgs e)
 		{
-			// Balk if the project is being deserialized
-			if (this.Project.Loading) {
-				return;
-			}
-			
-			// Collect dependencies
-			List<String> filesToAdd = new List<String> ();
-			foreach(ProjectFileEventInfo info in e) {
-				IEnumerable<String> files = GuessDependencies(this.Project, info.ProjectFile);
-				if (files != null) {
-					filesToAdd.AddRange(files);
-				}
-			}
-
-			// Add dependencies
-			if (filesToAdd != null) {
-				foreach (string file in filesToAdd.Where(f => !this.Project.IsFileInProject(f))) {
-					this.Project.AddFile (file);
-				}
-			}
-
-			// Run CodeBehind if it is a XIB file
-			foreach(ProjectFileEventInfo info in e) {
-	            ProjectFile projectFile = info.ProjectFile;
-	            if (BuildHelper.IsXIBFile(projectFile) && BuildHelper.IsInDevelopmentRegion(this.Project, projectFile))
-	            {
-	                this.GenerateDesignCode(projectFile.FilePath, true);
-	            }
-			}
+			this.GenerateDesignCode (e);
 		}
 
 		/// <summary>
@@ -182,50 +153,36 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <param name="e">The <see cref="MonoDevelop.Projects.ProjectFileEventArgs"/> instance containing the event data.</param>
 		protected override void HandleFileChangedInProject (object sender, ProjectFileEventArgs e)
 		{
+			this.GenerateDesignCode (e);
+		}
+		
+		/// <summary>
+		/// Generates the design code for applicable files.
+		/// </summary>
+		private void GenerateDesignCode (ProjectFileEventArgs e)
+		{
 			// Balk if the project is being deserialized
 			if (this.Project.Loading) {
 				return;
 			}
-
-			// Collect dependencies
-			List<String> filesToAdd = new List<String> ();
-			foreach(ProjectFileEventInfo info in e) {
-				IEnumerable<String> files = GuessDependencies(this.Project, info.ProjectFile);
-				if (files != null) {
-					filesToAdd.AddRange(files);
+			
+			// Run CodeBehind if it is a XIB file
+			IList<ProjectFile> projectFiles = new List<ProjectFile> ();
+			foreach (ProjectFileEventInfo info in e) {
+				ProjectFile projectFile = info.ProjectFile;
+				if (BuildHelper.IsXIBFile (projectFile) && BuildHelper.IsInDevelopmentRegion (this.Project, projectFile)) {
+#if DEBUG
+					LoggingService.LogInfo("CodeBehindProjectTracker::GenerateDesignCode " + projectFile);
+#endif
+					projectFiles.Add (projectFile);
 				}
 			}
 			
-			// Add dependencies
-			if (filesToAdd != null) {
-				foreach (string file in filesToAdd.Where(f => !this.Project.IsFileInProject(f))) {
-					this.Project.AddFile (file);
-				}
-			}
-
-			// Run CodeBehind if it is a XIB file
-			foreach(ProjectFileEventInfo info in e) {
-	            ProjectFile projectFile = info.ProjectFile;
-				if (BuildHelper.IsXIBFile(projectFile) && BuildHelper.IsInDevelopmentRegion(this.Project, projectFile))
-	            {
-	                this.GenerateDesignCode(projectFile.FilePath, true);
-	            }
+			if (projectFiles.Count > 0) {
+				this.GenerateDesignCode (projectFiles, true);
 			}
 		}
-
-		/// <summary>
-		/// Gets the code generator.
-		/// </summary>
-		/// <value>The code generator.</value>
-		private ICodeBehindGenerator CodeGenerator {
-			get {
-				if (this.codeGenerator == null) {
-					this.codeGenerator = CodeBehindGeneratorLoader.getGenerator (this.Project.LanguageName);
-				}
-				return codeGenerator;
-			}
-		}
-
+		
 		/// <summary>
 		/// Generates the design code for Interface Builder.
 		/// </summary>
@@ -271,44 +228,26 @@ namespace MonoDevelop.Monobjc.Tracking
 					}
 				}
 
+				// Save the project if needed
 				if (shouldSave) {
-					// Save the project
-					this.Project.Save (new NullProgressMonitor ());
+					using (IProgressMonitor monitor = new NullProgressMonitor()) {
+						this.Project.Save (monitor);
+					}
 				}
 			});
 		}
-
+		
 		/// <summary>
-		/// Guesses the dependencies of the given file.
+		/// Gets the code generator.
 		/// </summary>
-		/// <param name="project">The project.</param>
-		/// <param name="file">The file.</param>
-		/// <returns></returns>
-		private static IEnumerable<String> GuessDependencies (MonobjcProject project, ProjectFile file)
-		{
-			String extension = project.LanguageBinding.GetFileName ("abc");
-			extension = extension.Substring (3);
-
-			if (CodeBehind.IsDesignerFile (file.FilePath)) {
-				String parentName = Path.GetFileNameWithoutExtension (file.FilePath);
-				parentName = parentName.Substring (0, parentName.Length - 9) + extension;
-
-				string path = Path.Combine (Path.GetDirectoryName (file.FilePath), parentName);
-				if (File.Exists (path)) {
-					file.DependsOn = parentName;
-					return new[] { path };
+		/// <value>The code generator.</value>
+		private ICodeBehindGenerator CodeGenerator {
+			get {
+				if (this.codeGenerator == null) {
+					this.codeGenerator = CodeBehindGeneratorLoader.getGenerator (this.Project.LanguageName);
 				}
-			} else {
-				String designerEnd = ".designer" + extension;
-				String childName = Path.GetFileNameWithoutExtension (file.FilePath) + designerEnd;
-
-				string path = Path.Combine (Path.GetDirectoryName (file.FilePath), childName);
-				if (File.Exists (path)) {
-					return new[] { path };
-				}
+				return codeGenerator;
 			}
-
-			return null;
 		}
 
 		/// <summary>

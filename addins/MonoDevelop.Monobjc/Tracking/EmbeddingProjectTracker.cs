@@ -31,7 +31,7 @@ namespace MonoDevelop.Monobjc.Tracking
 	public class EmbeddingProjectTracker : ProjectTracker
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="CodeBehindProjectTracker"/> class.
+		/// Initializes a new instance of the <see cref="EmbeddingProjectTracker"/> class.
 		/// </summary>
 		/// <param name="project">The project.</param>
 		public EmbeddingProjectTracker (MonobjcProject project) : base(project)
@@ -46,17 +46,19 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 			
 			// Collect file added
-			IList<ProjectFile> filesToAdd = new List<ProjectFile> ();
-			foreach(ProjectFileEventInfo info in e)
-			{
+			IList<ProjectFile> projectFiles = new List<ProjectFile> ();
+			foreach (ProjectFileEventInfo info in e) {
 				ProjectFile projectFile = info.ProjectFile;
-				if (BuildHelper.IsEmbeddedXIBFile(projectFile)) {
-					filesToAdd.Add(projectFile);
+				if (BuildHelper.IsEmbeddedXIBFile (projectFile)) {
+#if DEBUG
+					LoggingService.LogInfo("EmbeddingProjectTracker::HandleFileAddedToProject " + projectFile);
+#endif
+					projectFiles.Add (projectFile);
 				}
 			}
 
-			if (filesToAdd.Count > 0) {
-				this.AddEmbedding (filesToAdd, true);
+			if (projectFiles.Count > 0) {
+				//this.AddEmbedding (projectFiles, true);
 			}
 		}
 		
@@ -70,22 +72,21 @@ namespace MonoDevelop.Monobjc.Tracking
 			// Collect file added
 			IList<ProjectFile> filesToAdd = new List<ProjectFile> ();
 			IList<ProjectFile> filesToRemove = new List<ProjectFile> ();
-			foreach(ProjectFileEventInfo info in e)
-			{
+			foreach (ProjectFileEventInfo info in e) {
 				ProjectFile projectFile = info.ProjectFile;
-				if (BuildHelper.IsEmbeddedXIBFile(projectFile)) {
-					filesToAdd.Add(projectFile);
+				if (BuildHelper.IsEmbeddedXIBFile (projectFile)) {
+					filesToAdd.Add (projectFile);
 				}
-				if (BuildHelper.IsNormalXIBFile(projectFile)) {
-					filesToRemove.Add(projectFile);
+				if (BuildHelper.IsNormalXIBFile (projectFile)) {
+					filesToRemove.Add (projectFile);
 				}
 			}
 
 			if (filesToAdd.Count > 0) {
 				this.AddEmbedding (filesToAdd, true);
 			}
-			if (filesToAdd.Count > 0) {
-				this.RemoveEmbedding (filesToAdd, true);
+			if (filesToRemove.Count > 0) {
+				this.RemoveEmbedding (filesToRemove, true);
 			}
 		}
 		
@@ -98,16 +99,15 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			// Collect file renamed
 			IList<ProjectFile> projectFiles = new List<ProjectFile> ();
-			foreach(ProjectFileEventInfo info in e)
-			{
+			foreach (ProjectFileEventInfo info in e) {
 				ProjectFile projectFile = info.ProjectFile;
-				if (BuildHelper.IsEmbeddedXIBFile(projectFile)) {
-					projectFiles.Add(projectFile);
+				if (BuildHelper.IsEmbeddedXIBFile (projectFile)) {
+					projectFiles.Add (projectFile);
 				}
 			}
 
 			if (projectFiles.Count > 0) {
-				//this.RenameEmbedding (projectFiles, true);
+				this.RenameEmbedding (projectFiles, true);
 			}
 		}
 		
@@ -135,85 +135,38 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			this.AddEmbeddedFiles (pairs);
 		}
-			
-		public void AddEmbeddedFiles (IList<FilePair> pairs)
-		{
-			bool modified = false;
-			foreach (FilePair pair in pairs) {
-				// Create file if needed
-				if (!File.Exists (pair.Destination)) {
-					File.Create (pair.Destination);
-				}
-				
-				// Add file if needed
-				if (!this.Project.IsFileInProject (pair.Destination)) {
-					this.Project.AddFile (pair.Destination);
-					modified |= true;
-				}
-			
-				// Make the NIB depends on the XIB file
-				ProjectFile destinationFile = this.Project.GetProjectFile (pair.Destination);
-				if (destinationFile.BuildAction != BuildAction.EmbeddedResource) {
-					destinationFile.BuildAction = BuildAction.EmbeddedResource;
-					modified |= true;
-				}
-				if (destinationFile.DependsOn != pair.Source.FileName) {
-					destinationFile.DependsOn = pair.Source.FileName;
-					modified |= true;
-				}
-					
-				// Set the resource id (default namepace + name without extension + locale)
-				String resourceId = this.Project.DefaultNamespace + "." + System.IO.Path.GetFileNameWithoutExtension (pair.Destination);
-				FilePath parentDirectory = destinationFile.FilePath.ParentDirectory;
-				if (parentDirectory.Extension == ".lproj") {
-					resourceId = resourceId + "." + parentDirectory.FileNameWithoutExtension;
-				}
-				if (destinationFile.ResourceId != resourceId) {
-					destinationFile.ResourceId = resourceId;
-					modified |= true;
-				}
-			}
 
-			DispatchService.GuiDispatch (() => {
-				if (modified) {
-					using (IProgressMonitor monitor = new NullProgressMonitor()) {
-						this.Project.Save (monitor);
-					}
-				}
-			});
-		}
-		
 		private void RenameEmbedding (IList<ProjectFile> projectFiles, bool defer)
 		{
-			/*
 			// Queue the generation in another thread if defer is wanted
 			if (defer) {
 				ThreadPool.QueueUserWorkItem (delegate {
 					this.RenameEmbedding (projectFiles, false); });
 				return;
 			}
-			*/
 			
-			LoggingService.LogInfo ("EmbeddingProjectTracker::RenameEmbedding files " + projectFiles.Count);
+			return;
 			
-			//DispatchService.GuiDispatch (() => {
-			// Rename dependent files
-			foreach (ProjectFile file in projectFiles) {
-				ProjectFile child = file.DependentChildren.FirstOrDefault ();
-				if (child == null) {
-					continue;
-				}
-					
-				FilePair pair = this.Project.GetIBFile (file, BuildHelper.EmbeddedInterfaceDefinition, null);
-				child.Name = pair.Destination.FileName;
-			}
-			//});
-
-			//DispatchService.GuiDispatch (() => {
-			using (IProgressMonitor monitor = new NullProgressMonitor()) {
-				this.Project.Save (monitor);
-			}
-			//});
+//			LoggingService.LogInfo ("EmbeddingProjectTracker::RenameEmbedding files " + projectFiles.Count);
+//			
+//			//DispatchService.GuiDispatch (() => {
+//			// Rename dependent files
+//			foreach (ProjectFile file in projectFiles) {
+//				ProjectFile child = file.DependentChildren.FirstOrDefault ();
+//				if (child == null) {
+//					continue;
+//				}
+//					
+//				FilePair pair = this.Project.GetIBFile (file, BuildHelper.EmbeddedInterfaceDefinition, null);
+//				child.Name = pair.Destination.FileName;
+//			}
+//			//});
+//
+//			//DispatchService.GuiDispatch (() => {
+//			using (IProgressMonitor monitor = new NullProgressMonitor()) {
+//				this.Project.Save (monitor);
+//			}
+//			//});
 		}
 		
 		private void RemoveEmbedding (IList<ProjectFile> projectFiles, bool defer)
@@ -225,16 +178,55 @@ namespace MonoDevelop.Monobjc.Tracking
 				return;
 			}
 			
-			bool modified = false;
+			return;
 			
-			// Remove dependent files
-			foreach (ProjectFile file in projectFiles) {
-				foreach (ProjectFile child in file.DependentChildren) {
-					child.DependsOn = null;
+//			bool modified = false;
+//			
+//			// Remove dependent files
+//			foreach (ProjectFile file in projectFiles) {
+//				foreach (ProjectFile child in file.DependentChildren) {
+//					child.DependsOn = null;
+//					modified |= true;
+//				}
+//			}
+//			
+//			DispatchService.GuiDispatch (() => {
+//				if (modified) {
+//					using (IProgressMonitor monitor = new NullProgressMonitor()) {
+//						this.Project.Save (monitor);
+//					}
+//				}
+//			});
+		}
+		
+		public void AddEmbeddedFiles (IList<FilePair> pairs)
+		{
+			bool modified = false;
+			foreach (FilePair pair in pairs) {
+				// Create file if needed
+				if (!File.Exists (pair.Destination)) {
+					File.Create (pair.Destination);
 					modified |= true;
 				}
-			}
+				
+				// Add file if needed
+				ProjectFile destinationFile;
+				if (this.Project.IsFileInProject (pair.Destination)) {
+					destinationFile = this.Project.GetProjectFile (pair.Destination);
+				} else { 
+					destinationFile = this.Project.AddFile (pair.Destination);
+					modified |= true;
+				}
 			
+				// Set the resource id (default namepace + name without extension + locale)
+				String resourceId = this.Project.DefaultNamespace + "." + System.IO.Path.GetFileNameWithoutExtension (pair.Destination);
+				FilePath parentDirectory = destinationFile.FilePath.ParentDirectory;
+				if (parentDirectory.Extension == ".lproj") {
+					resourceId = resourceId + "." + parentDirectory.FileNameWithoutExtension;
+				}
+				destinationFile.ResourceId = resourceId;
+			}
+
 			DispatchService.GuiDispatch (() => {
 				if (modified) {
 					using (IProgressMonitor monitor = new NullProgressMonitor()) {

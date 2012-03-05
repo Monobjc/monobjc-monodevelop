@@ -68,12 +68,15 @@ namespace MonoDevelop.Monobjc
 		/// Gets or sets the development region.
 		/// </summary>
 		/// <value>The development region.</value>
-		[ItemProperty("DevelopmentRegion", DefaultValue = "en")]
+		[ItemProperty("MacOSDevelopmentRegion", DefaultValue = "en")]
 		public String DevelopmentRegion
 		{
 			get { return this.developmentRegion; }
 			set
 			{
+				if (String.IsNullOrEmpty(value)) {
+					return;
+				}
 				this.developmentRegion = value;
 				this.NotifyModified("DevelopmentRegion");
 			}
@@ -263,7 +266,12 @@ namespace MonoDevelop.Monobjc
 		///   Gets or sets the code behind tracker.
 		/// </summary>
 		internal CodeBehindProjectTracker CodeBehindTracker { get; private set; }
-
+		
+		/// <summary>
+		///   Gets or sets the dependency tracker.
+		/// </summary>
+		internal DependencyProjectTracker DependencyTracker { get; private set; }
+		
 		/// <summary>
 		///   Gets or sets the embedding tracker.
 		/// </summary>
