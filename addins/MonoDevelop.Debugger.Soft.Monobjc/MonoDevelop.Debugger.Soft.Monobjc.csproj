@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,6 +9,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>MonoDevelop.Debugger.Soft.Monobjc</RootNamespace>
     <AssemblyName>MonoDevelop.Debugger.Soft.Monobjc</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -30,30 +31,17 @@
     <DefineConstants>MD_2_8</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="Mono.Debugger.Soft, Version=0.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756">
-      <Package>monodevelop-core-addins</Package>
-    </Reference>
-    <Reference Include="Mono.Debugging, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f">
-      <Package>monodevelop</Package>
-    </Reference>
-    <Reference Include="Mono.Debugging.Soft, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f">
-      <Package>monodevelop-core-addins</Package>
-    </Reference>
-    <Reference Include="Mono.Posix" />
-    <Reference Include="MonoDevelop.Core, Version=2.6.0.0, Culture=neutral">
-      <Package>monodevelop</Package>
-    </Reference>
-    <Reference Include="MonoDevelop.Debugger, Version=2.6.0.0, Culture=neutral">
-      <Package>monodevelop-core-addins</Package>
-    </Reference>
-    <Reference Include="MonoDevelop.Debugger.Soft, Version=2.6.0.0, Culture=neutral">
-      <Package>monodevelop-core-addins</Package>
-    </Reference>
-    <Reference Include="MonoDevelop.Ide, Version=2.6.0.0, Culture=neutral">
-      <Package>monodevelop</Package>
-    </Reference>
+<Reference Include="System" />
+<Reference Include="System.Core" />
+<Reference Include="Mono.Debugger.Soft, Version=0.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756"><Package>monodevelop-core-addins</Package></Reference>
+<Reference Include="Mono.Debugging, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f"><Package>monodevelop</Package></Reference>
+<Reference Include="Mono.Debugging.Soft, Version=0.0.0.0, Culture=neutral, PublicKeyToken=5e9ce85b0923c84f"><Package>monodevelop-core-addins</Package></Reference>
+<Reference Include="Mono.Posix" />
+<Reference Include="MonoDevelop.Core, Version=2.6.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
+<Reference Include="MonoDevelop.Debugger, Version=2.6.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
+<Reference Include="MonoDevelop.Debugger.Soft, Version=2.6.0.0, Culture=neutral"><Package>monodevelop-core-addins</Package></Reference>
+<Reference Include="MonoDevelop.Ide, Version=2.6.0.0, Culture=neutral"><Package>monodevelop</Package></Reference>
+
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MonobjcDebuggerSession.cs" />
@@ -75,9 +63,7 @@
     <None Include="references-2.8.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Icons\monobjc-logo-32.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Icons\monobjc-logo-32.png"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MonoDevelop.Monobjc\MonoDevelop.Monobjc.csproj">

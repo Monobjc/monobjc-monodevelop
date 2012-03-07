@@ -101,7 +101,9 @@ namespace MonoDevelop.Monobjc.Tracking
 				FilePath parentName = filePath;
 				parentName = parentName.ToString().Replace(this.designerExtension, this.sourceExtension);
 				if (File.Exists (parentName)) {
-					file.DependsOn = parentName.FileName;
+					if (this.Project.IsFileInProject(parentName)) {
+						file.DependsOn = parentName.FileName;
+					}
 					return new[] { parentName };
 				}
 			}
@@ -124,10 +126,12 @@ namespace MonoDevelop.Monobjc.Tracking
 			bool depends = false;
 			
 			switch(extension) {
+				// If NIB is added
 			case DOT_NIB:
 				peerName = filePath.ChangeExtension(DOT_XIB);
-				depends = true;
+				depends = this.Project.IsFileInProject(peerName);
 				break;
+				// If XIB is added
 			case DOT_XIB:
 				peerName = filePath.ChangeExtension(DOT_NIB);
 				break;

@@ -4,6 +4,7 @@ dist/
 external/
 obj/
 _ReSharper*
+.DS_Store
 *.Cache
 *.pc
 *.pidb

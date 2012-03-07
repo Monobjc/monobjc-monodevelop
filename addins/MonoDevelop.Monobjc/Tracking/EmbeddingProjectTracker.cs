@@ -58,7 +58,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 
 			if (projectFiles.Count > 0) {
-				//this.AddEmbedding (projectFiles, true);
+				this.AddEmbedding (projectFiles, true);
 			}
 		}
 		
@@ -90,33 +90,13 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 		}
 		
-		protected override void HandleFileRenamedInProject (object sender, ProjectFileRenamedEventArgs e)
-		{
-			// Balk if the project is being deserialized
-			if (this.Project.Loading) {
-				return;
-			}
-			
-			// Collect file renamed
-			IList<ProjectFile> projectFiles = new List<ProjectFile> ();
-			foreach (ProjectFileEventInfo info in e) {
-				ProjectFile projectFile = info.ProjectFile;
-				if (BuildHelper.IsEmbeddedXIBFile (projectFile)) {
-					projectFiles.Add (projectFile);
-				}
-			}
-
-			if (projectFiles.Count > 0) {
-				this.RenameEmbedding (projectFiles, true);
-			}
-		}
-		
 		private void AddEmbedding (IList<ProjectFile> projectFiles, bool defer)
 		{
 			// Queue the generation in another thread if defer is wanted
 			if (defer) {
 				ThreadPool.QueueUserWorkItem (delegate {
-					this.AddEmbedding (projectFiles, false); });
+					this.AddEmbedding (projectFiles, false);
+				});
 				return;
 			}
 			
@@ -133,74 +113,6 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			LoggingService.LogInfo ("EmbeddingProjectTracker::AddEmbedding pairs " + pairs.Count ());
 			
-			this.AddEmbeddedFiles (pairs);
-		}
-
-		private void RenameEmbedding (IList<ProjectFile> projectFiles, bool defer)
-		{
-			// Queue the generation in another thread if defer is wanted
-			if (defer) {
-				ThreadPool.QueueUserWorkItem (delegate {
-					this.RenameEmbedding (projectFiles, false); });
-				return;
-			}
-			
-			return;
-			
-//			LoggingService.LogInfo ("EmbeddingProjectTracker::RenameEmbedding files " + projectFiles.Count);
-//			
-//			//DispatchService.GuiDispatch (() => {
-//			// Rename dependent files
-//			foreach (ProjectFile file in projectFiles) {
-//				ProjectFile child = file.DependentChildren.FirstOrDefault ();
-//				if (child == null) {
-//					continue;
-//				}
-//					
-//				FilePair pair = this.Project.GetIBFile (file, BuildHelper.EmbeddedInterfaceDefinition, null);
-//				child.Name = pair.Destination.FileName;
-//			}
-//			//});
-//
-//			//DispatchService.GuiDispatch (() => {
-//			using (IProgressMonitor monitor = new NullProgressMonitor()) {
-//				this.Project.Save (monitor);
-//			}
-//			//});
-		}
-		
-		private void RemoveEmbedding (IList<ProjectFile> projectFiles, bool defer)
-		{
-			// Queue the generation in another thread if defer is wanted
-			if (defer) {
-				ThreadPool.QueueUserWorkItem (delegate {
-					this.RenameEmbedding (projectFiles, false); });
-				return;
-			}
-			
-			return;
-			
-//			bool modified = false;
-//			
-//			// Remove dependent files
-//			foreach (ProjectFile file in projectFiles) {
-//				foreach (ProjectFile child in file.DependentChildren) {
-//					child.DependsOn = null;
-//					modified |= true;
-//				}
-//			}
-//			
-//			DispatchService.GuiDispatch (() => {
-//				if (modified) {
-//					using (IProgressMonitor monitor = new NullProgressMonitor()) {
-//						this.Project.Save (monitor);
-//					}
-//				}
-//			});
-		}
-		
-		public void AddEmbeddedFiles (IList<FilePair> pairs)
-		{
 			bool modified = false;
 			foreach (FilePair pair in pairs) {
 				// Create file if needed
@@ -226,12 +138,42 @@ namespace MonoDevelop.Monobjc.Tracking
 				}
 				destinationFile.ResourceId = resourceId;
 			}
+			
+			if (modified) {
+				this.SaveProject ();
+			}
+		}
 
+		private void RemoveEmbedding (IList<ProjectFile> projectFiles, bool defer)
+		{
+			// Queue the generation in another thread if defer is wanted
+			if (defer) {
+				ThreadPool.QueueUserWorkItem (delegate {
+					this.RemoveEmbedding (projectFiles, false);
+				});
+				return;
+			}
+			
+			bool modified = false;
+			
+			// Remove dependent files
+			foreach (ProjectFile file in projectFiles) {
+				foreach (ProjectFile child in file.DependentChildren) {
+					child.DependsOn = null;
+					modified |= true;
+				}
+			}
+
+			if (modified) {
+				this.SaveProject ();
+			}
+		}
+		
+		public void SaveProject ()
+		{
 			DispatchService.GuiDispatch (() => {
-				if (modified) {
-					using (IProgressMonitor monitor = new NullProgressMonitor()) {
-						this.Project.Save (monitor);
-					}
+				using (IProgressMonitor monitor = new NullProgressMonitor()) {
+					this.Project.Save (monitor);
 				}
 			});
 		}
