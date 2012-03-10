@@ -22,16 +22,14 @@ using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Projects.Dom.Parser;
 using MonoDevelop.Projects;
+using System.Linq;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
 	public class ObjectiveCHeaderWriter : ObjectiveCWriter
 	{
-		private ProjectResolver resolver;
-		
 		public ObjectiveCHeaderWriter (MonobjcProject project) : base(project)
 		{
-			this.resolver = new ProjectResolver(project);
 		}
 		
 		protected override void WritePrologue (TextWriter writer, string name, string baseName)
@@ -45,7 +43,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			foreach (IProperty property in this.GetProperties(type)) {
 				String propertyType = property.ReturnType.Name;
-				if (property.Equals("Id")) {
+				if (property.Equals ("Id")) {
 					propertyType = "id";
 				}
 				writer.WriteLine ("\tIBOutlet {0} *{1};", propertyType, property.Name);
@@ -67,19 +65,23 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 			writer.WriteLine ();
 			writer.WriteLine ("@end");
-		}		
+		}
 		
 		protected override IEnumerable<String> GetOtherImports (IType type)
 		{
+			IList<String> typeNames = new List<String> ();
 			foreach (IProperty property in this.GetProperties(type)) {
 				if (property.ReturnType == null) {
 					continue;
 				}
-				ProjectDom dom = this.resolver.GetOwnerDom(property.ReturnType);
+				ProjectDom dom = this.resolver.GetOwnerDom (property.ReturnType);
 				Project project = (dom != null) ? dom.Project : null;
 				if (project != null) {
-					yield return String.Format("#import \"{0}.h\"", property.ReturnType.Name);
+					typeNames.Add (property.ReturnType.Name);
 				}
+			}
+			foreach (String typeName in typeNames.Distinct()) {
+				yield return String.Format("#import \"{0}.h\"", typeName);
 			}
 		}
 	}

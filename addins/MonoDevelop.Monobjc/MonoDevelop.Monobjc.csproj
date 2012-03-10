@@ -79,7 +79,6 @@
 	<Compile Include="Tracking\CodeBehindProjectTracker.cs"/>
     <Compile Include="Tracking\DependencyProjectTracker.cs" />
     <Compile Include="Tracking\EmbeddingProjectTracker.cs" />
-	<Compile Include="Tracking\HeaderGenerator.cs"/>
     <Compile Include="Tracking\ObjectiveCHeaderWriter.cs" />
     <Compile Include="Tracking\ObjectiveCSourceWriter.cs" />
     <Compile Include="Tracking\ObjectiveCWriter.cs" />

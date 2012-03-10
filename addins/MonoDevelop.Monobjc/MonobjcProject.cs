@@ -161,7 +161,9 @@ namespace MonoDevelop.Monobjc
 			}
 			return base.GetDefaultBuildAction (fileName);
 		}
-
+		
+		static int i = 0;
+		
 		/// <summary>
 		///   Creates the execution command.
 		/// </summary>
@@ -170,11 +172,8 @@ namespace MonoDevelop.Monobjc
 		/// <returns>The execution command.</returns>
 		protected override ExecutionCommand CreateExecutionCommand (ConfigurationSelector configSel, DotNetProjectConfiguration configuration)
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::CreateExecutionCommand");
-#endif
 			if (this.CompileTarget != CompileTarget.Exe) {
-				return base.CreateExecutionCommand (configSel, configuration);
+				return base.CreateExecutionCommand(configSel, configuration);
 			}
 			
 			MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)configuration;

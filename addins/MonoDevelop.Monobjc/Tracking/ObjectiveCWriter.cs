@@ -19,23 +19,31 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using MonoDevelop.Monobjc.Utilities;
+using MonoDevelop.Projects;
 using MonoDevelop.Projects.Dom;
+using MonoDevelop.Projects.Dom.Parser;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
 	public abstract class ObjectiveCWriter
 	{
 		protected MonobjcProject project;
+		protected ProjectResolver resolver;
+		protected ProjectDom projectDom;
 		
 		protected ObjectiveCWriter (MonobjcProject project)
 		{
 			this.project = project;
+			this.resolver = new ProjectResolver (this.project);
+			this.projectDom = ProjectDomService.GetProjectDom (this.project);
 		}
 		
 		public void Write (TextWriter writer, IType type)
 		{
+			IType baseType = this.GetBaseType(type);
 			String name = type.Name;
-			String baseName = (type.BaseType != null) ? type.BaseType.Name : "NSObject";
+			String baseName = (baseType != null) ? baseType.Name : "NSObject";
 			
 			WriteHeader (writer);
 			WriteIncludes (writer, type);
@@ -58,7 +66,11 @@ namespace MonoDevelop.Monobjc.Tracking
 			foreach (String framework in this.project.OSFrameworks.Split(';')) {
 				writer.WriteLine ("#import <{0}/{0}.h>", framework);
 			}
-			foreach(String import in this.GetOtherImports(type)) {
+			IType baseType = this.GetBaseType(type);
+			if (this.NeedImport(baseType)) {
+				writer.WriteLine ("#import \"{0}.h\"", baseType.Name);
+			}
+			foreach (String import in this.GetOtherImports(type)) {
 				writer.WriteLine (import);
 			}
 			writer.WriteLine ();
@@ -74,8 +86,9 @@ namespace MonoDevelop.Monobjc.Tracking
 		
 		protected abstract IEnumerable<String> GetOtherImports (IType type);
 		
-		protected IEnumerable<IProperty> GetProperties(IType type) {
-			IList<IProperty> properties = new List<IProperty>();
+		protected IEnumerable<IProperty> GetProperties (IType type)
+		{
+			IList<IProperty> properties = new List<IProperty> ();
 			foreach (IProperty property in type.Properties) {
 				if (!AttributeHelper.HasAttribute (property, AttributeHelper.IBOUTLET)) {
 					continue;
@@ -83,13 +96,14 @@ namespace MonoDevelop.Monobjc.Tracking
 				if (!AttributeHelper.HasAttribute (property, AttributeHelper.OBJECTIVE_C_IVAR)) {
 					continue;
 				}
-				properties.Add(property);
+				properties.Add (property);
 			}
 			return properties;
 		}
 		
-		protected IEnumerable<IMethod> GetMethods(IType type) {
-			IList<IMethod> methods = new List<IMethod>();
+		protected IEnumerable<IMethod> GetMethods (IType type)
+		{
+			IList<IMethod> methods = new List<IMethod> ();
 			foreach (IMethod method in type.Methods) {
 				if (!AttributeHelper.HasAttribute (method, AttributeHelper.IBACTION)) {
 					continue;
@@ -100,9 +114,37 @@ namespace MonoDevelop.Monobjc.Tracking
 				if (method.Parameters.Count != 1) {
 					continue;
 				}
-				methods.Add(method);
+				methods.Add (method);
 			}
 			return methods;
+		}
+		
+		protected IType GetBaseType (IType type)
+		{
+			// Search for the base class type
+			foreach (IReturnType baseType in type.BaseTypes) {
+				IType resolvedBaseType = this.projectDom.GetType (baseType);
+				if (resolvedBaseType == null) {
+					continue;
+				}
+				if (resolvedBaseType.ClassType != ClassType.Class) {
+					continue;
+				}
+				return resolvedBaseType;
+				break;
+			}
+			return null;
+		}
+		
+		protected bool NeedImport (IType type)
+		{
+			if (type == null) {
+				return false;
+			}
+			// Check if type is part of a project
+			ProjectDom typeDom = this.resolver.GetOwnerDom (type);
+			Project typeProject = (typeDom != null) ? typeDom.Project : null;
+			return (typeProject != null);
 		}
 	}
 }

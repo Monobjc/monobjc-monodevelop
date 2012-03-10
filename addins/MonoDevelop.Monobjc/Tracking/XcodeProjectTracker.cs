@@ -90,23 +90,23 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			lock (this.syncRoot) {
 				foreach (IType type in types) {
-					Directory.CreateDirectory(this.OutputFolder);
+					Directory.CreateDirectory (this.OutputFolder);
 				
 					FilePath headerFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".h");
-					FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
+// FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
 					
 					using (StreamWriter writer = new StreamWriter(headerFile)) {
 						ObjectiveCHeaderWriter headerWriter = new ObjectiveCHeaderWriter (this.Project);
 						headerWriter.Write (writer, type);
 					}
 				
-					using (StreamWriter writer = new StreamWriter(sourceFile)) {
-						ObjectiveCSourceWriter headerWriter = new ObjectiveCSourceWriter (this.Project);
-						headerWriter.Write (writer, type);
-					}
+// using (StreamWriter writer = new StreamWriter(sourceFile)) {
+// ObjectiveCSourceWriter headerWriter = new ObjectiveCSourceWriter (this.Project);
+// headerWriter.Write (writer, type);
+// }
 				
 					this.XcodeProject.AddFile (GROUP_CLASSES, headerFile, this.TargetName);
-					this.XcodeProject.AddFile (GROUP_CLASSES, sourceFile, this.TargetName);
+// this.XcodeProject.AddFile (GROUP_CLASSES, sourceFile, this.TargetName);
 				}
 			}
 			
@@ -124,16 +124,16 @@ namespace MonoDevelop.Monobjc.Tracking
 			
 			lock (this.syncRoot) {
 				foreach (IType type in types) {
-					Directory.CreateDirectory(this.OutputFolder);
+					Directory.CreateDirectory (this.OutputFolder);
 				
 					FilePath headerFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".h");
-					FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
+// FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
 				
 					File.Delete (headerFile);
-					File.Delete (sourceFile);
+// File.Delete (sourceFile);
 				
 					this.XcodeProject.RemoveFile (GROUP_CLASSES, headerFile, this.TargetName);
-					this.XcodeProject.RemoveFile (GROUP_CLASSES, sourceFile, this.TargetName);
+// this.XcodeProject.RemoveFile (GROUP_CLASSES, sourceFile, this.TargetName);
 				}
 			}
 			
@@ -146,11 +146,10 @@ namespace MonoDevelop.Monobjc.Tracking
 				return;
 			}
 
-			foreach(ProjectFileEventInfo info in e)
-			{
-	            ProjectFile projectFile = info.ProjectFile;
+			foreach (ProjectFileEventInfo info in e) {
+				ProjectFile projectFile = info.ProjectFile;
 				//LoggingService.LogInfo ("XcodeProjectTracker::HandleFileAddedToProject " + projectFile.FilePath);				
-				this.AddResource(projectFile);
+				this.AddResource (projectFile);
 			}
 
 			this.SaveProject (true);
@@ -162,11 +161,10 @@ namespace MonoDevelop.Monobjc.Tracking
 				return;
 			}			
 
-			foreach(ProjectFileEventInfo info in e)
-			{
-	            ProjectFile projectFile = info.ProjectFile;
+			foreach (ProjectFileEventInfo info in e) {
+				ProjectFile projectFile = info.ProjectFile;
 				//LoggingService.LogInfo ("XcodeProjectTracker::HandleFileRemovedFromProject " + projectFile.FilePath);				
-				this.RemoveResource(projectFile);
+				this.RemoveResource (projectFile);
 			}
 
 			this.SaveProject (false);
@@ -247,8 +245,8 @@ namespace MonoDevelop.Monobjc.Tracking
 			bool frameworksChanged = false;
 			bool referencesChanged = false;
 
-			foreach(SolutionItemModifiedEventInfo info in e) {
-				switch(info.Hint) {
+			foreach (SolutionItemModifiedEventInfo info in e) {
+				switch (info.Hint) {
 				case "References":
 					referencesChanged = true;
 					break;
@@ -261,8 +259,8 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 
 			if (referencesChanged) {
-				this.ClearProjectReferences();
-				this.AddProjectReferences();
+				this.ClearProjectReferences ();
+				this.AddProjectReferences ();
 			}
 			if (frameworksChanged) {
 				this.ClearFrameworks ();
@@ -341,7 +339,7 @@ namespace MonoDevelop.Monobjc.Tracking
 						this.AddClasses ();
 						this.AddResources ();
 						this.AddFrameworks ();
-						this.AddProjectReferences();
+						this.AddProjectReferences ();
 					}
 					return this.xcodeProject;
 				}
@@ -379,7 +377,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		
 		private void AddResource (ProjectFile projectFile)
 		{
-			if (BuildHelper.IsResourceFile (projectFile)) {
+			if (BuildHelper.IsResourceFile (projectFile) && File.Exists (projectFile.FilePath)) {
 				this.XcodeProject.AddFile (GROUP_RESOURCES, projectFile.FilePath, this.TargetName);
 			}
 		}
@@ -408,19 +406,19 @@ namespace MonoDevelop.Monobjc.Tracking
 		
 		private void ClearProjectReferences ()
 		{
-			this.XcodeProject.ClearDependantProjects(this.TargetName);
+			this.XcodeProject.ClearDependantProjects (this.TargetName);
 		}
 		
 		private void AddProjectReferences ()
 		{
-			foreach(var reference in this.Project.References) {
-				switch(reference.ReferenceType) {
+			foreach (var reference in this.Project.References) {
+				switch (reference.ReferenceType) {
 				case ReferenceType.Project:
-					MonobjcProject projectReference = this.Project.ParentSolution.FindProjectByName(reference.Reference) as MonobjcProject;
+					MonobjcProject projectReference = this.Project.ParentSolution.FindProjectByName (reference.Reference) as MonobjcProject;
 					if (projectReference != null) {
 						XcodeProject xcodeProject = projectReference.XcodeTracker.XcodeProject;
-						xcodeProject.Save();
-						this.XcodeProject.AddDependantProject(xcodeProject, this.TargetName);
+						xcodeProject.Save ();
+						this.XcodeProject.AddDependantProject (xcodeProject, this.TargetName);
 					}
 					break;
 				}
