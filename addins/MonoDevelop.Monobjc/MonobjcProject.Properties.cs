@@ -78,7 +78,7 @@ namespace MonoDevelop.Monobjc
 					return;
 				}
 				this.developmentRegion = value;
-				this.NotifyModified("DevelopmentRegion");
+				this.NotifyModified("MacOSDevelopmentRegion");
 			}
 		}
 

@@ -76,7 +76,9 @@ namespace MonoDevelop.Monobjc.Tracking
 				return;
 			}
 			
-			this.XcodeProject.Save ();
+			lock (this.syncRoot) {
+				this.XcodeProject.Save ();
+			}
 		}
 		
 		internal void UpdateSurrogateSources (IEnumerable<IType> types, bool defer)
@@ -93,20 +95,20 @@ namespace MonoDevelop.Monobjc.Tracking
 					Directory.CreateDirectory (this.OutputFolder);
 				
 					FilePath headerFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".h");
-// FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
+					FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
 					
 					using (StreamWriter writer = new StreamWriter(headerFile)) {
 						ObjectiveCHeaderWriter headerWriter = new ObjectiveCHeaderWriter (this.Project);
 						headerWriter.Write (writer, type);
 					}
 				
-// using (StreamWriter writer = new StreamWriter(sourceFile)) {
-// ObjectiveCSourceWriter headerWriter = new ObjectiveCSourceWriter (this.Project);
-// headerWriter.Write (writer, type);
-// }
+					using (StreamWriter writer = new StreamWriter(sourceFile)) {
+						ObjectiveCSourceWriter headerWriter = new ObjectiveCSourceWriter (this.Project);
+						headerWriter.Write (writer, type);
+					}
 				
 					this.XcodeProject.AddFile (GROUP_CLASSES, headerFile, this.TargetName);
-// this.XcodeProject.AddFile (GROUP_CLASSES, sourceFile, this.TargetName);
+					this.XcodeProject.AddFile (GROUP_CLASSES, sourceFile, this.TargetName);
 				}
 			}
 			
@@ -127,13 +129,13 @@ namespace MonoDevelop.Monobjc.Tracking
 					Directory.CreateDirectory (this.OutputFolder);
 				
 					FilePath headerFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".h");
-// FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
+					FilePath sourceFile = this.OutputFolder.Combine (type.Name).ChangeExtension (".m");
 				
 					File.Delete (headerFile);
-// File.Delete (sourceFile);
+					File.Delete (sourceFile);
 				
 					this.XcodeProject.RemoveFile (GROUP_CLASSES, headerFile, this.TargetName);
-// this.XcodeProject.RemoveFile (GROUP_CLASSES, sourceFile, this.TargetName);
+					this.XcodeProject.RemoveFile (GROUP_CLASSES, sourceFile, this.TargetName);
 				}
 			}
 			
@@ -174,7 +176,9 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 			switch (e.Key) {
 			case DeveloperToolsDesktopApplication.DEVELOPER_TOOLS:
+#if DEBUG
 				LoggingService.LogInfo ("XcodeProjectTracker::PropertyService_PropertyChanged " + e.Key);
+#endif
 				break;
 			default:
 				return;

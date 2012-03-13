@@ -36,6 +36,13 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <param name="project">The project.</param>
 		public EmbeddingProjectTracker (MonobjcProject project) : base(project)
 		{
+			this.Project.Modified += this.HandleProjectModified;
+		}
+		
+		public override void Dispose ()
+		{
+			this.Project.Modified -= this.HandleProjectModified;
+			base.Dispose ();
 		}
 		
 		protected override void HandleFileAddedToProject (object sender, ProjectFileEventArgs e)
@@ -90,6 +97,39 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 		}
 		
+		private void HandleProjectModified (object sender, SolutionItemModifiedEventArgs e)
+		{
+			// Balk if the project is being deserialized
+			if (this.Project.Loading) {
+				return;
+			}
+			
+			bool changed = false;
+			foreach (SolutionItemModifiedEventInfo info in e) {
+				if (info.Hint == "MacOSDevelopmentRegion") {
+					changed = true;
+					break;
+				}
+			}
+
+			if (!changed) {
+				return;
+			}
+			
+			IEnumerable<FilePair> pairs = this.Project.GetIBFiles (BuildHelper.EmbeddedInterfaceDefinition, null);
+			foreach (FilePair pair in pairs) {
+				if (this.Project.IsFileInProject (pair.Destination)) {
+#if DEBUG
+					LoggingService.LogInfo("EmbeddingProjectTracker::HandleProjectModified " + pair.Destination);
+#endif
+					ProjectFile destinationFile = this.Project.GetProjectFile (pair.Destination);
+					this.SetResourceId (destinationFile, pair.Destination);
+				}
+			}
+			
+			this.SaveProject ();
+		}
+		
 		private void AddEmbedding (IList<ProjectFile> projectFiles, bool defer)
 		{
 			// Queue the generation in another thread if defer is wanted
@@ -99,9 +139,9 @@ namespace MonoDevelop.Monobjc.Tracking
 				});
 				return;
 			}
-			
+#if DEBUG
 			LoggingService.LogInfo ("EmbeddingProjectTracker::AddEmbedding files " + projectFiles.Count);
-			
+#endif
 			IList<FilePair> pairs = new List<FilePair> ();
 			foreach (ProjectFile projectFile in projectFiles) {
 				FilePair pair = this.Project.GetIBFile (projectFile, BuildHelper.EmbeddedInterfaceDefinition, null);
@@ -110,9 +150,9 @@ namespace MonoDevelop.Monobjc.Tracking
 				}
 				pairs.Add (pair);
 			}
-			
+#if DEBUG
 			LoggingService.LogInfo ("EmbeddingProjectTracker::AddEmbedding pairs " + pairs.Count ());
-			
+#endif
 			bool modified = false;
 			foreach (FilePair pair in pairs) {
 				// Create file if needed
@@ -130,13 +170,7 @@ namespace MonoDevelop.Monobjc.Tracking
 					modified |= true;
 				}
 			
-				// Set the resource id (default namepace + name without extension + locale)
-				String resourceId = this.Project.DefaultNamespace + "." + System.IO.Path.GetFileNameWithoutExtension (pair.Destination);
-				FilePath parentDirectory = destinationFile.FilePath.ParentDirectory;
-				if (parentDirectory.Extension == ".lproj") {
-					resourceId = resourceId + "." + parentDirectory.FileNameWithoutExtension;
-				}
-				destinationFile.ResourceId = resourceId;
+				this.SetResourceId (destinationFile, pair.Destination);
 			}
 			
 			if (modified) {
@@ -167,6 +201,20 @@ namespace MonoDevelop.Monobjc.Tracking
 			if (modified) {
 				this.SaveProject ();
 			}
+		}
+		
+		private void SetResourceId (ProjectFile destinationFile, FilePath destination)
+		{
+			// Set the resource id (default namepace + name without extension + locale)
+			String resourceId = this.Project.DefaultNamespace + "." + System.IO.Path.GetFileNameWithoutExtension (destination);
+			FilePath parentDirectory = destinationFile.FilePath.ParentDirectory;
+			if (parentDirectory.Extension == ".lproj") {
+				String parent = parentDirectory.FileNameWithoutExtension;
+				if (parent != this.Project.DevelopmentRegion) {
+					resourceId = resourceId + "." + parentDirectory.FileNameWithoutExtension;
+				}
+			}
+			destinationFile.ResourceId = resourceId;
 		}
 		
 		public void SaveProject ()
