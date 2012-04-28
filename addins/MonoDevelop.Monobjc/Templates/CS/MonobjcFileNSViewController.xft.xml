@@ -30,7 +30,7 @@ namespace ${Namespace}
 
 		public ${Name} (IntPtr nativePointer) : base(nativePointer) { }
 
-        public ${Name}(NSString nibNameOrNil, NSBundle nibBundleOrNil) : base("initWithNibName:bundle:", nibNameOrNil, nibBundleOrNil) { }
+        public ${Name}(NSString nibNameOrNil, NSBundle nibBundleOrNil) : base(nibNameOrNil, nibBundleOrNil) { }
 
 		[ObjectiveCMessage("initWithNibName:bundle:")]
         public override Id InitWithNibNameBundle(NSString nibNameOrNil, NSBundle nibBundleOrNil)

@@ -12,24 +12,33 @@
     <!-- Assemblies -->
     <Import assembly="MonoDevelop.Monobjc.dll" />
     <Import assembly="Monobjc.Tools.dll" />
-    <!-- Templates -->
+    <!-- Common Templates -->
     <Import file="Templates/MonobjcFileDefinitionPList.xft.xml"/>
     <Import file="Templates/MonobjcFileEntitlementsPList.xft.xml"/>
     <Import file="Templates/MonobjcFileInfoPList.xft.xml"/>
     <Import file="Templates/MonobjcFileInfoPListDocument.xft.xml"/>
     <Import file="Templates/MonobjcFileLocalizableStrings.xft.xml"/>
-    <Import file="Templates/MonobjcFileNSObject.xft.xml"/>
-    <Import file="Templates/MonobjcFileNSView.xft.xml"/>
-    <Import file="Templates/MonobjcFileNSViewController.xft.xml"/>
-    <Import file="Templates/MonobjcFileNSWindowController.xft.xml"/>
-    <Import file="Templates/MonobjcProjectCocoaApplication.xpt.xml"/>
-    <Import file="Templates/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
-    <Import file="Templates/MonobjcProjectCocoaLibrary.xpt.xml"/>
-    <Import file="Templates/MonobjcProjectConsoleApplication.xpt.xml"/>
     <Import file="Templates/MonobjcProjectEmpty.xpt.xml"/>
     <Import file="Templates/MonobjcXibEmpty.xft.xml"/>
     <Import file="Templates/MonobjcXibView.xft.xml"/>
     <Import file="Templates/MonobjcXibWindow.xft.xml"/>
+    <!-- C# Templates -->
+    <Import file="Templates/CS/MonobjcFileNSObject.xft.xml"/>
+    <Import file="Templates/CS/MonobjcFileNSView.xft.xml"/>
+    <Import file="Templates/CS/MonobjcFileNSViewController.xft.xml"/>
+    <Import file="Templates/CS/MonobjcFileNSWindowController.xft.xml"/>
+    <Import file="Templates/CS/MonobjcProjectCocoaApplication.xpt.xml"/>
+    <Import file="Templates/CS/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
+    <Import file="Templates/CS/MonobjcProjectCocoaLibrary.xpt.xml"/>
+    <Import file="Templates/CS/MonobjcProjectConsoleApplication.xpt.xml"/>
+    <!-- VBNet Templates
+    <Import file="Templates/VB/MonobjcFileNSObject.xft.xml"/>
+    <Import file="Templates/VB/MonobjcFileNSView.xft.xml"/>
+    <Import file="Templates/VB/MonobjcProjectCocoaApplication.xpt.xml"/>
+    <Import file="Templates/VB/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
+    <Import file="Templates/VB/MonobjcProjectCocoaLibrary.xpt.xml"/>
+    <Import file="Templates/VB/MonobjcProjectConsoleApplication.xpt.xml"/>
+    -->
   </Runtime>
 
   <!-- Dependencies -->
@@ -42,6 +51,7 @@
 
   <!-- File Templates -->
   <Extension path="/MonoDevelop/Ide/FileTemplates">
+    <!-- Common Templates -->
     <FileTemplate id="MonobjcFileDefinitionPList"
                   file="Templates/MonobjcFileDefinitionPList.xft.xml"/>
     <FileTemplate id="MonobjcFileEntitlementsPList"
@@ -52,34 +62,53 @@
                   file="Templates/MonobjcFileInfoPList.xft.xml"/>
     <FileTemplate id="MonobjcFileLocalizableStrings"
                   file="Templates/MonobjcFileLocalizableStrings.xft.xml"/>
-    <FileTemplate id="MonobjcFileNSObject"
-                  file="Templates/MonobjcFileNSObject.xft.xml"/>
-    <FileTemplate id="MonobjcFileNSView"
-                  file="Templates/MonobjcFileNSView.xft.xml"/>
-    <FileTemplate id="MonobjcFileNSViewController"
-                  file="Templates/MonobjcFileNSViewController.xft.xml"/>
-    <FileTemplate id="MonobjcFileNSWindowController"
-                  file="Templates/MonobjcFileNSWindowController.xft.xml"/>
     <FileTemplate id="MonobjcXibEmpty"
                   file="Templates/MonobjcXibEmpty.xft.xml"/>
     <FileTemplate id="MonobjcXibView"
                   file="Templates/MonobjcXibView.xft.xml"/>
     <FileTemplate id="MonobjcXibWindow"
                   file="Templates/MonobjcXibWindow.xft.xml"/>
+    <!-- C# Templates -->
+    <FileTemplate id="MonobjcCSFileNSObject"
+                  file="Templates/CS/MonobjcFileNSObject.xft.xml"/>
+    <FileTemplate id="MonobjcCSFileNSView"
+                  file="Templates/CS/MonobjcFileNSView.xft.xml"/>
+    <FileTemplate id="MonobjcCSFileNSViewController"
+                  file="Templates/CS/MonobjcFileNSViewController.xft.xml"/>
+    <FileTemplate id="MonobjcCSFileNSWindowController"
+                  file="Templates/CS/MonobjcFileNSWindowController.xft.xml"/>
+    <!-- VBNet Templates
+    <FileTemplate id="MonobjcVBFileNSObject"
+                  file="Templates/VB/MonobjcFileNSObject.xft.xml"/>
+    <FileTemplate id="MonobjcVBFileNSView"
+                  file="Templates/VB/MonobjcFileNSView.xft.xml"/>
+    -->
   </Extension>
 
   <!-- Project Templates -->
   <Extension path="/MonoDevelop/Ide/ProjectTemplates">
-    <ProjectTemplate id="MonobjcProjectCocoaApplication"
-                     file="Templates/MonobjcProjectCocoaApplication.xpt.xml"/>
-    <ProjectTemplate id="MonobjcProjectCocoaApplicationDocument"
-                     file="Templates/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
-    <ProjectTemplate id="MonobjcProjectCocoaLibrary"
-                     file="Templates/MonobjcProjectCocoaLibrary.xpt.xml"/>
-    <ProjectTemplate id="MonobjcProjectConsoleApplication"
-                     file="Templates/MonobjcProjectConsoleApplication.xpt.xml"/>
+    <!-- Common Templates -->
     <ProjectTemplate id="MonobjcProjectEmpty"
                      file="Templates/MonobjcProjectEmpty.xpt.xml"/>
+    <!-- C# Templates -->
+    <ProjectTemplate id="MonobjcCSProjectCocoaApplication"
+                     file="Templates/CS/MonobjcProjectCocoaApplication.xpt.xml"/>
+    <ProjectTemplate id="MonobjcCSProjectCocoaApplicationDocument"
+                     file="Templates/CS/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
+    <ProjectTemplate id="MonobjcCSProjectCocoaLibrary"
+                     file="Templates/CS/MonobjcProjectCocoaLibrary.xpt.xml"/>
+    <ProjectTemplate id="MonobjcCSProjectConsoleApplication"
+                     file="Templates/CS/MonobjcProjectConsoleApplication.xpt.xml"/>
+    <!-- VBNet Templates
+    <ProjectTemplate id="MonobjcVBProjectConsoleApplication"
+                     file="Templates/VB/MonobjcProjectConsoleApplication.xpt.xml"/>
+    <ProjectTemplate id="MonobjcVBProjectCocoaApplication"
+                     file="Templates/VB/MonobjcProjectCocoaApplication.xpt.xml"/>
+    <ProjectTemplate id="MonobjcVBProjectCocoaApplicationDocument"
+                     file="Templates/VB/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
+    <ProjectTemplate id="MonobjcVBProjectCocoaLibrary"
+                     file="Templates/VB/MonobjcProjectCocoaLibrary.xpt.xml"/>
+    -->
   </Extension>
 
   <Extension path="/MonoDevelop/ProjectModel/MSBuildItemTypes">

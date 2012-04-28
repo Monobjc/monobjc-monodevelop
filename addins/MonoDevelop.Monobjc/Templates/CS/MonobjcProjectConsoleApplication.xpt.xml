@@ -40,7 +40,7 @@ namespace ${Namespace}
 {
     internal class Program
     {
-        private static void Main(String[] args)
+        public static void Main(String[] args)
         {
 			#region --- Monobjc Generated Code ---
 			//

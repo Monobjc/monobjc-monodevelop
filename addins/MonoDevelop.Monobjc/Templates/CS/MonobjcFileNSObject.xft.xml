@@ -16,7 +16,6 @@
 	  <File name="${Name}.cs">
 <![CDATA[using System;
 using Monobjc;
-using Monobjc.AppKit;
 using Monobjc.Foundation;
 
 namespace ${Namespace}

@@ -39,11 +39,11 @@ namespace MonoDevelop.Monobjc.CodeGeneration
         {
             if (start)
             {
-                return (line.Contains("#region") && line.Contains("Monobjc Generated Code"));
+                return (line.Contains("#Region") && line.Contains("Monobjc Generated Code"));
             }
             else
             {
-                return (line.Contains("#endregion"));
+                return (line.Contains("#End Region"));
             }
         }
 
@@ -56,15 +56,15 @@ namespace MonoDevelop.Monobjc.CodeGeneration
         {
             List<String> lines = new List<String>();
 
-            lines.Add("			#region \"Monobjc Generated Code\"");
+            lines.Add("			'#Region \"--- Monobjc Generated Code ---\"");
             lines.Add("			'");
             lines.Add("			' DO NOT ALTER OR REMOVE");
             lines.Add("			'");
             foreach (String framework in frameworks)
             {
-                lines.Add("			ObjectiveCRuntime.LoadFramework(\"" + framework + "\");");
+                lines.Add("			ObjectiveCRuntime.LoadFramework(\"" + framework + "\")");
             }
-            lines.Add("			#endregion");
+            lines.Add("			'#End Region");
 
             return lines;
         }
@@ -81,7 +81,8 @@ namespace MonoDevelop.Monobjc.CodeGeneration
             String name = GenerateMethodName(selector);
 
             // Partial method are only possible by using a snippet of code as CodeDom does not handle them
-            CodeSnippetTypeMember method = new CodeSnippetTypeMember("Partial Private Sub " + name + "(" + argumentType.Name + " sender)" + Environment.NewLine + "End Sub" + Environment.NewLine);
+			String methodContent = String.Format("Partial Private Sub {0}({1} sender){2}End Sub{2}", name, argumentType.Name, Environment.NewLine);
+            CodeSnippetTypeMember method = new CodeSnippetTypeMember(methodContent);
 
             return method;
         }

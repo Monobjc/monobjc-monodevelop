@@ -1,0 +1,66 @@
+<?xml version="1.0" ?>
+<Template Originator="Laurent Etiemble" Created="2010/10/27">
+	
+	<!-- Template Header -->
+	<TemplateConfiguration>
+	  <_Name>NSView Subclass</_Name>
+    	<Icon>md-monobjc-class</Icon>
+	  <_Category>Monobjc</_Category>
+	  <LanguageName>VBNet</LanguageName>
+	  <ProjectType>Monobjc</ProjectType>
+	  <_Description>A .NET class that inherits NSView and is exposed to the Objective-C runtime.</_Description>
+	</TemplateConfiguration>
+	
+	<!-- Template Content -->
+	<TemplateFiles>
+	  <File name="${Name}.vb">
+<![CDATA[Imports Monobjc
+Imports Monobjc.AppKit
+Imports Monobjc.Foundation
+
+Namespace ${Namespace}
+	<ObjectiveCClass> _
+	Public Partial Class ${Name}
+		Inherits NSView
+		Public Shared ReadOnly ${Name}Class As [Class] = [Class].[Get](GetType(${Name}))
+
+		Public Sub New()
+		End Sub
+
+		Public Sub New(nativePointer As IntPtr)
+			MyBase.New(nativePointer)
+		End Sub
+
+		Public Sub New(frameRect As NSRect)
+			MyBase.New(frameRect)
+		End Sub
+
+		<ObjectiveCMessage("initWithFrame:")> _
+		Public Overrides Function InitWithFrame(frameRect As NSRect) As Id
+			Me.SendMessageSuper(Of IntPtr)(${Name}Class, "initWithFrame:", frameRect)
+
+			' Initialization code here.
+
+			Return Me
+		End Function
+
+		<ObjectiveCMessage("dealloc")> _
+		Public Overrides Sub Dealloc()
+			' Clean-up code here.
+
+			Me.SendMessageSuper(${Name}Class, "dealloc")
+		End Sub
+
+		<ObjectiveCMessage("drawRect:")> _
+		Public Overrides Sub DrawRect(aRect As NSRect)
+			' If you want to call the base implementation, uncomment the following statement
+			' Me.SendMessageSuper(${Name}Class, "drawRect:", aRect)
+
+			' Drawing code here.
+		End Sub
+	End Class
+End Namespace]]>
+		</File>
+	</TemplateFiles>
+	
+</Template>

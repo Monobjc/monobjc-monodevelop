@@ -132,17 +132,25 @@
     <Content Include="Templates\MonobjcFileInfoPList.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcFileInfoPListDocument.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcFileLocalizableStrings.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>    
-    <Content Include="Templates\MonobjcFileNSObject.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>    
-    <Content Include="Templates\MonobjcFileNSView.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
-    <Content Include="Templates\MonobjcFileNSViewController.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
-    <Content Include="Templates\MonobjcFileNSWindowController.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
-    <Content Include="Templates\MonobjcProjectCocoaApplication.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
-    <Content Include="Templates\MonobjcProjectCocoaApplicationDocument.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
-    <Content Include="Templates\MonobjcProjectCocoaLibrary.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
-    <Content Include="Templates\MonobjcProjectConsoleApplication.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcProjectEmpty.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcXibEmpty.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcXibView.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
     <Content Include="Templates\MonobjcXibWindow.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+
+    <Content Include="Templates\CS\MonobjcFileNSObject.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>    
+    <Content Include="Templates\CS\MonobjcFileNSView.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\CS\MonobjcFileNSViewController.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\CS\MonobjcFileNSWindowController.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\CS\MonobjcProjectCocoaApplication.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\CS\MonobjcProjectCocoaApplicationDocument.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\CS\MonobjcProjectCocoaLibrary.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\CS\MonobjcProjectConsoleApplication.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+
+    <Content Include="Templates\VB\MonobjcFileNSObject.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>    
+    <Content Include="Templates\VB\MonobjcFileNSView.xft.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\VB\MonobjcProjectCocoaApplication.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\VB\MonobjcProjectCocoaApplicationDocument.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\VB\MonobjcProjectCocoaLibrary.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
+    <Content Include="Templates\VB\MonobjcProjectConsoleApplication.xpt.xml"><CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory></Content>
   </ItemGroup>
 </Project>

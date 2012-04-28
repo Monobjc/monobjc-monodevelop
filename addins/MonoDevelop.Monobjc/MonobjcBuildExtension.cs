@@ -40,32 +40,15 @@ namespace MonoDevelop.Monobjc
         protected override BuildResult Build(IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
         {
 			BuildResult result = new BuildResult();
+			
             MonobjcProject project = item as MonobjcProject;
-			if (project == null) {
-				return result;
-			}
 			
 			// Pre-build
-			switch(project.ApplicationType)
-			{
-				case MonobjcApplicationType.CocoaApplication:
-				{
-					BuildHelper.EmbedXIBFiles(monitor, project, result);
-				}
-				break;
-				case MonobjcApplicationType.ConsoleApplication:
-				{
-					// Do nothing
-				}
-				break;
-				case MonobjcApplicationType.CocoaLibrary:
-				{
-					BuildHelper.EmbedXIBFiles(monitor, project, result);
-				}
-				break;
-				default:
-					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
-			}
+			this.PreBuild(result, monitor, item, configuration);
+            if (result.ErrorCount > 0)
+            {
+                return result;
+            }
 			
             // Build
             result.Append(base.Build(monitor, item, configuration));
@@ -75,27 +58,7 @@ namespace MonoDevelop.Monobjc
             }
 			
 			// Post-build
-			switch(project.ApplicationType)
-			{
-				case MonobjcApplicationType.CocoaApplication:
-				{
-    		        MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
-					BundleGenerator.Generate(monitor, result, project, configuration, conf.OutputDirectory, false);
-				}
-				break;
-				case MonobjcApplicationType.ConsoleApplication:
-				{
-					// Do nothing
-				}
-				break;
-				case MonobjcApplicationType.CocoaLibrary:
-				{
-					// Do nothing
-				}
-				break;
-				default:
-					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
-			}
+			this.PostBuild(result, monitor, item, configuration);
 			
             return result;
         }
@@ -108,16 +71,14 @@ namespace MonoDevelop.Monobjc
         /// <returns></returns>
         protected override bool GetNeedsBuilding(SolutionEntityItem item, ConfigurationSelector configuration)
         {
-            MonobjcProject project = item as MonobjcProject;
-            if (project == null)
-            {
-                return false;
-            }
-			
 			// Call base implementation
-            if (base.GetNeedsBuilding(item, configuration))
+			bool result = base.GetNeedsBuilding(item, configuration);
+			
+			// Balk if the project is not a Monobjc one
+            MonobjcProject project = item as MonobjcProject;
+            if (result || project == null)
             {
-                return true;
+                return result;
             }
 
 			// Call specific implementation
@@ -199,15 +160,16 @@ namespace MonoDevelop.Monobjc
         /// <param name = "configuration">The configuration.</param>
         protected override void Clean(IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
         {
+			// Call base implementation
+            base.Clean(monitor, item, configuration);
+
+			// Balk if the project is not a Monobjc one
             MonobjcProject project = item as MonobjcProject;
             if (project == null)
             {
                 return;
             }
 			
-			// Call base implementation
-            base.Clean(monitor, item, configuration);
-
 			// Call specific implementation
 			switch(project.ApplicationType)
 			{
@@ -239,5 +201,76 @@ namespace MonoDevelop.Monobjc
 					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
 			}
         }
+		
+        /// <summary>
+        /// Performs the pre-build for a Monobjc project.
+        /// </summary>
+        /// <param name = "result">The build result.</param>
+        /// <param name = "monitor">The monitor.</param>
+        /// <param name = "item">The item.</param>
+        /// <param name = "configuration">The configuration.</param>
+		private void PreBuild(BuildResult result, IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration) {
+            MonobjcProject project = item as MonobjcProject;
+			if (project == null) {
+				return;
+			}
+			
+			switch(project.ApplicationType)
+			{
+				case MonobjcApplicationType.CocoaApplication:
+				{
+					BuildHelper.EmbedXIBFiles(monitor, project, result);
+				}
+				break;
+				case MonobjcApplicationType.ConsoleApplication:
+				{
+					// Do nothing
+				}
+				break;
+				case MonobjcApplicationType.CocoaLibrary:
+				{
+					BuildHelper.EmbedXIBFiles(monitor, project, result);
+				}
+				break;
+				default:
+					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
+			}
+		}
+		
+        /// <summary>
+        /// Performs the pre-build for a Monobjc project.
+        /// </summary>
+        /// <param name = "result">The build result.</param>
+        /// <param name = "monitor">The monitor.</param>
+        /// <param name = "item">The item.</param>
+        /// <param name = "configuration">The configuration.</param>
+		private void PostBuild(BuildResult result, IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration) {
+            MonobjcProject project = item as MonobjcProject;
+			if (project == null) {
+				return;
+			}
+
+			switch(project.ApplicationType)
+			{
+				case MonobjcApplicationType.CocoaApplication:
+				{
+    		        MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
+					BundleGenerator.Generate(monitor, result, project, configuration, conf.OutputDirectory, false);
+				}
+				break;
+				case MonobjcApplicationType.ConsoleApplication:
+				{
+					// Do nothing
+				}
+				break;
+				case MonobjcApplicationType.CocoaLibrary:
+				{
+					// Do nothing
+				}
+				break;
+				default:
+					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
+			}
+		}
     }
 }

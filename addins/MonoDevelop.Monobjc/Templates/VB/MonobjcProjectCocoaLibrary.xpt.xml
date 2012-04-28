@@ -5,8 +5,8 @@
   <TemplateConfiguration>
     <_Name>Cocoa Library</_Name>
     <Icon>md-monobjc-project</Icon>
-    <_Category>C#/Monobjc</_Category>
-    <LanguageName>C#</LanguageName>
+    <_Category>VBNet/Monobjc</_Category>
+    <LanguageName>VBNet</LanguageName>
     <_Description>This project builds a Cocoa-based library.</_Description>
   </TemplateConfiguration>
 	
@@ -32,7 +32,7 @@
         <Reference type="Gac" refto="Monobjc.AppKit, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
       </References>
       <Files>
-          <FileTemplateReference TemplateID="MonobjcFileNSObject" name="MyClass"/>
+          <FileTemplateReference TemplateID="MonobjcVBFileNSObject" name="MyClass"/>
       </Files>
     </Project>
   </Combine>

@@ -1,0 +1,53 @@
+<?xml version="1.0" ?>
+<Template Originator="Laurent Etiemble" Created="2010/10/27">
+	
+	<!-- Template Header -->
+	<TemplateConfiguration>
+	  <_Name>NSObject Subclass</_Name>
+    	<Icon>md-monobjc-class</Icon>
+	  <_Category>Monobjc</_Category>
+	  <LanguageName>VBNet</LanguageName>
+	  <ProjectType>Monobjc</ProjectType>
+	  <_Description>A .NET class that inherits NSObject and is exposed to the Objective-C runtime.</_Description>
+	</TemplateConfiguration>
+	
+	<!-- Template Content -->
+	<TemplateFiles>
+	  <File name="${Name}.vb">
+<![CDATA[Imports Monobjc
+Imports Monobjc.Foundation
+
+Namespace ${Namespace}
+	<ObjectiveCClass> _
+	Public Partial Class ${Name}
+		Inherits NSObject
+		Public Shared ReadOnly ${Name}Class As [Class] = [Class].[Get](GetType(${Name}))
+
+		Public Sub New()
+		End Sub
+
+		Public Sub New(nativePointer As IntPtr)
+			MyBase.New(nativePointer)
+		End Sub
+
+		<ObjectiveCMessage("init")> _
+		Public Overrides Function Init() As Id
+			Me.SendMessageSuper(Of IntPtr)(${Name}Class, "init")
+
+			' Initialization code here.
+
+			Return Me
+		End Function
+
+		<ObjectiveCMessage("dealloc")> _
+		Public Overrides Sub Dealloc()
+			' Clean-up code here.
+
+			Me.SendMessageSuper(${Name}Class, "dealloc")
+		End Sub
+	End Class
+End Namespace]]>
+		</File>
+	</TemplateFiles>
+	
+</Template>

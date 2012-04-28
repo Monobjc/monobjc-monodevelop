@@ -76,10 +76,31 @@ namespace MonoDevelop.Monobjc
 		/// <param name = "projectOptions">The project options.</param>
 		public MonobjcProject (String language, ProjectCreateInformation info, XmlElement projectOptions) : base(language, info, projectOptions)
 		{
+			XmlNode node;
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::ctor3");
 #endif
-			XmlNode node = projectOptions.SelectSingleNode ("MacOSFrameworks");
+			node = projectOptions.SelectSingleNode ("MacOSApplicationType");
+			if (node != null) {
+				this.ApplicationType = (MonobjcApplicationType) Enum.Parse(typeof(MonobjcApplicationType), node.InnerText);
+			}
+
+			node = projectOptions.SelectSingleNode ("MacOSDevelopmentRegion");
+			if (node != null) {
+				this.DevelopmentRegion = node.InnerText;
+			}
+
+			node = projectOptions.SelectSingleNode ("MainNibFile");
+			if (node != null) {
+				this.MainNibFile = node.InnerText;
+			}
+
+			node = projectOptions.SelectSingleNode ("BundleIcon");
+			if (node != null) {
+				this.BundleIcon = node.InnerText;
+			}
+
+			node = projectOptions.SelectSingleNode ("MacOSFrameworks");
 			if (node != null) {
 				this.OSFrameworks = node.InnerText;
 			}
@@ -161,8 +182,6 @@ namespace MonoDevelop.Monobjc
 			}
 			return base.GetDefaultBuildAction (fileName);
 		}
-		
-		static int i = 0;
 		
 		/// <summary>
 		///   Creates the execution command.

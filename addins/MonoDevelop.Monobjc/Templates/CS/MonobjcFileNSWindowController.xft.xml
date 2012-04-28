@@ -30,7 +30,7 @@ namespace ${Namespace}
 
 		public ${Name} (IntPtr nativePointer) : base(nativePointer) { }
 
-        public ${Name}(NSWindow window) : base("initWithWindow:", window) { }
+        public ${Name}(NSWindow window) : base(window) { }
 
 		[ObjectiveCMessage("initWithWindow:")]
         public virtual Id InitWithWindow(NSWindow window)

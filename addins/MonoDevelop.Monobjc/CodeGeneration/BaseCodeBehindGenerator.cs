@@ -190,7 +190,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 
                 CodeTypeMember exposedMethod = this.GenerateActionExposedMethod(action.Message, argumentType);
                 typeDeclaration.Members.Add(exposedMethod);
-
+				
                 CodeTypeMember partialMethod = this.GenerateActionPartialMethod(action.Message, argumentType);
                 typeDeclaration.Members.Add(partialMethod);
             }
