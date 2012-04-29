@@ -71,7 +71,7 @@ using Monobjc.Foundation;
 namespace ${Namespace}
 {
     [ObjectiveCClass]
-	public partial class AppDelegate : NSObject, INSNibAwaking
+	public partial class AppDelegate : NSObject
 	{
 		public static readonly Class AppDelegateClass = Class.Get(typeof(AppDelegate));
 		

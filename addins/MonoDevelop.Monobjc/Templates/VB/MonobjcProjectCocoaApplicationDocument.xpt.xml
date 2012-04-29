@@ -23,6 +23,9 @@
         <MacOSArch>X86</MacOSArch>
         <MacOSFrameworks>Foundation;AppKit</MacOSFrameworks>
         <MainNibFile>en.lproj\MainMenu.xib</MainNibFile>
+        <OptionInfer>On</OptionInfer>
+        <OptionStrict>On</OptionStrict>
+        <MyType>Console</MyType>
       </Options>
       <References>
         <Reference type="Gac" refto="System" />
@@ -67,7 +70,6 @@ Namespace __Namespace
 	<ObjectiveCClass> _
 	Public Partial Class AppDelegate
 		Inherits NSObject
-		Implements INSNibAwaking
 		Public Shared ReadOnly AppDelegateClass As [Class] = [Class].[Get](GetType(AppDelegate))
 
 		Public Sub New()

@@ -22,6 +22,8 @@
         <MacOSVersion>MacOS106</MacOSVersion>
         <MacOSArch>X86</MacOSArch>
         <MacOSFrameworks>Foundation;AppKit</MacOSFrameworks>
+        <OptionInfer>On</OptionInfer>
+        <OptionStrict>On</OptionStrict>
       </Options>
       <References>
         <Reference type="Gac" refto="System" />

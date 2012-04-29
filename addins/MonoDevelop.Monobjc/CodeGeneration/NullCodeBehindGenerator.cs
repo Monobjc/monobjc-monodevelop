@@ -22,43 +22,43 @@ using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.Monobjc.CodeGeneration
 {
-    /// <summary>
-    ///   Dummy implementation for a code-behind generator.
-    /// </summary>
-    public class NullCodeBehindGenerator : BaseCodeBehindGenerator
-    {
-        /// <summary>
-        ///   Determines whether a line is a region delimiter.
-        /// </summary>
-        /// <param name = "line">The line.</param>
-        /// <param name = "start">if set to <c>true</c>, check for a region start.</param>
-        /// <returns>
-        ///   <c>true</c> if the line is a region delimiter; otherwise, <c>false</c>.
-        /// </returns>
-        protected override bool IsDesignerRegionDelimiter(String line, bool start)
-        {
-            throw new NotImplementedException();
-        }
+	/// <summary>
+	///   Dummy implementation for a code-behind generator.
+	/// </summary>
+	public class NullCodeBehindGenerator : BaseCodeBehindGenerator
+	{
+		/// <summary>
+		///   Determines whether a line is a region delimiter.
+		/// </summary>
+		/// <param name = "line">The line.</param>
+		/// <param name = "start">if set to <c>true</c>, check for a region start.</param>
+		/// <returns>
+		///   <c>true</c> if the line is a region delimiter; otherwise, <c>false</c>.
+		/// </returns>
+		protected override bool IsDesignerRegionDelimiter (String line, bool start)
+		{
+			throw new NotImplementedException ();
+		}
 
-        /// <summary>
-        ///   Generates the framework loading code which is language specific.
-        /// </summary>
-        /// <param name = "frameworks">The frameworks.</param>
-        /// <returns>A list of lines for the code.</returns>
-        protected override IEnumerable<String> GenerateFrameworkLoadingcode(String[] frameworks)
-        {
-            throw new NotImplementedException();
-        }
+		/// <summary>
+		///   Generates the framework loading code which is language specific.
+		/// </summary>
+		/// <param name = "frameworks">The frameworks.</param>
+		/// <returns>A list of lines for the code.</returns>
+		protected override IEnumerable<String> GenerateFrameworkLoadingcode (String[] frameworks)
+		{
+			throw new NotImplementedException ();
+		}
 
-        /// <summary>
-        ///   Generates the partial method for an action.
-        /// </summary>
-        /// <param name = "message">The message.</param>
-        /// <param name = "argumentType">Type of the argument.</param>
-        /// <returns>The type member.</returns>
-        protected override CodeTypeMember GenerateActionPartialMethod(string message, IType argumentType)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		/// <summary>
+		///   Generates the partial method for an action.
+		/// </summary>
+		/// <param name = "message">The message.</param>
+		/// <param name = "argumentType">Type of the argument.</param>
+		/// <returns>The type member.</returns>
+		protected override CodeTypeMember GenerateActionPartialMethod (string message, IType argumentType)
+		{
+			throw new NotImplementedException ();
+		}
+	}
 }

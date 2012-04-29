@@ -21,49 +21,45 @@ using Mono.Addins;
 
 namespace MonoDevelop.Monobjc.CodeGeneration
 {
-    /// <summary>
-    ///   A loader for the extension codons of code-behind implementations.
-    /// </summary>
-    public static class CodeBehindGeneratorLoader
-    {
-        private static readonly IDictionary<string, ICodeBehindGenerator> generators = new Dictionary<string, ICodeBehindGenerator>();
+	/// <summary>
+	///   A loader for the extension codons of code-behind implementations.
+	/// </summary>
+	public static class CodeBehindGeneratorLoader
+	{
+		private static readonly IDictionary<string, ICodeBehindGenerator> generators = new Dictionary<string, ICodeBehindGenerator> ();
 
-        /// <summary>
-        ///   Inits this class.
-        /// </summary>
-        public static void Init()
-        {
-            AddinManager.AddExtensionNodeHandler("/Monobjc/CodeBehindGeneration", OnCodeBehindGenerationChanged);
-        }
+		/// <summary>
+		///   Inits this class.
+		/// </summary>
+		public static void Init ()
+		{
+			AddinManager.AddExtensionNodeHandler ("/Monobjc/CodeBehindGeneration", OnCodeBehindGenerationChanged);
+		}
 
-        /// <summary>
-        ///   Gets the generator for the given language.
-        /// </summary>
-        /// <param name = "languageName">The language name.</param>
-        /// <returns>A code generator.</returns>
-        public static ICodeBehindGenerator getGenerator(String languageName)
-        {
-            if (generators.ContainsKey(languageName))
-            {
-                return generators[languageName];
-            }
-            throw new InvalidOperationException("No generator found for language " + languageName);
-        }
+		/// <summary>
+		///   Gets the generator for the given language.
+		/// </summary>
+		/// <param name = "languageName">The language name.</param>
+		/// <returns>A code generator.</returns>
+		public static ICodeBehindGenerator getGenerator (String languageName)
+		{
+			if (generators.ContainsKey (languageName)) {
+				return generators [languageName];
+			}
+			throw new InvalidOperationException ("No generator found for language " + languageName);
+		}
 
-        /// <summary>
-        ///   Handler for codon addition/removal.
-        /// </summary>
-        private static void OnCodeBehindGenerationChanged(object sender, ExtensionNodeEventArgs args)
-        {
-            CodeBehindGeneratorCodon codon = (CodeBehindGeneratorCodon) args.ExtensionNode;
-            if (args.Change == ExtensionChange.Add)
-            {
-                generators.Add(codon.Id, codon.Generator);
-            }
-            else
-            {
-                generators.Remove(codon.Id);
-            }
-        }
-    }
+		/// <summary>
+		///   Handler for codon addition/removal.
+		/// </summary>
+		private static void OnCodeBehindGenerationChanged (object sender, ExtensionNodeEventArgs args)
+		{
+			CodeBehindGeneratorCodon codon = (CodeBehindGeneratorCodon)args.ExtensionNode;
+			if (args.Change == ExtensionChange.Add) {
+				generators.Add (codon.Id, codon.Generator);
+			} else {
+				generators.Remove (codon.Id);
+			}
+		}
+	}
 }

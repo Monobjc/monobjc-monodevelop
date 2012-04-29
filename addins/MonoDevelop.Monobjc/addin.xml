@@ -38,7 +38,7 @@
     <Import file="Templates/VB/MonobjcProjectCocoaApplicationDocument.xpt.xml"/>
     <Import file="Templates/VB/MonobjcProjectCocoaLibrary.xpt.xml"/>
     <Import file="Templates/VB/MonobjcProjectConsoleApplication.xpt.xml"/>
-    -->
+	-->
   </Runtime>
 
   <!-- Dependencies -->

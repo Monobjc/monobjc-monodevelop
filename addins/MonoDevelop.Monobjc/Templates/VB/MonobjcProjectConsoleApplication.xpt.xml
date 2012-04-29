@@ -22,6 +22,9 @@
         <MacOSVersion>MacOS106</MacOSVersion>
         <MacOSArch>X86</MacOSArch>
         <MacOSFrameworks>Foundation</MacOSFrameworks>
+        <OptionInfer>On</OptionInfer>
+        <OptionStrict>On</OptionStrict>
+        <MyType>Console</MyType>
       </Options>
       <References>
         <Reference type="Gac" refto="System" />
