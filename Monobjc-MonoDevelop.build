@@ -14,7 +14,7 @@
 
   <!-- Define some properties related to MonoDevelop -->
   <property name="md.app" value="/Applications/MonoDevelop.app-2.8" unless="${property::exists('md.app')}"/>
-  <property name="md.version" value="2.8" unless="${property::exists('md.version')}"/>
+  <property name="md.version" value="3.0" unless="${property::exists('md.version')}"/>
   <property name="md.config" value="${md.app}/Contents/MacOS/lib/pkgconfig"/>
   <property name="md.tool" value="${md.app}/Contents/MacOS/mdtool"/>
 
@@ -120,10 +120,14 @@
         </items>
       </in>
       <do>
+	    <property name="project.csproj" value="${directory::get-parent-directory(filename)}/${path::get-file-name-without-extension(filename)}"/>
+	    <loadfile property="project.specific" file="${project.csproj}.${md.version}" failonerror="false"/>
+        <property name="project.specific" value=" " unless="${property::exists('project.specific')}"/>
 		<loadfile property="md.references" file="${directory::get-parent-directory(filename)}/references-${md.version}.config"/>
-        <copy file="${filename}" tofile="${directory::get-parent-directory(filename)}/${path::get-file-name-without-extension(filename)}" overwrite="true">
+        <copy file="${filename}" tofile="${project.csproj}" overwrite="true">
           <filterchain>
             <replacetokens>
+              <token key="PROJECT_SPECIFIC" value="${project.specific}" />
               <token key="MONO_FRAMEWORK" value="${mono.framework}" />
               <token key="MD_DEFINE" value="${md.define}" />
               <token key="MD_REFERENCES" value="${md.references}" />

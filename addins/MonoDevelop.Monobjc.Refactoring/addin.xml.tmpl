@@ -25,20 +25,6 @@
     <Addin id="MonoDevelop.Monobjc" version="@MD_ADDINS_REFERENCE@"/>
   </Dependencies>
 
-  <Extension path="/MonoDevelop/Refactoring/Refactorings">
-    <Class id="CreateObjectiveCIVar" class="MonoDevelop.Monobjc.Refactoring.CreateIVarOperation" />
-    <Class id="ImplementObjectiveCProtocol" class="MonoDevelop.Monobjc.Refactoring.ImplementProtocolOperation" />
-  </Extension>
-
-  <Extension path="/MonoDevelop/Ide/Commands/Refactoring">
-    <Command id="MonoDevelop.Monobjc.Refactoring.CreateObjectiveCIVar"
-             defaultHandler="MonoDevelop.Monobjc.Refactoring.CreateIVarHandler"
-             _label="Create Variable"/>
-    <Command id="MonoDevelop.Monobjc.Refactoring.ImplementObjectiveCProtocol"
-             defaultHandler="MonoDevelop.Monobjc.Refactoring.ImplementProtocolHandler"
-             _label="Implement Protocol"/>
-  </Extension>
-
 @ADDIN_SPECIFIC@
   
 </Addin>

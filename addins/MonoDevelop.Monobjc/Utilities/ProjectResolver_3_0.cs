@@ -87,8 +87,9 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		public IEnumerable<IType> GetAllClasses (bool projectOnly)
 		{
-			Func<IType, bool> matcher = t => t.ClassType == ClassType.Class && AttributeHelper.HasAttribute(t, AttributeHelper.OBJECTIVE_C_CLASS);
-			return this.GetMatchingTypes(matcher, projectOnly);
+			Func<ITypeDefinition, bool> matcher = td => td.Kind == TypeKind.Class && AttributeHelper.HasAttribute(td, AttributeHelper.OBJECTIVE_C_CLASS);
+			IEnumerable<ITypeDefinition> typeDefinitions =  this.GetMatchingTypeDefinitions(matcher, projectOnly);
+			return ConvertTo(typeDefinitions);
 		}
 
 		/// <summary>
@@ -96,8 +97,9 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		public IEnumerable<IType> GetAllProtocols (bool projectOnly)
 		{
-			Func<IType, bool> matcher = t => t.ClassType == ClassType.Interface && AttributeHelper.HasAttribute(t, AttributeHelper.OBJECTIVE_C_PROTOCOL);
-			return this.GetMatchingTypes(matcher, projectOnly);
+			Func<ITypeDefinition, bool> matcher = td => td.Kind == TypeKind.Interface && AttributeHelper.HasAttribute(td, AttributeHelper.OBJECTIVE_C_PROTOCOL);
+			IEnumerable<ITypeDefinition> typeDefinitions =  this.GetMatchingTypeDefinitions(matcher, projectOnly);
+			return ConvertTo(typeDefinitions);
 		}
 
 		/// <summary>
@@ -132,8 +134,10 @@ namespace MonoDevelop.Monobjc.Utilities
 				return types.First ();
 			default:
 				// If there is multiple match, filter by looking at the attributes
-				Func<IType, bool> matcher = t => AttributeHelper.HasAttribute(t, AttributeHelper.OBJECTIVE_C_CLASS);
-				IEnumerable<IType> candidates = GetMatchingTypes(types, matcher);
+				Func<ITypeDefinition, bool> matcher = td => AttributeHelper.HasAttribute(td, AttributeHelper.OBJECTIVE_C_CLASS);
+				IEnumerable<ITypeDefinition> typeDefinitions = ConvertTo(types);
+				typeDefinitions = GetMatchingTypeDefinitions(typeDefinitions, matcher);
+				IEnumerable<IType> candidates = ConvertTo(typeDefinitions);
 				if (candidates.Count () == 1) {
 					return candidates.First ();
 				}
@@ -147,8 +151,10 @@ namespace MonoDevelop.Monobjc.Utilities
 				return types.First ();
 			default:
 				// If there is multiple match, filter by looking at the attributes
-				Func<IType, bool> matcher = t => AttributeHelper.HasAttribute(t, AttributeHelper.OBJECTIVE_C_PROTOCOL);
-				IEnumerable<IType> candidates = GetMatchingTypes(types, matcher);
+				Func<ITypeDefinition, bool> matcher = td => AttributeHelper.HasAttribute(td, AttributeHelper.OBJECTIVE_C_PROTOCOL);
+				IEnumerable<ITypeDefinition> typeDefinitions = ConvertTo(types);
+				typeDefinitions = GetMatchingTypeDefinitions(typeDefinitions, matcher);
+				IEnumerable<IType> candidates = ConvertTo(typeDefinitions);
 				if (candidates.Count () == 1) {
 					return candidates.First ();
 				}
@@ -197,11 +203,10 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		/// Check if the type is defined in a project.
 		/// </summary>
-		public bool IsInProject(ITypeReference type)
+		public bool IsInProject(ITypeReference typeReference)
 		{
-			ProjectDom dom = this.GetOwnerDom(type);
-			Project project = (dom != null) ? dom.Project : null;
-			return (project != null);
+			IType type = this.ResolveType(typeReference);
+			return this.IsInProject(type);
 		}
 		
 		/// <summary>
@@ -209,33 +214,8 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		public bool IsInProject(IType type)
 		{
-			ProjectDom dom = this.GetOwnerDom(type);
-			Project project = (dom != null) ? dom.Project : null;
-			return (project != null);
-		}
-		
-		/// <summary>
-		///   Returns the ProjectDom that contains a type with the given type.
-		/// </summary>
-		/// <param name = "type">The type.</param>
-		/// <returns>The ProjectDom that contains the type or null.</returns>
-		public ProjectDom GetOwnerDom(IType type) {
-			return this.GetOwnerDom(type.FullName);
-		}
-		
-		/// <summary>
-		///   Returns the ProjectDom that contains a type with the given full name.
-		/// </summary>
-		/// <param name = "fullName">The fully qualified name of the type.</param>
-		/// <returns>The ProjectDom that contains the type or null.</returns>
-		public ProjectDom GetOwnerDom(String fullName) {
-			foreach (ProjectDom dom in this.projectDoms) {
-				TypeSystemService.ForceUpdate(dom);
-				if (dom.Types.Any(t => t.FullName.Equals(fullName))) {
-					return dom;
-				}
-			}
-			return null;
+			Func<ITypeDefinition, bool> matcher = td => String.Equals(type.FullName, td.FullName);
+			return GetMatchingTypeDefinitions(this.projectDom, matcher).Count() > 0;
 		}
 		
 		/// <summary>
@@ -276,6 +256,14 @@ namespace MonoDevelop.Monobjc.Utilities
 		private IEnumerable<IType> ConvertTo(IEnumerable<ITypeDefinition> typeDefinitions)
 		{
 			return typeDefinitions.Select(td => td.ToTypeReference().Resolve(this.projectDom.Compilation));
+		}
+		
+		/// <summary>
+		/// Converts from type defintions to resolved types.
+		/// </summary>
+		private IEnumerable<ITypeDefinition> ConvertTo(IEnumerable<IType> types)
+		{
+			return types.Select(t => t.GetDefinition());
 		}
 		
 		/// <summary>

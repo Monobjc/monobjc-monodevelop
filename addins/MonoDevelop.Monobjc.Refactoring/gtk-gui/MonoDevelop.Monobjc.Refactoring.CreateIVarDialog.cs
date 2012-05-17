@@ -97,7 +97,11 @@ namespace MonoDevelop.Monobjc.Refactoring
 			// Container child hbox3.Gtk.Box+BoxChild
 			this.imageWarning = new global::Gtk.Image ();
 			this.imageWarning.Name = "imageWarning";
-			this.imageWarning.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-apply", global::Gtk.IconSize.Button);
+			this.imageWarning.Pixbuf = global::Stetic.IconLoader.LoadIcon (
+				this,
+				"gtk-apply",
+				global::Gtk.IconSize.Button
+			);
 			this.hbox3.Add (this.imageWarning);
 			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.imageWarning]));
 			w7.Position = 0;

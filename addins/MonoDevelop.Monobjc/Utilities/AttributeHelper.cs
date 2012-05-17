@@ -29,7 +29,7 @@ using AttributeHolder = MonoDevelop.Projects.Dom.IMember;
 #endif
 #if MD_3_0
 using ICSharpCode.NRefactory.TypeSystem;
-using AttributeHolder = MonoDevelop.Projects.Dom.IEntity;
+using AttributeHolder = ICSharpCode.NRefactory.TypeSystem.IEntity;
 #endif
 
 namespace MonoDevelop.Monobjc.Utilities
