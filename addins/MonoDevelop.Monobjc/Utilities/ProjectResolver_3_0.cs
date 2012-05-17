@@ -15,21 +15,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-#if MD_2_6 || MD_2_8
+#if MD_3_0
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using MonoDevelop.Core;
 using MonoDevelop.Projects;
-using MonoDevelop.Projects.Dom;
-using MonoDevelop.Projects.Dom.Parser;
+using ICSharpCode.NRefactory.TypeSystem;
+using ICSharpCode.NRefactory.TypeSystem.Implementation;
+using MonoDevelop.Ide.TypeSystem;
+using ProjectDom = MonoDevelop.Ide.TypeSystem.TypeSystemService.ProjectContentWrapper;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
-	/// <summary>
-	/// Event arguments for type update/deletion.
-	/// </summary>
-	
 	/// <summary>
 	///   Type resolver for a Monobjc project.
 	/// </summary>
@@ -42,7 +40,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// Initializes the <see cref="ProjectResolver"/> class.
 		/// </summary>
 		static ProjectResolver() {
-			ProjectDomService.TypesUpdated += HandleProjectDomServiceTypesUpdated;
+			// TODO
 		}
 		
 		/// <summary>
@@ -52,7 +50,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public ProjectResolver (MonobjcProject project)
 		{
 			this.Project = project;
-			this.projectDom = ProjectDomService.GetProjectDom (this.Project);
+			this.projectDom = TypeSystemService.GetProjectContentWrapper (this.Project);
 			this.projectDoms = new List<ProjectDom> ();
 			CollectReference (this.projectDoms, this.projectDom);
 		}
@@ -109,10 +107,11 @@ namespace MonoDevelop.Monobjc.Utilities
 		public IEnumerable<IType> GetEntryPoints ()
 		{
 			// Collect types that have a Main static method
-			Func<IType, bool> matcher = t => t.Methods.Where(m => m.IsStatic && m.Name == "Main").Count () > 0;
-			return this.GetMatchingTypes(matcher, true);
+			Func<ITypeDefinition, bool> matcher = td => td.GetMethods(m => m.IsStatic && m.Name == "Main", GetMemberOptions.ReturnMemberDefinitions).Count () > 0;
+			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions(matcher, false);
+			return ConvertTo(typeDefinitions);
 		}
-
+		
 		/// <summary>
 		///   Resolves the specified class name.
 		/// </summary>
@@ -158,13 +157,13 @@ namespace MonoDevelop.Monobjc.Utilities
 			
 			return null;
 		}
-		
+
 		/// <summary>
 		/// Gets the main method of the given type.
 		/// </summary>
 		public IMethod GetMainMethod(IType type)
 		{
-			return type.Methods.SingleOrDefault (m => m.IsStatic && m.Name == "Main");
+			return type.GetMethods(m => m.IsStatic && m.Name == "Main").SingleOrDefault();
 		}
 		
 		/// <summary>
@@ -173,7 +172,8 @@ namespace MonoDevelop.Monobjc.Utilities
 		public IType ResolveType(Type type)
 		{
 			if (type == typeof(IntPtr)) {
-				return new DomType("System.IntPtr");
+				ITypeReference typeReference = new GetClassTypeReference("System", "IntPtr");
+				return typeReference.Resolve(this.projectDom.Compilation);
 			}
 			return null;
 		}
@@ -181,9 +181,9 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		/// Gets the DOM type of the type.
 		/// </summary>
-		public IType ResolveType(IReturnType type)
+		public IType ResolveType(ITypeReference type)
 		{
-			return this.projectDom.GetType(type);
+			return type.Resolve(this.projectDom.Compilation);
 		}
 		
 		/// <summary>
@@ -197,10 +197,11 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		/// Check if the type is defined in a project.
 		/// </summary>
-		public bool IsInProject(IReturnType type)
+		public bool IsInProject(ITypeReference type)
 		{
-			Func<IType, bool> matcher = t => String.Equals(type.FullName, t.FullName);
-			return GetMatchingTypes(this.projectDom, matcher).Count() > 0;
+			ProjectDom dom = this.GetOwnerDom(type);
+			Project project = (dom != null) ? dom.Project : null;
+			return (project != null);
 		}
 		
 		/// <summary>
@@ -208,8 +209,33 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		public bool IsInProject(IType type)
 		{
-			Func<IType, bool> matcher = t => String.Equals(type.FullName, t.FullName);
-			return GetMatchingTypes(this.projectDom, matcher).Count() > 0;
+			ProjectDom dom = this.GetOwnerDom(type);
+			Project project = (dom != null) ? dom.Project : null;
+			return (project != null);
+		}
+		
+		/// <summary>
+		///   Returns the ProjectDom that contains a type with the given type.
+		/// </summary>
+		/// <param name = "type">The type.</param>
+		/// <returns>The ProjectDom that contains the type or null.</returns>
+		public ProjectDom GetOwnerDom(IType type) {
+			return this.GetOwnerDom(type.FullName);
+		}
+		
+		/// <summary>
+		///   Returns the ProjectDom that contains a type with the given full name.
+		/// </summary>
+		/// <param name = "fullName">The fully qualified name of the type.</param>
+		/// <returns>The ProjectDom that contains the type or null.</returns>
+		public ProjectDom GetOwnerDom(String fullName) {
+			foreach (ProjectDom dom in this.projectDoms) {
+				TypeSystemService.ForceUpdate(dom);
+				if (dom.Types.Any(t => t.FullName.Equals(fullName))) {
+					return dom;
+				}
+			}
+			return null;
 		}
 		
 		/// <summary>
@@ -219,8 +245,9 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <returns>A list of candidates.</returns>
 		private IEnumerable<IType> InternalResolve (String className)
 		{
-			Func<IType, bool> matcher = td => String.Equals(td.Name, className);
-			return this.GetMatchingTypes(matcher, false);
+			Func<ITypeDefinition, bool> matcher = td => String.Equals(td.Name, className);
+			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions(matcher, false);
+			return ConvertTo(typeDefinitions);
 		}
 
 		/// <summary>
@@ -237,85 +264,55 @@ namespace MonoDevelop.Monobjc.Utilities
 				return;
 			}
 			result.Add (dom);
-			foreach (ProjectDom reference in dom.References) {
+			foreach (Project project in dom.ReferencedProjects) {
+				ProjectDom reference = TypeSystemService.GetProjectContentWrapper (project);
 				CollectReference (result, reference);
 			}
 		}
+
+		/// <summary>
+		/// Converts from type defintions to resolved types.
+		/// </summary>
+		private IEnumerable<IType> ConvertTo(IEnumerable<ITypeDefinition> typeDefinitions)
+		{
+			return typeDefinitions.Select(td => td.ToTypeReference().Resolve(this.projectDom.Compilation));
+		}
 		
 		/// <summary>
 		/// Gets the matching types.
 		/// </summary>
-		private static IEnumerable<IType> GetMatchingTypes(IEnumerable<IType> typeDefinitions, Func<IType, bool> matcher)
+		private static IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions(IEnumerable<ITypeDefinition> typeDefinitions, Func<ITypeDefinition, bool> matcher)
 		{
-			return typeDefinitions.Where(t => matcher(t));
+			return typeDefinitions.Where(td => matcher(td));
 		}
 
 		/// <summary>
 		/// Gets the matching types.
 		/// </summary>
-		private static IEnumerable<IType> GetMatchingTypes(ProjectDom dom, Func<IType, bool> matcher)
+		private static IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions(ProjectDom dom, Func<ITypeDefinition, bool> matcher)
 		{
-			IEnumerable<IType> types = dom.Types;
-			return GetMatchingTypes (types, matcher);
+			IEnumerable<ITypeDefinition> typeDefinitions = dom.Compilation.GetAllTypeDefinitions();
+			return GetMatchingTypeDefinitions (typeDefinitions, matcher);
 		}
 
 		/// <summary>
 		/// Gets the matching types.
 		/// </summary>
-		private IEnumerable<IType> GetMatchingTypes (Func<IType, bool> matcher, bool projectOnly)
+		private IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions (Func<ITypeDefinition, bool> matcher, bool projectOnly)
 		{
 			// Search only in the project dom
 			if (projectOnly && this.projectDom != null) {
-				this.projectDom.ForceUpdate (true);
-				return GetMatchingTypes(this.projectDom, matcher);
+				TypeSystemService.ForceUpdate(this.projectDom);
+				return GetMatchingTypeDefinitions(this.projectDom, matcher);
 			}
 			
 			// Search in all the dom (project + references)
-			List<IType> result = new List<IType> ();
+			List<ITypeDefinition> result = new List<ITypeDefinition> ();
 			foreach (ProjectDom dom in this.projectDoms) {
-				dom.ForceUpdate (true);
-				result.AddRange(GetMatchingTypes(dom, matcher));
+				TypeSystemService.ForceUpdate(dom);
+				result.AddRange(GetMatchingTypeDefinitions(dom, matcher));
 			}
 			return result;
-		}
-		
-		
-		/// <summary>
-		/// Called when a project is updated.
-		/// </summary>
-		private static void HandleProjectDomServiceTypesUpdated (object sender, TypeUpdateInformationEventArgs e)
-		{
-			Project project = e.Project;
-			
-			IList<IType> typesUpdated = new List<IType> ();
-			IList<IType> typesDeleted = new List<IType> ();
-			
-			foreach (IType type in e.TypeUpdateInformation.Added) {
-				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
-					continue;
-				}
-	            LoggingService.LogInfo("Projectresolver::TypeAdded " + type);
-				typesUpdated.Add (type);
-			}
-			foreach (IType type in e.TypeUpdateInformation.Modified) {
-				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
-					continue;
-				}
-	            LoggingService.LogInfo("Projectresolver::Modified " + type);
-				typesUpdated.Add (type);
-			}
-			foreach (IType type in e.TypeUpdateInformation.Removed) {
-				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
-					continue;
-				}
-	            LoggingService.LogInfo("Projectresolver::Removed " + type);
-				typesDeleted.Add (type);
-			}
-			
-			if (TypesUpdated != null) {
-				TypesUpdatedEventArgs args = new TypesUpdatedEventArgs(project, typesUpdated, typesDeleted);
-				TypesUpdated(null, args);
-			}
 		}
 	}
 }

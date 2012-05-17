@@ -24,7 +24,13 @@ using Monobjc.Tools.InterfaceBuilder;
 using MonoDevelop.Core;
 using MonoDevelop.DesignerSupport;
 using MonoDevelop.Monobjc.Utilities;
+
+#if MD_2_6 || MD_2_8
 using MonoDevelop.Projects.Dom;
+#endif
+#if MD_3_0
+using ICSharpCode.NRefactory.TypeSystem;
+#endif
 
 namespace MonoDevelop.Monobjc.CodeGeneration
 {
@@ -44,17 +50,27 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <returns>The path to the designer file.</returns>
 		public FilePath GenerateFrameworkLoadingCode (ProjectResolver resolver, String[] frameworks)
 		{
-			IEnumerable<IType> entryPoints = resolver.ResolveEntryPoints ();
+			IEnumerable<IType> entryPoints = resolver.GetEntryPoints ();
 			IType entryPoint = entryPoints.SingleOrDefault ();
 			if (entryPoint != null) {
-				IMethod method = entryPoint.Methods.SingleOrDefault (m => m.IsStatic && m.Name == "Main");
+				IMethod method = resolver.GetMainMethod(entryPoint);
 				if (method != null) {
 					// Get the start line of the method
 					DomRegion region = method.BodyRegion;
+#if MD_2_6 || MD_2_8
 					int startLine = region.Start.Line;
+#endif
+#if MD_3_0
+					int startLine = region.BeginLine;
+#endif
 
 					// Load the entry point file
+#if MD_2_6 || MD_2_8
 					String fileName = entryPoint.CompilationUnit.FileName;
+#endif
+#if MD_3_0
+					String fileName = region.FileName;
+#endif
 					List<String> lines = File.ReadAllLines (fileName).ToList ();
 
 					// Search for desginer region indices
@@ -107,12 +123,13 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <returns>The path to the designer file.</returns>
 		public FilePath GenerateCodeBehindCode (ProjectResolver resolver, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable)
 		{
-			FilePath designerFile;
+			FilePath designerFile = null;
 			String defaultNamespace;
 			MonobjcProject project = resolver.Project;
 
 			LoggingService.LogInfo ("Generate designer code for '" + className + "'");
 
+			/*
 			IType type = resolver.ResolvePartialType (className);
 			if (type != null && type.CompilationUnit != null && type.CompilationUnit.FileName != FilePath.Null) {
 				if (type.CompilationUnit.FileName.Extension == ".dll") {
@@ -158,7 +175,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			foreach (IBOutletDescriptor outlet in enumerable.SelectMany(d => d.Outlets)) {
 				IType outletType = resolver.ResolvePartialType (outlet.ClassName);
 				outletType = outletType ?? resolver.ResolvePartialType ("id");
-				outletType = outletType ?? new DomType ("System.IntPtr");
+				outletType = outletType ?? resolver.ResolveType(typeof(IntPtr));
 
 				LoggingService.LogInfo ("Resolving outlet '" + outlet.Name + "' of type '" + outlet.ClassName + "' => '" + outletType.FullName + "'");
 
@@ -172,7 +189,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			foreach (IBActionDescriptor action in enumerable.SelectMany(d => d.Actions)) {
 				IType argumentType = resolver.ResolvePartialType (action.Argument);
 				argumentType = argumentType ?? resolver.ResolvePartialType ("id");
-				argumentType = argumentType ?? new DomType ("System.IntPtr");
+				argumentType = argumentType ?? resolver.ResolveType(typeof(IntPtr));
 
 				LoggingService.LogInfo ("Resolving action '" + action.Message + "' with argument '" + action.Argument + "' => '" + argumentType.FullName + "'");
 
@@ -196,10 +213,10 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 #if MD_2_6
             writer.Write(ccu, designerFile);
 #endif
-#if MD_2_8
+#if MD_2_8 || MD_3_0
             writer.WriteFile(designerFile, ccu);
 #endif
-
+			*/
 			return designerFile;
 		}
 

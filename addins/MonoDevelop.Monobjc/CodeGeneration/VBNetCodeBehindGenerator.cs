@@ -18,7 +18,13 @@
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+
+#if MD_2_6 || MD_2_8
 using MonoDevelop.Projects.Dom;
+#endif
+#if MD_3_0
+using ICSharpCode.NRefactory.TypeSystem;
+#endif
 
 namespace MonoDevelop.Monobjc.CodeGeneration
 {

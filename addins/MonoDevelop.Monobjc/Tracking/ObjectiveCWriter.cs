@@ -20,9 +20,14 @@ using System.Collections.Generic;
 using System.IO;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
-using MonoDevelop.Projects.Dom;
-using MonoDevelop.Projects.Dom.Parser;
 using MonoDevelop.Core;
+
+#if MD_2_6 || MD_2_8
+using MonoDevelop.Projects.Dom;
+#endif
+#if MD_3_0
+using ICSharpCode.NRefactory.TypeSystem;
+#endif
 
 namespace MonoDevelop.Monobjc.Tracking
 {
@@ -30,13 +35,11 @@ namespace MonoDevelop.Monobjc.Tracking
 	{
 		protected MonobjcProject project;
 		protected ProjectResolver resolver;
-		protected ProjectDom projectDom;
 		
 		protected ObjectiveCWriter (MonobjcProject project)
 		{
 			this.project = project;
 			this.resolver = new ProjectResolver (this.project);
-			this.projectDom = ProjectDomService.GetProjectDom (this.project);
 		}
 		
 		public void Write (TextWriter writer, IType type)
@@ -89,7 +92,13 @@ namespace MonoDevelop.Monobjc.Tracking
 		protected IEnumerable<IProperty> GetProperties (IType type)
 		{
 			IList<IProperty> properties = new List<IProperty> ();
-			foreach (IProperty property in type.Properties) {
+#if MD_2_6 || MD_2_8
+			IEnumerable<IProperty> typeProperties = type.Properties;
+#endif
+#if MD_3_0
+			IEnumerable<IProperty> typeProperties = type.GetProperties((p)=>true, GetMemberOptions.None);
+#endif
+			foreach (IProperty property in typeProperties) {
 				if (!AttributeHelper.HasAttribute (property, AttributeHelper.IBOUTLET)) {
 					continue;
 				}
@@ -104,7 +113,13 @@ namespace MonoDevelop.Monobjc.Tracking
 		protected IEnumerable<IMethod> GetMethods (IType type)
 		{
 			IList<IMethod> methods = new List<IMethod> ();
-			foreach (IMethod method in type.Methods) {
+#if MD_2_6 || MD_2_8
+			IEnumerable<IMethod> typeMethods = type.Methods;
+#endif
+#if MD_3_0
+			IEnumerable<IMethod> typeMethods = type.GetMethods((m)=>true, GetMemberOptions.None);
+#endif
+			foreach (IMethod method in typeMethods) {
 				if (!AttributeHelper.HasAttribute (method, AttributeHelper.IBACTION)) {
 					continue;
 				}
@@ -122,29 +137,35 @@ namespace MonoDevelop.Monobjc.Tracking
 		protected IType GetBaseType (IType type)
 		{
 			// Search for the base class type
-			foreach (IReturnType baseType in type.BaseTypes) {
-				IType resolvedBaseType = this.projectDom.GetType (baseType);
+#if MD_2_6 || MD_2_8
+			IEnumerable<IReturnType> typeBaseTypes = type.BaseTypes;
+#endif
+#if MD_3_0
+			IEnumerable<IType> typeBaseTypes = type.GetAllBaseTypes();
+#endif
+			foreach (var baseType in typeBaseTypes) {
+				IType resolvedBaseType = this.resolver.ResolveType(baseType);
 				if (resolvedBaseType == null) {
 					continue;
 				}
+#if MD_2_6 || MD_2_8
 				if (resolvedBaseType.ClassType != ClassType.Class) {
 					continue;
 				}
+#endif
+#if MD_3_0
+				if (resolvedBaseType.Kind != TypeKind.Class) {
+					continue;
+				}
+#endif
 				return resolvedBaseType;
-				break;
 			}
 			return null;
 		}
 		
 		protected bool NeedImport (IType type)
 		{
-			if (type == null) {
-				return false;
-			}
-			// Check if type is part of a project
-			ProjectDom typeDom = this.resolver.GetOwnerDom (type);
-			Project typeProject = (typeDom != null) ? typeDom.Project : null;
-			return (typeProject != null);
+			return this.resolver.IsInProject(type);
 		}
 	}
 }

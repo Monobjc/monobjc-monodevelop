@@ -24,8 +24,13 @@ using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
+
+#if MD_2_6 || MD_2_8
 using MonoDevelop.Projects.Dom;
-using MonoDevelop.Projects.Dom.Parser;
+#endif
+#if MD_3_0
+using ICSharpCode.NRefactory.TypeSystem;
+#endif
 
 namespace MonoDevelop.Monobjc.Tracking
 {
@@ -45,18 +50,18 @@ namespace MonoDevelop.Monobjc.Tracking
 		public XcodeProjectTracker (MonobjcProject project) : base(project)
 		{
 			PropertyService.PropertyChanged += HandlePropertyServicePropertyChanged;
-			ProjectDomService.TypesUpdated += this.HandleProjectDomServiceTypesUpdated;
+			ProjectResolver.TypesUpdated += HandleProjectResolverTypesUpdated;
 			this.Project.NameChanged += this.HandleProjectNameChanged;
 			this.Project.Modified += this.HandleProjectModified;
 		}
-		
+
 		/// <summary>
 		/// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
 		/// </summary>
 		public override void Dispose ()
 		{
 			PropertyService.PropertyChanged -= HandlePropertyServicePropertyChanged;
-			ProjectDomService.TypesUpdated -= this.HandleProjectDomServiceTypesUpdated;
+			ProjectResolver.TypesUpdated -= HandleProjectResolverTypesUpdated;
 			this.Project.NameChanged -= this.HandleProjectNameChanged;
 			this.Project.Modified -= this.HandleProjectModified;
 			
@@ -191,39 +196,14 @@ namespace MonoDevelop.Monobjc.Tracking
 			this.SaveProject (true);
 		}
 		
-		private void HandleProjectDomServiceTypesUpdated (object sender, TypeUpdateInformationEventArgs e)
+		private void HandleProjectResolverTypesUpdated (object sender, TypesUpdatedEventArgs e)
 		{
 			if (!this.IsEnabled || e.Project != this.Project) {
 				return;
 			}
 			
-			IList<IType > typesUpdated = new List<IType> ();
-			IList<IType > typesDeleted = new List<IType> ();
-			
-			foreach (var type in e.TypeUpdateInformation.Added) {
-				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
-					continue;
-				}
-				//LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectDomServiceTypesUpdated :: Added => " + type.Name);
-				typesUpdated.Add (type);
-			}
-			foreach (var type in e.TypeUpdateInformation.Modified) {
-				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
-					continue;
-				}
-				//LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectDomServiceTypesUpdated :: Modified => " + type.Name);
-				typesUpdated.Add (type);
-			}
-			foreach (var type in e.TypeUpdateInformation.Removed) {
-				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
-					continue;
-				}
-				//LoggingService.LogInfo ("XcodeProjectTracker::HandleProjectDomServiceTypesUpdated :: Removed => " + type.Name);
-				typesDeleted.Add (type);
-			}
-			
-			this.UpdateSurrogateSources (typesUpdated, true);
-			this.DeleteSurrogateSources (typesDeleted, true);
+			this.UpdateSurrogateSources (e.TypesUpdated, true);
+			this.DeleteSurrogateSources (e.TypesDeleted, true);
 		}
 
 		private void HandleProjectNameChanged (object sender, SolutionItemRenamedEventArgs e)

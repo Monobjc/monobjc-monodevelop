@@ -19,7 +19,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using MonoDevelop.Monobjc.Utilities;
+
+#if MD_2_6 || MD_2_8
 using MonoDevelop.Projects.Dom;
+#endif
+#if MD_3_0
+using ICSharpCode.NRefactory.TypeSystem;
+#endif
 
 namespace MonoDevelop.Monobjc.Tracking
 {

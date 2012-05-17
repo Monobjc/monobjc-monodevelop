@@ -17,7 +17,13 @@
 //
 using System;
 using MonoDevelop.Monobjc.Utilities;
+
+#if MD_2_6 || MD_2_8
 using MonoDevelop.Projects.Dom.Parser;
+#endif
+#if MD_3_0
+using MonoDevelop.Ide.TypeSystem;
+#endif
 
 namespace MonoDevelop.Monobjc.Tracking
 {
@@ -71,7 +77,14 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// </value>
 		protected bool IsDomReady
 		{
-			get { return ProjectDomService.HasDom(this.Project); }
+			get { 
+#if MD_2_6 || MD_2_8
+				return ProjectDomService.HasDom(this.Project);
+#endif
+#if MD_3_0
+				return true;
+#endif
+			}
 		}
 		
 		/// <summary>

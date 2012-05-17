@@ -19,10 +19,15 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using MonoDevelop.Monobjc.Utilities;
-using MonoDevelop.Projects.Dom;
-using MonoDevelop.Projects.Dom.Parser;
 using MonoDevelop.Projects;
 using System.Linq;
+
+#if MD_2_6 || MD_2_8
+using MonoDevelop.Projects.Dom;
+#endif
+#if MD_3_0
+using ICSharpCode.NRefactory.TypeSystem;
+#endif
 
 namespace MonoDevelop.Monobjc.Tracking
 {
@@ -71,12 +76,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 			IList<String> typeNames = new List<String> ();
 			foreach (IProperty property in this.GetProperties(type)) {
-				if (property.ReturnType == null) {
-					continue;
-				}
-				ProjectDom dom = this.resolver.GetOwnerDom (property.ReturnType);
-				Project project = (dom != null) ? dom.Project : null;
-				if (project != null) {
+				if (this.resolver.IsInProject(property.ReturnType)) {
 					typeNames.Add (property.ReturnType.Name);
 				}
 			}

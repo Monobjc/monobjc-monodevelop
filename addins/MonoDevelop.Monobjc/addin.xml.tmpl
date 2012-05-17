@@ -8,6 +8,10 @@
        category="Mac Development"
        version="@ADDIN_VERSION@">
 
+  <Header>
+    <Icon32>Icons/monobjc-logo-32.png</Icon32>
+  </Header>
+
   <Runtime>
     <!-- Assemblies -->
     <Import assembly="MonoDevelop.Monobjc.dll" />
@@ -209,6 +213,13 @@
     <StockIcon stockid="md-monobjc-protocol" icon="md-interface-file" size="Dnd" />
     <StockIcon stockid="md-monobjc-plist" icon="md-text-file-icon" size="Dnd" />
     <StockIcon stockid="md-monobjc-strings" icon="md-text-file-icon" size="Dnd" />
+  </Extension>
+
+  <!-- Displays -->
+  <Extension path="/MonoDevelop/Ide/DisplayBindings">
+    <DisplayBinding id = "MonobjcDeveloperTools"
+                    insertafter ="DefaultDisplayBinding"
+                    class = "MonoDevelop.Monobjc.DeveloperToolsDisplayBinding" />
   </Extension>
 
   <!-- Extension point for CodeBehind -->

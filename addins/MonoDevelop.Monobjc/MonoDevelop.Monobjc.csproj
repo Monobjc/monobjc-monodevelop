@@ -90,6 +90,8 @@
 	<Compile Include="Utilities\BundleGenerator.cs"/>
 	<Compile Include="Utilities\FilePair.cs"/>
 	<Compile Include="Utilities\ProjectResolver.cs"/>
+	<Compile Include="Utilities\ProjectResolver_3_0.cs"/>
+	<Compile Include="Utilities\TypesUpdatedEventArgs.cs"/>
 	<Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsWidget.cs"/>
 	<Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcExportDialog.cs"/>
 	<Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsWidget.cs"/>
@@ -101,9 +103,11 @@
     <None Include="addin.xml" />
     <None Include="addin.xml.2.6" />
     <None Include="addin.xml.2.8" />
+    <None Include="addin.xml.3.0" />
     <None Include="addin.xml.tmpl" />
     <None Include="references-2.6.config" />
     <None Include="references-2.8.config" />
+    <None Include="references-3.0.config" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Icons\monobjc-128.png"><LogicalName>monobjc-128.png</LogicalName></EmbeddedResource>

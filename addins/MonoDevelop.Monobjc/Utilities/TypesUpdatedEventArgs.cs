@@ -16,34 +16,34 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using MonoDevelop.Core;
-using MonoDevelop.Ide.Gui;
-using MonoDevelop.Ide.Desktop;
 using MonoDevelop.Projects;
 
-namespace MonoDevelop.Monobjc
+#if MD_2_6 || MD_2_8
+using MonoDevelop.Projects.Dom;
+#endif
+
+namespace MonoDevelop.Monobjc.Utilities
 {
-	public class DeveloperToolsDisplayBinding : IExternalDisplayBinding
+	/// <summary>
+	/// Event arguments for type update/deletion.
+	/// </summary>
+	public class TypesUpdatedEventArgs : EventArgs
 	{
-		public DesktopApplication GetApplication (FilePath fileName, string mimeType, Project ownerProject)
+		public TypesUpdatedEventArgs(Project project, IList<IType> typesUpdated, IList<IType> typesDeleted)
 		{
-			return new DeveloperToolsDesktopApplication((MonobjcProject) ownerProject);
+			this.Project = project;
+			this.TypesUpdated = typesUpdated;
+			this.TypesDeleted = typesDeleted;
 		}
 		
-		public bool CanHandle (FilePath fileName, string mimeType, Project ownerProject)
-		{
-			if (ownerProject == null || !(ownerProject is MonobjcProject)) {
-				return false;
-			}
-			if ("application/vnd.apple-interface-builder".Equals(mimeType)) {
-				return true;
-			}
-			return !fileName.IsNullOrEmpty && fileName.HasExtension("xib");
-		}
-
-		public bool CanUseAsDefault
-		{
-			get { return true; }
-		}
+		public Project Project { get; set; }
+		
+		public IList<IType> TypesUpdated { get; set; }
+		
+		public IList<IType> TypesDeleted { get; set; }
 	}
+	
 }
