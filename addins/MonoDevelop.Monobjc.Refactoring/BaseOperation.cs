@@ -19,7 +19,12 @@ using MonoDevelop.Refactoring;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	public class BaseOperation : RefactoringOperation
+	public partial class BaseOperation : RefactoringOperation
 	{
+		protected static bool IsProjectValid(RefactoringOptions options)
+		{
+			MonobjcProject project = options.Document.Project as MonobjcProject;
+			return (project != null);
+		}
 	}
 }

@@ -26,17 +26,7 @@ using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
-using MonoDevelop.Projects.CodeGeneration;
-using MonoDevelop.Projects.Dom;
 using MonoDevelop.Refactoring;
-
-#if MD_2_6
-using ICSharpCode.NRefactory.Ast;
-#endif
-#if MD_2_8
-using ICSharpCode.NRefactory.CSharp;
-using TypeReference=ICSharpCode.NRefactory.CSharp.AstType;
-#endif
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
@@ -53,7 +43,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 			this.entryType.Changed += delegate { this.buttonOk.Sensitive = this.Validate (); };
 			this.Validate ();
 			
-			this.buttonOk.Clicked += OnOKClicked;
+			this.buttonOk.Clicked += this.OnOKClicked;
 		}
 
 		private bool Validate ()
@@ -87,115 +77,6 @@ namespace MonoDevelop.Monobjc.Refactoring
 			}
 			
 			return (result1.IsValid && result2.IsValid);
-		}
-
-		void OnOKClicked (object sender, EventArgs e)
-		{
-			try {
-				String propertyName = this.entryName.Text;
-#if MD_2_6
-				TypeReference propertyType = new TypeReference (this.entryType.Text);
-#endif
-#if MD_2_8
-				AstType propertyType = new SimpleType (this.entryType.Text);
-#endif
-				
-				// Get some useful objects
-				TextEditorData data = options.GetTextEditorData ();
-				INRefactoryASTProvider provider = options.GetASTProvider ();
-				ResolveResult resolveResult = this.options.ResolveResult;
-				
-				TextEditor editor = data.Parent;
-				IType declaringType = resolveResult.ResolvedType.Type;
-				
-				// Get the indentation
-				String indent = this.options.GetIndent (declaringType) + "\t";
-				StringBuilder code = new StringBuilder ();
-				
-				// Generate the instance variable
-				code.Append (this.GenerateProperty (declaringType, propertyName, propertyType, provider, indent));
-				code.AppendLine ();
-				
-				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (options.Document, declaringType));
-				ModeHelpWindow helpWindow = new ModeHelpWindow ();
-				helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
-				helpWindow.TitleText = GettextCatalog.GetString ("<b>Implement Interface -- Targeting</b>");
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Key</b>"), GettextCatalog.GetString ("<b>Behavior</b>")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Up</b>"), GettextCatalog.GetString ("Move to <b>previous</b> target point.")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Down</b>"), GettextCatalog.GetString ("Move to <b>next</b> target point.")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Enter</b>"), GettextCatalog.GetString ("<b>Declare interface implementation</b> at target point.")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Esc</b>"), GettextCatalog.GetString ("<b>Cancel</b> this refactoring.")));
-				mode.HelpWindow = helpWindow;
-				mode.CurIndex = mode.InsertionPoints.Count - 1;
-				mode.StartMode ();
-				mode.Exited += delegate(object s, InsertionCursorEventArgs args) {
-					if (args.Success) {
-						args.InsertionPoint.Insert (data, code.ToString ());
-					}
-				};
-			} finally {
-				this.Destroy ();
-			}
-		}
-		
-		private string GenerateProperty (IType declaringType, string propertyName, TypeReference propertyType, INRefactoryASTProvider provider, string indent)
-		{
-			// Create the attribute
-			AttributeSection attributeSection = new AttributeSection ();
-			var attribute = GetAttribute("ObjectiveCIVar", propertyName);
-			attributeSection.Attributes.Add (attribute);
-			
-			// Create the property declaration
-			PropertyDeclaration propertyDeclaration = GetPropertyDeclaration(propertyName, propertyType, attributeSection);
-			
-			{
-				// Create the member this.GetInstanceVariable<T>
-				MemberReferenceExpression memberReferenceExpression = new MemberReferenceExpression (new ThisReferenceExpression (), "GetInstanceVariable");
-				memberReferenceExpression.TypeArguments.Add (propertyType.Clone());
-				
-				// Create the invocation with arguments
-				InvocationExpression invocationExpression = new InvocationExpression (memberReferenceExpression, new List<Expression> { new PrimitiveExpression (propertyName) });
-				
-				// Wrap the invocation with a return
-				ReturnStatement returnStatement = new ReturnStatement (invocationExpression);
-				
-				// Create the "get" region
-#if MD_2_6				
-				propertyDeclaration.GetRegion = new PropertyGetRegion (new BlockStatement (), null);
-				propertyDeclaration.GetRegion.Block.AddChild (returnStatement);
-#endif
-#if MD_2_8
-				propertyDeclaration.Getter = new Accessor();
-				propertyDeclaration.Getter.Body = new BlockStatement ();
-				propertyDeclaration.Getter.Body.Add(returnStatement);
-#endif
-			}
-			
-			{
-				// Create the member this.SetInstanceVariable<T>
-				MemberReferenceExpression memberReferenceExpression = new MemberReferenceExpression (new ThisReferenceExpression (), "SetInstanceVariable");
-				memberReferenceExpression.TypeArguments.Add (propertyType.Clone());
-				
-				// Create the invocation with arguments
-				InvocationExpression invocationExpression = new InvocationExpression (memberReferenceExpression, new List<Expression> { new PrimitiveExpression (propertyName), new IdentifierExpression ("value") });
-				
-				// Wrap the invocation with an expression
-				ExpressionStatement expressionStatement = new ExpressionStatement (invocationExpression);
-				
-				// Create the "set" region
-#if MD_2_6
-				propertyDeclaration.SetRegion = new PropertySetRegion (new BlockStatement (), null);
-				propertyDeclaration.SetRegion.Block.AddChild (expressionStatement);
-#endif
-#if MD_2_8
-				propertyDeclaration.Setter = new Accessor();
-				propertyDeclaration.Setter.Body = new BlockStatement ();
-				propertyDeclaration.Setter.Body.Add(expressionStatement);
-#endif
-			}
-			
-			// Return the result of the AST generation
-			return provider.OutputNode (this.options.Dom, propertyDeclaration, indent);
 		}
 	}
 }

@@ -39,7 +39,6 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 	/// </summary>
 	public abstract class BaseCodeBehindGenerator : ICodeBehindGenerator
 	{
-		// TODO: Move constant
 		private const String DESIGNER = ".designer";
 
 		/// <summary>
@@ -129,21 +128,21 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 
 			LoggingService.LogInfo ("Generate designer code for '" + className + "'");
 
-			/*
 			IType type = resolver.ResolvePartialType (className);
-			if (type != null && type.CompilationUnit != null && type.CompilationUnit.FileName != FilePath.Null) {
-				if (type.CompilationUnit.FileName.Extension == ".dll") {
+			FilePath mainFile = resolver.GetMainFile(type);
+			if (mainFile != FilePath.Null) {
+				if (mainFile.Extension == ".dll") {
 					LoggingService.LogInfo ("Skipping " + className + " as it comes from a DLL");
 					return FilePath.Null;
 				}
-				
-				if (type.SourceProject != resolver.Project) {
+
+				if (!resolver.IsInProject(type)) {
 					LoggingService.LogInfo ("Skipping " + className + " as it comes from another project");
 					return FilePath.Null;
 				}
-				
+
 				// The filname is based on the compilation unit parent folder and the type name
-				FilePath parentDirectory = type.CompilationUnit.FileName.ParentDirectory;
+				FilePath parentDirectory = mainFile.ParentDirectory;
 				FilePath filename = project.LanguageBinding.GetFileName (type.Name + DESIGNER);
 				designerFile = parentDirectory.Combine (filename);
 				defaultNamespace = type.Namespace;
@@ -156,7 +155,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			}
 
 			LoggingService.LogInfo ("Put designer code in '" + designerFile + "'");
-
+			
 			// Create the compilation unit
 			CodeCompileUnit ccu = new CodeCompileUnit ();
 			CodeNamespace ns = new CodeNamespace (defaultNamespace);
@@ -216,7 +215,6 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 #if MD_2_8 || MD_3_0
             writer.WriteFile(designerFile, ccu);
 #endif
-			*/
 			return designerFile;
 		}
 

@@ -126,11 +126,7 @@ namespace MonoDevelop.Monobjc.Gui
 			w8.Spacing = 2;
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Image w9 = new global::Gtk.Image ();
-			w9.Pixbuf = global::Stetic.IconLoader.LoadIcon (
-				this,
-				"gtk-add",
-				global::Gtk.IconSize.Menu
-			);
+			w9.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-add", global::Gtk.IconSize.Menu);
 			w8.Add (w9);
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Label w11 = new global::Gtk.Label ();
@@ -156,11 +152,7 @@ namespace MonoDevelop.Monobjc.Gui
 			w17.Spacing = 2;
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Image w18 = new global::Gtk.Image ();
-			w18.Pixbuf = global::Stetic.IconLoader.LoadIcon (
-				this,
-				"gtk-delete",
-				global::Gtk.IconSize.Menu
-			);
+			w18.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
 			w17.Add (w18);
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Label w20 = new global::Gtk.Label ();
@@ -220,11 +212,7 @@ namespace MonoDevelop.Monobjc.Gui
 			w30.Spacing = 2;
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Image w31 = new global::Gtk.Image ();
-			w31.Pixbuf = global::Stetic.IconLoader.LoadIcon (
-				this,
-				"gtk-add",
-				global::Gtk.IconSize.Menu
-			);
+			w31.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-add", global::Gtk.IconSize.Menu);
 			w30.Add (w31);
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Label w33 = new global::Gtk.Label ();
@@ -250,11 +238,7 @@ namespace MonoDevelop.Monobjc.Gui
 			w39.Spacing = 2;
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Image w40 = new global::Gtk.Image ();
-			w40.Pixbuf = global::Stetic.IconLoader.LoadIcon (
-				this,
-				"gtk-delete",
-				global::Gtk.IconSize.Menu
-			);
+			w40.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
 			w39.Add (w40);
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Label w42 = new global::Gtk.Label ();
@@ -314,11 +298,7 @@ namespace MonoDevelop.Monobjc.Gui
 			w52.Spacing = 2;
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Image w53 = new global::Gtk.Image ();
-			w53.Pixbuf = global::Stetic.IconLoader.LoadIcon (
-				this,
-				"gtk-add",
-				global::Gtk.IconSize.Menu
-			);
+			w53.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-add", global::Gtk.IconSize.Menu);
 			w52.Add (w53);
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Label w55 = new global::Gtk.Label ();
@@ -344,11 +324,7 @@ namespace MonoDevelop.Monobjc.Gui
 			w61.Spacing = 2;
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Image w62 = new global::Gtk.Image ();
-			w62.Pixbuf = global::Stetic.IconLoader.LoadIcon (
-				this,
-				"gtk-delete",
-				global::Gtk.IconSize.Menu
-			);
+			w62.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
 			w61.Add (w62);
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Label w64 = new global::Gtk.Label ();

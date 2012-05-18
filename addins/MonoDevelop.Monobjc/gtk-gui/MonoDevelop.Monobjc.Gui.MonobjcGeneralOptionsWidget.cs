@@ -61,10 +61,7 @@ namespace MonoDevelop.Monobjc.Gui
 			w3.RightAttach = ((uint)(2));
 			w3.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.filechooserbuttonBundleIcon = new global::Gtk.FileChooserButton (
-				global::Mono.Unix.Catalog.GetString("Select Bundle Icon"),
-				((global::Gtk.FileChooserAction)(0))
-			);
+			this.filechooserbuttonBundleIcon = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select Bundle Icon"), ((global::Gtk.FileChooserAction)(0)));
 			this.filechooserbuttonBundleIcon.Name = "filechooserbuttonBundleIcon";
 			this.table1.Add (this.filechooserbuttonBundleIcon);
 			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.filechooserbuttonBundleIcon]));
@@ -74,10 +71,7 @@ namespace MonoDevelop.Monobjc.Gui
 			w4.RightAttach = ((uint)(2));
 			w4.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child table1.Gtk.Table+TableChild
-			this.filechooserbuttonMainNib = new global::Gtk.FileChooserButton (
-				global::Mono.Unix.Catalog.GetString("Select Main NIB File"),
-				((global::Gtk.FileChooserAction)(0))
-			);
+			this.filechooserbuttonMainNib = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select Main NIB File"), ((global::Gtk.FileChooserAction)(0)));
 			this.filechooserbuttonMainNib.Name = "filechooserbuttonMainNib";
 			this.table1.Add (this.filechooserbuttonMainNib);
 			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.filechooserbuttonMainNib]));

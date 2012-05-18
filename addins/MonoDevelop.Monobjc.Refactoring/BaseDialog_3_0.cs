@@ -16,35 +16,13 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using System.Collections.Generic;
 using Gtk;
 using MonoDevelop.Refactoring;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	public partial class BaseDialog : Dialog
+	partial class BaseDialog
 	{
-		protected readonly RefactoringOperation refactoring;
-		protected readonly RefactoringOptions options;
-		protected readonly MonobjcProject project;
-
-		public BaseDialog (RefactoringOperation refactoring, RefactoringOptions options, MonobjcProject project)
-		{
-			this.refactoring = refactoring;
-			this.options = options;
-			this.project = project;
-		}
-
-		protected void OnOKClicked (object sender, EventArgs e)
-		{
-			try {
-				this.DoRefactor();
-			} finally {
-				this.Destroy ();
-			}
-		}
-		
-		protected virtual void DoRefactor()
-		{
-		}
 	}
 }

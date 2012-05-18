@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-#if MD_3_0
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -113,7 +112,22 @@ namespace MonoDevelop.Monobjc.Utilities
 			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions(matcher, false);
 			return ConvertTo(typeDefinitions);
 		}
-		
+
+		/// <summary>
+		/// Gets the main file for the type
+		/// </summary>
+		public FilePath GetMainFile(IType type)
+		{
+			LoggingService.LogInfo ("GetMainFile '" + type + "'");
+			ITypeDefinition definition = type.GetDefinition();
+			IEnumerable<IUnresolvedTypeDefinition> parts = definition.Parts;
+			IEnumerable<String> files = parts.Select(td => td.Region.FileName).OrderBy(s => s.Length);
+			foreach(String file in files) {
+				LoggingService.LogInfo ("GetMainFile => '" + file + "'");
+			}
+			return (FilePath) files.FirstOrDefault();
+		}
+
 		/// <summary>
 		///   Resolves the specified class name.
 		/// </summary>
@@ -304,4 +318,3 @@ namespace MonoDevelop.Monobjc.Utilities
 		}
 	}
 }
-#endif

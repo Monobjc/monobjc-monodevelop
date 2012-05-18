@@ -115,10 +115,7 @@ namespace MonoDevelop.Monobjc.Gui
 			w7.Expand = false;
 			w7.Fill = false;
 			// Container child hbox2.Gtk.Box+BoxChild
-			this.filechooserbuttonOutput = new global::Gtk.FileChooserButton (
-				global::Mono.Unix.Catalog.GetString("Select The Destination Folder"),
-				((global::Gtk.FileChooserAction)(2))
-			);
+			this.filechooserbuttonOutput = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select The Destination Folder"), ((global::Gtk.FileChooserAction)(2)));
 			this.filechooserbuttonOutput.Name = "filechooserbuttonOutput";
 			this.hbox2.Add (this.filechooserbuttonOutput);
 			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.filechooserbuttonOutput]));
@@ -180,11 +177,7 @@ namespace MonoDevelop.Monobjc.Gui
 			w16.Spacing = 2;
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Image w17 = new global::Gtk.Image ();
-			w17.Pixbuf = global::Stetic.IconLoader.LoadIcon (
-				this,
-				"gtk-ok",
-				global::Gtk.IconSize.Menu
-			);
+			w17.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-ok", global::Gtk.IconSize.Menu);
 			w16.Add (w17);
 			// Container child GtkHBox.Gtk.Container+ContainerChild
 			global::Gtk.Label w19 = new global::Gtk.Label ();

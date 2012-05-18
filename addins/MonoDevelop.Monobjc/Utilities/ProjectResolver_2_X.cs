@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-#if MD_2_6 || MD_2_8
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -112,7 +111,30 @@ namespace MonoDevelop.Monobjc.Utilities
 			Func<IType, bool> matcher = t => t.Methods.Where(m => m.IsStatic && m.Name == "Main").Count () > 0;
 			return this.GetMatchingTypes(matcher, true);
 		}
-
+		
+		/// <summary>
+		/// Gets the main file for the type
+		/// </summary>
+		public FilePath GetMainFile(IType type)
+		{
+			LoggingService.LogInfo ("GetMainFile '" + type + "'");
+			if (type.HasParts) {
+				IEnumerable<IType> parts = type.Parts;
+				IEnumerable<FilePath> files = parts.Where(t => t.CompilationUnit != null).Select(t => t.CompilationUnit.FileName).OrderBy(f => f.FileName.Length);
+				foreach(FilePath file in files) {
+					LoggingService.LogInfo ("GetMainFile => '" + file + "'");
+				}
+				return files.FirstOrDefault();
+			} else {
+				ICompilationUnit unit = type.CompilationUnit;
+				if (unit == null) {
+					return FilePath.Null;
+				}
+				LoggingService.LogInfo ("GetMainFile => " + unit.FileName);
+				return unit.FileName;
+			}
+		}
+		
 		/// <summary>
 		///   Resolves the specified class name.
 		/// </summary>
@@ -294,21 +316,21 @@ namespace MonoDevelop.Monobjc.Utilities
 				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
 					continue;
 				}
-	            LoggingService.LogInfo("Projectresolver::TypeAdded " + type);
+	            LoggingService.LogInfo("Projectresolver::TypeAdded " + type.FullName);
 				typesUpdated.Add (type);
 			}
 			foreach (IType type in e.TypeUpdateInformation.Modified) {
 				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
 					continue;
 				}
-	            LoggingService.LogInfo("Projectresolver::Modified " + type);
+	            LoggingService.LogInfo("Projectresolver::Modified " + type.FullName);
 				typesUpdated.Add (type);
 			}
 			foreach (IType type in e.TypeUpdateInformation.Removed) {
 				if (!AttributeHelper.HasAttribute (type, AttributeHelper.OBJECTIVE_C_CLASS)) {
 					continue;
 				}
-	            LoggingService.LogInfo("Projectresolver::Removed " + type);
+	            LoggingService.LogInfo("Projectresolver::Removed " + type.FullName);
 				typesDeleted.Add (type);
 			}
 			
@@ -319,4 +341,3 @@ namespace MonoDevelop.Monobjc.Utilities
 		}
 	}
 }
-#endif

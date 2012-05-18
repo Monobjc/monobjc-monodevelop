@@ -15,36 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-using System;
-using Gtk;
 using MonoDevelop.Refactoring;
+using ICSharpCode.NRefactory.TypeSystem;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	public partial class BaseDialog : Dialog
+	partial class BaseOperation
 	{
-		protected readonly RefactoringOperation refactoring;
-		protected readonly RefactoringOptions options;
-		protected readonly MonobjcProject project;
-
-		public BaseDialog (RefactoringOperation refactoring, RefactoringOptions options, MonobjcProject project)
+		protected static bool IsClass(IType type)
 		{
-			this.refactoring = refactoring;
-			this.options = options;
-			this.project = project;
-		}
-
-		protected void OnOKClicked (object sender, EventArgs e)
-		{
-			try {
-				this.DoRefactor();
-			} finally {
-				this.Destroy ();
-			}
-		}
-		
-		protected virtual void DoRefactor()
-		{
+			return (type != null && type.Kind == TypeKind.Class);
 		}
 	}
 }
