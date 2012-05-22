@@ -21,16 +21,9 @@ using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Refactoring;
 
-#if MD_2_6 || MD_2_8
-using MonoDevelop.Projects.Dom;
-#endif
-#if MD_3_0
-using ICSharpCode.NRefactory.TypeSystem;
-#endif
-
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	public partial class CreateIVarOperation : BaseOperation
+	public class CreateIVarOperation : BaseOperation
 	{
 		public override string GetMenuDescription (RefactoringOptions options)
 		{
@@ -47,8 +40,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 				return false;
 			}
 			
-			IType type = options.Dom.GetType (options.ResolveResult.ResolvedType);
-			if (!IsClass(type)) {
+			if (!IsClass(options)) {
 				return false;
 			}
 			
@@ -57,7 +49,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 
 		public override void Run (RefactoringOptions options)
 		{
-			MonobjcProject project = options.Dom.Project as MonobjcProject;
+			MonobjcProject project = options.Document.Project as MonobjcProject;
 			MessageService.ShowCustomDialog (new CreateIVarDialog (this, options, project));
 		}
 	}

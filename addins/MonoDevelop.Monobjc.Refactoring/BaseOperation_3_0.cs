@@ -17,13 +17,21 @@
 //
 using MonoDevelop.Refactoring;
 using ICSharpCode.NRefactory.TypeSystem;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	partial class BaseOperation
+	public partial class BaseOperation : RefactoringOperation
 	{
-		protected static bool IsClass(IType type)
+		protected static bool IsProjectValid(RefactoringOptions options)
 		{
+			MonobjcProject project = options.Document.Project as MonobjcProject;
+			return (project != null);
+		}
+		
+		protected static bool IsClass(RefactoringOptions options)
+		{
+			IType type = options.ResolveResult.Type;
 			return (type != null && type.Kind == TypeKind.Class);
 		}
 	}

@@ -16,35 +16,41 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using Gtk;
+using System.Collections.Generic;
+using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Refactoring;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	public partial class BaseDialog : Dialog
+	public class CreateIVarOperation : BaseOperation
 	{
-		protected readonly RefactoringOperation refactoring;
-		protected readonly RefactoringOptions options;
-		protected readonly MonobjcProject project;
-
-		public BaseDialog (RefactoringOperation refactoring, RefactoringOptions options, MonobjcProject project)
+		public override string GetMenuDescription (RefactoringOptions options)
 		{
-			this.refactoring = refactoring;
-			this.options = options;
-			this.project = project;
+			return GettextCatalog.GetString ("Create Instance Variable");
 		}
 
-		protected void OnOKClicked (object sender, EventArgs e)
+		public override bool IsValid (RefactoringOptions options)
 		{
-			try {
-				this.DoRefactor();
-			} finally {
-				this.Destroy ();
+			if (options.ResolveResult == null) {
+				return false;
 			}
+			
+			if (!IsProjectValid(options)) {
+				return false;
+			}
+			
+			if (!IsClass(options)) {
+				return false;
+			}
+			
+			return true;
 		}
-		
-		protected virtual void DoRefactor()
+
+		public override void Run (RefactoringOptions options)
 		{
+			MonobjcProject project = options.Document.Project as MonobjcProject;
+			MessageService.ShowCustomDialog (new CreateIVarDialog (this, options, project));
 		}
 	}
 }

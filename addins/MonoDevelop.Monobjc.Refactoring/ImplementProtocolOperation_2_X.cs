@@ -15,16 +15,45 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System;
+using System.Collections.Generic;
+using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Refactoring;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	public partial class BaseOperation : RefactoringOperation
+	/// <summary>
+	/// Refactoring operation for the implementation of Objective-C protocol.
+	/// </summary>
+	public class ImplementProtocolOperation : BaseOperation
 	{
-		protected static bool IsProjectValid(RefactoringOptions options)
+		public override string GetMenuDescription (RefactoringOptions options)
+		{
+			return GettextCatalog.GetString ("Implement Protocol");
+		}
+
+		public override bool IsValid (RefactoringOptions options)
+		{
+			if (options.ResolveResult == null) {
+				return false;
+			}
+			
+			if (!IsProjectValid(options)) {
+				return false;
+			}
+			
+			if (!IsClass(options)) {
+				return false;
+			}
+			
+			return true;
+		}
+
+		public override void Run (RefactoringOptions options)
 		{
 			MonobjcProject project = options.Document.Project as MonobjcProject;
-			return (project != null);
+			MessageService.ShowCustomDialog (new ImplementProtocolDialog (this, options, project));
 		}
 	}
 }

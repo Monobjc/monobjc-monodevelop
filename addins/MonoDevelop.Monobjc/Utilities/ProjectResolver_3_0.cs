@@ -18,12 +18,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MonoDevelop.Core;
-using MonoDevelop.Projects;
 using ICSharpCode.NRefactory.TypeSystem;
 using ICSharpCode.NRefactory.TypeSystem.Implementation;
+using MonoDevelop.Core;
 using MonoDevelop.Ide.TypeSystem;
-using ProjectDom = MonoDevelop.Ide.TypeSystem.TypeSystemService.ProjectContentWrapper;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
@@ -32,13 +31,14 @@ namespace MonoDevelop.Monobjc.Utilities
 	/// </summary>
 	public class ProjectResolver
 	{
-		private ProjectDom projectDom;
-		private List<ProjectDom> projectDoms;
+		private TypeSystemService.ProjectContentWrapper projectDom;
+		private List<TypeSystemService.ProjectContentWrapper> projectDoms;
 		
 		/// <summary>
 		/// Initializes the <see cref="ProjectResolver"/> class.
 		/// </summary>
-		static ProjectResolver() {
+		static ProjectResolver ()
+		{
 			// TODO
 		}
 		
@@ -50,7 +50,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		{
 			this.Project = project;
 			this.projectDom = TypeSystemService.GetProjectContentWrapper (this.Project);
-			this.projectDoms = new List<ProjectDom> ();
+			this.projectDoms = new List<TypeSystemService.ProjectContentWrapper> ();
 			CollectReference (this.projectDoms, this.projectDom);
 		}
 
@@ -86,9 +86,15 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		public IEnumerable<IType> GetAllClasses (bool projectOnly)
 		{
-			Func<ITypeDefinition, bool> matcher = td => td.Kind == TypeKind.Class && AttributeHelper.HasAttribute(td, AttributeHelper.OBJECTIVE_C_CLASS);
-			IEnumerable<ITypeDefinition> typeDefinitions =  this.GetMatchingTypeDefinitions(matcher, projectOnly);
-			return ConvertTo(typeDefinitions);
+			Func<ITypeDefinition, bool> matcher = td => td.Kind == TypeKind.Class && AttributeHelper.HasAttribute (
+				td,
+				AttributeHelper.OBJECTIVE_C_CLASS
+			);
+			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions (
+				matcher,
+				projectOnly
+			);
+			return ConvertTo (typeDefinitions);
 		}
 
 		/// <summary>
@@ -96,9 +102,15 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		public IEnumerable<IType> GetAllProtocols (bool projectOnly)
 		{
-			Func<ITypeDefinition, bool> matcher = td => td.Kind == TypeKind.Interface && AttributeHelper.HasAttribute(td, AttributeHelper.OBJECTIVE_C_PROTOCOL);
-			IEnumerable<ITypeDefinition> typeDefinitions =  this.GetMatchingTypeDefinitions(matcher, projectOnly);
-			return ConvertTo(typeDefinitions);
+			Func<ITypeDefinition, bool> matcher = td => td.Kind == TypeKind.Interface && AttributeHelper.HasAttribute (
+				td,
+				AttributeHelper.OBJECTIVE_C_PROTOCOL
+			);
+			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions (
+				matcher,
+				projectOnly
+			);
+			return ConvertTo (typeDefinitions);
 		}
 
 		/// <summary>
@@ -108,24 +120,33 @@ namespace MonoDevelop.Monobjc.Utilities
 		public IEnumerable<IType> GetEntryPoints ()
 		{
 			// Collect types that have a Main static method
-			Func<ITypeDefinition, bool> matcher = td => td.GetMethods(m => m.IsStatic && m.Name == "Main", GetMemberOptions.ReturnMemberDefinitions).Count () > 0;
-			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions(matcher, false);
-			return ConvertTo(typeDefinitions);
+			Func<ITypeDefinition, bool> matcher = td => td.GetMethods (
+				m => m.IsStatic && m.Name == "Main",
+				GetMemberOptions.ReturnMemberDefinitions
+			)
+				.Count () > 0;
+			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions (
+				matcher,
+				false
+			);
+			return ConvertTo (typeDefinitions);
 		}
 
 		/// <summary>
 		/// Gets the main file for the type
 		/// </summary>
-		public FilePath GetMainFile(IType type)
+		public FilePath GetMainFile (IType type)
 		{
-			LoggingService.LogInfo ("GetMainFile '" + type + "'");
-			ITypeDefinition definition = type.GetDefinition();
-			IEnumerable<IUnresolvedTypeDefinition> parts = definition.Parts;
-			IEnumerable<String> files = parts.Select(td => td.Region.FileName).OrderBy(s => s.Length);
-			foreach(String file in files) {
-				LoggingService.LogInfo ("GetMainFile => '" + file + "'");
+			if (type == null) {
+				return FilePath.Null;
 			}
-			return (FilePath) files.FirstOrDefault();
+			ITypeDefinition definition = type.GetDefinition ();
+			IEnumerable<IUnresolvedTypeDefinition> parts = definition.Parts;
+			IEnumerable<String> files = parts.Select (td => td.Region.FileName).OrderBy (s => s.Length);
+			//foreach(String file in files) {
+			//	LoggingService.LogInfo ("GetMainFile => '" + file + "'");
+			//}
+			return (FilePath)files.FirstOrDefault ();
 		}
 
 		/// <summary>
@@ -140,18 +161,25 @@ namespace MonoDevelop.Monobjc.Utilities
 				className = "Id";
 			}
 
+			//LoggingService.LogInfo("(1) ResolvePartialType " + className);
+			
 			// Search for types matches in classes
 			IEnumerable<IType> types = this.InternalResolve (className);
 
+			//LoggingService.LogInfo("(2) ResolvePartialType " + types.Count());
+			
 			switch (types.Count ()) {
 			case 1:
 				return types.First ();
 			default:
 				// If there is multiple match, filter by looking at the attributes
-				Func<ITypeDefinition, bool> matcher = td => AttributeHelper.HasAttribute(td, AttributeHelper.OBJECTIVE_C_CLASS);
-				IEnumerable<ITypeDefinition> typeDefinitions = ConvertTo(types);
-				typeDefinitions = GetMatchingTypeDefinitions(typeDefinitions, matcher);
-				IEnumerable<IType> candidates = ConvertTo(typeDefinitions);
+				Func<ITypeDefinition, bool> matcher = td => AttributeHelper.HasAttribute (
+					td,
+					AttributeHelper.OBJECTIVE_C_CLASS
+				);
+				IEnumerable<ITypeDefinition> typeDefinitions = ConvertTo (types);
+				typeDefinitions = GetMatchingTypeDefinitions (typeDefinitions, matcher);
+				IEnumerable<IType> candidates = ConvertTo (typeDefinitions);
 				if (candidates.Count () == 1) {
 					return candidates.First ();
 				}
@@ -160,20 +188,28 @@ namespace MonoDevelop.Monobjc.Utilities
 			
 			// Search for types matches in protocols
 			types = this.InternalResolve ("I" + className);
+			
+			//LoggingService.LogInfo("(3) ResolvePartialType " + types.Count());
+			
 			switch (types.Count ()) {
 			case 1:
 				return types.First ();
 			default:
 				// If there is multiple match, filter by looking at the attributes
-				Func<ITypeDefinition, bool> matcher = td => AttributeHelper.HasAttribute(td, AttributeHelper.OBJECTIVE_C_PROTOCOL);
-				IEnumerable<ITypeDefinition> typeDefinitions = ConvertTo(types);
-				typeDefinitions = GetMatchingTypeDefinitions(typeDefinitions, matcher);
-				IEnumerable<IType> candidates = ConvertTo(typeDefinitions);
+				Func<ITypeDefinition, bool> matcher = td => AttributeHelper.HasAttribute (
+					td,
+					AttributeHelper.OBJECTIVE_C_PROTOCOL
+				);
+				IEnumerable<ITypeDefinition> typeDefinitions = ConvertTo (types);
+				typeDefinitions = GetMatchingTypeDefinitions (typeDefinitions, matcher);
+				IEnumerable<IType> candidates = ConvertTo (typeDefinitions);
 				if (candidates.Count () == 1) {
 					return candidates.First ();
 				}
 				break;
 			}
+			
+			//LoggingService.LogInfo("(4) ResolvePartialType");
 			
 			return null;
 		}
@@ -181,19 +217,22 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		/// Gets the main method of the given type.
 		/// </summary>
-		public IMethod GetMainMethod(IType type)
+		public IMethod GetMainMethod (IType type)
 		{
-			return type.GetMethods(m => m.IsStatic && m.Name == "Main").SingleOrDefault();
+			return type.GetMethods (m => m.IsStatic && m.Name == "Main").SingleOrDefault ();
 		}
 		
 		/// <summary>
 		/// Gets the DOM type of the type.
 		/// </summary>
-		public IType ResolveType(Type type)
+		public IType ResolveType (Type type)
 		{
 			if (type == typeof(IntPtr)) {
-				ITypeReference typeReference = new GetClassTypeReference("System", "IntPtr");
-				return typeReference.Resolve(this.projectDom.Compilation);
+				ITypeReference typeReference = new GetClassTypeReference (
+					"System",
+					"IntPtr"
+				);
+				return typeReference.Resolve (this.projectDom.Compilation);
 			}
 			return null;
 		}
@@ -201,15 +240,15 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		/// Gets the DOM type of the type.
 		/// </summary>
-		public IType ResolveType(ITypeReference type)
+		public IType ResolveType (ITypeReference type)
 		{
-			return type.Resolve(this.projectDom.Compilation);
+			return type.Resolve (this.projectDom.Compilation);
 		}
 		
 		/// <summary>
 		/// Gets the DOM type of the type.
 		/// </summary>
-		public IType ResolveType(IType type)
+		public IType ResolveType (IType type)
 		{
 			return type;
 		}
@@ -217,19 +256,22 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		/// Check if the type is defined in a project.
 		/// </summary>
-		public bool IsInProject(ITypeReference typeReference)
+		public bool IsInProject (ITypeReference typeReference)
 		{
-			IType type = this.ResolveType(typeReference);
-			return this.IsInProject(type);
+			IType type = this.ResolveType (typeReference);
+			return this.IsInProject (type);
 		}
 		
 		/// <summary>
 		/// Check if the type is defined in a project.
 		/// </summary>
-		public bool IsInProject(IType type)
+		public bool IsInProject (IType type)
 		{
-			Func<ITypeDefinition, bool> matcher = td => String.Equals(type.FullName, td.FullName);
-			return GetMatchingTypeDefinitions(this.projectDom, matcher).Count() > 0;
+			Func<ITypeDefinition, bool> matcher = td => String.Equals (
+				type.FullName,
+				td.FullName
+			);
+			return GetMatchingTypeDefinitions (this.projectDom, matcher).Count () > 0;
 		}
 		
 		/// <summary>
@@ -239,9 +281,15 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <returns>A list of candidates.</returns>
 		private IEnumerable<IType> InternalResolve (String className)
 		{
-			Func<ITypeDefinition, bool> matcher = td => String.Equals(td.Name, className);
-			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions(matcher, false);
-			return ConvertTo(typeDefinitions);
+			Func<ITypeDefinition, bool> matcher = td => String.Equals (
+				td.Name,
+				className
+			);
+			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions (
+				matcher,
+				false
+			);
+			return ConvertTo (typeDefinitions);
 		}
 
 		/// <summary>
@@ -249,7 +297,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		/// <param name = "result">The result list.</param>
 		/// <param name = "dom">The project DOM.</param>
-		private static void CollectReference (ICollection<ProjectDom> result, ProjectDom dom)
+		private static void CollectReference (ICollection<TypeSystemService.ProjectContentWrapper> result, TypeSystemService.ProjectContentWrapper dom)
 		{
 			if (dom == null) {
 				return;
@@ -259,7 +307,7 @@ namespace MonoDevelop.Monobjc.Utilities
 			}
 			result.Add (dom);
 			foreach (Project project in dom.ReferencedProjects) {
-				ProjectDom reference = TypeSystemService.GetProjectContentWrapper (project);
+				TypeSystemService.ProjectContentWrapper reference = TypeSystemService.GetProjectContentWrapper (project);
 				CollectReference (result, reference);
 			}
 		}
@@ -267,33 +315,34 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		/// Converts from type defintions to resolved types.
 		/// </summary>
-		private IEnumerable<IType> ConvertTo(IEnumerable<ITypeDefinition> typeDefinitions)
+		private IEnumerable<IType> ConvertTo (IEnumerable<ITypeDefinition> typeDefinitions)
 		{
-			return typeDefinitions.Select(td => td.ToTypeReference().Resolve(this.projectDom.Compilation));
+			return typeDefinitions.Select (td => td.ToTypeReference ().Resolve (this.projectDom.Compilation));
 		}
 		
 		/// <summary>
 		/// Converts from type defintions to resolved types.
 		/// </summary>
-		private IEnumerable<ITypeDefinition> ConvertTo(IEnumerable<IType> types)
+		private IEnumerable<ITypeDefinition> ConvertTo (IEnumerable<IType> types)
 		{
-			return types.Select(t => t.GetDefinition());
+			return types.Select (t => t.GetDefinition ());
 		}
 		
 		/// <summary>
 		/// Gets the matching types.
 		/// </summary>
-		private static IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions(IEnumerable<ITypeDefinition> typeDefinitions, Func<ITypeDefinition, bool> matcher)
+		private static IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions (IEnumerable<ITypeDefinition> typeDefinitions, Func<ITypeDefinition, bool> matcher)
 		{
-			return typeDefinitions.Where(td => matcher(td));
+			IEnumerable<ITypeDefinition> result = typeDefinitions.Where (td => matcher (td));
+			return result;
 		}
 
 		/// <summary>
 		/// Gets the matching types.
 		/// </summary>
-		private static IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions(ProjectDom dom, Func<ITypeDefinition, bool> matcher)
+		private static IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions (TypeSystemService.ProjectContentWrapper dom, Func<ITypeDefinition, bool> matcher)
 		{
-			IEnumerable<ITypeDefinition> typeDefinitions = dom.Compilation.GetAllTypeDefinitions();
+			IEnumerable<ITypeDefinition> typeDefinitions = dom.Compilation.GetAllTypeDefinitions ();
 			return GetMatchingTypeDefinitions (typeDefinitions, matcher);
 		}
 
@@ -304,15 +353,15 @@ namespace MonoDevelop.Monobjc.Utilities
 		{
 			// Search only in the project dom
 			if (projectOnly && this.projectDom != null) {
-				TypeSystemService.ForceUpdate(this.projectDom);
-				return GetMatchingTypeDefinitions(this.projectDom, matcher);
+				TypeSystemService.ForceUpdate (this.projectDom);
+				return GetMatchingTypeDefinitions (this.projectDom, matcher);
 			}
 			
 			// Search in all the dom (project + references)
 			List<ITypeDefinition> result = new List<ITypeDefinition> ();
-			foreach (ProjectDom dom in this.projectDoms) {
-				TypeSystemService.ForceUpdate(dom);
-				result.AddRange(GetMatchingTypeDefinitions(dom, matcher));
+			foreach (TypeSystemService.ProjectContentWrapper dom in this.projectDoms) {
+				TypeSystemService.ForceUpdate (dom);
+				result.AddRange (GetMatchingTypeDefinitions (dom, matcher));
 			}
 			return result;
 		}

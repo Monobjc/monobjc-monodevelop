@@ -37,7 +37,7 @@ namespace MonoDevelop.Monobjc.Utilities
 	/// <summary>
 	///   Helper class for attribute.
 	/// </summary>
-	public static class AttributeHelper
+	public static partial class AttributeHelper
 	{
 		public const String IBACTION = "Monobjc.IBActionAttribute";
 
@@ -56,15 +56,6 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		///   Returns the attribute with the given full name if it exists.
 		/// </summary>
-		/// <param name = "member">
-		///   A <see cref = "IMember" /> where the attribute is
-		/// </param>
-		/// <param name = "attributeFullName">
-		///   The attribute fullname.
-		/// </param>
-		/// <returns>
-		///   A <see cref = "IAttribute" /> if it is found; <code>null</code> otherwise.
-		/// </returns>
 		public static IAttribute GetAttribute (AttributeHolder holder, String attributeFullName)
 		{
 			if (holder.Attributes == null) {
@@ -76,15 +67,6 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		///   Checks if the attribute with the given full name exists.
 		/// </summary>
-		/// <param name = "member">
-		///   A <see cref = "IMember" /> where the attribute is
-		/// </param>
-		/// <param name = "attributeFullName">
-		///   The attribute fullname.
-		/// </param>
-		/// <returns>
-		///   <code>true</code> if it is found; <code>false</code> otherwise.
-		/// </returns>
 		public static bool HasAttribute (AttributeHolder holder, String attributeFullName)
 		{
 			if (holder.Attributes == null) {
@@ -96,15 +78,6 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		///   Returns the value of the attribute with the given full name if it exists.
 		/// </summary>
-		/// <param name = "member">
-		///   A <see cref = "IMember" />
-		/// </param>
-		/// <param name = "attributeFullName">
-		///   The attribute fullname.
-		/// </param>
-		/// <returns>
-		///   The value if the attribute is found; <code>null</code> otherwise.
-		/// </returns>
 		public static String GetAttributeValue (AttributeHolder holder, String attributeFullName)
 		{
 			IAttribute attribute = GetAttribute (holder, attributeFullName);

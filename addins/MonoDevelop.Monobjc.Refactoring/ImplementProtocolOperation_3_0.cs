@@ -21,19 +21,12 @@ using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Refactoring;
 
-#if MD_2_6 || MD_2_8
-using MonoDevelop.Projects.Dom;
-#endif
-#if MD_3_0
-using ICSharpCode.NRefactory.TypeSystem;
-#endif
-
 namespace MonoDevelop.Monobjc.Refactoring
 {
 	/// <summary>
 	/// Refactoring operation for the implementation of Objective-C protocol.
 	/// </summary>
-	public partial class ImplementProtocolOperation : BaseOperation
+	public class ImplementProtocolOperation : BaseOperation
 	{
 		public override string GetMenuDescription (RefactoringOptions options)
 		{
@@ -50,8 +43,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 				return false;
 			}
 			
-			IType type = options.Dom.GetType (options.ResolveResult.ResolvedType);
-			if (!IsClass(type)) {
+			if (!IsClass(options)) {
 				return false;
 			}
 			

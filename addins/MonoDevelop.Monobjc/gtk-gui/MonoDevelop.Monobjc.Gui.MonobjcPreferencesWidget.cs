@@ -22,7 +22,10 @@ namespace MonoDevelop.Monobjc.Gui
 			this.table1.RowSpacing = ((uint)(6));
 			this.table1.ColumnSpacing = ((uint)(6));
 			// Container child table1.Gtk.Table+TableChild
-			this.filechooserbuttonDeveloperTools = new global::Gtk.FileChooserButton (global::Mono.Unix.Catalog.GetString ("Select Developer Tools Folder"), ((global::Gtk.FileChooserAction)(2)));
+			this.filechooserbuttonDeveloperTools = new global::Gtk.FileChooserButton (
+				global::Mono.Unix.Catalog.GetString("Select Developer Tools Folder"),
+				((global::Gtk.FileChooserAction)(2))
+			);
 			this.filechooserbuttonDeveloperTools.Name = "filechooserbuttonDeveloperTools";
 			this.table1.Add (this.filechooserbuttonDeveloperTools);
 			global::Gtk.Table.TableChild w1 = ((global::Gtk.Table.TableChild)(this.table1 [this.filechooserbuttonDeveloperTools]));

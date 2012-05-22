@@ -22,7 +22,17 @@ using MonoDevelop.Refactoring;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	partial class BaseDialog
+	public class BaseDialog : Dialog
 	{
+		protected readonly RefactoringOperation refactoring;
+		protected readonly RefactoringOptions options;
+		protected readonly MonobjcProject project;
+
+		public BaseDialog (RefactoringOperation refactoring, RefactoringOptions options, MonobjcProject project)
+		{
+			this.refactoring = refactoring;
+			this.options = options;
+			this.project = project;
+		}
 	}
 }

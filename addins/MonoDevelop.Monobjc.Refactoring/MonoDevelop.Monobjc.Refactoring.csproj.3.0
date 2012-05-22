@@ -1,15 +1,11 @@
-    <Compile Include="BaseDialog.cs" />
     <Compile Include="BaseDialog_3_0.cs" />
-    <Compile Include="BaseOperation.cs" />
     <Compile Include="BaseOperation_3_0.cs" />
-    <Compile Include="CreateIVarDialog.cs" />
     <Compile Include="CreateIVarDialog_3_0.cs" />
     <Compile Include="CreateIVarHandler.cs" />
-    <Compile Include="CreateIVarOperation.cs" />
-    <Compile Include="ImplementProtocolDialog.cs" />
+    <Compile Include="CreateIVarOperation_3_0.cs" />
     <Compile Include="ImplementProtocolDialog_3_0.cs" />
     <Compile Include="ImplementProtocolHandler.cs" />
-    <Compile Include="ImplementProtocolOperation.cs" />
+    <Compile Include="ImplementProtocolOperation_3_0.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Refactoring.CreateIVarDialog.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Refactoring.ImplementProtocolDialog.cs" />

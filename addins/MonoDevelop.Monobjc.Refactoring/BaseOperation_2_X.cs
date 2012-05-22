@@ -20,10 +20,17 @@ using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	partial class BaseOperation
+	public partial class BaseOperation : RefactoringOperation
 	{
-		protected static bool IsClass(IType type)
+		protected static bool IsProjectValid(RefactoringOptions options)
 		{
+			MonobjcProject project = options.Document.Project as MonobjcProject;
+			return (project != null);
+		}
+		
+		protected static bool IsClass(RefactoringOptions options)
+		{
+			IType type = options.Dom.GetType (options.ResolveResult.ResolvedType);
 			return (type != null && type.ClassType == MonoDevelop.Projects.Dom.ClassType.Class);
 		}
 	}

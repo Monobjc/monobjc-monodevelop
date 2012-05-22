@@ -96,6 +96,7 @@
 	<Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsWidget.cs"/>
 	<Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcPreferencesWidget.cs"/>
 	<Compile Include="gtk-gui\generated.cs"/>
+	<Compile Include="Utilities\AttributeHelper_3_0.cs"/>
 	<Compile Include="Utilities\ProjectResolver_3_0.cs"/>
 
   </ItemGroup>  

@@ -20,12 +20,30 @@ using System.Collections.Generic;
 using Gtk;
 using MonoDevelop.Projects.Dom;
 using MonoDevelop.Refactoring;
+
+#if MD_2_6
 using ICSharpCode.NRefactory.Ast;
+#endif
+#if MD_2_8
+using ICSharpCode.NRefactory.CSharp;
+#endif
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
-	partial class BaseDialog
+	public class BaseDialog : Dialog
 	{
+		protected readonly RefactoringOperation refactoring;
+		protected readonly RefactoringOptions options;
+		protected readonly MonobjcProject project;
+
+		public BaseDialog (RefactoringOperation refactoring, RefactoringOptions options, MonobjcProject project)
+		{
+			this.refactoring = refactoring;
+			this.options = options;
+			this.project = project;
+		}
+
+#if MD_2_6
 		protected TypeReference Shorten (IType declaringType, IReturnType type)
 		{
 			return this.options.Document.CompilationUnit.ShortenTypeName (type, declaringType.Location).ConvertToTypeReference ();
@@ -55,5 +73,37 @@ namespace MonoDevelop.Monobjc.Refactoring
 		{
 			return new ThrowStatement (new ObjectCreateExpression (new TypeReference (exceptionName), new List<Expression> ()));
 		}
+#endif
+#if MD_2_8
+		protected AstType Shorten (IType declaringType, IReturnType type)
+		{
+			return this.options.Document.CompilationUnit.ShortenTypeName (type, declaringType.Location).ConvertToTypeReference ();
+		}
+		
+		protected ICSharpCode.NRefactory.CSharp.Attribute GetAttribute(String attributeType, String parameter)
+		{
+			var attribute = new ICSharpCode.NRefactory.CSharp.Attribute();
+			attribute.Type = new SimpleType(attributeType);
+			if (parameter != null) {
+				attribute.Arguments.Add(new PrimitiveExpression(parameter));
+			}
+			return attribute;
+		}
+		
+		protected PropertyDeclaration GetPropertyDeclaration(String propertyName, AstType propertyType, AttributeSection attributeSection)
+		{
+			var propertyDeclaration = new PropertyDeclaration();
+			propertyDeclaration.Modifiers = ICSharpCode.NRefactory.CSharp.Modifiers.Public | ICSharpCode.NRefactory.CSharp.Modifiers.Virtual;
+			propertyDeclaration.Name = propertyName;
+			propertyDeclaration.ReturnType = propertyType;
+			propertyDeclaration.Attributes.Add(attributeSection);
+			return propertyDeclaration;
+		}
+		
+		protected ThrowStatement GetThrowStatement(String exceptionName)
+		{
+			return new ThrowStatement (new ObjectCreateExpression (new SimpleType (exceptionName), new List<Expression> ()));
+		}
+#endif
 	}
 }
