@@ -17,6 +17,7 @@
 //
 using System;
 using MonoDevelop.Monobjc.Utilities;
+using MonoDevelop.Projects;
 
 #if MD_2_6 || MD_2_8
 using MonoDevelop.Projects.Dom.Parser;
@@ -43,6 +44,8 @@ namespace MonoDevelop.Monobjc.Tracking
 			this.Project.FileRemovedFromProject += this.HandleFileRemovedFromProject;
 			this.Project.FileRenamedInProject += this.HandleFileRenamedInProject;
 			
+            this.Project.Modified += this.HandleProjectModified;
+            this.Project.NameChanged += this.HandleProjectNameChanged;
 			this.Project.ReferenceAddedToProject += this.HandleReferenceAddedToProject;
 			this.Project.ReferenceRemovedFromProject += this.HandleReferenceRemovedFromProject;
 		}
@@ -59,6 +62,8 @@ namespace MonoDevelop.Monobjc.Tracking
 			this.Project.FileRemovedFromProject -= this.HandleFileRemovedFromProject;
 			this.Project.FileRenamedInProject -= this.HandleFileRenamedInProject;
 			
+            this.Project.Modified -= this.HandleProjectModified;
+            this.Project.NameChanged -= this.HandleProjectNameChanged;
 			this.Project.ReferenceAddedToProject -= this.HandleReferenceAddedToProject;
 			this.Project.ReferenceRemovedFromProject -= this.HandleReferenceRemovedFromProject;
 		}
@@ -69,29 +74,29 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <value>The project.</value>
 		protected MonobjcProject Project { get; private set; }
 		
-		/// <summary>
-		/// Gets a value indicating whether this project ready.
-		/// </summary>
-		/// <value>
-		/// <c>true</c> if this project ready; otherwise, <c>false</c>.
-		/// </value>
-		protected bool IsDomReady
-		{
-			get { 
+        /// <summary>
+        /// Gets a value indicating whether this project ready.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this project ready; otherwise, <c>false</c>.
+        /// </value>
+        protected bool IsDomReady
+        {
+            get { 
 #if MD_2_6 || MD_2_8
-				return ProjectDomService.HasDom(this.Project);
+                return ProjectDomService.HasDom(this.Project);
 #endif
 #if MD_3_0
-				return true;
+                return true;
 #endif
-			}
-		}
-		
+            }
+        }
+        
 		/// <summary>
 		/// Handles the FileAddedToProject event of the Project control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="MonoDevelop.Projects.ProjectFileEventArgs"/> instance containing the event data.</param>
+		/// <param name="e">The <see cref="ProjectFileEventArgs"/> instance containing the event data.</param>
 		protected virtual void HandleFileAddedToProject (object sender, Projects.ProjectFileEventArgs e)
 		{
 		}
@@ -100,7 +105,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// Handles the FileChangedInProject event of the Project control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="MonoDevelop.Projects.ProjectFileEventArgs"/> instance containing the event data.</param>
+		/// <param name="e">The <see cref="ProjectFileEventArgs"/> instance containing the event data.</param>
 		protected virtual void HandleFileChangedInProject (object sender, Projects.ProjectFileEventArgs e)
 		{
 		}
@@ -109,7 +114,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// Handles the FilePropertyChangedInProject event of the Project control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="MonoDevelop.Projects.ProjectFileEventArgs"/> instance containing the event data.</param>
+		/// <param name="e">The <see cref="ProjectFileEventArgs"/> instance containing the event data.</param>
 		protected virtual void HandleFilePropertyChangedInProject (object sender, Projects.ProjectFileEventArgs e)
 		{
 		}
@@ -118,7 +123,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// Handles the FileRemovedFromProject event of the Project control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="MonoDevelop.Projects.ProjectFileEventArgs"/> instance containing the event data.</param>
+		/// <param name="e">The <see cref="ProjectFileEventArgs"/> instance containing the event data.</param>
 		protected virtual void HandleFileRemovedFromProject (object sender, Projects.ProjectFileEventArgs e)
 		{
 		}
@@ -127,10 +132,28 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// Handles the FileRenamedInProject event of the Project control.
 		/// </summary>
 		/// <param name="sender">The source of the event.</param>
-		/// <param name="e">The <see cref="MonoDevelop.Projects.ProjectFileRenamedEventArgs"/> instance containing the event data.</param>
+		/// <param name="e">The <see cref="ProjectFileRenamedEventArgs"/> instance containing the event data.</param>
 		protected virtual void HandleFileRenamedInProject (object sender, Projects.ProjectFileRenamedEventArgs e)
 		{
 		}
+
+        /// <summary>
+        /// Handles the project modified.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SolutionItemModifiedEventArgs"/> instance containing the event data.</param>
+        protected virtual void HandleProjectModified (object sender, SolutionItemModifiedEventArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Handles the project name changed.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SolutionItemRenamedEventArgs"/> instance containing the event data.</param>
+        protected virtual void HandleProjectNameChanged (object sender, SolutionItemRenamedEventArgs e)
+        {
+        }
 
 		/// <summary>
 		/// Handles the ReferenceAddedToProject event of the Project control.

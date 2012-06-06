@@ -155,6 +155,7 @@ namespace MonoDevelop.Monobjc
             }
 
             // Create the trackers
+            this.ResolverTracker = new ResolverProjectTracker(this);
 			this.DependencyTracker = new DependencyProjectTracker(this);
             this.CodeBehindTracker = new CodeBehindProjectTracker(this);
             this.XcodeTracker = new XcodeProjectTracker(this);

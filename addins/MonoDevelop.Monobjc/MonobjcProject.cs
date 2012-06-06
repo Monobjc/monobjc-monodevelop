@@ -26,7 +26,6 @@ using MonoDevelop.Monobjc.CodeGeneration;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 using System.Collections.Generic;
-using System.IO;
 
 namespace MonoDevelop.Monobjc
 {
@@ -126,6 +125,7 @@ namespace MonoDevelop.Monobjc
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::Dispose");
 #endif
+            this.ResolverTracker.Dispose ();
 			this.CodeBehindTracker.Dispose ();
 			this.DependencyTracker.Dispose ();
 			this.XcodeTracker.Dispose ();

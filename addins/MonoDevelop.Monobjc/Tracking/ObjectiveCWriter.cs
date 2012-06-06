@@ -34,12 +34,12 @@ namespace MonoDevelop.Monobjc.Tracking
 	public abstract class ObjectiveCWriter
 	{
 		protected MonobjcProject project;
-		protected ProjectResolver resolver;
+        protected ProjectTypeCache resolver;
 		
 		protected ObjectiveCWriter (MonobjcProject project)
 		{
 			this.project = project;
-			this.resolver = new ProjectResolver (this.project);
+            this.resolver = ProjectTypeCache.Get(project);
 		}
 		
 		public void Write (TextWriter writer, IType type)
@@ -141,7 +141,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			IEnumerable<IReturnType> typeBaseTypes = type.BaseTypes;
 #endif
 #if MD_3_0
-			IEnumerable<IType> typeBaseTypes = type.GetAllBaseTypes();
+			IEnumerable<IType> typeBaseTypes = type.DirectBaseTypes;
 #endif
 			foreach (var baseType in typeBaseTypes) {
 				IType resolvedBaseType = this.resolver.ResolveType(baseType);

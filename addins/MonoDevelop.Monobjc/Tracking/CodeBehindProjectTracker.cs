@@ -73,8 +73,8 @@ namespace MonoDevelop.Monobjc.Tracking
 			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor ("Monobjc", "md-monobjc", false);
 			monitor.BeginTask (GettextCatalog.GetString ("Generating framework loading code..."), 3);
 			
-			// Create the resolver
-			ProjectResolver resolver = new ProjectResolver (this.Project);
+			// Get the resolver
+			ProjectTypeCache resolver = ProjectTypeCache.Get(this.Project);
 			monitor.Step (1);
 			
 			// Generate loading code
@@ -118,8 +118,8 @@ namespace MonoDevelop.Monobjc.Tracking
 			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor ("Monobjc", "md-monobjc", false);
 			monitor.BeginTask (GettextCatalog.GetString ("Generating design code..."), 1 + projectFiles.Count);
 			
-			// Create the resolver
-			ProjectResolver resolver = new ProjectResolver (this.Project);
+			// Get the resolver
+            ProjectTypeCache resolver = ProjectTypeCache.Get(this.Project);
 
 			// Create the writer
 			CodeBehindWriter writer = CodeBehindWriter.CreateForProject (monitor, this.Project);
@@ -189,7 +189,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <param name="resolver">The resolver.</param>
 		/// <param name="writer">The writer.</param>
 		/// <param name="file">The file.</param>
-		private void GenerateCodeBehind (ProjectResolver resolver, CodeBehindWriter writer, FilePath file)
+		private void GenerateCodeBehind (ProjectTypeCache resolver, CodeBehindWriter writer, FilePath file)
 		{
 #if DEBUG
             LoggingService.LogInfo("Parsing for code behind " + file);

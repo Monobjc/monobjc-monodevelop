@@ -1,2 +1,2 @@
 	<Compile Include="Utilities\AttributeHelper_3_0.cs"/>
-	<Compile Include="Utilities\ProjectResolver_3_0.cs"/>
+	<Compile Include="Utilities\ProjectTypeCache_3_0.cs"/>

@@ -47,7 +47,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <param name = "resolver">The type resolver.</param>
 		/// <param name = "frameworks">The frameworks.</param>
 		/// <returns>The path to the designer file.</returns>
-		public FilePath GenerateFrameworkLoadingCode (ProjectResolver resolver, String[] frameworks)
+		public FilePath GenerateFrameworkLoadingCode (ProjectTypeCache resolver, String[] frameworks)
 		{
 			IEnumerable<IType> entryPoints = resolver.GetEntryPoints ();
 			IType entryPoint = entryPoints.SingleOrDefault ();
@@ -120,7 +120,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <param name = "className">Name of the class.</param>
 		/// <param name = "enumerable">The class descriptions.</param>
 		/// <returns>The path to the designer file.</returns>
-		public FilePath GenerateCodeBehindCode (ProjectResolver resolver, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable)
+		public FilePath GenerateCodeBehindCode (ProjectTypeCache resolver, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable)
 		{
 			FilePath designerFile = null;
 			String defaultNamespace;

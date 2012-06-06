@@ -222,8 +222,8 @@ namespace MonoDevelop.Monobjc.Refactoring
 
 		private void PopulateTreeView ()
 		{
-			ProjectResolver resolver = new ProjectResolver (this.project);
-			IEnumerable<IType> protocols = resolver.GetAllProtocols ();
+			ProjectTypeCache resolver = ProjectTypeCache.Get (this.project);
+			IEnumerable<IType> protocols = resolver.GetAllProtocols (false);
 			foreach (IType type in protocols) {
 				String protocol = AttributeHelper.GetAttributeValue (type, AttributeHelper.OBJECTIVE_C_PROTOCOL);
 				if (String.IsNullOrEmpty (protocol)) {
