@@ -92,52 +92,53 @@ namespace MonoDevelop.Monobjc.Refactoring
 		void OnOKClicked (object sender, EventArgs e)
 		{
 			try {
-				String propertyName = this.entryName.Text;
-#if MD_2_6
-				TypeReference propertyType = new TypeReference (this.entryType.Text);
-#endif
-#if MD_2_8
-				AstType propertyType = new SimpleType (this.entryType.Text);
-#endif
-				
-				// Get some useful objects
-				TextEditorData data = options.GetTextEditorData ();
-				INRefactoryASTProvider provider = options.GetASTProvider ();
-				ResolveResult resolveResult = this.options.ResolveResult;
-				
-				TextEditor editor = data.Parent;
-				IType declaringType = resolveResult.ResolvedType.Type;
-				
-				// Get the indentation
-				String indent = this.options.GetIndent (declaringType) + "\t";
-				StringBuilder code = new StringBuilder ();
-				
-				// Generate the instance variable
-				code.Append (this.GenerateProperty (declaringType, propertyName, propertyType, provider, indent));
-				code.AppendLine ();
-				
-				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (options.Document, declaringType));
-				ModeHelpWindow helpWindow = new ModeHelpWindow ();
-				helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
-				helpWindow.TitleText = GettextCatalog.GetString ("<b>Implement Interface -- Targeting</b>");
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Key</b>"), GettextCatalog.GetString ("<b>Behavior</b>")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Up</b>"), GettextCatalog.GetString ("Move to <b>previous</b> target point.")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Down</b>"), GettextCatalog.GetString ("Move to <b>next</b> target point.")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Enter</b>"), GettextCatalog.GetString ("<b>Declare interface implementation</b> at target point.")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Esc</b>"), GettextCatalog.GetString ("<b>Cancel</b> this refactoring.")));
-				mode.HelpWindow = helpWindow;
-				mode.CurIndex = mode.InsertionPoints.Count - 1;
-				mode.StartMode ();
-				mode.Exited += delegate(object s, InsertionCursorEventArgs args) {
-					if (args.Success) {
-						args.InsertionPoint.Insert (data, code.ToString ());
-					}
-				};
-			} finally {
+                this.Generate();
+            } finally {
 				this.Destroy ();
 			}
 		}
 		
+        private void Generate()
+        {
+            String propertyName = this.entryName.Text;
+#if MD_2_6
+            TypeReference propertyType = new TypeReference (this.entryType.Text);
+#endif
+#if MD_2_8
+            AstType propertyType = new SimpleType (this.entryType.Text);
+#endif
+            
+            // Get some useful objects
+            TextEditorData data = options.GetTextEditorData ();
+            INRefactoryASTProvider provider = options.GetASTProvider ();
+            ResolveResult resolveResult = this.options.ResolveResult;
+            
+            TextEditor editor = data.Parent;
+            IType declaringType = resolveResult.ResolvedType.Type;
+            
+            // Generate the code
+            String indent = this.options.GetIndent (declaringType) + "\t";
+            String generatedCode = this.GenerateProperty (declaringType, propertyName, propertyType, provider, indent);
+            
+            InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (options.Document, declaringType));
+            ModeHelpWindow helpWindow = new ModeHelpWindow ();
+            helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
+            helpWindow.TitleText = GettextCatalog.GetString ("<b>Create instance variable -- Targeting</b>");
+            helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Key</b>"), GettextCatalog.GetString ("<b>Behavior</b>")));
+            helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Up</b>"), GettextCatalog.GetString ("Move to <b>previous</b> target point.")));
+            helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Down</b>"), GettextCatalog.GetString ("Move to <b>next</b> target point.")));
+            helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Enter</b>"), GettextCatalog.GetString ("<b>Declare interface implementation</b> at target point.")));
+            helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Esc</b>"), GettextCatalog.GetString ("<b>Cancel</b> this refactoring.")));
+            mode.HelpWindow = helpWindow;
+            mode.CurIndex = mode.InsertionPoints.Count - 1;
+            mode.StartMode ();
+            mode.Exited += delegate(object s, InsertionCursorEventArgs args) {
+                if (args.Success) {
+                    args.InsertionPoint.Insert (data, generatedCode);
+                }
+            };
+        }
+
 		private string GenerateProperty (IType declaringType, string propertyName, TypeReference propertyType, INRefactoryASTProvider provider, string indent)
 		{
 			// Create the attribute

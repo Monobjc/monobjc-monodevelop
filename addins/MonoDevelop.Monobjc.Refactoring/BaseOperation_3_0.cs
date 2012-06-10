@@ -17,7 +17,6 @@
 //
 using MonoDevelop.Refactoring;
 using ICSharpCode.NRefactory.TypeSystem;
-using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {

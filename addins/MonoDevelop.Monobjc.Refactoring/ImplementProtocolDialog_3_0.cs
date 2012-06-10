@@ -27,6 +27,9 @@ using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Refactoring;
 using ICSharpCode.NRefactory.TypeSystem;
+using MonoDevelop.Ide.Gui;
+using MonoDevelop.Ide.TypeSystem;
+using ICSharpCode.NRefactory.CSharp;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
@@ -132,7 +135,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 		private void OnOKClicked (object sender, EventArgs e)
 		{
 			try {
-				
+                this.Generate();
 			} finally {
 				this.Destroy ();
 			}
@@ -184,7 +187,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 			TreeStore store = (TreeStore)this.treeviewMembers.Model;
 			store.Clear ();
 			
-			foreach (IMember member in type.GetMembers((m) => true, GetMemberOptions.ReturnMemberDefinitions)) {
+			foreach (IMember member in type.GetMembers((m) => true, GetMemberOptions.ReturnMemberDefinitions | GetMemberOptions.IgnoreInheritedMembers)) {
 				switch (member.EntityType) {
 				case EntityType.Method:
 					if (member.Name.StartsWith ("get_")) {
@@ -219,14 +222,149 @@ namespace MonoDevelop.Monobjc.Refactoring
 			}
 		}
 
-		private String GenerateMethod (IType declaringType, IMethod method, String provider, String indent)
-		{
-			return "";
-		}
+        private void Generate()
+        {
+            Document document = options.Document;
+            TextEditor editor = document.Editor.Parent;
+            
+            var loc = document.Editor.Caret.Location;
+            var declaringType = document.ParsedDocument.GetInnermostTypeDefinition (loc);
+            var type = options.ResolveResult.Type;
 
-		private String GenerateProperty (IType declaringType, IProperty property, IMethod getterMethod, IMethod setterMethod, String provider, String indent)
-		{
-			return "";
-		}
-	}
+            // Generate the code
+            String indent = options.GetIndent(type.GetDefinition()) + '\t';
+            String generatedCode = this.GenerateImplementation (declaringType, indent);
+
+            var mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (document, declaringType));
+            if (mode.InsertionPoints.Count == 0) {
+                MessageService.ShowError (GettextCatalog.GetString ("No valid insertion point can be found in type '{0}'.", declaringType.Name));
+                return;
+            }
+            ModeHelpWindow helpWindow = new InsertionCursorLayoutModeHelpWindow ();
+            helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
+            helpWindow.TitleText = GettextCatalog.GetString ("Implement Protocol");
+            mode.HelpWindow = helpWindow;
+            mode.CurIndex = mode.InsertionPoints.Count - 1;
+            mode.StartMode ();
+            mode.Exited += delegate(object s, InsertionCursorEventArgs args) {
+                if (args.Success) {
+                    args.InsertionPoint.Insert (document.Editor, generatedCode);
+                }
+            };
+        }
+
+        private String GenerateImplementation(IUnresolvedTypeDefinition declaringType, String indent)
+        {
+            StringBuilder code = new StringBuilder ();
+
+            // Generate the code for checked members
+            foreach (IMember member in this.CheckedMembers) {
+                if (declaringType.Members.Any (m => m.Name == member.Name)) {
+                    continue;
+                }
+
+                Predicate<IUnresolvedMember> getterMatcher = m => String.Equals (m.Name, "get_" + member.Name);
+                Predicate<IUnresolvedMember> setterMatcher = m => String.Equals (m.Name, "set_" + member.Name);
+
+                switch (member.EntityType) {
+                case EntityType.Method:
+                    String methodContent = this.GenerateMethod ((IMethod)member);
+                    code.Append (Indent(methodContent, indent));
+                    code.AppendLine ();
+                    break;
+                case EntityType.Property:
+                    IMethod getter = member.DeclaringType.GetMembers(getterMatcher, GetMemberOptions.ReturnMemberDefinitions | GetMemberOptions.IgnoreInheritedMembers).FirstOrDefault() as IMethod;
+                    IMethod setter = member.DeclaringType.GetMembers(setterMatcher, GetMemberOptions.ReturnMemberDefinitions | GetMemberOptions.IgnoreInheritedMembers).FirstOrDefault() as IMethod;
+                    
+                    String propertyContent = this.GenerateProperty ((IProperty)member, getter, setter);
+                    code.Append (Indent(propertyContent, indent));
+                    code.AppendLine ();
+                    break;
+                }
+            }
+
+            return code.ToString();
+        }
+
+        private String GenerateMethod (IMethod method)
+        {
+            // Retrieve the Objective-C message in the attribute
+            String message = AttributeHelper.GetAttributeValue (method, AttributeHelper.OBJECTIVE_C_MESSAGE);
+            AttributeSection attributeSection = new AttributeSection ();
+            if (!String.IsNullOrEmpty (message)) {
+                var attribute = this.GetAttribute("ObjectiveCMessage", message);
+                attributeSection.Attributes.Add (attribute);
+            }
+            
+            // Create the method declaration
+            MethodDeclaration methodDeclaration = new MethodDeclaration ();
+            methodDeclaration.Name = method.Name;
+            methodDeclaration.Attributes.Add (attributeSection);
+            methodDeclaration.Modifiers = Modifiers.Public | Modifiers.Virtual;
+            methodDeclaration.ReturnType = this.options.CreateShortType(method.ReturnType);
+
+            foreach (var parameter in method.Parameters) {
+                ParameterDeclaration parameterDeclaration = new ParameterDeclaration(this.options.CreateShortType(parameter.Type), parameter.Name);
+                if (parameter.IsOut) {
+                    parameterDeclaration.ParameterModifier |= ParameterModifier.Out;
+                }
+                if (parameter.IsRef) {
+                    parameterDeclaration.ParameterModifier |= ParameterModifier.Ref;
+                }
+                methodDeclaration.Parameters.Add (parameterDeclaration);
+            }
+            
+            // Create the method body
+            methodDeclaration.Body = new BlockStatement ();
+            ThrowStatement throwStatement = this.GetThrowStatement ("System.NotImplementedException");
+            methodDeclaration.Body.Add (throwStatement);
+
+            // Return the result of the AST generation
+            return this.options.OutputNode(methodDeclaration);
+        }
+
+        private String GenerateProperty (IProperty property, IMethod getterMethod, IMethod setterMethod)
+        {
+            // Create the property declaration
+            var propertyType = this.options.CreateShortType(property.ReturnType);
+            PropertyDeclaration propertyDeclaration = this.GetPropertyDeclaration(property.Name, propertyType, null);
+            
+            if (property.CanGet && getterMethod != null) {
+                // Retrieve the Objective-C message in the attribute
+                String message = AttributeHelper.GetAttributeValue (getterMethod, AttributeHelper.OBJECTIVE_C_MESSAGE);
+                AttributeSection attributeSection = new AttributeSection ();
+                if (!String.IsNullOrEmpty (message)) {
+                    var attribute = this.GetAttribute("ObjectiveCMessage", message);
+                    attributeSection.Attributes.Add (attribute);
+                }
+                
+                // Create the "get" region
+                ThrowStatement throwStatement = this.GetThrowStatement ("System.NotImplementedException");
+                propertyDeclaration.Getter = new Accessor();
+                propertyDeclaration.Getter.Attributes.Add(attributeSection);
+                propertyDeclaration.Getter.Body = new BlockStatement ();
+                propertyDeclaration.Getter.Body.Add(throwStatement);
+            }
+            
+            if (property.CanSet && setterMethod != null) {
+                // Retrieve the Objective-C message in the attribute
+                String message = AttributeHelper.GetAttributeValue (setterMethod, AttributeHelper.OBJECTIVE_C_MESSAGE);
+                AttributeSection attributeSection = new AttributeSection ();
+                if (!String.IsNullOrEmpty (message)) {
+                    var attribute = this.GetAttribute("ObjectiveCMessage", message);
+                    attributeSection.Attributes.Add (attribute);
+                }
+                
+                // Create the "set" region
+                ThrowStatement throwStatement = this.GetThrowStatement ("System.NotImplementedException");
+                propertyDeclaration.Setter = new Accessor();
+                propertyDeclaration.Setter.Attributes.Add(attributeSection);
+                propertyDeclaration.Setter.Body = new BlockStatement ();
+                propertyDeclaration.Setter.Body.Add(throwStatement);
+            }
+            
+            // Return the result of the AST generation
+            return this.options.OutputNode(propertyDeclaration);
+        }
+    }
 }

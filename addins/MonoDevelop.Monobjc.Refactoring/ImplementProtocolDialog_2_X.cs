@@ -139,56 +139,7 @@ namespace MonoDevelop.Monobjc.Refactoring
 		private void OnOKClicked (object sender, EventArgs e)
 		{
 			try {
-				// Get some useful objects
-				TextEditorData data = options.GetTextEditorData ();
-				INRefactoryASTProvider provider = options.GetASTProvider ();
-				ResolveResult resolveResult = this.options.ResolveResult;
-				
-				TextEditor editor = data.Parent;
-				IType declaringType = resolveResult.ResolvedType.Type;
-				
-				// Get the indentation
-				String indent = this.options.GetIndent (declaringType) + "\t";
-				StringBuilder code = new StringBuilder ();
-				
-				// Generate the code for checked members
-				foreach (IMember member in this.CheckedMembers) {
-					if (declaringType.Members.Any (m => m.Name == member.Name)) {
-						continue;
-					}
-					
-					switch (member.MemberType) {
-					case MonoDevelop.Projects.Dom.MemberType.Method:
-						code.Append (this.GenerateMethod (declaringType, (IMethod)member, provider, indent));
-						code.AppendLine ();
-						break;
-					case MonoDevelop.Projects.Dom.MemberType.Property:
-						IMethod getter = member.DeclaringType.Members.FirstOrDefault (m => String.Equals (m.Name, "get_" + member.Name)) as IMethod;
-						IMethod setter = member.DeclaringType.Members.FirstOrDefault (m => String.Equals (m.Name, "set_" + member.Name)) as IMethod;
-						
-						code.Append (this.GenerateProperty (declaringType, (IProperty)member, getter, setter, provider, indent));
-						code.AppendLine ();
-						break;
-					}
-				}
-				
-				InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (options.Document, declaringType));
-				ModeHelpWindow helpWindow = new ModeHelpWindow ();
-				helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
-				helpWindow.TitleText = GettextCatalog.GetString ("<b>Implement Interface -- Targeting</b>");
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Key</b>"), GettextCatalog.GetString ("<b>Behavior</b>")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Up</b>"), GettextCatalog.GetString ("Move to <b>previous</b> target point.")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Down</b>"), GettextCatalog.GetString ("Move to <b>next</b> target point.")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Enter</b>"), GettextCatalog.GetString ("<b>Declare interface implementation</b> at target point.")));
-				helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Esc</b>"), GettextCatalog.GetString ("<b>Cancel</b> this refactoring.")));
-				mode.HelpWindow = helpWindow;
-				mode.CurIndex = mode.InsertionPoints.Count - 1;
-				mode.StartMode ();
-				mode.Exited += delegate(object s, InsertionCursorEventArgs args) {
-					if (args.Success) {
-						args.InsertionPoint.Insert (data, code.ToString ());
-					}
-				};
+                this.Generate();
 			} finally {
 				this.Destroy ();
 			}
@@ -274,6 +225,67 @@ namespace MonoDevelop.Monobjc.Refactoring
 				}
 			}
 		}
+
+        private void Generate()
+        {
+            // Get some useful objects
+            TextEditorData data = options.GetTextEditorData ();
+            INRefactoryASTProvider provider = options.GetASTProvider ();
+            ResolveResult resolveResult = this.options.ResolveResult;
+            
+            TextEditor editor = data.Parent;
+            IType declaringType = resolveResult.ResolvedType.Type;
+            
+            // Get the indentation
+            String indent = this.options.GetIndent (declaringType) + "\t";
+            String generatedCode = GenerateImplementation(declaringType, provider, indent);
+
+            InsertionCursorEditMode mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (options.Document, declaringType));
+            ModeHelpWindow helpWindow = new ModeHelpWindow ();
+            helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
+            helpWindow.TitleText = GettextCatalog.GetString ("<b>Implement Protocol -- Targeting</b>");
+            helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Key</b>"), GettextCatalog.GetString ("<b>Behavior</b>")));
+            helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Up</b>"), GettextCatalog.GetString ("Move to <b>previous</b> target point.")));
+            helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Down</b>"), GettextCatalog.GetString ("Move to <b>next</b> target point.")));
+            helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Enter</b>"), GettextCatalog.GetString ("<b>Declare interface implementation</b> at target point.")));
+            helpWindow.Items.Add (new KeyValuePair<string, string> (GettextCatalog.GetString ("<b>Esc</b>"), GettextCatalog.GetString ("<b>Cancel</b> this refactoring.")));
+            mode.HelpWindow = helpWindow;
+            mode.CurIndex = mode.InsertionPoints.Count - 1;
+            mode.StartMode ();
+            mode.Exited += delegate(object s, InsertionCursorEventArgs args) {
+                if (args.Success) {
+                    args.InsertionPoint.Insert (data, generatedCode);
+                }
+            };
+        }
+
+        private String GenerateImplementation(IType declaringType, INRefactoryASTProvider provider, String indent)
+        {
+            StringBuilder code = new StringBuilder ();
+            
+            // Generate the code for checked members
+            foreach (IMember member in this.CheckedMembers) {
+                if (declaringType.Members.Any (m => m.Name == member.Name)) {
+                    continue;
+                }
+                
+                switch (member.MemberType) {
+                case MonoDevelop.Projects.Dom.MemberType.Method:
+                    code.Append (this.GenerateMethod (declaringType, (IMethod)member, provider, indent));
+                    code.AppendLine ();
+                    break;
+                case MonoDevelop.Projects.Dom.MemberType.Property:
+                    IMethod getter = member.DeclaringType.Members.FirstOrDefault (m => String.Equals (m.Name, "get_" + member.Name)) as IMethod;
+                    IMethod setter = member.DeclaringType.Members.FirstOrDefault (m => String.Equals (m.Name, "set_" + member.Name)) as IMethod;
+                    
+                    code.Append (this.GenerateProperty (declaringType, (IProperty)member, getter, setter, provider, indent));
+                    code.AppendLine ();
+                    break;
+                }
+            }
+
+            return code.ToString();
+        }
 
 		private String GenerateMethod (IType declaringType, IMethod method, INRefactoryASTProvider provider, String indent)
 		{

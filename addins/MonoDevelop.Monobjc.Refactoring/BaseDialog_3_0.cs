@@ -17,8 +17,11 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Text;
 using Gtk;
 using MonoDevelop.Refactoring;
+using ICSharpCode.NRefactory.CSharp;
+using ICSharpCode.NRefactory.TypeSystem;
 
 namespace MonoDevelop.Monobjc.Refactoring
 {
@@ -34,5 +37,45 @@ namespace MonoDevelop.Monobjc.Refactoring
 			this.options = options;
 			this.project = project;
 		}
+
+        protected AstType Shorten (IType type)
+        {
+            return this.options.CreateShortType(type);
+        }
+
+        protected ICSharpCode.NRefactory.CSharp.Attribute GetAttribute(String attributeType, String parameter)
+        {
+            var attribute = new ICSharpCode.NRefactory.CSharp.Attribute();
+            attribute.Type = new SimpleType(attributeType);
+            if (parameter != null) {
+                attribute.Arguments.Add(new PrimitiveExpression(parameter));
+            }
+            return attribute;
+        }
+        
+        protected PropertyDeclaration GetPropertyDeclaration(String propertyName, AstType propertyType, AttributeSection attributeSection)
+        {
+            var propertyDeclaration = new PropertyDeclaration();
+            propertyDeclaration.Modifiers = Modifiers.Public | Modifiers.Virtual;
+            propertyDeclaration.Name = propertyName;
+            propertyDeclaration.ReturnType = propertyType;
+            propertyDeclaration.Attributes.Add(attributeSection);
+            return propertyDeclaration;
+        }
+        
+        protected ThrowStatement GetThrowStatement(String exceptionName)
+        {
+            return new ThrowStatement (new ObjectCreateExpression (new SimpleType (exceptionName), new List<Expression> ()));
+        }
+
+        protected String Indent(String content, String indent)
+        {
+            StringBuilder result = new StringBuilder();
+            foreach(String line in content.Split('\n')) {
+                result.AppendFormat("{0}{1}", indent, line);
+                result.AppendLine();
+            }
+            return result.ToString();
+        }
 	}
 }
