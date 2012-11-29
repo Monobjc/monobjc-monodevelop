@@ -220,9 +220,10 @@ namespace MonoDevelop.Monobjc.Utilities
 
         private IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions (Func<ITypeDefinition, bool> matcher, bool projectOnly)
         {
+            TypeSystemService.ForceUpdate (this.ProjectWrapper);
+
             // Search only in the project wrapper
             if (projectOnly) {
-                TypeSystemService.ForceUpdate (this.ProjectWrapper);
                 return GetMatchingTypeDefinitions (this.ProjectWrapper, matcher);
             }
             

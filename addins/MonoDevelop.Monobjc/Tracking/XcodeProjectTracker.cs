@@ -230,8 +230,13 @@ namespace MonoDevelop.Monobjc.Tracking
 					this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "MACOSX_DEPLOYMENT_TARGET", "10.6");
 					break;
 				case MacOSVersion.MacOS107:
-				default:
 					this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "MACOSX_DEPLOYMENT_TARGET", "10.7");
+					break;
+				case MacOSVersion.MacOS108:
+					this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "MACOSX_DEPLOYMENT_TARGET", "10.8");
+					break;
+				default:
+					this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "MACOSX_DEPLOYMENT_TARGET", "10.5");
 					break;
 			}
 			this.xcodeProject.AddBuildConfigurationSettings (CONFIGURATION_RELEASE, null, "GCC_C_LANGUAGE_STANDARD", "gnu99");
