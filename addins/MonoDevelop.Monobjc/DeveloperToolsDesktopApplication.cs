@@ -29,86 +29,77 @@ namespace MonoDevelop.Monobjc
 {
 	public class DeveloperToolsDesktopApplication : DesktopApplication
 	{
-        public const String APPLICATION_TITLE = "Apple Developer Tools";
-        public const String DEVELOPER_TOOLS = "MonoDevelop.Monobjc.DeveloperTools";
+		public const String APPLICATION_TITLE = "Apple Developer Tools";
+		public const String DEVELOPER_TOOLS = "MonoDevelop.Monobjc.DeveloperTools";
 		public const String XCODE_APPLICATION = "Applications/Xcode.app";
 		public const String INTERFACE_BUILDER_APPLICATION = "Applications/Interface Builder.app";
-
 		private static Version developerToolsVersion;
-		
 		private readonly MonobjcProject project;
 
-		public DeveloperToolsDesktopApplication(MonobjcProject project) : base(DEVELOPER_TOOLS, APPLICATION_TITLE, true)
+		public DeveloperToolsDesktopApplication (MonobjcProject project) : base(DEVELOPER_TOOLS, APPLICATION_TITLE, true)
 		{
 			this.project = project;
 		}
 
-		public override void Launch(params string[] files)
+		public override void Launch (params string[] files)
 		{
-			String arguments = GetArguments(this.project, files[0]);
-			Process.Start("open", arguments);
+			String arguments = GetArguments (this.project, files [0]);
+			Process.Start ("open", arguments);
 		}
 
-		public static String DeveloperToolsFolder
-		{
-			get { return PropertyService.Get<String>(DEVELOPER_TOOLS, "/Developer"); }
-			set
-			{
+		public static String DeveloperToolsFolder {
+			get { return PropertyService.Get<String> (DEVELOPER_TOOLS, "/Developer"); }
+			set {
 				developerToolsVersion = null;
-				PropertyService.Set(DEVELOPER_TOOLS, value);
+				PropertyService.Set (DEVELOPER_TOOLS, value);
 			}
 		}
 
-		public static Version DeveloperToolsVersion
-		{
-			get
-			{
-				if (developerToolsVersion == null)
-				{
-					developerToolsVersion = DeveloperToolsVersionForFolder(DeveloperToolsFolder);
+		public static Version DeveloperToolsVersion {
+			get {
+				if (developerToolsVersion == null) {
+					developerToolsVersion = DeveloperToolsVersionForFolder (DeveloperToolsFolder);
 				}
 				return developerToolsVersion;
 			}
 		}
 		
-		internal static Version DeveloperToolsVersionForFolder(String folder)
+		internal static Version DeveloperToolsVersionForFolder (String folder)
 		{
-			String path = Path.Combine(folder, XCODE_APPLICATION);
-			if (Directory.Exists(path))
-			{
-				return NativeVersionExtractor.GetVersion(path);
+			String path = Path.Combine (folder, XCODE_APPLICATION);
+			if (Directory.Exists (path)) {
+				return NativeVersionExtractor.GetVersion (path);
 			}
 			return null;
 		}
 
-		private static String GetArguments(MonobjcProject project, String file)
+		private static String GetArguments (MonobjcProject project, String file)
 		{
 			Version version = DeveloperToolsVersion;
 			if (version == null) {
 				return null;
 			}
 			
-			StringBuilder arguments = new StringBuilder();
-			arguments.Append("-a ");
-			switch(version.Major)
-			{
-				case 3:
+			StringBuilder arguments = new StringBuilder ();
+			arguments.Append ("-a ");
+			switch (version.Major) {
+			case 3:
 				{
-					String path = Path.Combine(DeveloperToolsFolder, INTERFACE_BUILDER_APPLICATION);
+					String path = Path.Combine (DeveloperToolsFolder, INTERFACE_BUILDER_APPLICATION);
 					//arguments.AppendFormat("\"{0}\" \"{1}\"", path, file);
 					break;
 				}
-				case 4:
+			case 4:
 				{
-					String path = Path.Combine(DeveloperToolsFolder, XCODE_APPLICATION);
+					String path = Path.Combine (DeveloperToolsFolder, XCODE_APPLICATION);
 					//arguments.AppendFormat("\"{0}\" \"{1}\"", path, project.XcodeTracker.ProjectFolder);
 					break;
 				}
-				default:
-					throw new NotSupportedException();
+			default:
+				throw new NotSupportedException ();
 			}
 
-			return arguments.ToString();
+			return arguments.ToString ();
 		}
 	}
 }

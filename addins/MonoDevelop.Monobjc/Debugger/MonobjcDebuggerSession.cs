@@ -19,11 +19,8 @@ using System;
 using System.Diagnostics;
 using Mono.Debugging.Client;
 using Mono.Debugging.Soft;
-using Mono.Unix;
 using MonoDevelop.Core;
-using MonoDevelop.Ide;
 using MonoDevelop.Monobjc;
-using MonoDevelop.Monobjc.Utilities;
 
 namespace MonoDevelop.Monobjc.Debugger
 {
@@ -39,16 +36,16 @@ namespace MonoDevelop.Monobjc.Debugger
 		/// <param name = "startInfo">The start info.</param>
 		protected override void OnRun (DebuggerStartInfo startInfo)
 		{
-			MonobjcDebuggerStartInfo dsi = (MonobjcDebuggerStartInfo) startInfo;
-			SoftDebuggerRemoteArgs startArgs = (SoftDebuggerRemoteArgs) dsi.StartArgs;
+			MonobjcDebuggerStartInfo dsi = (MonobjcDebuggerStartInfo)startInfo;
+			SoftDebuggerRemoteArgs startArgs = (SoftDebuggerRemoteArgs)dsi.StartArgs;
 			MonobjcExecutionCommand command = dsi.ExecutionCommand;		
 			
 			int assignedPort;
-			this.StartListening(dsi, out assignedPort);
+			this.StartListening (dsi, out assignedPort);
 			
 			// Create the start information
 			ProcessStartInfo psi = new ProcessStartInfo (command.CommandString) { Arguments = command.CommandLineParameters, RedirectStandardOutput = true, RedirectStandardError = true, RedirectStandardInput = true, UseShellExecute = false };
-			psi.EnvironmentVariables["MONO_OPTIONS"] = string.Format ("--debug --debugger-agent=transport=dt_socket,address={0}:{1}", startArgs.Address, assignedPort);
+			psi.EnvironmentVariables ["MONO_OPTIONS"] = string.Format ("--debug --debugger-agent=transport=dt_socket,address={0}:{1}", startArgs.Address, assignedPort);
 
 			// Try to start the process
 			this.process = Process.Start (psi);

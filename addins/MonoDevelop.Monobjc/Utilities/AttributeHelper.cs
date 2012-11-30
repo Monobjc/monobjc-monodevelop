@@ -30,17 +30,11 @@ namespace MonoDevelop.Monobjc.Utilities
 	public static class AttributeHelper
 	{
 		public const String IBACTION = "Monobjc.IBActionAttribute";
-
 		public const String IBOUTLET = "Monobjc.IBOutletAttribute";
-
 		public const String OBJECTIVE_C_CLASS = "Monobjc.ObjectiveCClassAttribute";
-
 		public const String OBJECTIVE_C_PROTOCOL = "Monobjc.ObjectiveCProtocolAttribute";
-
 		public const String OBJECTIVE_C_MESSAGE = "Monobjc.ObjectiveCMessageAttribute";
-
 		public const String OBJECTIVE_C_IVAR = "Monobjc.ObjectiveCIVarAttribute";
-
 		public const String OBJECTIVE_C_FRAMEWORK = "Monobjc.ObjectiveCFrameworkAttribute";
 
 		/// <summary>
@@ -95,54 +89,49 @@ namespace MonoDevelop.Monobjc.Utilities
 			if (attribute == null) {
 				return null;
 			}
-			ResolveResult expression = attribute.PositionalArguments.FirstOrDefault(pa => pa.IsCompileTimeConstant);
+			ResolveResult expression = attribute.PositionalArguments.FirstOrDefault (pa => pa.IsCompileTimeConstant);
 			if (expression == null) {
 				return null;
 			}
-			return expression.ConstantValue.ToString();
+			return expression.ConstantValue.ToString ();
 		}
 		
-		public static bool IsWrappingFramework(String assemblyPath, out bool systemFramework)
-        {
-            systemFramework = false;
-            AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyPath);
+		public static bool IsWrappingFramework (String assemblyPath, out bool systemFramework)
+		{
+			systemFramework = false;
+			AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly (assemblyPath);
 
-            // Balk if the assembly has no custom attribute
-            if (!assemblyDefinition.HasCustomAttributes)
-            {
-                return false;
-            }
+			// Balk if the assembly has no custom attribute
+			if (!assemblyDefinition.HasCustomAttributes) {
+				return false;
+			}
 
-            CustomAttribute frameworkAttribute = null;
-            Collection<CustomAttribute> attributes = assemblyDefinition.CustomAttributes;
-            foreach (CustomAttribute attribute in attributes)
-            {
-                String fullType = attribute.Constructor.DeclaringType.ToString();
-                if (String.Equals(fullType, OBJECTIVE_C_FRAMEWORK))
-                {
-                    frameworkAttribute = attribute;
-                    break;
-                }
-            }
+			CustomAttribute frameworkAttribute = null;
+			Collection<CustomAttribute> attributes = assemblyDefinition.CustomAttributes;
+			foreach (CustomAttribute attribute in attributes) {
+				String fullType = attribute.Constructor.DeclaringType.ToString ();
+				if (String.Equals (fullType, OBJECTIVE_C_FRAMEWORK)) {
+					frameworkAttribute = attribute;
+					break;
+				}
+			}
 
-            // Return false if no framework attribute is found
-            if (frameworkAttribute == null)
-            {
-                return false;
-            }
+			// Return false if no framework attribute is found
+			if (frameworkAttribute == null) {
+				return false;
+			}
 
-            // Retrieve the attribute parameters
-            Collection<CustomAttributeArgument> list = frameworkAttribute.ConstructorArguments;
-            if (list.Count == 0)
-            {
-                return false;
-            }
+			// Retrieve the attribute parameters
+			Collection<CustomAttributeArgument> list = frameworkAttribute.ConstructorArguments;
+			if (list.Count == 0) {
+				return false;
+			}
 
-            // Set if this assembly wraps a system framework
-            String value = list[0].Value.ToString();
-            systemFramework = Boolean.Parse(value);
+			// Set if this assembly wraps a system framework
+			String value = list [0].Value.ToString ();
+			systemFramework = Boolean.Parse (value);
 
-            return true;
-        }
+			return true;
+		}
 	}
 }

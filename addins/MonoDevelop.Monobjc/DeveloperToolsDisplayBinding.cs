@@ -26,7 +26,7 @@ namespace MonoDevelop.Monobjc
 	{
 		public DesktopApplication GetApplication (FilePath fileName, string mimeType, Project ownerProject)
 		{
-			return new DeveloperToolsDesktopApplication((MonobjcProject) ownerProject);
+			return new DeveloperToolsDesktopApplication ((MonobjcProject)ownerProject);
 		}
 		
 		public bool CanHandle (FilePath fileName, string mimeType, Project ownerProject)
@@ -34,14 +34,13 @@ namespace MonoDevelop.Monobjc
 			if (ownerProject == null || !(ownerProject is MonobjcProject)) {
 				return false;
 			}
-			if ("application/vnd.apple-interface-builder".Equals(mimeType)) {
+			if ("application/vnd.apple-interface-builder".Equals (mimeType)) {
 				return true;
 			}
-			return !fileName.IsNullOrEmpty && fileName.HasExtension("xib");
+			return !fileName.IsNullOrEmpty && fileName.HasExtension ("xib");
 		}
 
-		public bool CanUseAsDefault
-		{
+		public bool CanUseAsDefault {
 			get { return true; }
 		}
 	}

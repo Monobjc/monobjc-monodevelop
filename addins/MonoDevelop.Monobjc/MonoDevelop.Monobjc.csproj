@@ -138,6 +138,9 @@
     <Compile Include="CodeGeneration\NullCodeBehindGenerator.cs" />
     <Compile Include="CodeGeneration\VBNetCodeBehindGenerator.cs" />
     <Compile Include="CodeGeneration\FSharpCodeBehindGenerator.cs" />
+    <Compile Include="MonobjcProject.Properties.Advanced.cs" />
+    <Compile Include="MonobjcBuildExtension.cs" />
+    <Compile Include="Utilities\BundleGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

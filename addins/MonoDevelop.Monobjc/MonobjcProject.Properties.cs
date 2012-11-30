@@ -68,26 +68,22 @@ namespace MonoDevelop.Monobjc
 		/// <summary>
 		/// Initializes this instance.
 		/// </summary>
-		internal void Initialize()
+		internal void Initialize ()
 		{
 #if DEBUG
 			LoggingService.LogInfo("MonobjcProject::Initialize");
 #endif
 			// Set default values
-			if (String.IsNullOrEmpty(this.OSFrameworks))
-			{
+			if (String.IsNullOrEmpty (this.OSFrameworks)) {
 				this.OSFrameworks = "Foundation;AppKit";
 			}
-			if (this.TargetOSVersion == MacOSVersion.None)
-			{
+			if (this.TargetOSVersion == MacOSVersion.None) {
 				this.TargetOSVersion = MacOSVersion.MacOS106;
 			}
-			if (this.TargetOSArch == MacOSArchitecture.None)
-			{
+			if (this.TargetOSArch == MacOSArchitecture.None) {
 				this.TargetOSArch = MacOSArchitecture.X86;
 			}
-			if (String.IsNullOrEmpty(this.DevelopmentRegion))
-			{
+			if (String.IsNullOrEmpty (this.DevelopmentRegion)) {
 				this.DevelopmentRegion = "en";
 			}
 		}

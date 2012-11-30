@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System;
 using System.Collections.Generic;
 using Mono.Addins;
 using MonoDevelop.Projects;
@@ -25,15 +26,16 @@ namespace MonoDevelop.Monobjc
 	[Extension]
 	public class MonobjcMSBuildImportProvider : IMSBuildImportProvider
 	{
-		private const string importCocoaApplication = @"$(MSBuildBinPath)\Monobjc.CocoaApplication.targets";
-		private const string importConsoleApplication = @"$(MSBuildBinPath)\Monobjc.ConsoleApplication.targets";
-		private const string importCocoaLibrary = @"$(MSBuildBinPath)\Monobjc.CocoaLibrary.targets";
+		private const String importCocoaApplication = @"$(MSBuildBinPath)\Monobjc.CocoaApplication.targets";
+		private const String importConsoleApplication = @"$(MSBuildBinPath)\Monobjc.ConsoleApplication.targets";
+		private const String importCocoaLibrary = @"$(MSBuildBinPath)\Monobjc.CocoaLibrary.targets";
 		
-		public void UpdateImports (SolutionEntityItem item, List<string> imports)
+		public void UpdateImports (SolutionEntityItem item, List<String> imports)
 		{
 			// Remove imports
 			imports.Remove (importCocoaApplication);
 			imports.Remove (importConsoleApplication);
+			imports.Remove (importCocoaLibrary);
 			
 			// Check project nature
 			MonobjcProject project = item as MonobjcProject;

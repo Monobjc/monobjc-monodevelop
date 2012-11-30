@@ -22,30 +22,43 @@ namespace MonoDevelop.Monobjc
 {
 	public partial class MonobjcProject
 	{
-		private bool archive;
-		private String archiveIdentity;
+		private String developmentRegion;
+		private bool combineArtwork;
+		private bool encryptArtwork;
 
 		/// <summary>
-		///   Gets or sets the archive.
+		/// Gets or sets the development region.
 		/// </summary>
-		[ItemProperty("Archive")]
-		public bool Archive {
-			get { return this.archive; }
+		[ItemProperty("MacOSDevelopmentRegion", DefaultValue = "en")]
+		public String DevelopmentRegion {
+			get { return this.developmentRegion; }
 			set {
-				this.archive = value;
-				this.NotifyModified ("Archive");
+				this.developmentRegion = value;
+				this.NotifyModified ("MacOSDevelopmentRegion");
 			}
 		}
 
 		/// <summary>
-		///   Gets or sets the archive identity.
+		/// Gets or sets a value indicating whether to combine artwork.
 		/// </summary>
-		[ItemProperty("ArchiveIdentity")]
-		public String ArchiveIdentity {
-			get { return this.archiveIdentity; }
+		[ItemProperty("CombineArtwork")]
+		public bool CombineArtwork {
+			get { return this.combineArtwork; }
 			set {
-				this.archiveIdentity = value;
-				this.NotifyModified ("ArchiveIdentity");
+				this.combineArtwork = value;
+				this.NotifyModified ("CombineArtwork");
+			}
+		}
+
+		/// <summary>
+		/// Gets or sets a value indicating whether to encrypt artwork.
+		/// </summary>
+		[ItemProperty("EncryptArtwork")]
+		public bool EncryptArtwork {
+			get { return this.encryptArtwork; }
+			set {
+				this.encryptArtwork = value;
+				this.NotifyModified ("EncryptArtwork");
 			}
 		}
 	}

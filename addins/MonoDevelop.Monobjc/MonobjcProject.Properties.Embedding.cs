@@ -30,60 +30,48 @@ namespace MonoDevelop.Monobjc
 		/// <summary>
 		///   Gets or sets the embedded frameworks.
 		/// </summary>
-		/// <value>The embedded frameworks.</value>
 		[ItemProperty("EmbeddedFrameworks")]
-		public String EmbeddedFrameworks
-		{
+		public String EmbeddedFrameworks {
 			get { return this.embeddedFrameworks; }
-			set
-			{
+			set {
 				this.embeddedFrameworks = value;
-				this.NotifyModified("EmbeddedFrameworks");
+				this.NotifyModified ("EmbeddedFrameworks");
 			}
 		}
 
 		/// <summary>
 		///   Gets or sets the additional assemblies.
 		/// </summary>
-		/// <value>The additional assemblies.</value>
 		[ItemProperty("AdditionalAssemblies")]
-		public String AdditionalAssemblies
-		{
+		public String AdditionalAssemblies {
 			get { return this.additionalAssemblies; }
-			set
-			{
+			set {
 				this.additionalAssemblies = value;
-				this.NotifyModified("AdditionalAssemblies");
+				this.NotifyModified ("AdditionalAssemblies");
 			}
 		}
 
 		/// <summary>
 		///   Gets or sets the excluded assemblies.
 		/// </summary>
-		/// <value>The excluded assemblies.</value>
 		[ItemProperty("ExcludedAssemblies")]
-		public String ExcludedAssemblies
-		{
+		public String ExcludedAssemblies {
 			get { return this.excludedAssemblies; }
-			set
-			{
+			set {
 				this.excludedAssemblies = value;
-				this.NotifyModified("ExcludedAssemblies");
+				this.NotifyModified ("ExcludedAssemblies");
 			}
 		}
 
 		/// <summary>
 		///   Gets or sets the additional libraries.
 		/// </summary>
-		/// <value>The additional libraries.</value>
 		[ItemProperty("AdditionalLibraries")]
-		public String AdditionalLibraries
-		{
+		public String AdditionalLibraries {
 			get { return this.additionalLibraries; }
-			set
-			{
+			set {
 				this.additionalLibraries = value;
-				this.NotifyModified("AdditionalLibraries");
+				this.NotifyModified ("AdditionalLibraries");
 			}
 		}
 	}

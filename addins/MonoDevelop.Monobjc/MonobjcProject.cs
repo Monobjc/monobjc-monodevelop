@@ -80,36 +80,57 @@ namespace MonoDevelop.Monobjc
 #endif
 			node = projectOptions.SelectSingleNode ("MacOSApplicationType");
 			if (node != null) {
-				this.ApplicationType = (MonobjcApplicationType) Enum.Parse(typeof(MonobjcApplicationType), node.InnerText);
+#if DEBUG
+				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
+#endif
+				this.ApplicationType = (MonobjcApplicationType)Enum.Parse (typeof(MonobjcApplicationType), node.InnerText);
 			}
 
 			node = projectOptions.SelectSingleNode ("MacOSDevelopmentRegion");
 			if (node != null) {
+#if DEBUG
+				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
+#endif
 				this.DevelopmentRegion = node.InnerText;
 			}
 
 			node = projectOptions.SelectSingleNode ("MainNibFile");
 			if (node != null) {
+#if DEBUG
+				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
+#endif
 				this.MainNibFile = node.InnerText;
 			}
 
 			node = projectOptions.SelectSingleNode ("BundleIcon");
 			if (node != null) {
+#if DEBUG
+				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
+#endif
 				this.BundleIcon = node.InnerText;
 			}
 
 			node = projectOptions.SelectSingleNode ("MacOSFrameworks");
 			if (node != null) {
+#if DEBUG
+				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
+#endif
 				this.OSFrameworks = node.InnerText;
 			}
 
 			node = projectOptions.SelectSingleNode ("MacOSVersion");
 			if (node != null) {
+#if DEBUG
+				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
+#endif
 				this.TargetOSVersion = (MacOSVersion)Enum.Parse (typeof(MacOSVersion), node.InnerText);
 			}
 
 			node = projectOptions.SelectSingleNode ("MacOSArch");
 			if (node != null) {
+#if DEBUG
+				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
+#endif
 				this.TargetOSArch = (MacOSArchitecture)Enum.Parse (typeof(MacOSArchitecture), node.InnerText);
 			}
 
@@ -190,11 +211,11 @@ namespace MonoDevelop.Monobjc
 		protected override ExecutionCommand CreateExecutionCommand (ConfigurationSelector configSel, DotNetProjectConfiguration configuration)
 		{
 			if (this.CompileTarget != CompileTarget.Exe) {
-				return base.CreateExecutionCommand(configSel, configuration);
+				return base.CreateExecutionCommand (configSel, configuration);
 			}
 
 			if (this.applicationType == MonobjcApplicationType.None) {
-				return base.CreateExecutionCommand(configSel, configuration);
+				return base.CreateExecutionCommand (configSel, configuration);
 			}
 
 			// Infer application name from configuration
@@ -238,9 +259,8 @@ namespace MonoDevelop.Monobjc
             LoggingService.LogInfo("MonobjcProject::OnFileAddedToProject");
 #endif
 			// Migrate "Page" to "InterfaceDefinition" when project is loaded
-			foreach(ProjectFileEventInfo info in e)
-			{
-	            ProjectFile projectFile = info.ProjectFile;
+			foreach (ProjectFileEventInfo info in e) {
+				ProjectFile projectFile = info.ProjectFile;
 				if (projectFile.BuildAction == BuildAction.Page) {
 					projectFile.BuildAction = BuildHelper.InterfaceDefinition;
 				}

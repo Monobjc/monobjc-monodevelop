@@ -28,26 +28,24 @@ namespace MonoDevelop.Monobjc
 		private MonobjcApplicationType applicationType;
 		private String bundleId;
 		private String bundleVersion;
-		private String developmentRegion;
 		private FilePath mainNibFile;
 		private FilePath bundleIcon;
 		private FilePath entitlements;
 		private String osFrameworks;
 		private MacOSVersion targetOSVersion;
 		private MacOSArchitecture targetOSArch;
+		private bool signing;
 		private String signingIdentity;
 
 		/// <summary>
 		///   Gets or sets the application type.
 		/// </summary>
 		[ItemProperty("MacOSApplicationType")]
-		public MonobjcApplicationType ApplicationType
-		{
+		public MonobjcApplicationType ApplicationType {
 			get { return this.applicationType; }
-			set
-			{
+			set {
 				this.applicationType = value;
-				this.NotifyModified("MacOSApplicationType");
+				this.NotifyModified ("MacOSApplicationType");
 			}
 		}
 
@@ -55,13 +53,11 @@ namespace MonoDevelop.Monobjc
 		/// Gets or sets the bundle identifier.
 		/// </summary>
 		[ItemProperty("BundleId")]
-		public String BundleId
-		{
+		public String BundleId {
 			get { return this.bundleId; }
-			set
-			{
+			set {
 				this.bundleId = value;
-				this.NotifyModified("BundleId");
+				this.NotifyModified ("BundleId");
 			}
 		}
 
@@ -69,27 +65,11 @@ namespace MonoDevelop.Monobjc
 		/// Gets or sets the bundle identifier.
 		/// </summary>
 		[ItemProperty("BundleVersion")]
-		public String BundleVersion
-		{
+		public String BundleVersion {
 			get { return this.bundleVersion; }
-			set
-			{
+			set {
 				this.bundleVersion = value;
-				this.NotifyModified("BundleVersion");
-			}
-		}
-
-		/// <summary>
-		/// Gets or sets the development region.
-		/// </summary>
-		[ItemProperty("MacOSDevelopmentRegion", DefaultValue = "en")]
-		public String DevelopmentRegion
-		{
-			get { return this.developmentRegion; }
-			set
-			{
-				this.developmentRegion = value;
-				this.NotifyModified("MacOSDevelopmentRegion");
+				this.NotifyModified ("BundleVersion");
 			}
 		}
 
@@ -97,13 +77,11 @@ namespace MonoDevelop.Monobjc
 		///   Gets or sets the main IB file.
 		/// </summary>
 		[ProjectPathItemProperty("MainNibFile")]
-		public FilePath MainNibFile
-		{
+		public FilePath MainNibFile {
 			get { return this.mainNibFile; }
-			set
-			{
+			set {
 				this.mainNibFile = value;
-				this.NotifyModified("MainNibFile");
+				this.NotifyModified ("MainNibFile");
 			}
 		}
 
@@ -111,13 +89,11 @@ namespace MonoDevelop.Monobjc
 		///   Gets or sets the bundle icon.
 		/// </summary>
 		[ProjectPathItemProperty("BundleIcon")]
-		public FilePath BundleIcon
-		{
+		public FilePath BundleIcon {
 			get { return this.bundleIcon; }
-			set
-			{
+			set {
 				this.bundleIcon = value;
-				this.NotifyModified("BundleIcon");
+				this.NotifyModified ("BundleIcon");
 			}
 		}
 		
@@ -125,13 +101,11 @@ namespace MonoDevelop.Monobjc
 		///   Gets or sets the bundle icon.
 		/// </summary>
 		[ProjectPathItemProperty("MacOSEntitlements")]
-		public FilePath Entitlements
-		{
+		public FilePath Entitlements {
 			get { return this.entitlements; }
-			set
-			{
+			set {
 				this.entitlements = value;
-				this.NotifyModified("MacOSEntitlements");
+				this.NotifyModified ("MacOSEntitlements");
 			}
 		}
 		
@@ -139,13 +113,11 @@ namespace MonoDevelop.Monobjc
 		///   Gets or sets the OS frameworks.
 		/// </summary>
 		[ItemProperty("MacOSFrameworks")]
-		public string OSFrameworks
-		{
+		public string OSFrameworks {
 			get { return this.osFrameworks; }
-			set
-			{
+			set {
 				this.osFrameworks = value;
-				this.NotifyModified("MacOSFrameworks");
+				this.NotifyModified ("MacOSFrameworks");
 			}
 		}
 
@@ -153,13 +125,11 @@ namespace MonoDevelop.Monobjc
 		///   Gets or sets the target OS version.
 		/// </summary>
 		[ItemProperty("MacOSVersion")]
-		public MacOSVersion TargetOSVersion
-		{
+		public MacOSVersion TargetOSVersion {
 			get { return this.targetOSVersion; }
-			set
-			{
+			set {
 				this.targetOSVersion = value;
-				this.NotifyModified("MacOSVersion");
+				this.NotifyModified ("MacOSVersion");
 			}
 		}
 
@@ -167,13 +137,23 @@ namespace MonoDevelop.Monobjc
 		///   Gets or sets the target OS arch.
 		/// </summary>
 		[ItemProperty("MacOSArch")]
-		public MacOSArchitecture TargetOSArch
-		{
+		public MacOSArchitecture TargetOSArch {
 			get { return this.targetOSArch; }
-			set
-			{
+			set {
 				this.targetOSArch = value;
-				this.NotifyModified("MacOSArch");
+				this.NotifyModified ("MacOSArch");
+			}
+		}
+
+		/// <summary>
+		///   Gets or sets the signing.
+		/// </summary>
+		[ItemProperty("Signing")]
+		public bool Signing {
+			get { return this.signing; }
+			set {
+				this.signing = value;
+				this.NotifyModified ("Signing");
 			}
 		}
 
@@ -181,13 +161,11 @@ namespace MonoDevelop.Monobjc
 		///   Gets or sets the signing identity.
 		/// </summary>
 		[ItemProperty("SigningIdentity")]
-		public String SigningIdentity
-		{
+		public String SigningIdentity {
 			get { return this.signingIdentity; }
-			set
-			{
+			set {
 				this.signingIdentity = value;
-				this.NotifyModified("SigningIdentity");
+				this.NotifyModified ("SigningIdentity");
 			}
 		}
 	}
