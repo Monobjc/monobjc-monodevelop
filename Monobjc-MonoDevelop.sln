@@ -8,16 +8,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F3C5D631-0069-4D72-8CD2-892CA8CC2E5E}"
 	ProjectSection(SolutionItems) = preProject
 		GPL.rtf = GPL.rtf
-		Monobjc-MonoDevelop.build = Monobjc-MonoDevelop.build
 		README = README
-		profile-2.4.config = profile-2.4.config
-		profile-2.6.config = profile-2.6.config
-		profile-2.8.config = profile-2.8.config
+		Makefile = Makefile
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Debugger.Soft.Monobjc", "addins\MonoDevelop.Debugger.Soft.Monobjc\MonoDevelop.Debugger.Soft.Monobjc.csproj", "{CEEC45C7-4965-4D00-A5C8-CC238CF7A615}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoDevelop.Monobjc.Refactoring", "addins\MonoDevelop.Monobjc.Refactoring\MonoDevelop.Monobjc.Refactoring.csproj", "{2B862B1F-8921-4789-9B6F-15F4C59596F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +18,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2B862B1F-8921-4789-9B6F-15F4C59596F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B862B1F-8921-4789-9B6F-15F4C59596F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B862B1F-8921-4789-9B6F-15F4C59596F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B862B1F-8921-4789-9B6F-15F4C59596F0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6216C823-55A2-47D4-96A0-B1461EE66B1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6216C823-55A2-47D4-96A0-B1461EE66B1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6216C823-55A2-47D4-96A0-B1461EE66B1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -37,10 +26,6 @@ Global
 		{C44005EC-E057-4636-96E2-637CA83F5170}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C44005EC-E057-4636-96E2-637CA83F5170}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C44005EC-E057-4636-96E2-637CA83F5170}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CEEC45C7-4965-4D00-A5C8-CC238CF7A615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CEEC45C7-4965-4D00-A5C8-CC238CF7A615}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CEEC45C7-4965-4D00-A5C8-CC238CF7A615}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CEEC45C7-4965-4D00-A5C8-CC238CF7A615}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 	EndGlobalSection
