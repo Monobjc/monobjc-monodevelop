@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<Template Originator="Laurent Etiemble" Created="2010/10/27">
+	<!-- Template Header -->
+	<TemplateConfiguration>
+		<_Name>NSView Subclass</_Name>
+		<Icon>md-monobjc-class</Icon>
+		<_Category>Monobjc</_Category>
+		<LanguageName>F#</LanguageName>
+		<ProjectType>Monobjc</ProjectType>
+		<_Description>A .NET class that inherits NSView and is exposed to the Objective-C runtime.</_Description>
+	</TemplateConfiguration>
+	<!-- Template Content -->
+	<TemplateFiles>
+		<File name="${Name}.fs"><![CDATA[]]></File>
+	</TemplateFiles>
+</Template>

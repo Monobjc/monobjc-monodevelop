@@ -1,20 +1,17 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <Template Originator="Laurent Etiemble" Created="2010/10/27">
-	
 	<!-- Template Header -->
 	<TemplateConfiguration>
-	  <_Name>NSObject Subclass</_Name>
-    	<Icon>md-monobjc-class</Icon>
-	  <_Category>Monobjc</_Category>
-	  <LanguageName>VBNet</LanguageName>
-	  <ProjectType>Monobjc</ProjectType>
-	  <_Description>A .NET class that inherits NSObject and is exposed to the Objective-C runtime.</_Description>
+		<_Name>NSObject Subclass</_Name>
+		<Icon>md-monobjc-class</Icon>
+		<_Category>Monobjc</_Category>
+		<LanguageName>VBNet</LanguageName>
+		<ProjectType>Monobjc</ProjectType>
+		<_Description>A .NET class that inherits NSObject and is exposed to the Objective-C runtime.</_Description>
 	</TemplateConfiguration>
-	
 	<!-- Template Content -->
 	<TemplateFiles>
-	  <File name="${Name}.vb">
-<![CDATA[Imports Monobjc
+		<File name="${Name}.vb"><![CDATA[Imports Monobjc
 Imports Monobjc.Foundation
 
 Namespace ${Namespace}
@@ -46,8 +43,6 @@ Namespace ${Namespace}
 			Me.SendMessageSuper(${Name}Class, "dealloc")
 		End Sub
 	End Class
-End Namespace]]>
-		</File>
+End Namespace]]></File>
 	</TemplateFiles>
-	
 </Template>

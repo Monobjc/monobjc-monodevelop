@@ -4,8 +4,8 @@
 	<TemplateConfiguration>
 		<_Name>Cocoa Library</_Name>
 		<Icon>md-monobjc-project</Icon>
-		<_Category>C#/Monobjc</_Category>
-		<LanguageName>C#</LanguageName>
+		<_Category>F#/Monobjc</_Category>
+		<LanguageName>F#</LanguageName>
 		<_Description>This project builds a Cocoa-based library.</_Description>
 	</TemplateConfiguration>
 	<!-- Template Content -->
@@ -20,6 +20,8 @@
 				<MacOSVersion>MacOS106</MacOSVersion>
 				<MacOSArch>X86</MacOSArch>
 				<MacOSFrameworks>Foundation;AppKit</MacOSFrameworks>
+				<OptionInfer>On</OptionInfer>
+				<OptionStrict>On</OptionStrict>
 			</Options>
 			<References>
 				<Reference type="Gac" refto="System" />
@@ -30,7 +32,7 @@
 				<Reference type="Gac" refto="Monobjc.AppKit, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
 			</References>
 			<Files>
-				<FileTemplateReference TemplateID="MonobjcCSFileNSObject" name="MyClass" />
+				<FileTemplateReference TemplateID="MonobjcVBFileNSObject" name="MyClass" />
 			</Files>
 		</Project>
 	</Combine>

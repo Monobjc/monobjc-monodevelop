@@ -1,36 +1,34 @@
 <?xml version="1.0"?>
 <Template originator="Laurent Etiemble" created="2010/10/27">
-	
-  <!-- Template Header -->
-  <TemplateConfiguration>
-    <_Name>Empty Monobjc Project</_Name>
-    <Icon>md-monobjc-project</Icon>
-    <_Category>Monobjc</_Category>
-    <LanguageName>*</LanguageName>
-    <_Description>An empty project for Monobjc.</_Description>
-  </TemplateConfiguration>
-	
-  <!-- Template Content -->
-  <Combine name="${ProjectName}" directory=".">
-	<Options>
-	  <StartupProject>${ProjectName}</StartupProject>
-	</Options>
-    <Project name="${ProjectName}" directory="." type="Monobjc">
-      <Options>
-        <MacOSVersion>MacOS106</MacOSVersion>
-        <MacOSArch>X86</MacOSArch>
-        <MacOSFrameworks>Foundation;AppKit</MacOSFrameworks>
-      </Options>
-      <References>
-        <Reference type="Gac" refto="System" />
-        <Reference type="Gac" refto="System.Core" />
-        <Reference type="Gac" refto="System.Xml" />
-        <Reference type="Gac" refto="Monobjc, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" SpecificVersion="false" />
-        <Reference type="Gac" refto="Monobjc.Foundation, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" SpecificVersion="false" />
-        <Reference type="Gac" refto="Monobjc.AppKit, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" SpecificVersion="false" />
-      </References>
-      <Files>
-      </Files>
-    </Project>
-  </Combine>
+	<!-- Template Header -->
+	<TemplateConfiguration>
+		<_Name>Empty Monobjc Project</_Name>
+		<Icon>md-monobjc-project</Icon>
+		<_Category>Monobjc</_Category>
+		<LanguageName>*</LanguageName>
+		<_Description>An empty project for Monobjc.</_Description>
+	</TemplateConfiguration>
+	<!-- Template Content -->
+	<Combine name="${ProjectName}" directory=".">
+		<Options>
+			<StartupProject>${ProjectName}</StartupProject>
+		</Options>
+		<Project name="${ProjectName}" directory="." type="Monobjc">
+			<Options>
+				<MacOSVersion>MacOS106</MacOSVersion>
+				<MacOSArch>X86</MacOSArch>
+				<MacOSFrameworks>Foundation;AppKit</MacOSFrameworks>
+			</Options>
+			<References>
+				<Reference type="Gac" refto="System" />
+				<Reference type="Gac" refto="System.Core" />
+				<Reference type="Gac" refto="System.Xml" />
+				<Reference type="Gac" refto="Monobjc, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" SpecificVersion="false" />
+				<Reference type="Gac" refto="Monobjc.Foundation, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" SpecificVersion="false" />
+				<Reference type="Gac" refto="Monobjc.AppKit, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" SpecificVersion="false" />
+			</References>
+			<Files>
+			</Files>
+		</Project>
+	</Combine>
 </Template>

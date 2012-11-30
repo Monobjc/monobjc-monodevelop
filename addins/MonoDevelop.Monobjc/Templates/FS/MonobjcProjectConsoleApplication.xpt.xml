@@ -2,11 +2,11 @@
 <Template originator="Laurent Etiemble" created="2010/10/27">
 	<!-- Template Header -->
 	<TemplateConfiguration>
-		<_Name>Cocoa Library</_Name>
+		<_Name>Console Application</_Name>
 		<Icon>md-monobjc-project</Icon>
-		<_Category>C#/Monobjc</_Category>
-		<LanguageName>C#</LanguageName>
-		<_Description>This project builds a Cocoa-based library.</_Description>
+		<_Category>F#/Monobjc</_Category>
+		<LanguageName>F#</LanguageName>
+		<_Description>This project builds a command line based application.</_Description>
 	</TemplateConfiguration>
 	<!-- Template Content -->
 	<Combine name="${ProjectName}" directory=".">
@@ -14,12 +14,15 @@
 			<StartupProject>${ProjectName}</StartupProject>
 		</Options>
 		<Project name="${ProjectName}" directory="." type="Monobjc">
-			<Options Target="Library" PauseConsoleOutput="False">
-				<MacOSApplicationType>CocoaLibrary</MacOSApplicationType>
+			<Options>
+				<MacOSApplicationType>ConsoleApplication</MacOSApplicationType>
 				<MacOSDevelopmentRegion>en</MacOSDevelopmentRegion>
 				<MacOSVersion>MacOS106</MacOSVersion>
 				<MacOSArch>X86</MacOSArch>
-				<MacOSFrameworks>Foundation;AppKit</MacOSFrameworks>
+				<MacOSFrameworks>Foundation</MacOSFrameworks>
+				<OptionInfer>On</OptionInfer>
+				<OptionStrict>On</OptionStrict>
+				<MyType>Console</MyType>
 			</Options>
 			<References>
 				<Reference type="Gac" refto="System" />
@@ -27,10 +30,9 @@
 				<Reference type="Gac" refto="System.Xml" />
 				<Reference type="Gac" refto="Monobjc, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
 				<Reference type="Gac" refto="Monobjc.Foundation, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
-				<Reference type="Gac" refto="Monobjc.AppKit, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
 			</References>
 			<Files>
-				<FileTemplateReference TemplateID="MonobjcCSFileNSObject" name="MyClass" />
+				<File name="Program.fs"><![CDATA[]]></File>
 			</Files>
 		</Project>
 	</Combine>
