@@ -22,11 +22,9 @@ using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Core.Execution;
-using MonoDevelop.Monobjc.CodeGeneration;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 using System.Collections.Generic;
-using System.IO;
 
 namespace MonoDevelop.Monobjc
 {
@@ -42,7 +40,7 @@ namespace MonoDevelop.Monobjc
 		/// </summary>
 		static MonobjcProject ()
 		{
-			CodeBehindGeneratorLoader.Init ();
+			//CodeBehindGeneratorLoader.Init ();
 		}
 
 		/// <summary>
@@ -126,10 +124,10 @@ namespace MonoDevelop.Monobjc
 #if DEBUG
             LoggingService.LogInfo("MonobjcProject::Dispose");
 #endif
-			this.CodeBehindTracker.Dispose ();
-			this.DependencyTracker.Dispose ();
-			this.XcodeTracker.Dispose ();
-			this.EmbeddingTracker.Dispose ();
+			//this.CodeBehindTracker.Dispose ();
+			//this.DependencyTracker.Dispose ();
+			//this.XcodeTracker.Dispose ();
+			//this.EmbeddingTracker.Dispose ();
 			
 			base.Dispose ();
 		}
@@ -194,10 +192,13 @@ namespace MonoDevelop.Monobjc
 			if (this.CompileTarget != CompileTarget.Exe) {
 				return base.CreateExecutionCommand(configSel, configuration);
 			}
-			
-			MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)configuration;
+
+			if (this.applicationType == MonobjcApplicationType.None) {
+				return base.CreateExecutionCommand(configSel, configuration);
+			}
 
 			// Infer application name from configuration
+			MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)configuration;
 			String applicationName = this.GetApplicationName (configSel);
 			conf.ApplicationName = applicationName;
 			

@@ -388,8 +388,15 @@ namespace MonoDevelop.Monobjc.Utilities
 		{
 			if (project.SigningIdentity != null) {
 	            monitor.BeginTask(GettextCatalog.GetString("Signing bundle..."), 0);
-	            String output = CodeSign.SignApplication(maker.ApplicationDirectory, project.SigningIdentity);
-	            LoggingService.LogInfo("CodeSign returns: " + output);
+
+				using(StringWriter outputWriter = new StringWriter()) {
+					using(StringWriter errorWriter = new StringWriter()) {
+						// TODO: Add Entitlements
+						CodeSign.SignApplication(maker.ApplicationDirectory, project.SigningIdentity, outputWriter, errorWriter);
+						LoggingService.LogInfo("CodeSign returns: " + outputWriter.ToString());
+					}
+				}
+
 	            monitor.EndTask();
 			}
 		}
@@ -405,11 +412,17 @@ namespace MonoDevelop.Monobjc.Utilities
 			if (project.SigningIdentity != null) {
 				String[] files = Directory.GetFiles(maker.MacOSDirectory, "*.dylib");
 	            monitor.BeginTask(GettextCatalog.GetString("Signing native libraries..."), files.Length);
+
 				foreach(String file in files) {
-		            String output = CodeSign.SignApplication(file, project.SigningIdentity);
-		            LoggingService.LogInfo("CodeSign returns: " + output);
+					using(StringWriter outputWriter = new StringWriter()) {
+						using(StringWriter errorWriter = new StringWriter()) {
+							CodeSign.SignApplication(file, project.SigningIdentity, outputWriter, errorWriter);
+							LoggingService.LogInfo("CodeSign returns: " + outputWriter.ToString());
+						}
+					}
 					monitor.Step (1);
 				}
+
 	            monitor.EndTask();
 			}
 		}
@@ -426,8 +439,14 @@ namespace MonoDevelop.Monobjc.Utilities
 	            FilePath definitionFile = project.BaseDirectory.Combine("Definition.plist");
 	            String definitionFilename = File.Exists(definitionFile) ? definitionFile.ToString() : null;
 	            monitor.BeginTask(GettextCatalog.GetString("Signing archive..."), 0);
-	            String output = ProductBuild.ArchiveApplication(maker.ApplicationDirectory, project.ArchiveIdentity, definitionFilename);
-	            LoggingService.LogInfo("ProductBuild returns: " + output);
+
+				using(StringWriter outputWriter = new StringWriter()) {
+					using(StringWriter errorWriter = new StringWriter()) {
+						ProductBuild.ArchiveApplication(maker.ApplicationDirectory, project.ArchiveIdentity, definitionFilename, outputWriter, errorWriter);
+						LoggingService.LogInfo("ProductBuild returns: " + outputWriter.ToString());
+					}
+				}
+
 	            monitor.EndTask();
 			}
 		}

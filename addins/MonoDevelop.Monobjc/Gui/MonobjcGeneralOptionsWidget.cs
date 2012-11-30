@@ -21,7 +21,6 @@ using System.ComponentModel;
 using System.Linq;
 using Gtk;
 using Monobjc.Tools.Utilities;
-using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Ide;
 using MonoDevelop.Core;
 using System.IO;

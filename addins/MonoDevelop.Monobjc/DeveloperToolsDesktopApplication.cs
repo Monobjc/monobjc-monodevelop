@@ -27,10 +27,7 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc
 {
-	public class DeveloperToolsDesktopApplication
-#if MD_2_6 || MD_2_8
-		: DesktopApplication
-#endif
+	public class DeveloperToolsDesktopApplication : DesktopApplication
 	{
         public const String APPLICATION_TITLE = "Apple Developer Tools";
         public const String DEVELOPER_TOOLS = "MonoDevelop.Monobjc.DeveloperTools";
@@ -39,23 +36,19 @@ namespace MonoDevelop.Monobjc
 
 		private static Version developerToolsVersion;
 		
-#if MD_2_6 || MD_2_8
 		private readonly MonobjcProject project;
 
 		public DeveloperToolsDesktopApplication(MonobjcProject project) : base(DEVELOPER_TOOLS, APPLICATION_TITLE, true)
 		{
 			this.project = project;
 		}
-#endif
-		
-#if MD_2_6 || MD_2_8
+
 		public override void Launch(params string[] files)
 		{
 			String arguments = GetArguments(this.project, files[0]);
 			Process.Start("open", arguments);
 		}
-#endif
-		
+
 		public static String DeveloperToolsFolder
 		{
 			get { return PropertyService.Get<String>(DEVELOPER_TOOLS, "/Developer"); }
@@ -102,13 +95,13 @@ namespace MonoDevelop.Monobjc
 				case 3:
 				{
 					String path = Path.Combine(DeveloperToolsFolder, INTERFACE_BUILDER_APPLICATION);
-					arguments.AppendFormat("\"{0}\" \"{1}\"", path, file);
+					//arguments.AppendFormat("\"{0}\" \"{1}\"", path, file);
 					break;
 				}
 				case 4:
 				{
 					String path = Path.Combine(DeveloperToolsFolder, XCODE_APPLICATION);
-					arguments.AppendFormat("\"{0}\" \"{1}\"", path, project.XcodeTracker.ProjectFolder);
+					//arguments.AppendFormat("\"{0}\" \"{1}\"", path, project.XcodeTracker.ProjectFolder);
 					break;
 				}
 				default:

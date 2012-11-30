@@ -22,7 +22,6 @@ using System.Linq;
 using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
-using MonoDevelop.Monobjc.Tracking;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 
@@ -129,39 +128,6 @@ namespace MonoDevelop.Monobjc
         }
 
         /// <summary>
-        /// Initializes this instance.
-        /// </summary>
-        internal void Initialize()
-        {
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::Initialize");
-#endif
-            // Set default values
-            if (String.IsNullOrEmpty(this.OSFrameworks))
-            {
-                this.OSFrameworks = "Foundation;AppKit";
-            }
-            if (this.TargetOSVersion == MacOSVersion.None)
-            {
-                this.TargetOSVersion = MacOSVersion.MacOS106;
-            }
-            if (this.TargetOSArch == MacOSArchitecture.None)
-            {
-                this.TargetOSArch = MacOSArchitecture.X86;
-            }
-            if (String.IsNullOrEmpty(this.DevelopmentRegion))
-            {
-                this.DevelopmentRegion = "en";
-            }
-
-            // Create the trackers
-			this.DependencyTracker = new DependencyProjectTracker(this);
-            this.CodeBehindTracker = new CodeBehindProjectTracker(this);
-            this.XcodeTracker = new XcodeProjectTracker(this);
-			this.EmbeddingTracker = new EmbeddingProjectTracker(this);
-        }
-
-        /// <summary>
         ///   Updates the references.
         /// </summary>
         internal void UpdateReferences()
@@ -198,7 +164,7 @@ namespace MonoDevelop.Monobjc
             }
 
             // Defer the framework loading code generation in a separate thread
-            this.CodeBehindTracker.GenerateFrameworkLoadingCode(names, true);
+            // this.CodeBehindTracker.GenerateFrameworkLoadingCode(names, true);
 
             // Take the list of frameworks and add project references
             List<String> assemblyNames = new List<String>();

@@ -1,4 +1,4 @@
-//
+﻿//
 // This file is part of Monobjc, a .NET/Objective-C bridge
 // Copyright (C) 2007-2011 - Laurent Etiemble
 //
@@ -15,28 +15,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-namespace MonoDevelop.Monobjc
+using System.Net;
+using Mono.Debugging.Soft;
+using MonoDevelop.Monobjc;
+
+namespace MonoDevelop.Monobjc.Debugger
 {
 	/// <summary>
-	/// Define the type of the executable project.
+	/// The debugging start info.
 	/// </summary>
-	public enum MonobjcApplicationType
+	public class MonobjcDebuggerStartInfo : SoftDebuggerStartInfo
 	{
 		/// <summary>
-		/// No type.
+		///   Initializes a new instance of the <see cref = "MonobjcDebuggerStartInfo" /> class.
 		/// </summary>
-		None = 0,
+		/// <param name = "command">The CMD.</param>
+		public MonobjcDebuggerStartInfo (MonobjcExecutionCommand command) : base (new SoftDebuggerListenArgs (command.ApplicationName, IPAddress.Loopback, 0))
+		{
+			this.ExecutionCommand = command;
+		}
+
 		/// <summary>
-		/// The project generates a bundled application.
+		///   Gets or sets the execution command.
 		/// </summary>
-		CocoaApplication,
-		/// <summary>
-		/// The project generates a console application.
-		/// </summary>
-		ConsoleApplication,
-		/// <summary>
-		/// The project generates a cocoa library.
-		/// </summary>
-		CocoaLibrary,
+		/// <value>The execution command.</value>
+		public MonobjcExecutionCommand ExecutionCommand { get; private set; }
 	}
 }

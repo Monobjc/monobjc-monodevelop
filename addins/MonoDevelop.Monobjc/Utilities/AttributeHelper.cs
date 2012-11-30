@@ -16,16 +16,11 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using System.CodeDom;
-using System.Collections;
 using System.Linq;
+using ICSharpCode.NRefactory.Semantics;
+using ICSharpCode.NRefactory.TypeSystem;
 using Mono.Cecil;
-using MonoDevelop.Projects.Dom;
-using MonoDevelop.Core;
-
-#if MD_2_6 || MD_2_8
 using Mono.Collections.Generic;
-#endif
 
 namespace MonoDevelop.Monobjc.Utilities
 {
@@ -60,7 +55,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <returns>
 		///   A <see cref = "IAttribute" /> if it is found; <code>null</code> otherwise.
 		/// </returns>
-		public static IAttribute GetAttribute (IMember member, String attributeFullName)
+		public static IAttribute GetAttribute (IEntity member, String attributeFullName)
 		{
 			return member.Attributes.FirstOrDefault (a => String.Equals (a.AttributeType.FullName, attributeFullName));
 		}
@@ -77,7 +72,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <returns>
 		///   <code>true</code> if it is found; <code>false</code> otherwise.
 		/// </returns>
-		public static bool HasAttribute (IMember member, String attributeFullName)
+		public static bool HasAttribute (IEntity member, String attributeFullName)
 		{
 			return member.Attributes.Any (a => String.Equals (a.AttributeType.FullName, attributeFullName));
 		}
@@ -94,17 +89,17 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <returns>
 		///   The value if the attribute is found; <code>null</code> otherwise.
 		/// </returns>
-		public static String GetAttributeValue (IMember member, String attributeFullName)
+		public static String GetAttributeValue (IEntity member, String attributeFullName)
 		{
 			IAttribute attribute = GetAttribute (member, attributeFullName);
 			if (attribute == null) {
 				return null;
 			}
-			CodePrimitiveExpression expression = attribute.PositionalArguments.FirstOrDefault (pa => typeof(CodePrimitiveExpression).IsAssignableFrom (pa.GetType ())) as CodePrimitiveExpression;
+			ResolveResult expression = attribute.PositionalArguments.FirstOrDefault(pa => pa.IsCompileTimeConstant);
 			if (expression == null) {
 				return null;
 			}
-			return expression.Value.ToString ();
+			return expression.ConstantValue.ToString();
 		}
 		
 		public static bool IsWrappingFramework(String assemblyPath, out bool systemFramework)

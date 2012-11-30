@@ -15,8 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-#if MD_2_6 || MD_2_8
-using System;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui;
 using MonoDevelop.Ide.Desktop;
@@ -48,4 +46,3 @@ namespace MonoDevelop.Monobjc
 		}
 	}
 }
-#endif

@@ -15,28 +15,37 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-namespace MonoDevelop.Monobjc
+using Gtk;
+using MonoDevelop.Ide.Gui.Dialogs;
+
+namespace MonoDevelop.Monobjc.Gui
 {
 	/// <summary>
-	/// Define the type of the executable project.
+	/// The options panel for general.
 	/// </summary>
-	public enum MonobjcApplicationType
+	public class MonobjcProjectOptionsPanel : OptionsPanel
 	{
+		private MonobjcProjectOptionsWidget widget;
+
 		/// <summary>
-		/// No type.
+		///   Creates the panel widget.
 		/// </summary>
-		None = 0,
+		/// <returns></returns>
+		public override Widget CreatePanelWidget ()
+		{
+			if (this.widget == null) {
+				this.widget = new MonobjcProjectOptionsWidget ();
+			}
+			this.widget.Load();
+			return this.widget;
+		}
+		
 		/// <summary>
-		/// The project generates a bundled application.
+		///   Applies the changes.
 		/// </summary>
-		CocoaApplication,
-		/// <summary>
-		/// The project generates a console application.
-		/// </summary>
-		ConsoleApplication,
-		/// <summary>
-		/// The project generates a cocoa library.
-		/// </summary>
-		CocoaLibrary,
+		public override void ApplyChanges ()
+		{
+			this.widget.Save();
+		}
 	}
 }

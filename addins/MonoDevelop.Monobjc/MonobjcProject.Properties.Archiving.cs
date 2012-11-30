@@ -15,28 +15,44 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System;
+using MonoDevelop.Core.Serialization;
+
 namespace MonoDevelop.Monobjc
 {
-	/// <summary>
-	/// Define the type of the executable project.
-	/// </summary>
-	public enum MonobjcApplicationType
+	public partial class MonobjcProject
 	{
+		private bool archive;
+		private String archiveIdentity;
+
 		/// <summary>
-		/// No type.
+		///   Gets or sets the archive.
 		/// </summary>
-		None = 0,
+		/// <value>The archive.</value>
+		[ItemProperty("Archive")]
+		public bool Archive
+		{
+			get { return this.archive; }
+			set
+			{
+				this.archive = value;
+				this.NotifyModified("Archive");
+			}
+		}
+
 		/// <summary>
-		/// The project generates a bundled application.
+		///   Gets or sets the archive identity.
 		/// </summary>
-		CocoaApplication,
-		/// <summary>
-		/// The project generates a console application.
-		/// </summary>
-		ConsoleApplication,
-		/// <summary>
-		/// The project generates a cocoa library.
-		/// </summary>
-		CocoaLibrary,
+		/// <value>The archive identity.</value>
+		[ItemProperty("ArchiveIdentity")]
+		public String ArchiveIdentity
+		{
+			get { return this.archiveIdentity; }
+			set
+			{
+				this.archiveIdentity = value;
+				this.NotifyModified("ArchiveIdentity");
+			}
+		}
 	}
 }

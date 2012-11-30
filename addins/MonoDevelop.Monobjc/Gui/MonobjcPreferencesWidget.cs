@@ -16,15 +16,9 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using Gtk;
-using Monobjc.Tools.Utilities;
-using MonoDevelop.Core.Assemblies;
-using MonoDevelop.Ide;
 using MonoDevelop.Core;
-using MonoDevelop.Monobjc.Tracking;
 
 namespace MonoDevelop.Monobjc.Gui
 {

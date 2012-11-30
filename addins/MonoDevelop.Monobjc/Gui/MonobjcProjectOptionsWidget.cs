@@ -15,28 +15,39 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-namespace MonoDevelop.Monobjc
+using System.ComponentModel;
+using Gtk;
+
+namespace MonoDevelop.Monobjc.Gui
 {
 	/// <summary>
-	/// Define the type of the executable project.
+	///   Widget that provides the project options panel.
 	/// </summary>
-	public enum MonobjcApplicationType
+	[ToolboxItem(true)]
+	public partial class MonobjcProjectOptionsWidget : Bin
 	{
 		/// <summary>
-		/// No type.
+		/// Initializes a new instance of the <see cref="MonoDevelop.Monobjc.Gui.MonobjcProjectOptionsWidget"/> class.
 		/// </summary>
-		None = 0,
+		public MonobjcProjectOptionsWidget ()
+		{
+			this.Build ();
+		}
+
 		/// <summary>
-		/// The project generates a bundled application.
+		///   Loads the specified project.
 		/// </summary>
-		CocoaApplication,
+		/// <param name = "project">The project.</param>
+		public void Load ()
+		{
+		}
+		
 		/// <summary>
-		/// The project generates a console application.
+		///   Saves the specified project.
 		/// </summary>
-		ConsoleApplication,
-		/// <summary>
-		/// The project generates a cocoa library.
-		/// </summary>
-		CocoaLibrary,
+		/// <param name = "project">The project.</param>
+		public void Save ()
+		{
+		}
 	}
 }
