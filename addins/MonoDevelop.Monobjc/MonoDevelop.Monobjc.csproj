@@ -130,6 +130,14 @@
     <Compile Include="MonobjcProject.Properties.Archiving.cs" />
     <Compile Include="Gui\MonobjcExportDialog.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcExportDialog.cs" />
+    <Compile Include="CodeGeneration\BaseCodeBehindGenerator.cs" />
+    <Compile Include="CodeGeneration\CodeBehindGeneratorCodon.cs" />
+    <Compile Include="CodeGeneration\CodeBehindGeneratorLoader.cs" />
+    <Compile Include="CodeGeneration\CSharpCodeBehindGenerator.cs" />
+    <Compile Include="CodeGeneration\ICodeBehindGenerator.cs" />
+    <Compile Include="CodeGeneration\NullCodeBehindGenerator.cs" />
+    <Compile Include="CodeGeneration\VBNetCodeBehindGenerator.cs" />
+    <Compile Include="CodeGeneration\FSharpCodeBehindGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -6,7 +6,7 @@
        description="Development of Mac OS X applications using Monobjc."
        copyright="GPL"
        category="Mac Development"
-       version="0.0.0.0">
+       version="3.5.0.0">
 
   <!-- Header -->
   <Header>
@@ -236,34 +236,6 @@
     </Condition>
   </Extension>
 
-  <!-- Project General Options
-  <Extension path="/MonoDevelop/ProjectModel/Gui/ItemOptionPanels/Common">
-    <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
-      <Section id="MonobjcProjectGeneralOptions"
-               icon="md-monobjc"
-               _label="Monobjc Settings">
-        <Panel id="MonobjcProjectGeneralOptionsPanel"
-               class="MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsPanel"
-               fill="true" />
-      </Section>
-    </Condition>
-  </Extension>
-  -->
-
-  <!-- Project Deployment Options
-  <Extension path="/MonoDevelop/ProjectModel/Gui/ItemOptionPanels/Deployment">
-    <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
-      <Section id="MonobjcProjectDeploymentOptions"
-               icon="md-monobjc"
-               _label="Monobjc Deployment">
-        <Panel id="MonobjcProjectDeploymentOptionsPanel"
-               class="MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsPanel"
-               fill="true" />
-      </Section>
-    </Condition>
-  </Extension>
-  -->
-  
   <!-- Display Bindings
   <Extension path="/MonoDevelop/Ide/DisplayBindings">
     <DisplayBinding id = "MonobjcDeveloperTools"
@@ -272,21 +244,21 @@
   </Extension>
   -->
 
-  <!-- Extension point for CodeBehind
+  <!-- Extension point for CodeBehind -->
   <ExtensionPoint path="/Monobjc/CodeBehindGeneration" name="CodeBehind Generators">
     <ExtensionNode name="CodeBehindGenerator"
                    type="MonoDevelop.Monobjc.CodeGeneration.CodeBehindGeneratorCodon"/>
   </ExtensionPoint>
-  -->
 
-  <!-- Generator for CodeBehind
+  <!-- Generator for CodeBehind -->
   <Extension path="/Monobjc/CodeBehindGeneration">
     <CodeBehindGenerator id="C#"
                          class="MonoDevelop.Monobjc.CodeGeneration.CSharpCodeBehindGenerator"/>
     <CodeBehindGenerator id="VBNet"
                          class="MonoDevelop.Monobjc.CodeGeneration.VBNetCodeBehindGenerator"/>
+    <CodeBehindGenerator id="F#"
+                         class="MonoDevelop.Monobjc.CodeGeneration.FSharpCodeBehindGenerator"/>
   </Extension>
-  -->
 
   <!-- Debugger Engine -->
   <Extension path="/MonoDevelop/Debugging/DebuggerEngines">

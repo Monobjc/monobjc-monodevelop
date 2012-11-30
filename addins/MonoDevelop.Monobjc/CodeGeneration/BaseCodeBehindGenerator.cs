@@ -20,11 +20,11 @@ using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ICSharpCode.NRefactory.TypeSystem;
 using Monobjc.Tools.InterfaceBuilder;
 using MonoDevelop.Core;
 using MonoDevelop.DesignerSupport;
 using MonoDevelop.Monobjc.Utilities;
-using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.Monobjc.CodeGeneration
 {
@@ -33,7 +33,6 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 	/// </summary>
 	public abstract class BaseCodeBehindGenerator : ICodeBehindGenerator
 	{
-		// TODO: Move constant
 		private const String DESIGNER = ".designer";
 
 		/// <summary>
@@ -42,19 +41,19 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <param name = "resolver">The type resolver.</param>
 		/// <param name = "frameworks">The frameworks.</param>
 		/// <returns>The path to the designer file.</returns>
-		public FilePath GenerateFrameworkLoadingCode (ProjectResolver resolver, String[] frameworks)
+		public FilePath GenerateFrameworkLoadingCode (ProjectTypeCache resolver, String[] frameworks)
 		{
-			IEnumerable<IType> entryPoints = resolver.ResolveEntryPoints ();
+			IEnumerable<IType> entryPoints = resolver.GetEntryPoints ();
 			IType entryPoint = entryPoints.SingleOrDefault ();
 			if (entryPoint != null) {
-				IMethod method = entryPoint.Methods.SingleOrDefault (m => m.IsStatic && m.Name == "Main");
+				IMethod method = resolver.GetMainMethod (entryPoint);
 				if (method != null) {
 					// Get the start line of the method
 					DomRegion region = method.BodyRegion;
-					int startLine = region.Start.Line;
+					int startLine = region.BeginLine;
 
 					// Load the entry point file
-					String fileName = entryPoint.CompilationUnit.FileName;
+					String fileName = region.FileName;
 					List<String> lines = File.ReadAllLines (fileName).ToList ();
 
 					// Search for desginer region indices
@@ -105,28 +104,29 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <param name = "className">Name of the class.</param>
 		/// <param name = "enumerable">The class descriptions.</param>
 		/// <returns>The path to the designer file.</returns>
-		public FilePath GenerateCodeBehindCode (ProjectResolver resolver, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable)
+		public FilePath GenerateCodeBehindCode (ProjectTypeCache resolver, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable)
 		{
-			FilePath designerFile;
+			FilePath designerFile = null;
 			String defaultNamespace;
 			MonobjcProject project = resolver.Project;
 
 			LoggingService.LogInfo ("Generate designer code for '" + className + "'");
 
 			IType type = resolver.ResolvePartialType (className);
-			if (type != null && type.CompilationUnit != null && type.CompilationUnit.FileName != FilePath.Null) {
-				if (type.CompilationUnit.FileName.Extension == ".dll") {
+			FilePath mainFile = resolver.GetMainFile (type);
+			if (mainFile != FilePath.Null) {
+				if (mainFile.Extension == ".dll") {
 					LoggingService.LogInfo ("Skipping " + className + " as it comes from a DLL");
 					return FilePath.Null;
 				}
-				
-				if (type.SourceProject != resolver.Project) {
+
+				if (!resolver.IsInProject (type)) {
 					LoggingService.LogInfo ("Skipping " + className + " as it comes from another project");
 					return FilePath.Null;
 				}
-				
+
 				// The filname is based on the compilation unit parent folder and the type name
-				FilePath parentDirectory = type.CompilationUnit.FileName.ParentDirectory;
+				FilePath parentDirectory = mainFile.ParentDirectory;
 				FilePath filename = project.LanguageBinding.GetFileName (type.Name + DESIGNER);
 				designerFile = parentDirectory.Combine (filename);
 				defaultNamespace = type.Namespace;
@@ -139,7 +139,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			}
 
 			LoggingService.LogInfo ("Put designer code in '" + designerFile + "'");
-
+			
 			// Create the compilation unit
 			CodeCompileUnit ccu = new CodeCompileUnit ();
 			CodeNamespace ns = new CodeNamespace (defaultNamespace);
@@ -158,7 +158,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			foreach (IBOutletDescriptor outlet in enumerable.SelectMany(d => d.Outlets)) {
 				IType outletType = resolver.ResolvePartialType (outlet.ClassName);
 				outletType = outletType ?? resolver.ResolvePartialType ("id");
-				outletType = outletType ?? new DomType ("System.IntPtr");
+				outletType = outletType ?? resolver.ResolveType (typeof(IntPtr));
 
 				LoggingService.LogInfo ("Resolving outlet '" + outlet.Name + "' of type '" + outlet.ClassName + "' => '" + outletType.FullName + "'");
 
@@ -172,7 +172,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			foreach (IBActionDescriptor action in enumerable.SelectMany(d => d.Actions)) {
 				IType argumentType = resolver.ResolvePartialType (action.Argument);
 				argumentType = argumentType ?? resolver.ResolvePartialType ("id");
-				argumentType = argumentType ?? new DomType ("System.IntPtr");
+				argumentType = argumentType ?? resolver.ResolveType (typeof(IntPtr));
 
 				LoggingService.LogInfo ("Resolving action '" + action.Message + "' with argument '" + action.Argument + "' => '" + argumentType.FullName + "'");
 
@@ -193,12 +193,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			ns.Types.Add (typeDeclaration);
 
 			// Write the result
-#if MD_2_6
-            writer.Write(ccu, designerFile);
-#endif
-#if MD_2_8
-            writer.WriteFile(designerFile, ccu);
-#endif
+			writer.WriteFile (designerFile, ccu);
 
 			return designerFile;
 		}

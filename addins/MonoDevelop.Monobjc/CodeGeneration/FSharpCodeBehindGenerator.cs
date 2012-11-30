@@ -23,9 +23,9 @@ using ICSharpCode.NRefactory.TypeSystem;
 namespace MonoDevelop.Monobjc.CodeGeneration
 {
 	/// <summary>
-	///   C# implementation for a code-behind generator.
+	///   VBNet implementation for a code-behind generator.
 	/// </summary>
-	public class CSharpCodeBehindGenerator : BaseCodeBehindGenerator
+	public class FSharpCodeBehindGenerator : BaseCodeBehindGenerator
 	{
 		/// <summary>
 		///   Determines whether a line is a region delimiter.
@@ -37,10 +37,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// </returns>
 		protected override bool IsDesignerRegionDelimiter (String line, bool start)
 		{
-			if (start) {
-				return (line.Contains ("#region") && line.Contains ("Monobjc Generated Code"));
-			}
-			return (line.Contains ("#endregion"));
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
@@ -50,35 +47,43 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <returns>A list of lines for the code.</returns>
 		protected override IEnumerable<String> GenerateFrameworkLoadingcode (String[] frameworks)
 		{
-			List<String> lines = new List<String> ();
-
-			lines.Add ("			#region --- Monobjc Generated Code ---");
-			lines.Add ("			//");
-			lines.Add ("			// DO NOT ALTER OR REMOVE");
-			lines.Add ("			//");
-			foreach (String framework in frameworks) {
-				lines.Add ("			ObjectiveCRuntime.LoadFramework(\"" + framework + "\");");
-			}
-			lines.Add ("			#endregion");
-
-			return lines;
+			throw new NotImplementedException();
 		}
 
 		/// <summary>
-		/// Generates the partial method for an action.
+		///   Generates the partial method for an action.
 		/// </summary>
 		/// <param name = "message">The message.</param>
 		/// <param name = "argumentType">Type of the argument.</param>
 		/// <returns>The type member.</returns>
 		protected override CodeTypeMember GenerateActionPartialMethod (string message, IType argumentType)
 		{
-			String selector = message;
-			String name = GenerateMethodName (selector);
-
-			// Partial method are only possible by using a snippet of code as CodeDom does not handle them
-			CodeSnippetTypeMember method = new CodeSnippetTypeMember ("partial void " + name + "(" + argumentType.Name + " sender);" + Environment.NewLine);
-
-			return method;
+			throw new NotImplementedException();
+		}
+		
+		/// <summary>
+		/// Generates the "GetInstanceVariable" statement.
+		/// </summary>
+		/// <returns>The "GetInstanceVariable" statement.</returns>
+		/// <param name="thisRef">This reference.</param>
+		/// <param name="typeRef">Type reference.</param>
+		/// <param name="nameRef">Name reference.</param>
+		protected override CodeStatement GenerateGetInstanceVariableStatement (CodeThisReferenceExpression thisRef, CodeTypeReference typeRef, CodePrimitiveExpression nameRef)
+		{
+			throw new NotImplementedException();
+		}
+		
+		/// <summary>
+		/// Generates the "SetInstanceVariable" statement.
+		/// </summary>
+		/// <returns>The "SetInstanceVariable" statement.</returns>
+		/// <param name="thisRef">This reference.</param>
+		/// <param name="typeRef">Type reference.</param>
+		/// <param name="nameRef">Name reference.</param>
+		/// <param name="valueRef">Value reference</param>
+		protected override CodeExpression GenerateSetInstanceVariableStatement (CodeThisReferenceExpression thisRef, CodeTypeReference typeRef, CodePrimitiveExpression nameRef, CodePropertySetValueReferenceExpression valueRef)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
