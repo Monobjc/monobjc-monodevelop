@@ -58,6 +58,9 @@ all: $(MONODEVELOP_APP)
 	(PKG_CONFIG_PATH=$(MD_CONFIG_PATH) $(XBUILD))
 
 clean:
+	for i in $(MONOBJC_ADDINS); do \
+		$(CAT) $(ADDINS_DIR)/$$i/$$i.xml > $(ADDINS_DIR)/$$i/addin.xml; \
+	done
 	$(RMRF) "$(BUILD_DIR)"
 	$(RMRF) "$(DIST_DIR)"
 
