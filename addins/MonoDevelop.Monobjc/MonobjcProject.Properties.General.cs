@@ -33,7 +33,6 @@ namespace MonoDevelop.Monobjc
 		private FilePath entitlements;
 		private String osFrameworks;
 		private MacOSVersion targetOSVersion;
-		private MacOSArchitecture targetOSArch;
 		private bool signing;
 		private String signingIdentity;
 
@@ -130,18 +129,6 @@ namespace MonoDevelop.Monobjc
 			set {
 				this.targetOSVersion = value;
 				this.NotifyModified ("MacOSVersion");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the target OS arch.
-		/// </summary>
-		[ItemProperty("MacOSArch")]
-		public MacOSArchitecture TargetOSArch {
-			get { return this.targetOSArch; }
-			set {
-				this.targetOSArch = value;
-				this.NotifyModified ("MacOSArch");
 			}
 		}
 

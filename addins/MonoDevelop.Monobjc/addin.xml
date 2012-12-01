@@ -6,7 +6,7 @@
        description="Development of Mac OS X applications using Monobjc."
        copyright="GPL"
        category="Mac Development"
-       version="3.5.0.0">
+       version="0.0.0.0">
 
   <!-- Header -->
   <Header>
@@ -213,7 +213,7 @@
   </Extension>
   -->
 
-  <!-- General Options
+  <!-- General Options -->
   <Extension path = "/MonoDevelop/Ide/GlobalOptionsDialog/Preferences">
     <Section id = "MonobjcGeneralOptions"
              icon="md-monobjc"
@@ -221,7 +221,6 @@
 			 class="MonoDevelop.Monobjc.Gui.MonobjcPreferencesPanel"
 			 fill="true"/>
   </Extension>
-  -->
 
   <!-- Project Options -->
   <Extension path="/MonoDevelop/ProjectModel/Gui/ItemOptionPanels/Common">

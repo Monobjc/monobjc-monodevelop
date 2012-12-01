@@ -32,7 +32,7 @@ namespace MonoDevelop.Monobjc.Gui
 		private global::Gtk.TreeView treeviewFrameworks;
 		private global::Gtk.Label labelGeneral;
 		private global::Gtk.Table tableEmbedding;
-		private global::Gtk.ComboBox comboboxArch;
+		private global::Gtk.ComboBox comboboxArchitectures;
 		private global::Gtk.HBox hboxAdditionalAssemblies;
 		private global::Gtk.ScrolledWindow scrolledwindowAdditionnalAssemblies;
 		private global::Gtk.TreeView treeviewAdditionnalAssemblies;
@@ -53,7 +53,7 @@ namespace MonoDevelop.Monobjc.Gui
 		private global::Gtk.Button buttonRemoveExcludedAssemblies;
 		private global::Gtk.Label labelAdditionnalAssemblies;
 		private global::Gtk.Label labelAdditionnalLibraries;
-		private global::Gtk.Label labelArch;
+		private global::Gtk.Label labelArchitectures;
 		private global::Gtk.Label labelEmbeddedFrameworks;
 		private global::Gtk.Label labelEmbeddingDescription;
 		private global::Gtk.Label labelExcludedAssemblies;
@@ -95,7 +95,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.checkbuttonBundleSigning = new global::Gtk.CheckButton ();
 			this.checkbuttonBundleSigning.CanFocus = true;
 			this.checkbuttonBundleSigning.Name = "checkbuttonBundleSigning";
-			this.checkbuttonBundleSigning.Label = global::Mono.Unix.Catalog.GetString ("Bundle Signing");
+			this.checkbuttonBundleSigning.Label = global::Mono.Unix.Catalog.GetString ("Code Sign Application");
 			this.checkbuttonBundleSigning.DrawIndicator = true;
 			this.checkbuttonBundleSigning.UseUnderline = true;
 			this.tableGeneral.Add (this.checkbuttonBundleSigning);
@@ -109,7 +109,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.checkbuttonEntitlements = new global::Gtk.CheckButton ();
 			this.checkbuttonEntitlements.CanFocus = true;
 			this.checkbuttonEntitlements.Name = "checkbuttonEntitlements";
-			this.checkbuttonEntitlements.Label = global::Mono.Unix.Catalog.GetString ("Use Entitlements");
+			this.checkbuttonEntitlements.Label = global::Mono.Unix.Catalog.GetString ("Use Entitlements (requires an App.entitlements file)");
 			this.checkbuttonEntitlements.DrawIndicator = true;
 			this.checkbuttonEntitlements.UseUnderline = true;
 			this.tableGeneral.Add (this.checkbuttonEntitlements);
@@ -390,10 +390,10 @@ namespace MonoDevelop.Monobjc.Gui
 			this.tableEmbedding.ColumnSpacing = ((uint)(6));
 			this.tableEmbedding.BorderWidth = ((uint)(12));
 			// Container child tableEmbedding.Gtk.Table+TableChild
-			this.comboboxArch = global::Gtk.ComboBox.NewText ();
-			this.comboboxArch.Name = "comboboxArch";
-			this.tableEmbedding.Add (this.comboboxArch);
-			global::Gtk.Table.TableChild w26 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.comboboxArch]));
+			this.comboboxArchitectures = global::Gtk.ComboBox.NewText ();
+			this.comboboxArchitectures.Name = "comboboxArchitectures";
+			this.tableEmbedding.Add (this.comboboxArchitectures);
+			global::Gtk.Table.TableChild w26 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.comboboxArchitectures]));
 			w26.TopAttach = ((uint)(1));
 			w26.BottomAttach = ((uint)(2));
 			w26.LeftAttach = ((uint)(1));
@@ -680,12 +680,12 @@ namespace MonoDevelop.Monobjc.Gui
 			w94.XOptions = ((global::Gtk.AttachOptions)(4));
 			w94.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableEmbedding.Gtk.Table+TableChild
-			this.labelArch = new global::Gtk.Label ();
-			this.labelArch.Name = "labelArch";
-			this.labelArch.Xalign = 1F;
-			this.labelArch.LabelProp = global::Mono.Unix.Catalog.GetString ("Target Mac OS Architecture:");
-			this.tableEmbedding.Add (this.labelArch);
-			global::Gtk.Table.TableChild w95 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelArch]));
+			this.labelArchitectures = new global::Gtk.Label ();
+			this.labelArchitectures.Name = "labelArchitectures";
+			this.labelArchitectures.Xalign = 1F;
+			this.labelArchitectures.LabelProp = global::Mono.Unix.Catalog.GetString ("Target Mac OS Architectures:");
+			this.tableEmbedding.Add (this.labelArchitectures);
+			global::Gtk.Table.TableChild w95 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelArchitectures]));
 			w95.TopAttach = ((uint)(1));
 			w95.BottomAttach = ((uint)(2));
 			w95.XOptions = ((global::Gtk.AttachOptions)(4));
@@ -819,7 +819,7 @@ namespace MonoDevelop.Monobjc.Gui
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.checkbuttonCombineArtwork = new global::Gtk.CheckButton ();
 			this.checkbuttonCombineArtwork.CanFocus = true;
-			this.checkbuttonCombineArtwork.Name = "checkbutton1";
+			this.checkbuttonCombineArtwork.Name = "checkbuttonCombineArtwork";
 			this.checkbuttonCombineArtwork.Label = global::Mono.Unix.Catalog.GetString ("Combine High Resolution Artwork");
 			this.checkbuttonCombineArtwork.DrawIndicator = true;
 			this.checkbuttonCombineArtwork.UseUnderline = true;
@@ -831,8 +831,9 @@ namespace MonoDevelop.Monobjc.Gui
 			w107.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.checkbuttonEncryptArtwork = new global::Gtk.CheckButton ();
+			this.checkbuttonEncryptArtwork.Sensitive = false;
 			this.checkbuttonEncryptArtwork.CanFocus = true;
-			this.checkbuttonEncryptArtwork.Name = "checkbutton2";
+			this.checkbuttonEncryptArtwork.Name = "checkbuttonEncryptArtwork";
 			this.checkbuttonEncryptArtwork.Label = global::Mono.Unix.Catalog.GetString ("Encrypt Artwork");
 			this.checkbuttonEncryptArtwork.DrawIndicator = true;
 			this.checkbuttonEncryptArtwork.UseUnderline = true;

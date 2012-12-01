@@ -141,6 +141,8 @@
     <Compile Include="MonobjcProject.Properties.Advanced.cs" />
     <Compile Include="MonobjcBuildExtension.cs" />
     <Compile Include="Utilities\BundleGenerator.cs" />
+    <Compile Include="Gui\MonobjcProjectOptionsWidget.Values.cs" />
+    <Compile Include="Gui\MonobjcProjectOptionsWidget.General.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

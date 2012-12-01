@@ -15,8 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Gtk;
+using Monobjc.Tools.Utilities;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -32,13 +35,39 @@ namespace MonoDevelop.Monobjc.Gui
 		public MonobjcProjectOptionsWidget ()
 		{
 			this.Build ();
+
+			IList<String> identities = KeyChainAccess.SigningIdentities;
+
+			// General tab
+			this.comboboxType.Model = new ListStore (typeof(string), typeof(MonobjcApplicationType));
+			this.comboboxApplicationCategory.Model = new ListStore (typeof(string), typeof(string));
+			this.comboboxOSVersion.Model = new ListStore (typeof(string), typeof(MacOSVersion));
+			this.comboboxSigningCertificates.Model = new ListStore (typeof(String), typeof(String));
+			this.treeviewFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
+
+			FillTypes(this.comboboxType);
+			FillApplicationCategories(this.comboboxApplicationCategory);
+			FillMacOSVersion(this.comboboxOSVersion);
+			FillCertificates(this.comboboxSigningCertificates, identities, "(None)");
+
+			// Embedding tab
+			this.comboboxArchitectures.Model = new ListStore (typeof(string), typeof(MacOSArchitecture));
+			FillArchitectures(this.comboboxArchitectures);
+
+			// Packaging tab
+			this.comboboxPackagingCertificates.Model = new ListStore (typeof(String), typeof(String));
+			FillCertificates(this.comboboxPackagingCertificates, identities, "(None)");
+
+			// Advanced tab
+			this.comboboxDevelopmentRegion.Model = new ListStore (typeof(string), typeof(String));
+
 		}
 
 		/// <summary>
 		///   Loads the specified project.
 		/// </summary>
 		/// <param name = "project">The project.</param>
-		public void Load ()
+		public void Load (MonobjcProject project)
 		{
 		}
 		
@@ -46,7 +75,7 @@ namespace MonoDevelop.Monobjc.Gui
 		///   Saves the specified project.
 		/// </summary>
 		/// <param name = "project">The project.</param>
-		public void Save ()
+		public void Save (MonobjcProject project)
 		{
 		}
 	}

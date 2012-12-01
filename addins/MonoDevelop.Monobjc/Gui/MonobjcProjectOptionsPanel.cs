@@ -23,7 +23,7 @@ namespace MonoDevelop.Monobjc.Gui
 	/// <summary>
 	/// The options panel for general.
 	/// </summary>
-	public class MonobjcProjectOptionsPanel : OptionsPanel
+	public class MonobjcProjectOptionsPanel : ItemOptionsPanel
 	{
 		private MonobjcProjectOptionsWidget widget;
 
@@ -36,7 +36,7 @@ namespace MonoDevelop.Monobjc.Gui
 			if (this.widget == null) {
 				this.widget = new MonobjcProjectOptionsWidget ();
 			}
-			this.widget.Load();
+			this.widget.Load (this.ConfiguredProject as MonobjcProject);
 			return this.widget;
 		}
 		
@@ -45,7 +45,7 @@ namespace MonoDevelop.Monobjc.Gui
 		/// </summary>
 		public override void ApplyChanges ()
 		{
-			this.widget.Save();
+			this.widget.Save(this.ConfiguredProject as MonobjcProject);
 		}
 	}
 }

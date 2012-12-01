@@ -117,7 +117,8 @@ namespace MonoDevelop.Monobjc.Gui
 			versionStore.AppendValues ("Mac OS X 10.5", MacOSVersion.MacOS105);
 			versionStore.AppendValues ("Mac OS X 10.6", MacOSVersion.MacOS106);
 			versionStore.AppendValues ("Mac OS X 10.7", MacOSVersion.MacOS107);
-			
+			versionStore.AppendValues ("Mac OS X 10.8", MacOSVersion.MacOS108);
+
 			// Set the base folder and retrieve the main NIB file
 			this.filechooserbuttonMainNib.SetCurrentFolder (project.BaseDirectory.ToString ());
 			String mainNibFile = project.MainNibFile.ToString () ?? project.BaseDirectory.Combine ("en.lproj", "MainMenu.xib");

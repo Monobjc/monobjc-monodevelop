@@ -17,16 +17,30 @@
 //
 using System;
 using MonoDevelop.Core.Serialization;
+using Monobjc.Tools.Utilities;
 
 namespace MonoDevelop.Monobjc
 {
 	public partial class MonobjcProject
 	{
+		private MacOSArchitecture targetOSArch;
 		private String embeddedFrameworks;
 		private String additionalAssemblies;
 		private String excludedAssemblies;
 		private String additionalLibraries;
 
+		/// <summary>
+		///   Gets or sets the target OS arch.
+		/// </summary>
+		[ItemProperty("MacOSArch")]
+		public MacOSArchitecture TargetOSArch {
+			get { return this.targetOSArch; }
+			set {
+				this.targetOSArch = value;
+				this.NotifyModified ("MacOSArch");
+			}
+		}
+		
 		/// <summary>
 		///   Gets or sets the embedded frameworks.
 		/// </summary>
