@@ -158,17 +158,17 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsInDevelopmentRegion (MonobjcProject project, ProjectFile file)
 		{
 			String developmentRegion = project.DevelopmentRegion;
-#if DEBUG
-			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 1 " + developmentRegion);
-#endif
+
+			IDELogger.Log("BuildHelper::IsInDevelopmentRegion 1 - '{0}'", developmentRegion);
+
 			FilePath baseDirectory = project.BaseDirectory;
 			FilePath localizedFolder = baseDirectory.Combine (developmentRegion + ".lproj");
 			FilePath ibFile = file.FilePath;
-#if DEBUG
-			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 2 " + baseDirectory);
-			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 3 " + localizedFolder);
-			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 4 " + ibFile + " " + ibFile.ParentDirectory);
-#endif
+
+			IDELogger.Log("BuildHelper::IsInDevelopmentRegion 2 - '{0}'", baseDirectory);
+			IDELogger.Log("BuildHelper::IsInDevelopmentRegion 3 - '{0}'", localizedFolder);
+			IDELogger.Log("BuildHelper::IsInDevelopmentRegion 4 - '{0}' '{1}'", ibFile, ibFile.ParentDirectory);
+
 			if (ibFile.ParentDirectory.Equals (baseDirectory)) {
 				return true;
 			}
@@ -364,7 +364,8 @@ namespace MonoDevelop.Monobjc.Utilities
 			String mainAssembly = project.GetOutputFileName (configuration);
 			Assembly assembly = Assembly.ReflectionOnlyLoadFrom (mainAssembly);
 			AssemblyName assemblyName = assembly.GetName ();
-			
+
+			// TODO: Review to use new parameters
 			pListGenerator.DevelopmentRegion = project.DevelopmentRegion;
 			pListGenerator.ApplicationName = assemblyName.Name;
 			pListGenerator.Identifier = project.DefaultNamespace;

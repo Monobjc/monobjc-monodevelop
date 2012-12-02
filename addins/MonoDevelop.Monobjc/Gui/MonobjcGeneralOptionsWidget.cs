@@ -44,7 +44,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.filechooserbuttonBundleIcon.SelectionChanged += this.HandleFilechooserbuttonBundleIconhandleSelectionChanged;
 			this.comboboxVersion.Changed += this.HandleComboboxVersionhandleChanged;
 			
-			this.comboboxType.Model = new ListStore (typeof(string), typeof(MonobjcApplicationType));
+			this.comboboxType.Model = new ListStore (typeof(string), typeof(MonobjcProjectType));
 			this.comboboxRegion.Model = new ListStore (typeof(string), typeof(String));
 			this.comboboxVersion.Model = new ListStore (typeof(string), typeof(MacOSVersion));
 			this.treeviewFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
@@ -80,9 +80,9 @@ namespace MonoDevelop.Monobjc.Gui
 			// Load the application type
 			ListStore typeStore = (ListStore)this.comboboxType.Model;
 			typeStore.Clear ();
-			typeStore.AppendValues (GettextCatalog.GetString ("Cocoa Application"), MonobjcApplicationType.CocoaApplication);
-			typeStore.AppendValues (GettextCatalog.GetString ("Console Application"), MonobjcApplicationType.ConsoleApplication);
-			typeStore.AppendValues (GettextCatalog.GetString ("Cocoa Library"), MonobjcApplicationType.CocoaLibrary);
+			typeStore.AppendValues (GettextCatalog.GetString ("Cocoa Application"), MonobjcProjectType.CocoaApplication);
+			typeStore.AppendValues (GettextCatalog.GetString ("Console Application"), MonobjcProjectType.ConsoleApplication);
+			typeStore.AppendValues (GettextCatalog.GetString ("Cocoa Library"), MonobjcProjectType.CocoaLibrary);
 			this.ApplicationType = project.ApplicationType;
 			
 			// Load the development languages
@@ -169,12 +169,12 @@ namespace MonoDevelop.Monobjc.Gui
 		/// <summary>
 		/// Gets or sets the application type.
 		/// </summary>
-		private MonobjcApplicationType ApplicationType {
+		private MonobjcProjectType ApplicationType {
 			get {
 				TreeIter iter;
 				if (this.comboboxType.GetActiveIter (out iter)) {
 					ListStore listStore = (ListStore)this.comboboxType.Model;
-					return (MonobjcApplicationType)listStore.GetValue (iter, 1);
+					return (MonobjcProjectType)listStore.GetValue (iter, 1);
 				}
 				throw new InvalidOperationException ("Unrecognized Application type");
 			}
@@ -183,7 +183,7 @@ namespace MonoDevelop.Monobjc.Gui
 				TreeIter iter;
 				store.GetIterFirst (out iter);
 				do {
-					if ((MonobjcApplicationType)store.GetValue (iter, 1) == value) {
+					if ((MonobjcProjectType)store.GetValue (iter, 1) == value) {
 						this.comboboxType.SetActiveIter (iter);
 						return;
 					}
@@ -310,15 +310,15 @@ namespace MonoDevelop.Monobjc.Gui
 		private void HandleComboboxVersionhandleChanged (object sender, EventArgs e)
 		{
 			switch (this.ApplicationType) {
-			case MonobjcApplicationType.CocoaApplication:
+			case MonobjcProjectType.CocoaApplication:
 				this.filechooserbuttonMainNib.Sensitive = true;
 				this.filechooserbuttonBundleIcon.Sensitive = true;
 				break;
-			case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				this.filechooserbuttonMainNib.Sensitive = false;
 				this.filechooserbuttonBundleIcon.Sensitive = false;
 				break;
-			case MonobjcApplicationType.CocoaLibrary:
+			case MonobjcProjectType.CocoaLibrary:
 				this.filechooserbuttonMainNib.Sensitive = false;
 				this.filechooserbuttonBundleIcon.Sensitive = false;
 				break;

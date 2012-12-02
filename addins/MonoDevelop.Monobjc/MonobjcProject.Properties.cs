@@ -70,9 +70,8 @@ namespace MonoDevelop.Monobjc
 		/// </summary>
 		internal void Initialize ()
 		{
-#if DEBUG
-			LoggingService.LogInfo("MonobjcProject::Initialize");
-#endif
+			IDELogger.Log ("MonobjcProject::Initialize");
+
 			// Set default values
 			if (String.IsNullOrEmpty (this.OSFrameworks)) {
 				this.OSFrameworks = "Foundation;AppKit";

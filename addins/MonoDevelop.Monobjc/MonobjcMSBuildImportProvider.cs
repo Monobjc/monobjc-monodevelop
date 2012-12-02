@@ -44,13 +44,13 @@ namespace MonoDevelop.Monobjc
 			}
 			
 			switch (project.ApplicationType) {
-			case MonobjcApplicationType.CocoaApplication:
+			case MonobjcProjectType.CocoaApplication:
 				imports.Add (importCocoaApplication);
 				break;
-			case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				imports.Add (importConsoleApplication);
 				break;
-			case MonobjcApplicationType.CocoaLibrary:
+			case MonobjcProjectType.CocoaLibrary:
 				imports.Add (importCocoaLibrary);
 				break;
 			}

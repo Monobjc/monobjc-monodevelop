@@ -25,27 +25,39 @@ namespace MonoDevelop.Monobjc
 {
 	public partial class MonobjcProject
 	{
-		private MonobjcApplicationType applicationType;
+		private MonobjcProjectType projectType;
+		private String applicationCategory;
 		private String bundleId;
 		private String bundleVersion;
 		private FilePath mainNibFile;
 		private FilePath bundleIcon;
 		private FilePath entitlements;
-		private String osFrameworks;
 		private MacOSVersion targetOSVersion;
 		private bool signing;
 		private String signingIdentity;
+		private bool useEntitlements;
+		private String osFrameworks;
 
 		/// <summary>
-		///   Gets or sets the application type.
+		/// Gets or sets the application type.
 		/// </summary>
 		[ItemProperty("MacOSApplicationType")]
-		public MonobjcApplicationType ApplicationType {
-			get { return this.applicationType; }
+		public MonobjcProjectType ApplicationType {
+			get { return this.projectType; }
 			set {
-				this.applicationType = value;
+				this.projectType = value;
 				this.NotifyModified ("MacOSApplicationType");
 			}
+		}
+
+		/// <summary>
+		/// Gets or sets the application category.
+		/// </summary>
+		[ItemProperty("MacOSApplicationCategory")]
+		public String ApplicationCategory
+		{
+			get { return this.applicationCategory; }
+			set { this.applicationCategory = value; }
 		}
 
 		/// <summary>
@@ -97,30 +109,6 @@ namespace MonoDevelop.Monobjc
 		}
 		
 		/// <summary>
-		///   Gets or sets the bundle icon.
-		/// </summary>
-		[ProjectPathItemProperty("MacOSEntitlements")]
-		public FilePath Entitlements {
-			get { return this.entitlements; }
-			set {
-				this.entitlements = value;
-				this.NotifyModified ("MacOSEntitlements");
-			}
-		}
-		
-		/// <summary>
-		///   Gets or sets the OS frameworks.
-		/// </summary>
-		[ItemProperty("MacOSFrameworks")]
-		public string OSFrameworks {
-			get { return this.osFrameworks; }
-			set {
-				this.osFrameworks = value;
-				this.NotifyModified ("MacOSFrameworks");
-			}
-		}
-
-		/// <summary>
 		///   Gets or sets the target OS version.
 		/// </summary>
 		[ItemProperty("MacOSVersion")]
@@ -155,5 +143,29 @@ namespace MonoDevelop.Monobjc
 				this.NotifyModified ("SigningIdentity");
 			}
 		}
+
+		/// <summary>
+		///   Gets or sets the signing.
+		/// </summary>
+		[ItemProperty("UseEntitlements")]
+		public bool UseEntitlements {
+			get { return this.useEntitlements; }
+			set {
+				this.useEntitlements = value;
+				this.NotifyModified ("UseEntitlements");
+			}
+		}
+
+		/// <summary>
+		///   Gets or sets the OS frameworks.
+		/// </summary>
+		[ItemProperty("MacOSFrameworks")]
+		public string OSFrameworks {
+			get { return this.osFrameworks; }
+			set {
+				this.osFrameworks = value;
+				this.NotifyModified ("MacOSFrameworks");
+			}
+		}		
 	}
 }

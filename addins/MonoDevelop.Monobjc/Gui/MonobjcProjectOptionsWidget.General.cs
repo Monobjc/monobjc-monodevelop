@@ -16,6 +16,8 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 
@@ -23,54 +25,65 @@ namespace MonoDevelop.Monobjc.Gui
 {
 	public partial class MonobjcProjectOptionsWidget
 	{
-		public MonobjcApplicationType ApplicationType {
-			get { throw new NotImplementedException(); }
-			set { }
+		public MonobjcProjectType ApplicationType {
+			get { return GetSingleValue<MonobjcProjectType> (this.comboboxType); }
+			set { SetSingleValue (this.comboboxType, value); }
+		}
+		
+		public String ApplicationCategory {
+			get { return GetSingleValue<String> (this.comboboxApplicationCategory); }
+			set { SetSingleValue (this.comboboxApplicationCategory, value); }
 		}
 		
 		public String BundleId {
-			get { throw new NotImplementedException(); }
-			set { }
+			get { return this.entryBundleIdentifier.Text; }
+			set { this.entryBundleIdentifier.Text = value; }
 		}
 		
 		public String BundleVersion {
-			get { throw new NotImplementedException(); }
-			set { }
+			get { return this.entryBundleVersion.Text; }
+			set { this.entryBundleVersion.Text = value; }
 		}
 		
 		public FilePath MainNibFile {
-			get { throw new NotImplementedException(); }
-			set { }
+			get { return this.filechooserbuttonMainNib.Filename; }
+			set { this.filechooserbuttonMainNib.SetFilename (value); }
 		}
 		
 		public FilePath BundleIcon {
-			get { throw new NotImplementedException(); }
-			set { }
-		}
-		
-		public FilePath Entitlements {
-			get { throw new NotImplementedException(); }
-			set { }
-		}
-		
-		public string OSFrameworks {
-			get { throw new NotImplementedException(); }
-			set { }
+			get { return this.filechooserbuttonBundleIcon.Filename; }
+			set { this.filechooserbuttonBundleIcon.SetFilename (value); }
 		}
 		
 		public MacOSVersion TargetOSVersion {
-			get { throw new NotImplementedException(); }
-			set { }
+			get { return GetSingleValue<MacOSVersion> (this.comboboxOSVersion); }
+			set { SetSingleValue (this.comboboxOSVersion, value); }
 		}
 		
 		public bool Signing {
-			get { throw new NotImplementedException(); }
-			set { }
+			get { return this.checkbuttonSigning.Active; }
+			set { this.checkbuttonSigning.Active = value; }
 		}
 		
 		public String SigningIdentity {
-			get { throw new NotImplementedException(); }
-			set { }
+			get { return GetSingleValue<String> (this.comboboxSigningCertificates); }
+			set { SetSingleValue (this.comboboxSigningCertificates, value); }
+		}
+
+		public bool UseEntitlements {
+			get { return this.checkbuttonEntitlements.Active; }
+			set { this.checkbuttonEntitlements.Active = value; }
+		}
+
+		public String OSFrameworks {
+			get {
+				String[] values = GetMultipleValues<String> (this.treeviewFrameworks).ToArray ();
+				return String.Join(";", values);
+			}
+			set {
+				IEnumerable<String> values = (value ?? "Foundation;AppKit").Split (' ', ',', ';');
+				SetMultipleValues (this.treeviewFrameworks, values);
+			}
 		}
 	}
 }

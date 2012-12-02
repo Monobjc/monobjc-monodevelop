@@ -17,6 +17,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using Monobjc.Tools.Utilities;
@@ -126,9 +127,8 @@ namespace MonoDevelop.Monobjc
 		/// </summary>
 		internal void UpdateReferences ()
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::UpdateReferences");
-#endif
+			IDELogger.Log ("MonobjcProject::UpdateReferences");
+
 			// Retrieve assembly from the project
 			IEnumerable<ProjectReference> references = new List<ProjectReference> (this.References.Where (BuildHelper.IsMonobjcReference));
 			String[] names = this.OSFrameworks.Split (';');
@@ -173,8 +173,7 @@ namespace MonoDevelop.Monobjc
 				if (matching != null && matching.Count () == 1) {
 					SystemAssembly specificAssembly = matching.First ();
 					ProjectReference reference = new ProjectReference (specificAssembly);
-					// TRICK:
-					// Starting with Monobjc 4.0, assembly references use a fixed numbering scheme (ex: 10.7.0.0)
+					// NOTE: Starting with Monobjc 4.0, assembly references use a fixed numbering scheme (ex: 10.7.0.0)
 					// In this case, we can require a specific version
 					reference.SpecificVersion = specificAssembly.Version.EndsWith (".0.0");
 					this.References.Add (reference);

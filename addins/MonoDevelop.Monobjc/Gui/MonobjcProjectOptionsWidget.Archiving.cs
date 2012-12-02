@@ -15,28 +15,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-namespace MonoDevelop.Monobjc
+using System;
+
+namespace MonoDevelop.Monobjc.Gui
 {
-	/// <summary>
-	/// Define the type of the executable project.
-	/// </summary>
-	public enum MonobjcApplicationType
+	public partial class MonobjcProjectOptionsWidget
 	{
-		/// <summary>
-		/// No type.
-		/// </summary>
-		None = 0,
-		/// <summary>
-		/// The project generates a bundled application.
-		/// </summary>
-		CocoaApplication,
-		/// <summary>
-		/// The project generates a console application.
-		/// </summary>
-		ConsoleApplication,
-		/// <summary>
-		/// The project generates a cocoa library.
-		/// </summary>
-		CocoaLibrary,
+		private bool Archive {
+			get { return this.checkbuttonArchivePackage.Active; }
+			set { 
+				this.checkbuttonArchivePackage.Active = value;
+				this.HandleCheckbuttonArchivePackageToggled(this, EventArgs.Empty);
+			}
+		}
+		
+		private String ArchiveIdentity {
+			get { return GetSingleValue<String>(this.comboboxPackagingCertificates); }
+			set { SetSingleValue(this.comboboxPackagingCertificates, value); }
+		}
 	}
 }

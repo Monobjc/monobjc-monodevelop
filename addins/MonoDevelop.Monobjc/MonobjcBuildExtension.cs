@@ -80,7 +80,7 @@ namespace MonoDevelop.Monobjc
 
 			// Call specific implementation
 			switch (project.ApplicationType) {
-			case MonobjcApplicationType.CocoaApplication:
+			case MonobjcProjectType.CocoaApplication:
 				{
 					MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)project.GetConfiguration (configuration);
 		
@@ -121,12 +121,12 @@ namespace MonoDevelop.Monobjc
 					}
 				}
 				break;
-			case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				{
 					// Do nothing
 				}
 				break;
-			case MonobjcApplicationType.CocoaLibrary:
+			case MonobjcProjectType.CocoaLibrary:
 				{
 					// The IB files
 					if (project.GetIBFiles (BuildHelper.EmbeddedInterfaceDefinition, null).Where (p => p.NeedsBuilding).Any ()) {
@@ -160,7 +160,7 @@ namespace MonoDevelop.Monobjc
 			
 			// Call specific implementation
 			switch (project.ApplicationType) {
-			case MonobjcApplicationType.CocoaApplication:
+			case MonobjcProjectType.CocoaApplication:
 				{
 					MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)project.GetConfiguration (configuration);
 		
@@ -174,12 +174,12 @@ namespace MonoDevelop.Monobjc
 					Directory.Delete (maker.ApplicationDirectory, true);
 				}
 				break;
-			case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				{
 					// Do nothing
 				}
 				break;
-			case MonobjcApplicationType.CocoaLibrary:
+			case MonobjcProjectType.CocoaLibrary:
 				{
 					// Do nothing
 				}
@@ -204,17 +204,17 @@ namespace MonoDevelop.Monobjc
 			}
 			
 			switch (project.ApplicationType) {
-			case MonobjcApplicationType.CocoaApplication:
+			case MonobjcProjectType.CocoaApplication:
 				{
 					BuildHelper.EmbedXIBFiles (monitor, project, result);
 				}
 				break;
-			case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				{
 					// Do nothing
 				}
 				break;
-			case MonobjcApplicationType.CocoaLibrary:
+			case MonobjcProjectType.CocoaLibrary:
 				{
 					BuildHelper.EmbedXIBFiles (monitor, project, result);
 				}
@@ -239,18 +239,18 @@ namespace MonoDevelop.Monobjc
 			}
 
 			switch (project.ApplicationType) {
-			case MonobjcApplicationType.CocoaApplication:
+			case MonobjcProjectType.CocoaApplication:
 				{
 					MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)project.GetConfiguration (configuration);
 					//BundleGenerator.Generate (monitor, result, project, configuration, conf.OutputDirectory, false);
 				}
 				break;
-			case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				{
 					// Do nothing
 				}
 				break;
-			case MonobjcApplicationType.CocoaLibrary:
+			case MonobjcProjectType.CocoaLibrary:
 				{
 					// Do nothing
 				}

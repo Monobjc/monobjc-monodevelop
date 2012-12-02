@@ -48,9 +48,7 @@ namespace MonoDevelop.Monobjc
 		/// </summary>
 		public MonobjcProject ()
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::ctor0");
-#endif
+			IDELogger.Log ("MonobjcProject::ctor0");
 			this.Initialize ();
 		}
 
@@ -60,9 +58,7 @@ namespace MonoDevelop.Monobjc
 		/// <param name = "languageName">Name of the language.</param>
 		public MonobjcProject (String languageName) : base(languageName)
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::ctor1");
-#endif
+			IDELogger.Log ("MonobjcProject::ctor1");
 			this.Initialize ();
 		}
 
@@ -75,15 +71,14 @@ namespace MonoDevelop.Monobjc
 		public MonobjcProject (String language, ProjectCreateInformation info, XmlElement projectOptions) : base(language, info, projectOptions)
 		{
 			XmlNode node;
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::ctor3");
-#endif
+			IDELogger.Log ("MonobjcProject::ctor3");
+
 			node = projectOptions.SelectSingleNode ("MacOSApplicationType");
 			if (node != null) {
 #if DEBUG
 				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
 #endif
-				this.ApplicationType = (MonobjcApplicationType)Enum.Parse (typeof(MonobjcApplicationType), node.InnerText);
+				this.ApplicationType = (MonobjcProjectType)Enum.Parse (typeof(MonobjcProjectType), node.InnerText);
 			}
 
 			node = projectOptions.SelectSingleNode ("MacOSDevelopmentRegion");
@@ -142,9 +137,8 @@ namespace MonoDevelop.Monobjc
 		/// </summary>
 		public override void Dispose ()
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::Dispose");
-#endif
+			IDELogger.Log ("MonobjcProject::Dispose");
+
 			//this.CodeBehindTracker.Dispose ();
 			//this.DependencyTracker.Dispose ();
 			//this.XcodeTracker.Dispose ();
@@ -214,7 +208,7 @@ namespace MonoDevelop.Monobjc
 				return base.CreateExecutionCommand (configSel, configuration);
 			}
 
-			if (this.applicationType == MonobjcApplicationType.None) {
+			if (this.projectType == MonobjcProjectType.None) {
 				return base.CreateExecutionCommand (configSel, configuration);
 			}
 
@@ -224,14 +218,14 @@ namespace MonoDevelop.Monobjc
 			conf.ApplicationName = applicationName;
 			
 			switch (this.ApplicationType) {
-			case MonobjcApplicationType.CocoaApplication:
+			case MonobjcProjectType.CocoaApplication:
 				{
 					// Create the bundle maker to get the path to the runtime
 					BundleMaker maker = new BundleMaker (applicationName, conf.OutputDirectory);
 					conf.Runtime = maker.Runtime;
 				}
 				break;
-			case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				{
 					// Build the command line
 					conf.Runtime = FileProvider.GetPath (this.TargetOSVersion, "runtime");
@@ -255,9 +249,8 @@ namespace MonoDevelop.Monobjc
 		/// <param name = "e">The <see cref = "ProjectFileEventArgs" /> instance containing the event data.</param>
 		protected override void OnFileAddedToProject (ProjectFileEventArgs e)
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::OnFileAddedToProject");
-#endif
+			IDELogger.Log ("MonobjcProject::OnFileAddedToProject '{0}'", e);
+
 			// Migrate "Page" to "InterfaceDefinition" when project is loaded
 			foreach (ProjectFileEventInfo info in e) {
 				ProjectFile projectFile = info.ProjectFile;
@@ -275,9 +268,7 @@ namespace MonoDevelop.Monobjc
 		/// <param name = "e">The <see cref = "ProjectFileEventArgs" /> instance containing the event data.</param>
 		protected override void OnFileChangedInProject (ProjectFileEventArgs e)
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::OnFileChangedInProject");
-#endif
+			IDELogger.Log ("MonobjcProject::OnFileChangedInProject '{0}'", e);
 			base.OnFileChangedInProject (e);
 		}
 		

@@ -23,6 +23,7 @@ using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using Monobjc.Tools.External;
+using System.IO;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -32,15 +33,17 @@ namespace MonoDevelop.Monobjc.Gui
 		{
 			ListStore store = (ListStore)combobox.Model;
 			store.Clear ();
-			store.AppendValues (GettextCatalog.GetString ("Cocoa Application"), MonobjcApplicationType.CocoaApplication);
-			store.AppendValues (GettextCatalog.GetString ("Console Application"), MonobjcApplicationType.ConsoleApplication);
-			store.AppendValues (GettextCatalog.GetString ("Cocoa Library"), MonobjcApplicationType.CocoaLibrary);
+			store.AppendValues (GettextCatalog.GetString ("Cocoa Application"), MonobjcProjectType.CocoaApplication);
+			store.AppendValues (GettextCatalog.GetString ("Console Application"), MonobjcProjectType.ConsoleApplication);
+			store.AppendValues (GettextCatalog.GetString ("Cocoa Library"), MonobjcProjectType.CocoaLibrary);
 		}
-
-		private static void FillApplicationCategories(ComboBox combobox)
+		
+		private static void FillApplicationCategories (ComboBox combobox)
 		{
 			ListStore store = (ListStore)combobox.Model;
 			store.Clear ();
+
+			store.AppendValues (GettextCatalog.GetString ("(None)"), "");
 
 			store.AppendValues (GettextCatalog.GetString ("Business"), "public.app-category.business");
 			store.AppendValues (GettextCatalog.GetString ("Developer Tools"), "public.app-category.developer-tools");
@@ -84,17 +87,17 @@ namespace MonoDevelop.Monobjc.Gui
 			store.AppendValues (GettextCatalog.GetString ("Trivia Games"), "public.app-category.trivia-games");
 			store.AppendValues (GettextCatalog.GetString ("Word Games"), "public.app-category.word-games");
 		}
-
+		
 		private static void FillMacOSVersion (ComboBox combobox)
 		{
 			ListStore store = (ListStore)combobox.Model;
 			store.Clear ();
-			store.AppendValues ("Mac OS X 10.5", MacOSVersion.MacOS105);
-			store.AppendValues ("Mac OS X 10.6", MacOSVersion.MacOS106);
-			store.AppendValues ("Mac OS X 10.7", MacOSVersion.MacOS107);
-			store.AppendValues ("Mac OS X 10.8", MacOSVersion.MacOS108);
+			store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.5"), MacOSVersion.MacOS105);
+			store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.6"), MacOSVersion.MacOS106);
+			store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.7"), MacOSVersion.MacOS107);
+			store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.8"), MacOSVersion.MacOS108);
 		}
-
+		
 		private static  void FillFrameworks (TreeView treeView, MonobjcProject project)
 		{
 			TreeStore store = (TreeStore)treeView.Model;
@@ -116,7 +119,7 @@ namespace MonoDevelop.Monobjc.Gui
 			MacOSArchitecture architecture = Lipo.GetArchitecture ("/usr/bin/mono");
 			if (architecture == MacOSArchitecture.None) {
 				// Humm, there was an error, so add only i386
-				store.AppendValues ("Intel i386 (32 bits)", MacOSArchitecture.X86);
+				store.AppendValues (GettextCatalog.GetString ("Intel i386 (32 bits)"), MacOSArchitecture.X86);
 			} else {
 				LoggingService.LogInfo ("Detected architecture " + architecture);
 			}
@@ -130,22 +133,22 @@ namespace MonoDevelop.Monobjc.Gui
 			
 			// Add all the detected architectures
 			if ((architecture & MacOSArchitecture.X86) == MacOSArchitecture.X86) {
-				store.AppendValues ("Intel i386 (32 bits)", MacOSArchitecture.X86);
+				store.AppendValues (GettextCatalog.GetString ("Intel i386 (32 bits)"), MacOSArchitecture.X86);
 			}
 			if ((architecture & MacOSArchitecture.X8664) == MacOSArchitecture.X8664) {
-				store.AppendValues ("Intel x86_64 (64 bits)", MacOSArchitecture.X8664);
+				store.AppendValues (GettextCatalog.GetString ("Intel x86_64 (64 bits)"), MacOSArchitecture.X8664);
 			}
 			if ((architecture & MacOSArchitecture.Intel) == MacOSArchitecture.Intel) {
-				store.AppendValues ("Intel (32/64 bits)", MacOSArchitecture.Intel);
+				store.AppendValues (GettextCatalog.GetString ("Intel (32/64 bits)"), MacOSArchitecture.Intel);
 			}
 			if (((architecture & MacOSArchitecture.PPC) == MacOSArchitecture.PPC) && !isXcode4) {
-				store.AppendValues ("Power PC (32 bits)", MacOSArchitecture.PPC);
+				store.AppendValues (GettextCatalog.GetString ("Power PC (32 bits)"), MacOSArchitecture.PPC);
 			}
 			if (((architecture & MacOSArchitecture.Universal32) == MacOSArchitecture.Universal32) && !isXcode4) {
-				store.AppendValues ("Universal PowerPC/Intel (32 bits)", MacOSArchitecture.Universal32);
+				store.AppendValues (GettextCatalog.GetString ("Universal PowerPC/Intel (32 bits)"), MacOSArchitecture.Universal32);
 			}
 			if (((architecture & MacOSArchitecture.Universal3264) == MacOSArchitecture.Universal3264) && !isXcode4) {
-				store.AppendValues ("Universal PowerPC/Intel (32/64 bits)", MacOSArchitecture.Universal3264);
+				store.AppendValues (GettextCatalog.GetString ("Universal PowerPC/Intel (32/64 bits)"), MacOSArchitecture.Universal3264);
 			}
 		}
 
@@ -155,7 +158,7 @@ namespace MonoDevelop.Monobjc.Gui
 			store.Clear ();
 			
 			// Append first default value
-			store.AppendValues (defaultText, String.Empty);
+			store.AppendValues (GettextCatalog.GetString (defaultText), String.Empty);
 			
 			if (identities.Count == 0) {
 				return;
@@ -167,7 +170,57 @@ namespace MonoDevelop.Monobjc.Gui
 			}
 		}
 
-		private T GetSingleValue<T> (ComboBox comboBox)
+		private static void FillDevelopmentRegions (ComboBox combobox, MonobjcProject project)
+		{
+			ListStore store = (ListStore)combobox.Model;
+			store.Clear ();
+			FilePath projectDir = project.BaseDirectory;
+			String[] folders = Directory.GetDirectories (projectDir, "*.lproj");
+			if (folders.Length == 0) {
+				store.AppendValues (GettextCatalog.GetString ("en"), "en");
+			} else {
+				foreach (String folder in folders) {
+					if (!Directory.Exists (folder)) {
+						continue;
+					}
+					String language = System.IO.Path.GetFileNameWithoutExtension (folder);
+					store.AppendValues (GettextCatalog.GetString (language), language);
+				}
+			}
+		}
+	
+		private static TreeViewColumn GetFrameworkTableColumn (ToggledHandler handler)
+		{
+			TreeViewColumn column = new TreeViewColumn ();
+			
+			CellRendererToggle checkRenderer = new CellRendererToggle ();
+			checkRenderer.Toggled += handler;
+			column.PackStart (checkRenderer, false);
+			column.AddAttribute (checkRenderer, "active", 0);
+			
+			CellRendererPixbuf iconRenderer = new CellRendererPixbuf ();
+			column.PackStart (iconRenderer, false);
+			column.AddAttribute (iconRenderer, "pixbuf", 1);
+			
+			CellRendererText nameRenderer = new CellRendererText ();
+			column.PackStart (nameRenderer, true);
+			column.AddAttribute (nameRenderer, "text", 2);
+
+			return column;
+		}
+
+		private static TreeViewColumn GetListTableColumn(EditedHandler handler)
+		{
+			TreeViewColumn column = new TreeViewColumn ();
+			CellRendererText renderer = new CellRendererText ();
+			renderer.Editable = true;
+			renderer.Edited += handler;
+			column.PackStart (renderer, true);
+			column.AddAttribute (renderer, "text", 0);
+			return column;
+		}
+
+		private static T GetSingleValue<T> (ComboBox comboBox)
 		{
 			TreeIter iter;
 			if (comboBox.GetActiveIter (out iter)) {
@@ -177,13 +230,13 @@ namespace MonoDevelop.Monobjc.Gui
 			throw new InvalidOperationException ();
 		}
 		
-		private void SetSingleValue<T> (ComboBox comboBox, T value)
+		private static void SetSingleValue<T> (ComboBox comboBox, T value)
 		{
 			ListStore store = (ListStore)comboBox.Model;
 			TreeIter iter;
 			store.GetIterFirst (out iter);
 			do {
-				if (((T)store.GetValue (iter, 1)).Equals(value)) {
+				if (((T)store.GetValue (iter, 1)).Equals (value)) {
 					comboBox.SetActiveIter (iter);
 					return;
 				}
@@ -192,6 +245,101 @@ namespace MonoDevelop.Monobjc.Gui
 				}
 			} while (true);
 			comboBox.Active = 0;
+		}
+		
+		private static IEnumerable<T> GetMultipleValues<T> (TreeView treeView)
+		{
+			IList<T> result = new List<T> ();
+			TreeStore store = (TreeStore)treeView.Model;
+			TreeIter iter;
+			if (!store.GetIterFirst (out iter)) {
+				return null;
+			}
+			do {
+				T value = (T)store.GetValue (iter, 2);
+				bool state = (bool)store.GetValue (iter, 0);
+				if (state) {
+					result.Add (value);
+				}
+				
+				if (!store.IterNext (ref iter)) {
+					break;
+				}
+			} while (true);
+			return result;
+		}
+		
+		private static void SetMultipleValues<T> (TreeView treeView, IEnumerable<T> values)
+		{
+			TreeStore store = (TreeStore)treeView.Model;
+			TreeIter iter;
+			if (!store.GetIterFirst (out iter)) {
+				return;
+			}
+			do {
+				T value = (T)store.GetValue (iter, 2);
+				bool state = values.Contains<T> (value);
+				store.SetValue (iter, 0, state);
+				
+				if (!store.IterNext (ref iter)) {
+					break;
+				}
+			} while (true);
+		}
+		
+		private static String ExtractFromModel (TreeModel model)
+		{
+			TreeStore store = (TreeStore)model;
+			TreeIter iter;
+			if (!store.GetIterFirst (out iter)) {
+				return String.Empty;
+			}
+			IList<String > parts = new List<String> ();
+			do {
+				String part = (String)store.GetValue (iter, 0);
+				parts.Add (part);
+				if (!store.IterNext (ref iter)) {
+					break;
+				}
+			} while (true);
+			return String.Join (":", parts.ToArray ());
+		}
+		
+		private static String InjectIntoModel (TreeModel model, String value)
+		{
+			TreeStore store = (TreeStore)model;
+			store.Clear ();
+			if (value != null) {
+				String[] parts = value.Split (new []{':'}, StringSplitOptions.RemoveEmptyEntries);
+				foreach (String part in parts) {
+					store.AppendValues (part);
+				}
+			}
+			return String.Empty;
+		}
+
+		private static void EditItem (TreeView treeView, EditedArgs args)
+		{
+			TreeStore store = (TreeStore)treeView.Model;
+			
+			TreeIter iter;
+			store.GetIter(out iter, new TreePath(args.Path));
+			store.SetValue(iter, 0, args.NewText);
+		}
+		
+		private static void AddEmptyItem(TreeView treeView, String defaultValue) {
+			TreeStore store = (TreeStore)treeView.Model;
+			store.AppendValues(defaultValue);
+		}
+		
+		private static void RemoveItem(TreeView treeView) {
+			TreeIter iter;
+			if (!treeView.Selection.GetSelected(out iter)) {
+				return;
+			}
+			
+			TreeStore store = (TreeStore)treeView.Model;
+			store.Remove (ref iter);
 		}
 	}
 }
