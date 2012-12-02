@@ -174,19 +174,17 @@
     <DataType class="MonoDevelop.Monobjc.MonobjcProjectConfiguration" />
   </Extension>
 
-  <!-- ProjectService Extensions
+  <!-- ProjectService Extensions -->
   <Extension path="/MonoDevelop/ProjectModel/ProjectServiceExtensions">
     <Class class="MonoDevelop.Monobjc.MonobjcBuildExtension"
            insertafter="MidStep" />
   </Extension>
-  -->
 
-  <!-- ExecutionHandlers
+  <!-- ExecutionHandlers -->
   <Extension path="/MonoDevelop/Core/ExecutionHandlers">
     <ExecutionHandler id="MonobjcExecutionHandler"
                       class="MonoDevelop.Monobjc.MonobjcExecutionHandler"/>
   </Extension>
-   -->
 
   <!-- Commands
   <Extension path="/MonoDevelop/Ide/Commands/Project">
