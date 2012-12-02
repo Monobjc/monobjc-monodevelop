@@ -16,8 +16,6 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using MonoDevelop.Monobjc.Utilities;
-using MonoDevelop.Projects.Dom.Parser;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
@@ -62,17 +60,6 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// </summary>
 		/// <value>The project.</value>
 		protected MonobjcProject Project { get; private set; }
-		
-		/// <summary>
-		/// Gets a value indicating whether this project ready.
-		/// </summary>
-		/// <value>
-		/// <c>true</c> if this project ready; otherwise, <c>false</c>.
-		/// </value>
-		protected bool IsDomReady
-		{
-			get { return ProjectDomService.HasDom(this.Project); }
-		}
 		
 		/// <summary>
 		/// Handles the FileAddedToProject event of the Project control.

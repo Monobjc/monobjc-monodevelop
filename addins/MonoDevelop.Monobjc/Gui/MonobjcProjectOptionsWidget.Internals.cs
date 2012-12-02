@@ -253,7 +253,7 @@ namespace MonoDevelop.Monobjc.Gui
 			TreeStore store = (TreeStore)treeView.Model;
 			TreeIter iter;
 			if (!store.GetIterFirst (out iter)) {
-				return null;
+				return result;
 			}
 			do {
 				T value = (T)store.GetValue (iter, 2);

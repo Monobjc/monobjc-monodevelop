@@ -24,6 +24,7 @@ using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Core.Serialization;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
+using MonoDevelop.Monobjc.Tracking;
 
 namespace MonoDevelop.Monobjc
 {
@@ -34,12 +35,17 @@ namespace MonoDevelop.Monobjc
 		/// <summary>
 		///   Gets or sets the code behind tracker.
 		/// </summary>
+		internal ResolverProjectTracker ResolverTracker { get; private set; }
+
+		/// <summary>
+		///   Gets or sets the code behind tracker.
+		/// </summary>
 		//internal CodeBehindProjectTracker CodeBehindTracker { get; private set; }
-		
+
 		/// <summary>
 		///   Gets or sets the dependency tracker.
 		/// </summary>
-		//internal DependencyProjectTracker DependencyTracker { get; private set; }
+		internal DependencyProjectTracker DependencyTracker { get; private set; }
 		
 		/// <summary>
 		///   Gets or sets the embedding tracker.
@@ -73,6 +79,7 @@ namespace MonoDevelop.Monobjc
 			IDELogger.Log ("MonobjcProject::Initialize");
 
 			// Set default values
+			// TODO: Add more defaults
 			if (String.IsNullOrEmpty (this.OSFrameworks)) {
 				this.OSFrameworks = "Foundation;AppKit";
 			}
@@ -85,6 +92,13 @@ namespace MonoDevelop.Monobjc
 			if (String.IsNullOrEmpty (this.DevelopmentRegion)) {
 				this.DevelopmentRegion = "en";
 			}
+
+			// Create the trackers
+			this.ResolverTracker = new ResolverProjectTracker (this);
+			this.DependencyTracker = new DependencyProjectTracker (this);
+			//this.CodeBehindTracker = new CodeBehindProjectTracker(this);
+			//this.XcodeTracker = new XcodeProjectTracker(this);
+			//this.EmbeddingTracker = new EmbeddingProjectTracker(this);
 		}
 	}
 }

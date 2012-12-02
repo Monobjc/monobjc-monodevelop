@@ -49,8 +49,8 @@ namespace MonoDevelop.Monobjc
 		{
 			MonobjcExecutionCommand executionCommand = (MonobjcExecutionCommand)command;
 
-			LoggingService.LogInfo ("Execute command: {0} {1}", executionCommand.CommandString, executionCommand.CommandLineParameters);
-			
+			IDELogger.Log("Execute command: {0} {1}", executionCommand.CommandString, executionCommand.CommandLineParameters);
+
 			ProcessService service = Runtime.ProcessService;
 			IProcessAsyncOperation operation = service.StartConsoleProcess (executionCommand.CommandString, executionCommand.CommandLineParameters, null, executionCommand.EnvironmentVariables, console, null);
 			

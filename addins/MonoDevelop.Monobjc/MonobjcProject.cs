@@ -22,6 +22,7 @@ using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Core.Execution;
+using MonoDevelop.Monobjc.CodeGeneration;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 using System.Collections.Generic;
@@ -40,7 +41,7 @@ namespace MonoDevelop.Monobjc
 		/// </summary>
 		static MonobjcProject ()
 		{
-			//CodeBehindGeneratorLoader.Init ();
+			CodeBehindGeneratorLoader.Init ();
 		}
 
 		/// <summary>
@@ -139,11 +140,12 @@ namespace MonoDevelop.Monobjc
 		{
 			IDELogger.Log ("MonobjcProject::Dispose");
 
+			this.ResolverTracker.Dispose();
+			this.DependencyTracker.Dispose ();
 			//this.CodeBehindTracker.Dispose ();
-			//this.DependencyTracker.Dispose ();
 			//this.XcodeTracker.Dispose ();
 			//this.EmbeddingTracker.Dispose ();
-			
+
 			base.Dispose ();
 		}
 

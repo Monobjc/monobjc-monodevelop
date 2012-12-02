@@ -32,11 +32,6 @@ namespace MonoDevelop.Monobjc.Utilities
 		private List<TypeSystemService.ProjectContentWrapper> projectWrappers;
 		private IDictionary<String, IType> typeCache = new Dictionary<String, IType> ();
 
-		static ProjectTypeCache ()
-		{
-			TypeSystemService.ProjectUnloaded += HandleProjectUnloaded;
-		}
-
 		/// <summary>
 		/// Get the type cache for the given project.
 		/// </summary>
@@ -44,10 +39,19 @@ namespace MonoDevelop.Monobjc.Utilities
 		{
 			ProjectTypeCache cache;
 			if (!caches.TryGetValue (project, out cache)) {
+				IDELogger.Log ("ProjectTypeCache::Get -- create cache for {0}", project.Name);
 				cache = new ProjectTypeCache (project);
 				caches.Add (project, cache);
 			}
 			return cache;
+		}
+
+		/// <summary>
+		/// Remove the specified project type cache.
+		/// </summary>
+		public static void Remove (MonobjcProject project)
+		{
+			caches.Remove(project);
 		}
 		
 		/// <summary>
@@ -68,6 +72,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		public void ClearCache ()
 		{
+			IDELogger.Log ("ProjectTypeCache::ClearCache");
 			this.typeCache.Clear ();
 		}
 		
@@ -76,6 +81,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		public void RecomputeReferences ()
 		{
+			IDELogger.Log ("ProjectTypeCache::RecomputeReferences");
 			this.typeCache.Clear ();
 			this.projectWrappers = null;
 		}
@@ -160,6 +166,8 @@ namespace MonoDevelop.Monobjc.Utilities
 				className = "Id";
 			}
 			
+			IDELogger.Log ("ProjectTypeCache::ResolvePartialType -- resolving {0}", className);
+
 			Func<ITypeDefinition, bool> matcher, attributeMatcher;
 			IEnumerable<ITypeDefinition> typeDefinitions;
 			ITypeDefinition typeDefinition = null;
@@ -239,14 +247,6 @@ namespace MonoDevelop.Monobjc.Utilities
 				return false;
 			}
 			return definition.ParentAssembly.Equals (this.ProjectWrapper.Compilation.MainAssembly);
-		}
-
-		private static void HandleProjectUnloaded (object sender, ProjectUnloadEventArgs e)
-		{
-			MonobjcProject project = e.Project as MonobjcProject;
-			if (project != null) {
-				caches.Remove (project);
-			}
 		}
 
 		private TypeSystemService.ProjectContentWrapper ProjectWrapper {

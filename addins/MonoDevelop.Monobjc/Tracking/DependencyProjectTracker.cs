@@ -19,13 +19,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using MonoDevelop.Core;
-using MonoDevelop.Core.ProgressMonitoring;
-using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
-using MonoDevelop.DesignerSupport;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
@@ -34,7 +30,6 @@ namespace MonoDevelop.Monobjc.Tracking
 		private const String DOT_DESIGNER = ".designer";
 		private const String DOT_NIB = ".nib";
 		private const String DOT_XIB = ".xib";
-		
 		private String sourceExtension;
 		private String designerExtension;
 		
@@ -56,24 +51,20 @@ namespace MonoDevelop.Monobjc.Tracking
 				return;
 			}
 			
-			// Collect dependencies
+			// Collect dependencies for each added items
 			List<FilePath> dependencies = new List<FilePath> ();
-			foreach(ProjectFileEventInfo info in e) {
-#if DEBUG
-	            LoggingService.LogInfo("DependencyProjectTracker::AddDependencies -- collecting for:" + info.ProjectFile);
-#endif
-				IEnumerable<FilePath> files = this.GuessDependencies(info.ProjectFile);
+			foreach (ProjectFileEventInfo info in e) {
+				IDELogger.Log("DependencyProjectTracker::HandleFileAddedToProject -- collecting for {0}", info.ProjectFile);
+				IEnumerable<FilePath> files = this.GuessDependencies (info.ProjectFile);
 				if (files != null) {
-					dependencies.AddRange(files);
+					dependencies.AddRange (files);
 				}
 			}
 			
-			// Add dependencies
+			// Add dependencies if needed
 			if (dependencies != null) {
 				foreach (FilePath file in dependencies.Where(f => !this.Project.IsFileInProject(f))) {
-#if DEBUG
-	            	LoggingService.LogInfo("DependencyProjectTracker::AddDependencies -- adding " + file);
-#endif
+					IDELogger.Log("DependencyProjectTracker::HandleFileAddedToProject -- adding {0}", file);
 					this.Project.AddFile (file);
 				}
 			}
@@ -83,11 +74,11 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 			String extension = file.FilePath.Extension;
 			if (extension == this.sourceExtension) {
-				return this.GuessDependenciesForSource(file);
+				return this.GuessDependenciesForSource (file);
 			} else if (extension == DOT_NIB) {
-				return this.GuessDependenciesForIB(file);
+				return this.GuessDependenciesForIB (file);
 			} else if (extension == DOT_XIB) {
-				return this.GuessDependenciesForIB(file);
+				return this.GuessDependenciesForIB (file);
 			}
 			return null;
 		}
@@ -97,11 +88,11 @@ namespace MonoDevelop.Monobjc.Tracking
 			FilePath filePath = file.FilePath;
 			
 			// If the dependant file is being added
-			if (filePath.FileName.EndsWith(this.designerExtension)) {
+			if (filePath.FileName.EndsWith (this.designerExtension)) {
 				FilePath parentName = filePath;
-				parentName = parentName.ToString().Replace(this.designerExtension, this.sourceExtension);
+				parentName = parentName.ToString ().Replace (this.designerExtension, this.sourceExtension);
 				if (File.Exists (parentName)) {
-					if (this.Project.IsFileInProject(parentName)) {
+					if (this.Project.IsFileInProject (parentName)) {
 						file.DependsOn = parentName.FileName;
 					}
 					return new[] { parentName };
@@ -109,7 +100,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 			// If the master file is being added
 			else {
-				FilePath childName = filePath.ChangeExtension(this.designerExtension);
+				FilePath childName = filePath.ChangeExtension (this.designerExtension);
 				if (File.Exists (childName)) {
 					return new[] { childName };
 				}
@@ -125,15 +116,15 @@ namespace MonoDevelop.Monobjc.Tracking
 			FilePath peerName = null;
 			bool depends = false;
 			
-			switch(extension) {
-				// If NIB is added
+			switch (extension) {
+			// If NIB is added, search for XIB
 			case DOT_NIB:
-				peerName = filePath.ChangeExtension(DOT_XIB);
-				depends = this.Project.IsFileInProject(peerName);
+				peerName = filePath.ChangeExtension (DOT_XIB);
+				depends = this.Project.IsFileInProject (peerName);
 				break;
-				// If XIB is added
+			// If XIB is added, search for NIB
 			case DOT_XIB:
-				peerName = filePath.ChangeExtension(DOT_NIB);
+				peerName = filePath.ChangeExtension (DOT_NIB);
 				break;
 			default:
 				break;

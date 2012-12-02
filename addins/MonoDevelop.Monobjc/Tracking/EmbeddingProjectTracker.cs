@@ -57,9 +57,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			foreach (ProjectFileEventInfo info in e) {
 				ProjectFile projectFile = info.ProjectFile;
 				if (BuildHelper.IsEmbeddedXIBFile (projectFile)) {
-#if DEBUG
-					LoggingService.LogInfo("EmbeddingProjectTracker::HandleFileAddedToProject " + projectFile);
-#endif
+					IDELogger.Log ("EmbeddingProjectTracker::HandleFileAddedToProject -- {0}", projectFile);
 					projectFiles.Add (projectFile);
 				}
 			}
@@ -81,6 +79,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			IList<ProjectFile> filesToRemove = new List<ProjectFile> ();
 			foreach (ProjectFileEventInfo info in e) {
 				ProjectFile projectFile = info.ProjectFile;
+				IDELogger.Log ("EmbeddingProjectTracker::HandleFilePropertyChangedInProject -- {0}", projectFile);
 				if (BuildHelper.IsEmbeddedXIBFile (projectFile)) {
 					filesToAdd.Add (projectFile);
 				}
@@ -119,9 +118,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			IEnumerable<FilePair> pairs = this.Project.GetIBFiles (BuildHelper.EmbeddedInterfaceDefinition, null);
 			foreach (FilePair pair in pairs) {
 				if (this.Project.IsFileInProject (pair.Destination)) {
-#if DEBUG
-					LoggingService.LogInfo("EmbeddingProjectTracker::HandleProjectModified " + pair.Destination);
-#endif
+					IDELogger.Log ("EmbeddingProjectTracker::HandleProjectModified -- {0}", pair.Destination);
 					ProjectFile destinationFile = this.Project.GetProjectFile (pair.Destination);
 					this.SetResourceId (destinationFile, pair.Destination);
 				}
@@ -139,9 +136,8 @@ namespace MonoDevelop.Monobjc.Tracking
 				});
 				return;
 			}
-#if DEBUG
-			LoggingService.LogInfo ("EmbeddingProjectTracker::AddEmbedding files " + projectFiles.Count);
-#endif
+
+			IDELogger.Log ("EmbeddingProjectTracker::AddEmbedding -- files={0}", projectFiles.Count);
 			IList<FilePair> pairs = new List<FilePair> ();
 			foreach (ProjectFile projectFile in projectFiles) {
 				FilePair pair = this.Project.GetIBFile (projectFile, BuildHelper.EmbeddedInterfaceDefinition, null);
@@ -150,9 +146,8 @@ namespace MonoDevelop.Monobjc.Tracking
 				}
 				pairs.Add (pair);
 			}
-#if DEBUG
-			LoggingService.LogInfo ("EmbeddingProjectTracker::AddEmbedding pairs " + pairs.Count ());
-#endif
+
+			IDELogger.Log ("EmbeddingProjectTracker::AddEmbedding -- pairs={0}", pairs.Count ());
 			bool modified = false;
 			foreach (FilePair pair in pairs) {
 				// Create file if needed
@@ -206,7 +201,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		private void SetResourceId (ProjectFile destinationFile, FilePath destination)
 		{
 			// Set the resource id (default namepace + name without extension + locale)
-			String resourceId = this.Project.DefaultNamespace + "." + System.IO.Path.GetFileNameWithoutExtension (destination);
+			String resourceId = this.Project.DefaultNamespace + "." + Path.GetFileNameWithoutExtension (destination);
 			FilePath parentDirectory = destinationFile.FilePath.ParentDirectory;
 			if (parentDirectory.Extension == ".lproj") {
 				String parent = parentDirectory.FileNameWithoutExtension;
