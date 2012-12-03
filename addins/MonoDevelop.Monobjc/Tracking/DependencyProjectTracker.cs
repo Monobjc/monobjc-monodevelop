@@ -30,6 +30,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		private const String DOT_DESIGNER = ".designer";
 		private const String DOT_NIB = ".nib";
 		private const String DOT_XIB = ".xib";
+
 		private String sourceExtension;
 		private String designerExtension;
 		
@@ -39,7 +40,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <param name="project">The project.</param>
 		public DependencyProjectTracker (MonobjcProject project) : base(project)
 		{
-			String sourceFile = this.Project.LanguageBinding.GetFileName ("abc");
+			String sourceFile = this.Project.LanguageBinding.GetFileName ("ABC");
 			this.sourceExtension = sourceFile.Substring (3);
 			this.designerExtension = DOT_DESIGNER + this.sourceExtension;
 		}
@@ -57,6 +58,7 @@ namespace MonoDevelop.Monobjc.Tracking
 				IDELogger.Log("DependencyProjectTracker::HandleFileAddedToProject -- collecting for {0}", info.ProjectFile);
 				IEnumerable<FilePath> files = this.GuessDependencies (info.ProjectFile);
 				if (files != null) {
+					// TODO: Handle dependency here
 					dependencies.AddRange (files);
 				}
 			}
@@ -92,7 +94,8 @@ namespace MonoDevelop.Monobjc.Tracking
 				FilePath parentName = filePath;
 				parentName = parentName.ToString ().Replace (this.designerExtension, this.sourceExtension);
 				if (File.Exists (parentName)) {
-					if (this.Project.IsFileInProject (parentName)) {
+					// TODO: Move dependency upward
+					if (this.Project.IsFileInProject (parentName) && String.IsNullOrEmpty(file.DependsOn)) {
 						file.DependsOn = parentName.FileName;
 					}
 					return new[] { parentName };
