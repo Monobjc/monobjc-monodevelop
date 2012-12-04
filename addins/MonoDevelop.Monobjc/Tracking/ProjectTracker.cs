@@ -28,7 +28,10 @@ namespace MonoDevelop.Monobjc.Tracking
 		public ProjectTracker (MonobjcProject project)
 		{
 			this.Project = project;
-			
+
+			String sourceFile = this.Project.LanguageBinding.GetFileName ("ABC");
+			this.SourceExtension = sourceFile.Substring (3);
+
 			this.Project.FileAddedToProject += this.HandleFileAddedToProject;
 			this.Project.FileChangedInProject += this.HandleFileChangedInProject;
 			this.Project.FilePropertyChangedInProject += this.HandleFilePropertyChangedInProject;
@@ -60,6 +63,11 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// </summary>
 		/// <value>The project.</value>
 		protected MonobjcProject Project { get; private set; }
+		
+		/// <summary>
+		/// Gets or sets the source extension.
+		/// </summary>
+		protected String SourceExtension { get; set; }
 		
 		/// <summary>
 		/// Handles the FileAddedToProject event of the Project control.
