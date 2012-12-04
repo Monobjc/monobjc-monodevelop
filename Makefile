@@ -52,6 +52,7 @@ MONOBJC_ADDINS= \
 all: $(MONODEVELOP_APP)
 	$(MKDIR) "$(BUILD_DIR)"
 	$(MKDIR) "$(REPOSITORY_DIR)"
+	
 	for i in $(MONOBJC_ADDINS); do \
 		$(CAT) $(ADDINS_DIR)/$$i/$$i.xml | $(SED) -e "s/0.0.0.0/$(ADDIN_VERSION).$(REVISION_NUMBER).$(BUILD_NUMBER)/g" > $(ADDINS_DIR)/$$i/addin.xml; \
 	done
