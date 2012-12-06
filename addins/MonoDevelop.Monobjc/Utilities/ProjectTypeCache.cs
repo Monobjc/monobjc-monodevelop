@@ -105,7 +105,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		public IEnumerable<IType> GetAllClasses (bool projectOnly)
 		{
-			Func<ITypeDefinition, bool> matcher = td => td.Kind == TypeKind.Class && AttributeHelper.HasAttribute (td, AttributeHelper.OBJECTIVE_C_CLASS);
+			Func<ITypeDefinition, bool> matcher = td => td.Kind == TypeKind.Class && AttributeHelper.HasAttribute (td, Constants.OBJECTIVE_C_CLASS);
 			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions (matcher, projectOnly);
 			return ConvertTo (typeDefinitions);
 		}
@@ -115,7 +115,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// </summary>
 		public IEnumerable<IType> GetAllProtocols (bool projectOnly)
 		{
-			Func<ITypeDefinition, bool> matcher = td => td.Kind == TypeKind.Interface && AttributeHelper.HasAttribute (td, AttributeHelper.OBJECTIVE_C_PROTOCOL);
+			Func<ITypeDefinition, bool> matcher = td => td.Kind == TypeKind.Interface && AttributeHelper.HasAttribute (td, Constants.OBJECTIVE_C_PROTOCOL);
 			IEnumerable<ITypeDefinition> typeDefinitions = this.GetMatchingTypeDefinitions (matcher, projectOnly);
 			return ConvertTo (typeDefinitions);
 		}
@@ -193,7 +193,7 @@ namespace MonoDevelop.Monobjc.Utilities
 					// If there is multiple match, filter by looking at the attributes
 					attributeMatcher = td => AttributeHelper.HasAttribute (
 						td,
-						AttributeHelper.OBJECTIVE_C_CLASS
+						Constants.OBJECTIVE_C_CLASS
 					);
 					typeDefinitions = GetMatchingTypeDefinitions (typeDefinitions, attributeMatcher);
 					if (typeDefinitions.Count () == 1) {
@@ -219,7 +219,7 @@ namespace MonoDevelop.Monobjc.Utilities
 					// If there is multiple match, filter by looking at the attributes
 					attributeMatcher = td => AttributeHelper.HasAttribute (
 						td,
-						AttributeHelper.OBJECTIVE_C_PROTOCOL
+						Constants.OBJECTIVE_C_PROTOCOL
 					);
 					typeDefinitions = GetMatchingTypeDefinitions (typeDefinitions, attributeMatcher);
 					if (typeDefinitions.Count () == 1) {

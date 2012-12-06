@@ -35,7 +35,7 @@ namespace MonoDevelop.Monobjc
 		/// <summary>
 		///   Gets or sets the code behind tracker.
 		/// </summary>
-		internal ResolverProjectTracker ResolverTracker { get; private set; }
+		//internal ResolverProjectTracker ResolverTracker { get; private set; }
 
 		/// <summary>
 		///   Gets or sets the code behind tracker.
@@ -45,7 +45,7 @@ namespace MonoDevelop.Monobjc
 		/// <summary>
 		///   Gets or sets the dependency tracker.
 		/// </summary>
-		internal DependencyProjectTracker DependencyTracker { get; private set; }
+		//internal DependencyProjectTracker DependencyTracker { get; private set; }
 		
 		/// <summary>
 		///   Gets or sets the embedding tracker.
@@ -94,8 +94,8 @@ namespace MonoDevelop.Monobjc
 			}
 
 			// Create the trackers
-			this.ResolverTracker = new ResolverProjectTracker (this);
-			this.DependencyTracker = new DependencyProjectTracker (this);
+			//this.ResolverTracker = new ResolverProjectTracker (this);
+			//this.DependencyTracker = new DependencyProjectTracker (this);
 			//this.CodeBehindTracker = new CodeBehindProjectTracker(this);
 			//this.XcodeTracker = new XcodeProjectTracker(this);
 			//this.EmbeddingTracker = new EmbeddingProjectTracker(this);

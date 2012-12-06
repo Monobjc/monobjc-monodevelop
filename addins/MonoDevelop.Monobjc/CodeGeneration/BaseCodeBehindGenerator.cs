@@ -33,8 +33,6 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 	/// </summary>
 	public abstract class BaseCodeBehindGenerator : ICodeBehindGenerator
 	{
-		private const String DESIGNER = ".designer";
-
 		/// <summary>
 		///   Generates the design code for framework loading.
 		/// </summary>
@@ -127,13 +125,13 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 
 				// The filname is based on the compilation unit parent folder and the type name
 				FilePath parentDirectory = mainFile.ParentDirectory;
-				FilePath filename = project.LanguageBinding.GetFileName (type.Name + DESIGNER);
+				FilePath filename = project.LanguageBinding.GetFileName (type.Name + Constants.DOT_DESIGNER);
 				designerFile = parentDirectory.Combine (filename);
 				defaultNamespace = type.Namespace;
 			} else {
 				// Combine the filename in the default directory
 				FilePath parentDirectory = project.BaseDirectory;
-				FilePath filename = project.LanguageBinding.GetFileName (className + DESIGNER);
+				FilePath filename = project.LanguageBinding.GetFileName (className + Constants.DOT_DESIGNER);
 				designerFile = parentDirectory.Combine (filename);
 				defaultNamespace = project.GetDefaultNamespace (designerFile);
 			}

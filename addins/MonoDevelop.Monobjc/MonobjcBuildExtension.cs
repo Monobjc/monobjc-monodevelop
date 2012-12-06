@@ -91,7 +91,7 @@ namespace MonoDevelop.Monobjc
 					BundleMaker maker = new BundleMaker (applicationName, conf.OutputDirectory);
 		
 					// Info.plist
-					if (!File.Exists (Path.Combine (maker.ContentsDirectory, "Info.plist"))) {
+					if (!File.Exists (Path.Combine (maker.ContentsDirectory, Constants.INFO_PLIST))) {
 						return true;
 					}
 		
@@ -101,12 +101,12 @@ namespace MonoDevelop.Monobjc
 					}
 		
 					// The IB files
-					if (project.GetIBFiles (BuildHelper.InterfaceDefinition, maker.ResourcesFolder).Where (p => p.NeedsBuilding).Any ()) {
+					if (project.GetIBFiles (Constants.InterfaceDefinition, maker.ResourcesFolder).Where (p => p.NeedsBuilding).Any ()) {
 						return true;
 					}
 		
 					// The IB files
-					if (project.GetIBFiles (BuildHelper.EmbeddedInterfaceDefinition, null).Where (p => p.NeedsBuilding).Any ()) {
+					if (project.GetIBFiles (Constants.EmbeddedInterfaceDefinition, null).Where (p => p.NeedsBuilding).Any ()) {
 						return true;
 					}
 		
@@ -129,7 +129,7 @@ namespace MonoDevelop.Monobjc
 			case MonobjcProjectType.CocoaLibrary:
 				{
 					// The IB files
-					if (project.GetIBFiles (BuildHelper.EmbeddedInterfaceDefinition, null).Where (p => p.NeedsBuilding).Any ()) {
+					if (project.GetIBFiles (Constants.EmbeddedInterfaceDefinition, null).Where (p => p.NeedsBuilding).Any ()) {
 						return true;
 					}
 				}

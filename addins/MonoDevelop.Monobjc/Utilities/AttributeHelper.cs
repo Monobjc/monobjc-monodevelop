@@ -29,14 +29,6 @@ namespace MonoDevelop.Monobjc.Utilities
 	/// </summary>
 	public static class AttributeHelper
 	{
-		public const String IBACTION = "Monobjc.IBActionAttribute";
-		public const String IBOUTLET = "Monobjc.IBOutletAttribute";
-		public const String OBJECTIVE_C_CLASS = "Monobjc.ObjectiveCClassAttribute";
-		public const String OBJECTIVE_C_PROTOCOL = "Monobjc.ObjectiveCProtocolAttribute";
-		public const String OBJECTIVE_C_MESSAGE = "Monobjc.ObjectiveCMessageAttribute";
-		public const String OBJECTIVE_C_IVAR = "Monobjc.ObjectiveCIVarAttribute";
-		public const String OBJECTIVE_C_FRAMEWORK = "Monobjc.ObjectiveCFrameworkAttribute";
-
 		/// <summary>
 		///   Returns the attribute with the given full name if it exists.
 		/// </summary>
@@ -110,7 +102,7 @@ namespace MonoDevelop.Monobjc.Utilities
 			Collection<CustomAttribute> attributes = assemblyDefinition.CustomAttributes;
 			foreach (CustomAttribute attribute in attributes) {
 				String fullType = attribute.Constructor.DeclaringType.ToString ();
-				if (String.Equals (fullType, OBJECTIVE_C_FRAMEWORK)) {
+				if (String.Equals (fullType, Constants.OBJECTIVE_C_FRAMEWORK)) {
 					frameworkAttribute = attribute;
 					break;
 				}

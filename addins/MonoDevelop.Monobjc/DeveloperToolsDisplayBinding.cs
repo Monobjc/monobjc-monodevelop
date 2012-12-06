@@ -34,10 +34,10 @@ namespace MonoDevelop.Monobjc
 			if (ownerProject == null || !(ownerProject is MonobjcProject)) {
 				return false;
 			}
-			if ("application/vnd.apple-interface-builder".Equals (mimeType)) {
+			if (Constants.IB_MIME_TYPE.Equals (mimeType)) {
 				return true;
 			}
-			return !fileName.IsNullOrEmpty && fileName.HasExtension ("xib");
+			return !fileName.IsNullOrEmpty && fileName.HasExtension (Constants.DOT_XIB);
 		}
 
 		public bool CanUseAsDefault {

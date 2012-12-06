@@ -148,9 +148,8 @@
     <Compile Include="Gui\MonobjcProjectOptionsWidget.Embedding.cs" />
     <Compile Include="MonobjcProjectType.cs" />
     <Compile Include="Tracking\ProjectTracker.cs" />
-    <Compile Include="Tracking\DependencyProjectTracker.cs" />
     <Compile Include="MonobjcExecutionHandler.cs" />
-    <Compile Include="Tracking\ResolverProjectTracker.cs" />
+    <Compile Include="Constants.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

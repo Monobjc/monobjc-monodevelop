@@ -33,10 +33,6 @@ namespace MonoDevelop.Monobjc.Utilities
 	/// </summary>
 	public static class BuildHelper
 	{
-		internal const String InterfaceDefinition = "InterfaceDefinition";
-		internal const String EmbeddedInterfaceDefinition = "EmbeddedInterfaceDefinition";
-		internal const String INFO_PLIST = "Info.plist";
-		
 		/// <summary>
 		///   Determines whether the specified filename is a resource file.
 		/// </summary>
@@ -62,7 +58,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsNIBFile (String filename)
 		{
 			String extension = Path.GetExtension (filename);
-			return String.Equals (".nib", extension);
+			return String.Equals (Constants.DOT_NIB, extension);
 		}
 		
 		/// <summary>
@@ -75,7 +71,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsXIBFile (String filename)
 		{
 			String extension = Path.GetExtension (filename);
-			return String.Equals (".xib", extension);
+			return String.Equals (Constants.DOT_XIB, extension);
 		}
 		
 		/// <summary>
@@ -88,7 +84,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsStringsFile (String filename)
 		{
 			String extension = Path.GetExtension (filename);
-			return String.Equals (".strings", extension);
+			return String.Equals (Constants.DOT_STRINGS, extension);
 		}
 		
 		/// <summary>
@@ -126,7 +122,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsNormalXIBFile (ProjectFile file)
 		{
 			String extension = file.FilePath.Extension;
-			return String.Equals (".xib", extension) && (file.BuildAction == InterfaceDefinition);
+			return String.Equals (Constants.DOT_XIB, extension) && (file.BuildAction == Constants.InterfaceDefinition);
 		}
 		
 		/// <summary>
@@ -139,7 +135,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsEmbeddedXIBFile (ProjectFile file)
 		{
 			String extension = file.FilePath.Extension;
-			return String.Equals (".xib", extension) && (file.BuildAction == EmbeddedInterfaceDefinition);
+			return String.Equals (Constants.DOT_XIB, extension) && (file.BuildAction == Constants.EmbeddedInterfaceDefinition);
 		}
 
 		/// <summary>
@@ -152,7 +148,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsStringsFile (ProjectFile file)
 		{
 			String extension = file.FilePath.Extension;
-			return String.Equals (".strings", extension) && (file.BuildAction == BuildAction.Content);
+			return String.Equals (Constants.DOT_STRINGS, extension) && (file.BuildAction == BuildAction.Content);
 		}
 		
 		public static bool IsInDevelopmentRegion (MonobjcProject project, ProjectFile file)
@@ -226,7 +222,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static void CompileXIBFiles (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker, BuildResult result)
 		{
 			XibCompiler xibCompiler = new XibCompiler ();
-			IEnumerable<FilePair> files = project.GetIBFiles (InterfaceDefinition, maker.ResourcesFolder);
+			IEnumerable<FilePair> files = project.GetIBFiles (Constants.InterfaceDefinition, maker.ResourcesFolder);
 			if (files == null) {
 				return;
 			}
@@ -251,7 +247,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static void EmbedXIBFiles (IProgressMonitor monitor, MonobjcProject project, BuildResult result)
 		{
 			XibCompiler xibCompiler = new XibCompiler ();
-			IEnumerable<FilePair> files = project.GetIBFiles (EmbeddedInterfaceDefinition, null);
+			IEnumerable<FilePair> files = project.GetIBFiles (Constants.EmbeddedInterfaceDefinition, null);
 			if (files == null) {
 				return;
 			}
@@ -356,7 +352,7 @@ namespace MonoDevelop.Monobjc.Utilities
 			InfoPListGenerator pListGenerator = new InfoPListGenerator ();
 			
 			// If an Info.plist exists in the project then use it
-			FilePath infoPListFile = project.BaseDirectory.Combine ("Info.plist");
+			FilePath infoPListFile = project.BaseDirectory.Combine (Constants.INFO_PLIST);
 			if (File.Exists (infoPListFile)) {
 				pListGenerator.Content = File.ReadAllText (infoPListFile);
 			}
@@ -374,7 +370,7 @@ namespace MonoDevelop.Monobjc.Utilities
 			pListGenerator.MainNibFile = project.MainNibFile.IsNullOrEmpty ? null : project.MainNibFile.FileNameWithoutExtension;
 			pListGenerator.TargetOSVersion = project.TargetOSVersion;
 			pListGenerator.PrincipalClass = "NSApplication";
-			pListGenerator.WriteTo (Path.Combine (maker.ContentsDirectory, "Info.plist"));
+			pListGenerator.WriteTo (Path.Combine (maker.ContentsDirectory, Constants.INFO_PLIST));
 			
 			monitor.EndTask ();
 		}

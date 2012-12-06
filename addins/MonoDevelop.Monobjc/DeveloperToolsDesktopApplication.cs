@@ -29,14 +29,10 @@ namespace MonoDevelop.Monobjc
 {
 	public class DeveloperToolsDesktopApplication : DesktopApplication
 	{
-		public const String APPLICATION_TITLE = "Apple Developer Tools";
-		public const String DEVELOPER_TOOLS = "MonoDevelop.Monobjc.DeveloperTools";
-		public const String XCODE_APPLICATION = "Applications/Xcode.app";
-		public const String INTERFACE_BUILDER_APPLICATION = "Applications/Interface Builder.app";
 		private static Version developerToolsVersion;
 		private readonly MonobjcProject project;
 
-		public DeveloperToolsDesktopApplication (MonobjcProject project) : base(DEVELOPER_TOOLS, APPLICATION_TITLE, true)
+		public DeveloperToolsDesktopApplication (MonobjcProject project) : base(Constants.DEVELOPER_TOOLS, Constants.APPLICATION_TITLE, true)
 		{
 			this.project = project;
 		}
@@ -48,10 +44,10 @@ namespace MonoDevelop.Monobjc
 		}
 
 		public static String DeveloperToolsFolder {
-			get { return PropertyService.Get<String> (DEVELOPER_TOOLS, "/Developer"); }
+			get { return PropertyService.Get<String> (Constants.DEVELOPER_TOOLS, "/"); }
 			set {
 				developerToolsVersion = null;
-				PropertyService.Set (DEVELOPER_TOOLS, value);
+				PropertyService.Set (Constants.DEVELOPER_TOOLS, value);
 			}
 		}
 
@@ -66,7 +62,7 @@ namespace MonoDevelop.Monobjc
 		
 		internal static Version DeveloperToolsVersionForFolder (String folder)
 		{
-			String path = Path.Combine (folder, XCODE_APPLICATION);
+			String path = Path.Combine (folder, Constants.XCODE_APPLICATION);
 			if (Directory.Exists (path)) {
 				return NativeVersionExtractor.GetVersion (path);
 			}
@@ -85,13 +81,13 @@ namespace MonoDevelop.Monobjc
 			switch (version.Major) {
 			case 3:
 				{
-					String path = Path.Combine (DeveloperToolsFolder, INTERFACE_BUILDER_APPLICATION);
+					String path = Path.Combine (DeveloperToolsFolder, Constants.INTERFACE_BUILDER_APPLICATION);
 					//arguments.AppendFormat("\"{0}\" \"{1}\"", path, file);
 					break;
 				}
 			case 4:
 				{
-					String path = Path.Combine (DeveloperToolsFolder, XCODE_APPLICATION);
+					String path = Path.Combine (DeveloperToolsFolder, Constants.XCODE_APPLICATION);
 					//arguments.AppendFormat("\"{0}\" \"{1}\"", path, project.XcodeTracker.ProjectFolder);
 					break;
 				}

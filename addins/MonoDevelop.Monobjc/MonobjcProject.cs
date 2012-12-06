@@ -140,8 +140,8 @@ namespace MonoDevelop.Monobjc
 		{
 			IDELogger.Log ("MonobjcProject::Dispose");
 
-			this.ResolverTracker.Dispose();
-			this.DependencyTracker.Dispose ();
+			//this.ResolverTracker.Dispose();
+			//this.DependencyTracker.Dispose ();
 			//this.CodeBehindTracker.Dispose ();
 			//this.XcodeTracker.Dispose ();
 			//this.EmbeddingTracker.Dispose ();
@@ -187,7 +187,7 @@ namespace MonoDevelop.Monobjc
 		public override String GetDefaultBuildAction (String fileName)
 		{
 			if (BuildHelper.IsXIBFile (fileName)) {
-				return BuildHelper.InterfaceDefinition;
+				return Constants.InterfaceDefinition;
 			}
 			if (BuildHelper.IsNIBFile (fileName)) {
 				return BuildAction.EmbeddedResource;
@@ -257,7 +257,7 @@ namespace MonoDevelop.Monobjc
 			foreach (ProjectFileEventInfo info in e) {
 				ProjectFile projectFile = info.ProjectFile;
 				if (projectFile.BuildAction == BuildAction.Page) {
-					projectFile.BuildAction = BuildHelper.InterfaceDefinition;
+					projectFile.BuildAction = Constants.InterfaceDefinition;
 				}
 			}
 			
@@ -284,11 +284,11 @@ namespace MonoDevelop.Monobjc
 				if (buildActions.Contains (BuildAction.Page)) {
 					buildActions.Remove (BuildAction.Page);
 				}
-				if (!buildActions.Contains (BuildHelper.InterfaceDefinition)) {
-					buildActions.Add (BuildHelper.InterfaceDefinition);
+				if (!buildActions.Contains (Constants.InterfaceDefinition)) {
+					buildActions.Add (Constants.InterfaceDefinition);
 				}
-				if (!buildActions.Contains (BuildHelper.EmbeddedInterfaceDefinition)) {
-					buildActions.Add (BuildHelper.EmbeddedInterfaceDefinition);
+				if (!buildActions.Contains (Constants.EmbeddedInterfaceDefinition)) {
+					buildActions.Add (Constants.EmbeddedInterfaceDefinition);
 				}
 			}
 			return buildActions;
