@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6216C823-55A2-47D4-96A0-B1461EE66B1B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MonoDevelop.Monobjc</RootNamespace>
+    <RootNamespace>MonoDevelop.Monobjc.Gui</RootNamespace>
     <AssemblyName>MonoDevelop.Monobjc</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -95,12 +95,6 @@
   <ItemGroup>
     <Compile Include="DeveloperToolsDesktopApplication.cs" />
     <Compile Include="DeveloperToolsDisplayBinding.cs" />
-    <Compile Include="Gui\MonobjcDeploymentOptionsPanel.cs" />
-    <Compile Include="Gui\MonobjcDeploymentOptionsWidget.cs" />
-    <Compile Include="Gui\MonobjcGeneralOptionsPanel.cs" />
-    <Compile Include="Gui\MonobjcGeneralOptionsWidget.cs" />
-    <Compile Include="Gui\MonobjcPreferencesPanel.cs" />
-    <Compile Include="Gui\MonobjcPreferencesWidget.cs" />
     <Compile Include="MonobjcExecutionCommand.cs" />
     <Compile Include="MonobjcMSBuildImportProvider.cs" />
     <Compile Include="MonobjcProject.Internals.cs" />
@@ -114,12 +108,6 @@
     <Compile Include="Utilities\BuildLogger.cs" />
     <Compile Include="Utilities\FilePair.cs" />
     <Compile Include="gtk-gui\generated.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcDeploymentOptionsWidget.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcGeneralOptionsWidget.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcPreferencesWidget.cs" />
-    <Compile Include="Gui\MonobjcProjectOptionsPanel.cs" />
-    <Compile Include="Gui\MonobjcProjectOptionsWidget.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcProjectOptionsWidget.cs" />
     <Compile Include="Debugger\MonobjcDebuggerSession.cs" />
     <Compile Include="Debugger\MonobjcDebuggerStartInfo.cs" />
     <Compile Include="Debugger\MonobjcSoftDebuggerEngine.cs" />
@@ -127,8 +115,6 @@
     <Compile Include="MonobjcProject.Properties.General.cs" />
     <Compile Include="MonobjcProject.Properties.Embedding.cs" />
     <Compile Include="MonobjcProject.Properties.Archiving.cs" />
-    <Compile Include="Gui\MonobjcExportDialog.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.MonobjcExportDialog.cs" />
     <Compile Include="CodeGeneration\BaseCodeBehindGenerator.cs" />
     <Compile Include="CodeGeneration\CodeBehindGeneratorCodon.cs" />
     <Compile Include="CodeGeneration\CodeBehindGeneratorLoader.cs" />
@@ -140,16 +126,26 @@
     <Compile Include="MonobjcProject.Properties.Advanced.cs" />
     <Compile Include="MonobjcBuildExtension.cs" />
     <Compile Include="Utilities\BundleGenerator.cs" />
-    <Compile Include="Gui\MonobjcProjectOptionsWidget.General.cs" />
     <Compile Include="Utilities\IDELogger.cs" />
-    <Compile Include="Gui\MonobjcProjectOptionsWidget.Internals.cs" />
-    <Compile Include="Gui\MonobjcProjectOptionsWidget.Advanced.cs" />
-    <Compile Include="Gui\MonobjcProjectOptionsWidget.Archiving.cs" />
-    <Compile Include="Gui\MonobjcProjectOptionsWidget.Embedding.cs" />
     <Compile Include="MonobjcProjectType.cs" />
     <Compile Include="Tracking\ProjectTracker.cs" />
     <Compile Include="MonobjcExecutionHandler.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="BusyDialog.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.BusyDialog.cs" />
+    <Compile Include="Gui\ExportDialog.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.ExportDialog.cs" />
+    <Compile Include="Gui\PreferencesPanel.cs" />
+    <Compile Include="Gui\PreferencesWidget.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.PreferencesWidget.cs" />
+    <Compile Include="Gui\ProjectOptionsWidget.cs" />
+    <Compile Include="Gui\ProjectOptionsWidget.General.cs" />
+    <Compile Include="Gui\ProjectOptionsWidget.Internals.cs" />
+    <Compile Include="Gui\ProjectOptionsWidget.Advanced.cs" />
+    <Compile Include="Gui\ProjectOptionsWidget.Archiving.cs" />
+    <Compile Include="Gui\ProjectOptionsWidget.Embedding.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.ProjectOptionsWidget.cs" />
+    <Compile Include="Gui\ProjectOptionsPanel.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

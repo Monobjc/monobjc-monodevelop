@@ -27,7 +27,7 @@ using System.IO;
 
 namespace MonoDevelop.Monobjc.Gui
 {
-	public partial class MonobjcProjectOptionsWidget
+	public partial class ProjectOptionsWidget
 	{
 		private static void FillTypes (ComboBox combobox)
 		{

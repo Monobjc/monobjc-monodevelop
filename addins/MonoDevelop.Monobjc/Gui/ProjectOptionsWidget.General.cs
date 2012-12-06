@@ -23,7 +23,7 @@ using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc.Gui
 {
-	public partial class MonobjcProjectOptionsWidget
+	public partial class ProjectOptionsWidget
 	{
 		public MonobjcProjectType ApplicationType {
 			get { return GetSingleValue<MonobjcProjectType> (this.comboboxType); }

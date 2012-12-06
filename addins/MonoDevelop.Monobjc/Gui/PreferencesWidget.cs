@@ -26,12 +26,12 @@ namespace MonoDevelop.Monobjc.Gui
 	///   Widget that provides the general options panel.
 	/// </summary>
 	[ToolboxItem(true)]
-	public partial class MonobjcPreferencesWidget : Bin
+	public partial class PreferencesWidget : Bin
 	{
 		/// <summary>
         ///   Initializes a new instance of the <see cref = "MonobjcPreferencesWidget" /> class.
 		/// </summary>
-        public MonobjcPreferencesWidget()
+        public PreferencesWidget()
 		{
 			this.Build ();
 			this.filechooserbuttonDeveloperTools.SelectionChanged += this.HandleFilechooserbuttonDeveloperToolshandleSelectionChanged;

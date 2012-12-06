@@ -27,12 +27,12 @@ namespace MonoDevelop.Monobjc.Gui
 	///   Widget that provides the project options panel.
 	/// </summary>
 	[ToolboxItem(true)]
-	public partial class MonobjcProjectOptionsWidget : Bin
+	public partial class ProjectOptionsWidget : Bin
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MonoDevelop.Monobjc.Gui.MonobjcProjectOptionsWidget"/> class.
 		/// </summary>
-		public MonobjcProjectOptionsWidget ()
+		public ProjectOptionsWidget ()
 		{
 			this.Build ();
 

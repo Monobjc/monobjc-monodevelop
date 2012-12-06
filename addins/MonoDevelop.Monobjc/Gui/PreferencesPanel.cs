@@ -1,4 +1,4 @@
-﻿//
+//
 // This file is part of Monobjc, a .NET/Objective-C bridge
 // Copyright (C) 2007-2011 - Laurent Etiemble
 //
@@ -23,9 +23,9 @@ namespace MonoDevelop.Monobjc.Gui
 	/// <summary>
 	/// The options panel for general.
 	/// </summary>
-	public class MonobjcGeneralOptionsPanel : ItemOptionsPanel
+	public class PreferencesPanel : OptionsPanel
 	{
-		private MonobjcGeneralOptionsWidget widget;
+		private PreferencesWidget widget;
 
 		/// <summary>
 		///   Creates the panel widget.
@@ -34,18 +34,18 @@ namespace MonoDevelop.Monobjc.Gui
 		public override Widget CreatePanelWidget ()
 		{
 			if (this.widget == null) {
-				this.widget = new MonobjcGeneralOptionsWidget ();
+				this.widget = new PreferencesWidget ();
 			}
-			this.widget.Load (this.ConfiguredProject as MonobjcProject);
+			this.widget.Load();
 			return this.widget;
 		}
-
+		
 		/// <summary>
 		///   Applies the changes.
 		/// </summary>
 		public override void ApplyChanges ()
 		{
-			this.widget.Save (this.ConfiguredProject as MonobjcProject);
+			this.widget.Save();
 		}
 	}
 }

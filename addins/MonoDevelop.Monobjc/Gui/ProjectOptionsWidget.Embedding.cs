@@ -22,7 +22,7 @@ using Monobjc.Tools.Utilities;
 
 namespace MonoDevelop.Monobjc.Gui
 {
-	public partial class MonobjcProjectOptionsWidget
+	public partial class ProjectOptionsWidget
 	{
 		public MacOSArchitecture TargetOSArch {
 			get { return GetSingleValue<MacOSArchitecture> (this.comboboxArchitectures); }

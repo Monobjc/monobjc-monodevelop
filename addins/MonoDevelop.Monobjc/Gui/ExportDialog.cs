@@ -30,14 +30,14 @@ namespace MonoDevelop.Monobjc.Gui
 	/// <summary>
 	///   The dialog used for export operations.
 	/// </summary>
-	public partial class MonobjcExportDialog : Dialog
+	public partial class ExportDialog : Dialog
 	{
 		private MonobjcProject project;
 
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "MonobjcExportDialog" /> class.
 		/// </summary>
-		public MonobjcExportDialog ()
+		public ExportDialog ()
 		{
 			this.Build ();
 			

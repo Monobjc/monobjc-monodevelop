@@ -213,10 +213,10 @@
 
   <!-- General Options -->
   <Extension path = "/MonoDevelop/Ide/GlobalOptionsDialog/Preferences">
-    <Section id = "MonobjcGeneralOptions"
+    <Section id = "MonobjcPreferences"
              icon="md-monobjc"
 	         _label = "Monobjc"
-			 class="MonoDevelop.Monobjc.Gui.MonobjcPreferencesPanel"
+			 class="MonoDevelop.Monobjc.Gui.PreferencesPanel"
 			 fill="true"/>
   </Extension>
 
@@ -226,8 +226,8 @@
       <Section id="MonobjcProjectOptions"
                icon="md-monobjc"
                _label="Monobjc">
-        <Panel id="MonobjcProjectGeneralOptionsPanel"
-               class="MonoDevelop.Monobjc.Gui.MonobjcProjectOptionsPanel"
+        <Panel id="MonobjcProjectOptionsPanel"
+               class="MonoDevelop.Monobjc.Gui.ProjectOptionsPanel"
                fill="true" />
       </Section>
     </Condition>

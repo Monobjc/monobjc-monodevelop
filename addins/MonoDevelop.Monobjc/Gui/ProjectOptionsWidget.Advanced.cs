@@ -15,37 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-using Gtk;
-using MonoDevelop.Ide.Gui.Dialogs;
+using System;
 
 namespace MonoDevelop.Monobjc.Gui
 {
-	/// <summary>
-	/// The options panel for general.
-	/// </summary>
-	public class MonobjcPreferencesPanel : OptionsPanel
+	public partial class ProjectOptionsWidget
 	{
-		private MonobjcPreferencesWidget widget;
-
-		/// <summary>
-		///   Creates the panel widget.
-		/// </summary>
-		/// <returns></returns>
-		public override Widget CreatePanelWidget ()
-		{
-			if (this.widget == null) {
-				this.widget = new MonobjcPreferencesWidget ();
-			}
-			this.widget.Load();
-			return this.widget;
+		private String DevelopmentRegion {
+			get { return GetSingleValue<String> (this.comboboxDevelopmentRegion); }
+			set { SetSingleValue (this.comboboxDevelopmentRegion, value); }
 		}
 		
-		/// <summary>
-		///   Applies the changes.
-		/// </summary>
-		public override void ApplyChanges ()
-		{
-			this.widget.Save();
+		private bool CombineArtwork {
+			get { return this.checkbuttonCombineArtwork.Active; }
+			set { this.checkbuttonCombineArtwork.Active = value; }
+		}
+		
+		private bool EncryptArtwork {
+			get { return this.checkbuttonEncryptArtwork.Active; }
+			set { this.checkbuttonEncryptArtwork.Active = value; }
 		}
 	}
 }

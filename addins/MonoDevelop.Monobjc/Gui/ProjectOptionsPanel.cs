@@ -23,9 +23,9 @@ namespace MonoDevelop.Monobjc.Gui
 	/// <summary>
 	/// The options panel for general.
 	/// </summary>
-	public class MonobjcProjectOptionsPanel : ItemOptionsPanel
+	public class ProjectOptionsPanel : ItemOptionsPanel
 	{
-		private MonobjcProjectOptionsWidget widget;
+		private ProjectOptionsWidget widget;
 
 		/// <summary>
 		///   Creates the panel widget.
@@ -34,7 +34,7 @@ namespace MonoDevelop.Monobjc.Gui
 		public override Widget CreatePanelWidget ()
 		{
 			if (this.widget == null) {
-				this.widget = new MonobjcProjectOptionsWidget ();
+				this.widget = new ProjectOptionsWidget ();
 			}
 			this.widget.Load (this.ConfiguredProject as MonobjcProject);
 			return this.widget;

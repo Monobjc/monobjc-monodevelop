@@ -19,7 +19,7 @@ using System;
 
 namespace MonoDevelop.Monobjc.Gui
 {
-	public partial class MonobjcProjectOptionsWidget
+	public partial class ProjectOptionsWidget
 	{
 		private bool Archive {
 			get { return this.checkbuttonArchivePackage.Active; }
