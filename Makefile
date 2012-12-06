@@ -16,6 +16,7 @@
 MONODEVELOP_APP?=/Applications/MonoDevelop.app
 CONFIGURATION?=Debug
 BUILD_NUMBER?=0
+APP_SUPPORT_DIR=~/Library/Application\ Support/MonoDevelop-3.0/LocalInstall/Addins
 
 # Set the directories
 ADDINS_DIR=$(CURDIR)/addins
@@ -72,6 +73,11 @@ repository: all $(MONOBJC_ADDINS_DESCRIPTOR_DIST)
 	done
 	$(MDTOOL) setup rep-build $(REPOSITORY_DIR)
 
+local: repository
+	for i in $(MONOBJC_ADDINS); do \
+		$(CP) -R $(BUILD_DIR) $(APP_SUPPORT_DIR)/$$i.$(ADDIN_VERSION).$(REVISION_NUMBER).$(BUILD_NUMBER); \
+	done
+
 $(MONODEVELOP_APP):
 	$(error Cannot found MonoDevelop application)
 
@@ -82,4 +88,5 @@ $(MONODEVELOP_APP):
 .PHONY: \
 	all \
 	clean \
-	repository
+	repository \
+	local
