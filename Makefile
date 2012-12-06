@@ -14,9 +14,10 @@
 
 # Set the default parameters
 MONODEVELOP_APP?=/Applications/MonoDevelop.app
+MONODEVELOP_VERSION?=3.0
 CONFIGURATION?=Debug
 BUILD_NUMBER?=0
-APP_SUPPORT_DIR=~/Library/Application\ Support/MonoDevelop-3.0/LocalInstall/Addins
+APP_SUPPORT_DIR=~/Library/Application\ Support/MonoDevelop-$(MONODEVELOP_VERSION)/LocalInstall/Addins
 
 # Set the directories
 ADDINS_DIR=$(CURDIR)/addins
@@ -26,7 +27,7 @@ REPOSITORY_DIR=$(DIST_DIR)/repository
 TOOLS_DIR=$(CURDIR)/tools
 
 # Compute the version
-ADDIN_VERSION=3.5
+ADDIN_VERSION=3.0
 DATE_REFERENCE=$(shell date -j -f "%Y-%m-%d" "2007-07-01" "+%s")
 DATE_TODAY=$(shell date "+%s")
 REVISION_NUMBER=$(shell echo "($(DATE_TODAY) - $(DATE_REFERENCE)) / 86400" | bc)
