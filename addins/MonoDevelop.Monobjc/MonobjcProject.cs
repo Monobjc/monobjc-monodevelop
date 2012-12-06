@@ -71,66 +71,34 @@ namespace MonoDevelop.Monobjc
 		/// <param name = "projectOptions">The project options.</param>
 		public MonobjcProject (String language, ProjectCreateInformation info, XmlElement projectOptions) : base(language, info, projectOptions)
 		{
-			XmlNode node;
 			IDELogger.Log ("MonobjcProject::ctor3");
 
-			node = projectOptions.SelectSingleNode ("MacOSApplicationType");
-			if (node != null) {
-#if DEBUG
-				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
-#endif
-				this.ApplicationType = (MonobjcProjectType)Enum.Parse (typeof(MonobjcProjectType), node.InnerText);
-			}
+			this.ApplicationType = GetNodeValue(projectOptions, "MacOSApplicationType", MonobjcProjectType.CocoaApplication);
+			this.ApplicationCategory = GetNodeValue(projectOptions, "MacOSApplicationCategory", String.Empty);
+			this.BundleId = GetNodeValue(projectOptions, "BundleId", "net.monobjc.application.Test");
+			this.BundleVersion = GetNodeValue(projectOptions, "BundleVersion", "1.0");
+			this.MainNibFile = GetNodeValue(projectOptions, "MainNibFile", null);
+			this.BundleIcon = GetNodeValue(projectOptions, "BundleIcon", null);
+			this.TargetOSVersion = GetNodeValue(projectOptions, "MacOSVersion", MacOSVersion.MacOS106);
+			this.Signing = Boolean.Parse(GetNodeValue(projectOptions, "Signing", "false"));
+			this.SigningIdentity = GetNodeValue(projectOptions, "SigningIdentity", String.Empty);
+			this.UseEntitlements = Boolean.Parse(GetNodeValue(projectOptions, "UseEntitlements", "false"));
+			this.OSFrameworks = GetNodeValue(projectOptions, "MacOSFrameworks", String.Empty);
 
-			node = projectOptions.SelectSingleNode ("MacOSDevelopmentRegion");
-			if (node != null) {
-#if DEBUG
-				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
-#endif
-				this.DevelopmentRegion = node.InnerText;
-			}
+			this.TargetOSArch = GetNodeValue(projectOptions, "MacOSArch", MacOSArchitecture.X86);
+			this.EmbeddedFrameworks = GetNodeValue(projectOptions, "EmbeddedFrameworks", String.Empty);
+			this.AdditionalAssemblies = GetNodeValue(projectOptions, "AdditionalAssemblies", String.Empty);
+			this.ExcludedAssemblies = GetNodeValue(projectOptions, "ExcludedAssemblies", String.Empty);
+			this.AdditionalLibraries = GetNodeValue(projectOptions, "AdditionalLibraries", String.Empty);
 
-			node = projectOptions.SelectSingleNode ("MainNibFile");
-			if (node != null) {
-#if DEBUG
-				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
-#endif
-				this.MainNibFile = node.InnerText;
-			}
+			this.Archive = Boolean.Parse(GetNodeValue(projectOptions, "Archive", "false"));
+			this.ArchiveIdentity = GetNodeValue(projectOptions, "ArchiveIdentity", String.Empty);
 
-			node = projectOptions.SelectSingleNode ("BundleIcon");
-			if (node != null) {
-#if DEBUG
-				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
-#endif
-				this.BundleIcon = node.InnerText;
-			}
+			this.DevelopmentRegion = GetNodeValue(projectOptions, "MacOSDevelopmentRegion", "en");
+			this.CombineArtwork = Boolean.Parse(GetNodeValue(projectOptions, "CombineArtwork", "false"));
+			this.EncryptArtwork = Boolean.Parse(GetNodeValue(projectOptions, "EncryptArtwork", "false"));
 
-			node = projectOptions.SelectSingleNode ("MacOSFrameworks");
-			if (node != null) {
-#if DEBUG
-				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
-#endif
-				this.OSFrameworks = node.InnerText;
-			}
-
-			node = projectOptions.SelectSingleNode ("MacOSVersion");
-			if (node != null) {
-#if DEBUG
-				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
-#endif
-				this.TargetOSVersion = (MacOSVersion)Enum.Parse (typeof(MacOSVersion), node.InnerText);
-			}
-
-			node = projectOptions.SelectSingleNode ("MacOSArch");
-			if (node != null) {
-#if DEBUG
-				LoggingService.LogInfo("MonobjcProject::ctor3 " + node.Name + "=" + node.InnerText);
-#endif
-				this.TargetOSArch = (MacOSArchitecture)Enum.Parse (typeof(MacOSArchitecture), node.InnerText);
-			}
-
-			this.Initialize ();
+			this.Initialize();
 		}
 
 		/// <summary>
@@ -139,13 +107,6 @@ namespace MonoDevelop.Monobjc
 		public override void Dispose ()
 		{
 			IDELogger.Log ("MonobjcProject::Dispose");
-
-			//this.ResolverTracker.Dispose();
-			//this.DependencyTracker.Dispose ();
-			//this.CodeBehindTracker.Dispose ();
-			//this.XcodeTracker.Dispose ();
-			//this.EmbeddingTracker.Dispose ();
-
 			base.Dispose ();
 		}
 

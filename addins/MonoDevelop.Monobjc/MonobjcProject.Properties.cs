@@ -25,37 +25,13 @@ using MonoDevelop.Core.Serialization;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 using MonoDevelop.Monobjc.Tracking;
+using System.Xml;
 
 namespace MonoDevelop.Monobjc
 {
 	public partial class MonobjcProject
 	{
 		private IEnumerable<SystemAssembly> monobjcAssemblies;
-
-		/// <summary>
-		///   Gets or sets the code behind tracker.
-		/// </summary>
-		//internal ResolverProjectTracker ResolverTracker { get; private set; }
-
-		/// <summary>
-		///   Gets or sets the code behind tracker.
-		/// </summary>
-		//internal CodeBehindProjectTracker CodeBehindTracker { get; private set; }
-
-		/// <summary>
-		///   Gets or sets the dependency tracker.
-		/// </summary>
-		//internal DependencyProjectTracker DependencyTracker { get; private set; }
-		
-		/// <summary>
-		///   Gets or sets the embedding tracker.
-		/// </summary>
-		//internal EmbeddingProjectTracker EmbeddingTracker { get; private set; }
-
-		/// <summary>
-		///   Gets or sets the xcode tracker.
-		/// </summary>
-		//internal XcodeProjectTracker XcodeTracker { get; private set; }
 
 		/// <summary>
 		///   Gets the project Monobjc assemblies.
@@ -72,33 +48,47 @@ namespace MonoDevelop.Monobjc
 		}
 
 		/// <summary>
-		/// Initializes this instance.
+		/// Initialize this instance.
 		/// </summary>
-		internal void Initialize ()
+		private void Initialize ()
 		{
 			IDELogger.Log ("MonobjcProject::Initialize");
 
-			// Set default values
-			// TODO: Add more defaults
-			if (String.IsNullOrEmpty (this.OSFrameworks)) {
-				this.OSFrameworks = "Foundation;AppKit";
-			}
-			if (this.TargetOSVersion == MacOSVersion.None) {
-				this.TargetOSVersion = MacOSVersion.MacOS106;
-			}
-			if (this.TargetOSArch == MacOSArchitecture.None) {
-				this.TargetOSArch = MacOSArchitecture.X86;
-			}
-			if (String.IsNullOrEmpty (this.DevelopmentRegion)) {
-				this.DevelopmentRegion = "en";
-			}
+			this.ApplicationType = this.ApplicationType == MonobjcProjectType.None ? MonobjcProjectType.CocoaApplication : this.ApplicationType;
+			this.ApplicationCategory = this.ApplicationCategory ?? String.Empty;
+			this.BundleId = this.BundleId ?? "net.monobjc.application.Test";
+			this.BundleVersion = this.BundleVersion ?? "1.0";
+			this.TargetOSVersion = this.TargetOSVersion == MacOSVersion.None ? MacOSVersion.MacOS106 : this.TargetOSVersion;
+			this.SigningIdentity = this.SigningIdentity ?? String.Empty;
+			this.OSFrameworks = this.OSFrameworks ?? "Foundation;AppKit";
 
-			// Create the trackers
-			//this.ResolverTracker = new ResolverProjectTracker (this);
-			//this.DependencyTracker = new DependencyProjectTracker (this);
-			//this.CodeBehindTracker = new CodeBehindProjectTracker(this);
-			//this.XcodeTracker = new XcodeProjectTracker(this);
-			//this.EmbeddingTracker = new EmbeddingProjectTracker(this);
+			this.TargetOSArch = this.TargetOSArch == MacOSArchitecture.None ? MacOSArchitecture.X86 : this.TargetOSArch;
+			this.EmbeddedFrameworks = this.EmbeddedFrameworks ?? String.Empty;
+			this.AdditionalAssemblies = this.AdditionalAssemblies ?? String.Empty;
+			this.ExcludedAssemblies = this.ExcludedAssemblies ?? String.Empty;
+			this.AdditionalLibraries = this.AdditionalLibraries ?? String.Empty;
+
+			this.ArchiveIdentity = this.ArchiveIdentity ?? String.Empty;
+			
+			this.DevelopmentRegion = this.DevelopmentRegion ?? "en";
+		}
+
+		private String GetNodeValue(XmlElement element, String key, String @default)
+		{
+			XmlNode node = element.SelectSingleNode(key);
+			if (node == null) {
+				return @default;
+			}
+			return node.InnerText;
+		}
+
+		private T GetNodeValue<T>(XmlElement element, String key, T @default)
+		{
+			XmlNode node = element.SelectSingleNode(key);
+			if (node == null) {
+				return @default;
+			}
+			return (T) Enum.Parse(typeof(T), node.InnerText);
 		}
 	}
 }

@@ -31,7 +31,6 @@ namespace MonoDevelop.Monobjc
 		private String bundleVersion;
 		private FilePath mainNibFile;
 		private FilePath bundleIcon;
-		private FilePath entitlements;
 		private MacOSVersion targetOSVersion;
 		private bool signing;
 		private String signingIdentity;
