@@ -19,7 +19,6 @@ using System;
 using System.Xml;
 using Monobjc.Tools.Generators;
 using Monobjc.Tools.Utilities;
-using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Core.Execution;
 using MonoDevelop.Monobjc.CodeGeneration;
@@ -73,32 +72,32 @@ namespace MonoDevelop.Monobjc
 		{
 			IDELogger.Log ("MonobjcProject::ctor3");
 
-			this.ApplicationType = GetNodeValue(projectOptions, "MacOSApplicationType", MonobjcProjectType.CocoaApplication);
-			this.ApplicationCategory = GetNodeValue(projectOptions, "MacOSApplicationCategory", String.Empty);
-			this.BundleId = GetNodeValue(projectOptions, "BundleId", "net.monobjc.application.Test");
-			this.BundleVersion = GetNodeValue(projectOptions, "BundleVersion", "1.0");
-			this.MainNibFile = GetNodeValue(projectOptions, "MainNibFile", null);
-			this.BundleIcon = GetNodeValue(projectOptions, "BundleIcon", null);
-			this.TargetOSVersion = GetNodeValue(projectOptions, "MacOSVersion", MacOSVersion.MacOS106);
-			this.Signing = Boolean.Parse(GetNodeValue(projectOptions, "Signing", "false"));
-			this.SigningIdentity = GetNodeValue(projectOptions, "SigningIdentity", String.Empty);
-			this.UseEntitlements = Boolean.Parse(GetNodeValue(projectOptions, "UseEntitlements", "false"));
-			this.OSFrameworks = GetNodeValue(projectOptions, "MacOSFrameworks", String.Empty);
+			this.ApplicationType = GetNodeValue (projectOptions, "MacOSApplicationType", MonobjcProjectType.CocoaApplication);
+			this.ApplicationCategory = GetNodeValue (projectOptions, "MacOSApplicationCategory", String.Empty);
+			this.BundleId = GetNodeValue (projectOptions, "BundleId", "net.monobjc.application.Test");
+			this.BundleVersion = GetNodeValue (projectOptions, "BundleVersion", "1.0");
+			this.MainNibFile = GetNodeValue (projectOptions, "MainNibFile", null);
+			this.BundleIcon = GetNodeValue (projectOptions, "BundleIcon", null);
+			this.TargetOSVersion = GetNodeValue (projectOptions, "MacOSVersion", MacOSVersion.MacOS106);
+			this.Signing = Boolean.Parse (GetNodeValue (projectOptions, "Signing", "false"));
+			this.SigningIdentity = GetNodeValue (projectOptions, "SigningIdentity", String.Empty);
+			this.UseEntitlements = Boolean.Parse (GetNodeValue (projectOptions, "UseEntitlements", "false"));
+			this.OSFrameworks = GetNodeValue (projectOptions, "MacOSFrameworks", String.Empty);
 
-			this.TargetOSArch = GetNodeValue(projectOptions, "MacOSArch", MacOSArchitecture.X86);
-			this.EmbeddedFrameworks = GetNodeValue(projectOptions, "EmbeddedFrameworks", String.Empty);
-			this.AdditionalAssemblies = GetNodeValue(projectOptions, "AdditionalAssemblies", String.Empty);
-			this.ExcludedAssemblies = GetNodeValue(projectOptions, "ExcludedAssemblies", String.Empty);
-			this.AdditionalLibraries = GetNodeValue(projectOptions, "AdditionalLibraries", String.Empty);
+			this.TargetOSArch = GetNodeValue (projectOptions, "MacOSArch", MacOSArchitecture.X86);
+			this.EmbeddedFrameworks = GetNodeValue (projectOptions, "EmbeddedFrameworks", String.Empty);
+			this.AdditionalAssemblies = GetNodeValue (projectOptions, "AdditionalAssemblies", String.Empty);
+			this.ExcludedAssemblies = GetNodeValue (projectOptions, "ExcludedAssemblies", String.Empty);
+			this.AdditionalLibraries = GetNodeValue (projectOptions, "AdditionalLibraries", String.Empty);
 
-			this.Archive = Boolean.Parse(GetNodeValue(projectOptions, "Archive", "false"));
-			this.ArchiveIdentity = GetNodeValue(projectOptions, "ArchiveIdentity", String.Empty);
+			this.Archive = Boolean.Parse (GetNodeValue (projectOptions, "Archive", "false"));
+			this.ArchiveIdentity = GetNodeValue (projectOptions, "ArchiveIdentity", String.Empty);
 
-			this.DevelopmentRegion = GetNodeValue(projectOptions, "MacOSDevelopmentRegion", "en");
-			this.CombineArtwork = Boolean.Parse(GetNodeValue(projectOptions, "CombineArtwork", "false"));
-			this.EncryptArtwork = Boolean.Parse(GetNodeValue(projectOptions, "EncryptArtwork", "false"));
+			this.DevelopmentRegion = GetNodeValue (projectOptions, "MacOSDevelopmentRegion", "en");
+			this.CombineArtwork = Boolean.Parse (GetNodeValue (projectOptions, "CombineArtwork", "false"));
+			this.EncryptArtwork = Boolean.Parse (GetNodeValue (projectOptions, "EncryptArtwork", "false"));
 
-			this.Initialize();
+			this.Initialize ();
 		}
 
 		/// <summary>
@@ -107,6 +106,9 @@ namespace MonoDevelop.Monobjc
 		public override void Dispose ()
 		{
 			IDELogger.Log ("MonobjcProject::Dispose");
+
+			this.DependencyProjectTracker.Dispose();
+
 			base.Dispose ();
 		}
 
@@ -206,35 +208,42 @@ namespace MonoDevelop.Monobjc
 			return command;
 		}
 
-		/// <summary>
-		///   Called when a project file is added to this instance.
-		/// </summary>
-		/// <param name = "e">The <see cref = "ProjectFileEventArgs" /> instance containing the event data.</param>
 		protected override void OnFileAddedToProject (ProjectFileEventArgs e)
 		{
 			IDELogger.Log ("MonobjcProject::OnFileAddedToProject '{0}'", e);
 
-			// Migrate "Page" to "InterfaceDefinition" when project is loaded
+			// Migrate "Page" to "InterfaceDefinition" when project is loaded (upward compatibility)
 			foreach (ProjectFileEventInfo info in e) {
 				ProjectFile projectFile = info.ProjectFile;
 				if (projectFile.BuildAction == BuildAction.Page) {
 					projectFile.BuildAction = Constants.InterfaceDefinition;
 				}
 			}
-			
+
 			base.OnFileAddedToProject (e);
 		}
 
-		/// <summary>
-		///   Called when a project file is changed into this instance.
-		/// </summary>
-		/// <param name = "e">The <see cref = "ProjectFileEventArgs" /> instance containing the event data.</param>
 		protected override void OnFileChangedInProject (ProjectFileEventArgs e)
 		{
 			IDELogger.Log ("MonobjcProject::OnFileChangedInProject '{0}'", e);
+
 			base.OnFileChangedInProject (e);
 		}
-		
+
+		protected override void OnFilePropertyChangedInProject (ProjectFileEventArgs e)
+		{
+			IDELogger.Log ("MonobjcProject::OnFilePropertyChangedInProject '{0}'", e);
+
+			base.OnFilePropertyChangedInProject (e);
+		}
+
+		protected override void OnFileRenamedInProject (ProjectFileRenamedEventArgs e)
+		{
+			IDELogger.Log ("MonobjcProject::OnFileRenamedInProject '{0}'", e);
+
+			base.OnFileRenamedInProject (e);
+		}
+
 		/// <summary>
 		/// Gets the common build actions.
 		/// </summary>

@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{6216C823-55A2-47D4-96A0-B1461EE66B1B}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>MonoDevelop.Monobjc.Gui</RootNamespace>
+    <RootNamespace>MonoDevelop.Monobjc</RootNamespace>
     <AssemblyName>MonoDevelop.Monobjc</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -146,6 +146,7 @@
     <Compile Include="Gui\ProjectOptionsWidget.Embedding.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.ProjectOptionsWidget.cs" />
     <Compile Include="Gui\ProjectOptionsPanel.cs" />
+    <Compile Include="Tracking\DependencyProjectTracker.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

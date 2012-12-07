@@ -34,6 +34,11 @@ namespace MonoDevelop.Monobjc
 		private IEnumerable<SystemAssembly> monobjcAssemblies;
 
 		/// <summary>
+		/// Gets or sets the dependency project tracker.
+		/// </summary>
+		internal DependencyProjectTracker DependencyProjectTracker { get; private set; }
+
+		/// <summary>
 		///   Gets the project Monobjc assemblies.
 		/// </summary>
 		internal IEnumerable<ProjectReference> ProjectMonobjcAssemblies {
@@ -71,6 +76,9 @@ namespace MonoDevelop.Monobjc
 			this.ArchiveIdentity = this.ArchiveIdentity ?? String.Empty;
 			
 			this.DevelopmentRegion = this.DevelopmentRegion ?? "en";
+
+			// Create the trackers
+			this.DependencyProjectTracker = new DependencyProjectTracker(this);
 		}
 
 		private String GetNodeValue(XmlElement element, String key, String @default)

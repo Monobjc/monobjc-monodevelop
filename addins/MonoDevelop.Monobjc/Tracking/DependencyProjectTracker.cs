@@ -27,17 +27,13 @@ namespace MonoDevelop.Monobjc.Tracking
 {
 	public class DependencyProjectTracker : ProjectTracker
 	{
-		private const String DOT_DESIGNER = ".designer";
-		private const String DOT_NIB = ".nib";
-		private const String DOT_XIB = ".xib";
-
 		/// <summary>
 		/// Initializes a new instance of the <see cref="DependencyProjectTracker"/> class.
 		/// </summary>
 		/// <param name="project">The project.</param>
 		public DependencyProjectTracker (MonobjcProject project) : base(project)
 		{
-			this.DesignerExtension = DOT_DESIGNER + this.SourceExtension;
+			this.DesignerExtension = Constants.DOT_DESIGNER + this.SourceExtension;
 		}
 
 		/// <summary>
@@ -57,32 +53,32 @@ namespace MonoDevelop.Monobjc.Tracking
 			foreach (ProjectFileEventInfo info in e) {
 				IDELogger.Log ("DependencyProjectTracker::HandleFileAddedToProject -- collecting for {0}", info.ProjectFile);
 				IEnumerable<FilePath> files = this.GuessDependencies (info.ProjectFile);
-				if (files != null) {
-					// TODO: Handle dependency here
-					dependencies.AddRange (files);
-				}
+				dependencies.AddRange (files);
 			}
 			
+			if (dependencies.Count == 0) {
+				return;
+			}
+
 			// Add dependencies if needed
-			if (dependencies != null) {
-				foreach (FilePath file in dependencies.Where(f => !this.Project.IsFileInProject(f))) {
-					IDELogger.Log ("DependencyProjectTracker::HandleFileAddedToProject -- adding {0}", file);
-					this.Project.AddFile (file);
-				}
+			foreach (FilePath file in dependencies.Where(f => !this.Project.IsFileInProject(f))) {
+				IDELogger.Log ("DependencyProjectTracker::HandleFileAddedToProject -- adding {0}", file);
+				this.Project.AddFile (file);
 			}
 		}
 
 		private IEnumerable<FilePath> GuessDependencies (ProjectFile file)
 		{
 			String extension = file.FilePath.Extension;
-			if (extension == this.SourceExtension) {
+
+			if (String.Equals(extension, this.SourceExtension, StringComparison.InvariantCultureIgnoreCase)) {
 				return this.GuessDependenciesForSource (file);
-			} else if (extension == DOT_NIB) {
-				return this.GuessDependenciesForIB (file);
-			} else if (extension == DOT_XIB) {
-				return this.GuessDependenciesForIB (file);
+			} else if (String.Equals(extension, Constants.DOT_NIB, StringComparison.InvariantCultureIgnoreCase)) {
+				return this.GuessDependenciesForIB (file, Constants.DOT_NIB);
+			} else if (String.Equals(extension, Constants.DOT_XIB, StringComparison.InvariantCultureIgnoreCase)) {
+				return this.GuessDependenciesForIB (file, Constants.DOT_XIB);
 			}
-			return null;
+			return new FilePath[0];
 		}
 		
 		private IEnumerable<FilePath> GuessDependenciesForSource (ProjectFile file)
@@ -90,7 +86,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			FilePath filePath = file.FilePath;
 			
 			// If the dependant file is being added
-			if (filePath.FileName.EndsWith (this.DesignerExtension)) {
+			if (filePath.FileName.EndsWith (this.DesignerExtension, StringComparison.InvariantCultureIgnoreCase)) {
 				FilePath parentName = filePath.ToString ().Replace (this.DesignerExtension, this.SourceExtension);
 				if (File.Exists (parentName)) {
 					if (this.Project.IsFileInProject (parentName) && String.IsNullOrEmpty (file.DependsOn)) {
@@ -111,23 +107,22 @@ namespace MonoDevelop.Monobjc.Tracking
 			return null;
 		}
 		
-		private IEnumerable<FilePath> GuessDependenciesForIB (ProjectFile file)
+		private IEnumerable<FilePath> GuessDependenciesForIB (ProjectFile file, String extension)
 		{
 			FilePath filePath = file.FilePath;
-			String extension = filePath.Extension;
 			FilePath peerName = null;
 			bool depends = false;
 			
 			switch (extension) {
 			// If NIB is added, search for XIB
-			case DOT_NIB:
-				peerName = filePath.ChangeExtension (DOT_XIB);
+			case Constants.DOT_NIB:
+				peerName = filePath.ChangeExtension (Constants.DOT_XIB);
 				depends = this.Project.IsFileInProject (peerName);
 				break;
 
 			// If XIB is added, search for NIB
-			case DOT_XIB:
-				peerName = filePath.ChangeExtension (DOT_NIB);
+			case Constants.DOT_XIB:
+				peerName = filePath.ChangeExtension (Constants.DOT_NIB);
 				break;
 
 			default:
