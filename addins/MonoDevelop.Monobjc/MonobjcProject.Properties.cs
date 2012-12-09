@@ -33,10 +33,13 @@ namespace MonoDevelop.Monobjc
 	{
 		private IEnumerable<SystemAssembly> monobjcAssemblies;
 
-		/// <summary>
-		/// Gets or sets the dependency project tracker.
-		/// </summary>
-		internal DependencyProjectTracker DependencyProjectTracker { get; private set; }
+		private ResolverHandler ResolverHandler { get; set; }
+
+		private MigrationHandler MigrationHandler { get; set; }
+
+		private DependencyHandler DependencyHandler { get; set; }
+
+		private CodeBehindHandler CodeBehindHandler { get; set; }
 
 		/// <summary>
 		///   Gets the project Monobjc assemblies.
@@ -77,26 +80,29 @@ namespace MonoDevelop.Monobjc
 			
 			this.DevelopmentRegion = this.DevelopmentRegion ?? "en";
 
-			// Create the trackers
-			this.DependencyProjectTracker = new DependencyProjectTracker(this);
+			// Create the handlers
+			this.ResolverHandler = new ResolverHandler (this);
+			this.MigrationHandler = new MigrationHandler (this);
+			this.DependencyHandler = new DependencyHandler (this);
+			this.CodeBehindHandler = new CodeBehindHandler (this);
 		}
 
-		private String GetNodeValue(XmlElement element, String key, String @default)
+		private String GetNodeValue (XmlElement element, String key, String @default)
 		{
-			XmlNode node = element.SelectSingleNode(key);
+			XmlNode node = element.SelectSingleNode (key);
 			if (node == null) {
 				return @default;
 			}
 			return node.InnerText;
 		}
 
-		private T GetNodeValue<T>(XmlElement element, String key, T @default)
+		private T GetNodeValue<T> (XmlElement element, String key, T @default)
 		{
-			XmlNode node = element.SelectSingleNode(key);
+			XmlNode node = element.SelectSingleNode (key);
 			if (node == null) {
 				return @default;
 			}
-			return (T) Enum.Parse(typeof(T), node.InnerText);
+			return (T)Enum.Parse (typeof(T), node.InnerText);
 		}
 	}
 }

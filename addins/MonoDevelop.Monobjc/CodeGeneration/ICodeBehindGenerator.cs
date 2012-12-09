@@ -35,7 +35,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <param name = "resolver">The type resolver.</param>
 		/// <param name = "frameworks">The frameworks.</param>
 		/// <returns>The path to the designer file.</returns>
-		FilePath GenerateFrameworkLoadingCode (ProjectTypeCache resolver, String[] frameworks);
+		FilePath GenerateFrameworkLoadingCode (ProjectTypeCache cache, String[] frameworks);
 
 		/// <summary>
 		///   Generates the design code for an Interface Builder file.
@@ -45,6 +45,6 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <param name = "className">Name of the class.</param>
 		/// <param name = "enumerable">The class descriptions.</param>
 		/// <returns>The path to the designer file.</returns>
-		FilePath GenerateCodeBehindCode (ProjectTypeCache resolver, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable);
+		FilePath GenerateCodeBehindCode (ProjectTypeCache cache, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable);
 	}
 }

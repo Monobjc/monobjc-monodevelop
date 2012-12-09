@@ -23,6 +23,7 @@ using System.Linq;
 using ICSharpCode.NRefactory.TypeSystem;
 using Monobjc.Tools.InterfaceBuilder;
 using MonoDevelop.Core;
+using MonoDevelop.Core.Collections;
 using MonoDevelop.DesignerSupport;
 using MonoDevelop.Monobjc.Utilities;
 
@@ -39,12 +40,12 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <param name = "resolver">The type resolver.</param>
 		/// <param name = "frameworks">The frameworks.</param>
 		/// <returns>The path to the designer file.</returns>
-		public FilePath GenerateFrameworkLoadingCode (ProjectTypeCache resolver, String[] frameworks)
+		public FilePath GenerateFrameworkLoadingCode (ProjectTypeCache cache, String[] frameworks)
 		{
-			IEnumerable<IType> entryPoints = resolver.GetEntryPoints ();
+			IEnumerable<IType> entryPoints = cache.GetEntryPoints ();
 			IType entryPoint = entryPoints.SingleOrDefault ();
 			if (entryPoint != null) {
-				IMethod method = resolver.GetMainMethod (entryPoint);
+				IMethod method = cache.GetMainMethod (entryPoint);
 				if (method != null) {
 					// Get the start line of the method
 					DomRegion region = method.BodyRegion;
@@ -102,24 +103,24 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <param name = "className">Name of the class.</param>
 		/// <param name = "enumerable">The class descriptions.</param>
 		/// <returns>The path to the designer file.</returns>
-		public FilePath GenerateCodeBehindCode (ProjectTypeCache resolver, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable)
+		public FilePath GenerateCodeBehindCode (ProjectTypeCache cache, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable)
 		{
 			FilePath designerFile = null;
 			String defaultNamespace;
-			MonobjcProject project = resolver.Project;
+			MonobjcProject project = cache.Project;
 
-			LoggingService.LogInfo ("Generate designer code for '" + className + "'");
+			IDELogger.Log ("BaseCodeBehindGenerator::GenerateCodeBehindCode -- Generate designer code for '{0}'", className);
 
-			IType type = resolver.ResolvePartialType (className);
-			FilePath mainFile = resolver.GetMainFile (type);
+			IType type = cache.ResolvePartialType (className);
+			FilePath mainFile = cache.GetMainFile (type);
 			if (mainFile != FilePath.Null) {
 				if (mainFile.Extension == ".dll") {
-					LoggingService.LogInfo ("Skipping " + className + " as it comes from a DLL");
+					IDELogger.Log ("BaseCodeBehindGenerator::GenerateCodeBehindCode -- Skipping '{0}' as it comes from a DLL", className);
 					return FilePath.Null;
 				}
 
-				if (!resolver.IsInProject (type)) {
-					LoggingService.LogInfo ("Skipping " + className + " as it comes from another project");
+				if (!cache.IsInProject (type)) {
+					IDELogger.Log ("BaseCodeBehindGenerator::GenerateCodeBehindCode -- Skipping '{0}' as it comes from another project", className);
 					return FilePath.Null;
 				}
 
@@ -136,8 +137,8 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 				defaultNamespace = project.GetDefaultNamespace (designerFile);
 			}
 
-			LoggingService.LogInfo ("Put designer code in '" + designerFile + "'");
-			
+			IDELogger.Log ("BaseCodeBehindGenerator::GenerateCodeBehindCode -- Put designer code in '{0}'", designerFile);
+
 			// Create the compilation unit
 			CodeCompileUnit ccu = new CodeCompileUnit ();
 			CodeNamespace ns = new CodeNamespace (defaultNamespace);
@@ -149,16 +150,16 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			typeDeclaration.IsPartial = true;
 
 			// List for import collection
-			IList<String> imports = new List<string> ();
+			Set<String> imports = new Set<string> ();
 			imports.Add ("Monobjc");
 
 			// Create fields for outlets);
 			foreach (IBOutletDescriptor outlet in enumerable.SelectMany(d => d.Outlets)) {
-				IType outletType = resolver.ResolvePartialType (outlet.ClassName);
-				outletType = outletType ?? resolver.ResolvePartialType ("id");
-				outletType = outletType ?? resolver.ResolveType (typeof(IntPtr));
+				IType outletType = cache.ResolvePartialType (outlet.ClassName);
+				outletType = outletType ?? cache.ResolvePartialType ("id");
+				outletType = outletType ?? cache.ResolveType (typeof(IntPtr));
 
-				LoggingService.LogInfo ("Resolving outlet '" + outlet.Name + "' of type '" + outlet.ClassName + "' => '" + outletType.FullName + "'");
+				IDELogger.Log ("BaseCodeBehindGenerator::GenerateCodeBehindCode -- Resolving outlet '{0}' of type '{1}' => '{2}'", outlet.Name, outlet.ClassName, outletType.FullName);
 
 				imports.Add (outletType.Namespace);
 
@@ -168,11 +169,11 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 
 			// Create methods for exposed actions
 			foreach (IBActionDescriptor action in enumerable.SelectMany(d => d.Actions)) {
-				IType argumentType = resolver.ResolvePartialType (action.Argument);
-				argumentType = argumentType ?? resolver.ResolvePartialType ("id");
-				argumentType = argumentType ?? resolver.ResolveType (typeof(IntPtr));
+				IType argumentType = cache.ResolvePartialType (action.Argument);
+				argumentType = argumentType ?? cache.ResolvePartialType ("id");
+				argumentType = argumentType ?? cache.ResolveType (typeof(IntPtr));
 
-				LoggingService.LogInfo ("Resolving action '" + action.Message + "' with argument '" + action.Argument + "' => '" + argumentType.FullName + "'");
+				IDELogger.Log ("BaseCodeBehindGenerator::GenerateCodeBehindCode -- Resolving action '{0}' of type '{1}' => '{2}'", action.Message, action.Argument, argumentType.FullName);
 
 				imports.Add (argumentType.Namespace);
 
@@ -184,7 +185,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			}
 
 			// Add namespaces
-			CodeNamespaceImport[] namespaceImports = imports.Distinct ().Select (import => new CodeNamespaceImport (import)).ToArray ();
+			CodeNamespaceImport[] namespaceImports = imports.Select (import => new CodeNamespaceImport (import)).ToArray ();
 			ns.Imports.AddRange (namespaceImports);
 
 			// Add the type

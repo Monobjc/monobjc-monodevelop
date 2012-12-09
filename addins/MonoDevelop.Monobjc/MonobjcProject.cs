@@ -25,6 +25,7 @@ using MonoDevelop.Monobjc.CodeGeneration;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 using System.Collections.Generic;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc
 {
@@ -107,7 +108,10 @@ namespace MonoDevelop.Monobjc
 		{
 			IDELogger.Log ("MonobjcProject::Dispose");
 
-			this.DependencyProjectTracker.Dispose();
+			this.ResolverHandler.Dispose ();
+			this.MigrationHandler.Dispose ();
+			this.DependencyHandler.Dispose ();
+			this.CodeBehindHandler.Dispose ();
 
 			base.Dispose ();
 		}
@@ -212,27 +216,34 @@ namespace MonoDevelop.Monobjc
 		{
 			IDELogger.Log ("MonobjcProject::OnFileAddedToProject '{0}'", e);
 
-			// Migrate "Page" to "InterfaceDefinition" when project is loaded (upward compatibility)
-			foreach (ProjectFileEventInfo info in e) {
-				ProjectFile projectFile = info.ProjectFile;
-				if (projectFile.BuildAction == BuildAction.Page) {
-					projectFile.BuildAction = Constants.InterfaceDefinition;
-				}
-			}
+			//IList<FilePath> newFiles = new List<FilePath>();
+
+			this.ResolverHandler.ClearCache();
+			this.MigrationHandler.Migrate (e);
+			IEnumerable<FilePath> dependencies = this.DependencyHandler.GuessDependencies (e);
 
 			base.OnFileAddedToProject (e);
+
+			this.CodeBehindHandler.GenerateDesignCode (e);
+			this.DependencyHandler.AddFiles (dependencies);
 		}
 
 		protected override void OnFileChangedInProject (ProjectFileEventArgs e)
 		{
 			IDELogger.Log ("MonobjcProject::OnFileChangedInProject '{0}'", e);
 
+			this.ResolverHandler.ClearCache();
+
 			base.OnFileChangedInProject (e);
+
+			this.CodeBehindHandler.GenerateDesignCode (e);
 		}
 
 		protected override void OnFilePropertyChangedInProject (ProjectFileEventArgs e)
 		{
 			IDELogger.Log ("MonobjcProject::OnFilePropertyChangedInProject '{0}'", e);
+
+			this.ResolverHandler.ClearCache();
 
 			base.OnFilePropertyChangedInProject (e);
 		}
@@ -241,7 +252,27 @@ namespace MonoDevelop.Monobjc
 		{
 			IDELogger.Log ("MonobjcProject::OnFileRenamedInProject '{0}'", e);
 
+			this.ResolverHandler.ClearCache();
+
 			base.OnFileRenamedInProject (e);
+		}
+
+		protected override void OnReferenceAddedToProject (ProjectReferenceEventArgs e)
+		{
+			IDELogger.Log ("MonobjcProject::OnReferenceAddedToProject '{0}'", e);
+
+			this.ResolverHandler.RecomputeReferences();
+
+			base.OnReferenceAddedToProject (e);
+		}
+
+		protected override void OnReferenceRemovedFromProject (ProjectReferenceEventArgs e)
+		{
+			IDELogger.Log ("MonobjcProject::OnReferenceRemovedFromProject '{0}'", e);
+
+			this.ResolverHandler.RecomputeReferences();
+
+			base.OnReferenceRemovedFromProject (e);
 		}
 
 		/// <summary>

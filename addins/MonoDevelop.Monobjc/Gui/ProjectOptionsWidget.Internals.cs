@@ -17,13 +17,14 @@
 //
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Gtk;
+using Monobjc.Tools.External;
 using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
-using Monobjc.Tools.External;
-using System.IO;
+using MonoDevelop.Monobjc.Utilities;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -121,7 +122,7 @@ namespace MonoDevelop.Monobjc.Gui
 				// Humm, there was an error, so add only i386
 				store.AppendValues (GettextCatalog.GetString ("Intel i386 (32 bits)"), MacOSArchitecture.X86);
 			} else {
-				LoggingService.LogInfo ("Detected architecture " + architecture);
+				IDELogger.Log ("ProjectOptionsWidget::FillArchitectures -- Detected architecture {0}", architecture);
 			}
 			
 			// Retrieve some information about the developer tools
@@ -209,7 +210,7 @@ namespace MonoDevelop.Monobjc.Gui
 			return column;
 		}
 
-		private static TreeViewColumn GetListTableColumn(EditedHandler handler)
+		private static TreeViewColumn GetListTableColumn (EditedHandler handler)
 		{
 			TreeViewColumn column = new TreeViewColumn ();
 			CellRendererText renderer = new CellRendererText ();
@@ -323,18 +324,20 @@ namespace MonoDevelop.Monobjc.Gui
 			TreeStore store = (TreeStore)treeView.Model;
 			
 			TreeIter iter;
-			store.GetIter(out iter, new TreePath(args.Path));
-			store.SetValue(iter, 0, args.NewText);
+			store.GetIter (out iter, new TreePath (args.Path));
+			store.SetValue (iter, 0, args.NewText);
 		}
 		
-		private static void AddEmptyItem(TreeView treeView, String defaultValue) {
+		private static void AddEmptyItem (TreeView treeView, String defaultValue)
+		{
 			TreeStore store = (TreeStore)treeView.Model;
-			store.AppendValues(defaultValue);
+			store.AppendValues (defaultValue);
 		}
 		
-		private static void RemoveItem(TreeView treeView) {
+		private static void RemoveItem (TreeView treeView)
+		{
 			TreeIter iter;
-			if (!treeView.Selection.GetSelected(out iter)) {
+			if (!treeView.Selection.GetSelected (out iter)) {
 				return;
 			}
 			

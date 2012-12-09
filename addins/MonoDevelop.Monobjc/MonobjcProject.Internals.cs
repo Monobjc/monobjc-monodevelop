@@ -123,62 +123,85 @@ namespace MonoDevelop.Monobjc
 		}
 
 		/// <summary>
+		/// Determines whether the project file is in the development region.
+		/// </summary>
+		internal bool IsInDevelopmentRegion (ProjectFile file)
+		{
+			bool result = false;
+			String developmentRegion = this.DevelopmentRegion;
+
+			FilePath baseDirectory = this.BaseDirectory;
+			FilePath localizedFolder = baseDirectory.Combine (developmentRegion + Constants.DOT_LPROJ);
+			FilePath ibFile = file.FilePath;
+			
+			if (ibFile.ParentDirectory.Equals (baseDirectory)) {
+				result = true;
+			} else if (ibFile.ParentDirectory.Equals (localizedFolder)) {
+				result = true;
+			}
+			
+			IDELogger.Log("MonobjcProject::IsInDevelopmentRegion -- '{0}' {1} in development region", ibFile, result ? "is" : "is not");
+
+			return result;
+		}
+
+		/// <summary>
 		///   Updates the references.
 		/// </summary>
 		internal void UpdateReferences ()
 		{
 			IDELogger.Log ("MonobjcProject::UpdateReferences");
 
-			// Retrieve assembly from the project
-			IEnumerable<ProjectReference> references = new List<ProjectReference> (this.References.Where (BuildHelper.IsMonobjcReference));
-			String[] names = this.OSFrameworks.Split (';');
-
-			// Remove any Monobjc references
-			foreach (ProjectReference item in references) {
-				this.References.Remove (item);
-			}
-
-			// Set the compatible version
-			Version version;
-			switch (this.TargetOSVersion) {
-			case MacOSVersion.MacOS105:
-				version = new Version (10, 5);
-				break;
-			case MacOSVersion.MacOS106:
-				version = new Version (10, 6);
-				break;
-			case MacOSVersion.MacOS107:
-				version = new Version (10, 7);
-				break;
-			case MacOSVersion.MacOS108:
-				version = new Version (10, 8);
-				break;
-			default:
-				version = new Version (10, 0);
-				break;
-			}
-
-			// Defer the framework loading code generation in a separate thread
-			// this.CodeBehindTracker.GenerateFrameworkLoadingCode(names, true);
-
-			// Take the list of frameworks and add project references
-			List<String> assemblyNames = new List<String> ();
-			assemblyNames.Add ("Monobjc");
-			assemblyNames.AddRange (names.Select (f => "Monobjc." + f));
-			foreach (String assemblyName in assemblyNames) {
-				// Find all matching assemblies with this name and a compatible version
-				IEnumerable<SystemAssembly> matching = this.EveryMonobjcAssemblies.Where (a => a.Name.Equals (assemblyName) && BuildHelper.IsCompatible (new Version (a.Version), version));
-
-				// If there is a match, then add the reference
-				if (matching != null && matching.Count () == 1) {
-					SystemAssembly specificAssembly = matching.First ();
-					ProjectReference reference = new ProjectReference (specificAssembly);
-					// NOTE: Starting with Monobjc 4.0, assembly references use a fixed numbering scheme (ex: 10.7.0.0)
-					// In this case, we can require a specific version
-					reference.SpecificVersion = specificAssembly.Version.EndsWith (".0.0");
-					this.References.Add (reference);
-				}
-			}
+//			// Retrieve assembly from the project
+//			IEnumerable<ProjectReference> references = new List<ProjectReference> (this.References.Where (BuildHelper.IsMonobjcReference));
+//			String[] names = this.OSFrameworks.Split (';');
+//
+//			// Remove any Monobjc references
+//			foreach (ProjectReference item in references) {
+//				this.References.Remove (item);
+//			}
+//
+//			// Set the compatible version
+//			Version version;
+//			switch (this.TargetOSVersion) {
+//			case MacOSVersion.MacOS105:
+//				version = new Version (10, 5);
+//				break;
+//			case MacOSVersion.MacOS106:
+//				version = new Version (10, 6);
+//				break;
+//			case MacOSVersion.MacOS107:
+//				version = new Version (10, 7);
+//				break;
+//			case MacOSVersion.MacOS108:
+//				version = new Version (10, 8);
+//				break;
+//			default:
+//				version = new Version (10, 0);
+//				break;
+//			}
+//
+//			// Defer the framework loading code generation in a separate thread
+//			// this.CodeBehindTracker.GenerateFrameworkLoadingCode(names, true);
+//
+//			// Take the list of frameworks and add project references
+//			List<String> assemblyNames = new List<String> ();
+//			assemblyNames.Add ("Monobjc");
+//			assemblyNames.AddRange (names.Select (f => "Monobjc." + f));
+//			foreach (String assemblyName in assemblyNames) {
+//				// Find all matching assemblies with this name and a compatible version
+//				IEnumerable<SystemAssembly> matching = this.EveryMonobjcAssemblies.Where (a => a.Name.Equals (assemblyName) && BuildHelper.IsCompatible (new Version (a.Version), version));
+//
+//				// If there is a match, then add the reference
+//				if (matching != null && matching.Count () == 1) {
+//					SystemAssembly specificAssembly = matching.First ();
+//					ProjectReference reference = new ProjectReference (specificAssembly);
+//					// NOTE: Starting with Monobjc 4.0, assembly references use a fixed numbering scheme (ex: 10.7.0.0)
+//					// In this case, we can require a specific version
+//					reference.SpecificVersion = specificAssembly.Version.EndsWith (".0.0");
+//					this.References.Add (reference);
+//				}
+//			}
 		}
 	}
 }

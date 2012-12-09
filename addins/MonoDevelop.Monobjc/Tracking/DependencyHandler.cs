@@ -25,40 +25,42 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
-	public class DependencyProjectTracker : ProjectTracker
+	class DependencyHandler : ProjectHandler
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="DependencyProjectTracker"/> class.
+		/// Initializes a new instance of the <see cref="DependencyHandler"/> class.
 		/// </summary>
 		/// <param name="project">The project.</param>
-		public DependencyProjectTracker (MonobjcProject project) : base(project)
+		public DependencyHandler (MonobjcProject project) : base(project)
 		{
 			this.DesignerExtension = Constants.DOT_DESIGNER + this.SourceExtension;
 		}
 
-		/// <summary>
-		/// Gets or sets the designer extension.
-		/// </summary>
 		private String DesignerExtension { get; set; }
 
-		protected override void HandleFileAddedToProject (object sender, ProjectFileEventArgs e)
+		public IEnumerable<FilePath> GuessDependencies (ProjectFileEventArgs e)
 		{
 			// Balk if the project is being deserialized
 			if (this.Project.Loading) {
-				return;
+				return new FilePath[0];
 			}
-
+			
 			// Collect dependencies for each added items
 			List<FilePath> dependencies = new List<FilePath> ();
 			foreach (ProjectFileEventInfo info in e) {
-				IDELogger.Log ("DependencyProjectTracker::HandleFileAddedToProject -- collecting for {0}", info.ProjectFile);
+				IDELogger.Log ("DependencyHandler::GuessDependencies -- collecting for {0}", info.ProjectFile);
 				IEnumerable<FilePath> files = this.GuessDependencies (info.ProjectFile);
 				dependencies.AddRange (files);
 			}
-			
+
+			return dependencies;
+		}
+
+		public void AddFiles (IEnumerable<FilePath> files)
+		{
 			// Add dependencies if needed
-			foreach (FilePath file in dependencies.Where(f => !this.Project.IsFileInProject(f))) {
-				IDELogger.Log ("DependencyProjectTracker::HandleFileAddedToProject -- adding {0}", file);
+			foreach (FilePath file in files.Where(f => !this.Project.IsFileInProject(f))) {
+				IDELogger.Log ("DependencyHandler::GuessDependencies -- adding {0}", file);
 				this.Project.AddFile (file);
 			}
 		}
@@ -68,7 +70,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			FilePath filePath = file.FilePath;
 			String extension = filePath.Extension;
 
-			if (String.Equals(extension, this.SourceExtension, StringComparison.InvariantCultureIgnoreCase)) {
+			if (String.Equals (extension, this.SourceExtension, StringComparison.InvariantCultureIgnoreCase)) {
 				// If the dependant file is being added
 				if (filePath.FileName.EndsWith (this.DesignerExtension, StringComparison.InvariantCultureIgnoreCase)) {
 					FilePath peerPath = filePath.ToString ().Replace (this.DesignerExtension, this.SourceExtension);
@@ -90,7 +92,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 
 			// If NIB is added, search for XIB
-			else if (String.Equals(extension, Constants.DOT_NIB, StringComparison.InvariantCultureIgnoreCase)) {
+			else if (String.Equals (extension, Constants.DOT_NIB, StringComparison.InvariantCultureIgnoreCase)) {
 				FilePath peerPath = filePath.ChangeExtension (Constants.DOT_XIB);
 				if (File.Exists (peerPath)) {
 					if (this.Project.IsFileInProject (peerPath) && String.IsNullOrEmpty (file.DependsOn)) {
@@ -101,7 +103,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 
 			// If XIB is added, search for NIB
-			else if (String.Equals(extension, Constants.DOT_XIB, StringComparison.InvariantCultureIgnoreCase)) {
+			else if (String.Equals (extension, Constants.DOT_XIB, StringComparison.InvariantCultureIgnoreCase)) {
 				FilePath peerPath = filePath.ChangeExtension (Constants.DOT_NIB);
 				if (File.Exists (peerPath)) {
 					return new[] { peerPath };

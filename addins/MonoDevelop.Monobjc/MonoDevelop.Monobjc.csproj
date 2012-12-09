@@ -128,10 +128,8 @@
     <Compile Include="Utilities\BundleGenerator.cs" />
     <Compile Include="Utilities\IDELogger.cs" />
     <Compile Include="MonobjcProjectType.cs" />
-    <Compile Include="Tracking\ProjectTracker.cs" />
     <Compile Include="MonobjcExecutionHandler.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="BusyDialog.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.BusyDialog.cs" />
     <Compile Include="Gui\ExportDialog.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.ExportDialog.cs" />
@@ -146,7 +144,12 @@
     <Compile Include="Gui\ProjectOptionsWidget.Embedding.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.ProjectOptionsWidget.cs" />
     <Compile Include="Gui\ProjectOptionsPanel.cs" />
-    <Compile Include="Tracking\DependencyProjectTracker.cs" />
+    <Compile Include="Tracking\ProjectHandler.cs" />
+    <Compile Include="Tracking\MigrationHandler.cs" />
+    <Compile Include="Tracking\DependencyHandler.cs" />
+    <Compile Include="Tracking\CodeBehindHandler.cs" />
+    <Compile Include="Gui\BusyDialog.cs" />
+    <Compile Include="Tracking\ResolverHandler.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

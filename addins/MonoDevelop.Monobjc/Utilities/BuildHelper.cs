@@ -150,31 +150,7 @@ namespace MonoDevelop.Monobjc.Utilities
 			String extension = file.FilePath.Extension;
 			return String.Equals (Constants.DOT_STRINGS, extension) && (file.BuildAction == BuildAction.Content);
 		}
-		
-		public static bool IsInDevelopmentRegion (MonobjcProject project, ProjectFile file)
-		{
-			String developmentRegion = project.DevelopmentRegion;
 
-			IDELogger.Log("BuildHelper::IsInDevelopmentRegion 1 - '{0}'", developmentRegion);
-
-			FilePath baseDirectory = project.BaseDirectory;
-			FilePath localizedFolder = baseDirectory.Combine (developmentRegion + ".lproj");
-			FilePath ibFile = file.FilePath;
-
-			IDELogger.Log("BuildHelper::IsInDevelopmentRegion 2 - '{0}'", baseDirectory);
-			IDELogger.Log("BuildHelper::IsInDevelopmentRegion 3 - '{0}'", localizedFolder);
-			IDELogger.Log("BuildHelper::IsInDevelopmentRegion 4 - '{0}' '{1}'", ibFile, ibFile.ParentDirectory);
-
-			if (ibFile.ParentDirectory.Equals (baseDirectory)) {
-				return true;
-			}
-			if (ibFile.ParentDirectory.Equals (localizedFolder)) {
-				return true;
-			}
-			
-			return false;
-		}
-		
 		/// <summary>
 		///   Determines whether the specified versions are compatible.
 		/// </summary>
