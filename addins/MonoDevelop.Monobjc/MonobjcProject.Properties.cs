@@ -33,13 +33,20 @@ namespace MonoDevelop.Monobjc
 	{
 		private IEnumerable<SystemAssembly> monobjcAssemblies;
 
-		private ResolverHandler ResolverHandler { get; set; }
+		internal CodeBehindHandler CodeBehindHandler { get; private set; }
 
-		private MigrationHandler MigrationHandler { get; set; }
+		internal DependencyHandler DependencyHandler { get; private set; }
 
-		private DependencyHandler DependencyHandler { get; set; }
+		internal MigrationHandler MigrationHandler { get; private set; }
 
-		private CodeBehindHandler CodeBehindHandler { get; set; }
+		internal ResolverHandler ResolverHandler { get; private set; }
+
+		internal XcodeHandler XcodeHandler { get; private set; }
+
+		internal FilePath XcodeProjectFolder
+		{
+			get { return this.XcodeHandler.XcodeProject.ProjectFolder; }
+		}
 
 		/// <summary>
 		///   Gets the project Monobjc assemblies.
@@ -85,6 +92,7 @@ namespace MonoDevelop.Monobjc
 			this.MigrationHandler = new MigrationHandler (this);
 			this.DependencyHandler = new DependencyHandler (this);
 			this.CodeBehindHandler = new CodeBehindHandler (this);
+			this.XcodeHandler = new XcodeHandler (this);
 		}
 
 		private String GetNodeValue (XmlElement element, String key, String @default)

@@ -150,6 +150,11 @@
     <Compile Include="Tracking\CodeBehindHandler.cs" />
     <Compile Include="Gui\BusyDialog.cs" />
     <Compile Include="Tracking\ResolverHandler.cs" />
+    <Compile Include="Tracking\EmbeddingHandler.cs" />
+    <Compile Include="Tracking\XcodeHandler.cs" />
+    <Compile Include="Tracking\ObjectiveCHeaderWriter.cs" />
+    <Compile Include="Tracking\ObjectiveCSourceWriter.cs" />
+    <Compile Include="Tracking\ObjectiveCWriter.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

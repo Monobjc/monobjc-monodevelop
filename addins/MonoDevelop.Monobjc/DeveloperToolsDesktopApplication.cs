@@ -21,9 +21,7 @@ using System.IO;
 using System.Text;
 using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
-using MonoDevelop.Ide.Gui;
 using MonoDevelop.Ide.Desktop;
-using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc
 {
@@ -82,13 +80,13 @@ namespace MonoDevelop.Monobjc
 			case 3:
 				{
 					String path = Path.Combine (DeveloperToolsFolder, Constants.INTERFACE_BUILDER_APPLICATION);
-					//arguments.AppendFormat("\"{0}\" \"{1}\"", path, file);
+					arguments.AppendFormat("\"{0}\" \"{1}\"", path, file);
 					break;
 				}
 			case 4:
 				{
 					String path = Path.Combine (DeveloperToolsFolder, Constants.XCODE_APPLICATION);
-					//arguments.AppendFormat("\"{0}\" \"{1}\"", path, project.XcodeTracker.ProjectFolder);
+					arguments.AppendFormat("\"{0}\" \"{1}\"", path, project.XcodeProjectFolder);
 					break;
 				}
 			default:

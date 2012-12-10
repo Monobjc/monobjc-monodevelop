@@ -22,7 +22,7 @@ namespace MonoDevelop.Monobjc.Tracking
 	class ResolverHandler : ProjectHandler
 	{
 		/// <summary>
-		/// Initializes a new instance of the <see cref="MigrationHandler"/> class.
+		/// Initializes a new instance of the <see cref="ResolverHandler"/> class.
 		/// </summary>
 		/// <param name="project">The project.</param>
 		public ResolverHandler (MonobjcProject project) : base(project)

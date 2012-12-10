@@ -157,6 +157,14 @@ namespace MonoDevelop.Monobjc.Utilities
 		}
 		
 		/// <summary>
+		/// Gets the DOM type of the type definition.
+		/// </summary>
+		public IType ResolveType (ITypeDefinition typeDefinition)
+		{
+			return typeDefinition.ToTypeReference ().Resolve (this.ProjectWrapper.Compilation);
+		}
+
+		/// <summary>
 		///   Resolves the specified class name.
 		/// </summary>
 		public IType ResolvePartialType (String className)
@@ -230,7 +238,7 @@ namespace MonoDevelop.Monobjc.Utilities
 			}
 			
 			if (typeDefinition != null) {
-				type = typeDefinition.ToTypeReference ().Resolve (this.ProjectWrapper.Compilation);
+				type = this.ResolveType(typeDefinition);
 				this.typeCache.Add (className, type);
 			}
 			
@@ -285,7 +293,7 @@ namespace MonoDevelop.Monobjc.Utilities
 
 		private IEnumerable<IType> ConvertTo (IEnumerable<ITypeDefinition> typeDefinitions)
 		{
-			return typeDefinitions.Select (td => td.ToTypeReference ().Resolve (this.ProjectWrapper.Compilation));
+			return typeDefinitions.Select (td => this.ResolveType(td));
 		}
 
 		private static IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions (IEnumerable<ITypeDefinition> typeDefinitions, Func<ITypeDefinition, bool> matcher)

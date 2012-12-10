@@ -15,12 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using MonoDevelop.Core;
-using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.Tracking

@@ -51,14 +51,10 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// </summary>
 		public void GenerateDesignCode (ProjectFileEventArgs e)
 		{
-			IDELogger.Log ("CodeBehindHandler::GenerateDesignCode 1");
-
 			// Balk if the project is being deserialized
 			if (this.Project.Loading) {
 				return;
 			}
-
-			IDELogger.Log ("CodeBehindHandler::GenerateDesignCode 2");
 
 			// Run CodeBehind if it is a XIB file
 			IList<ProjectFile> projectFiles = new List<ProjectFile> ();

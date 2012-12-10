@@ -233,13 +233,12 @@
     </Condition>
   </Extension>
 
-  <!-- Display Bindings
+  <!-- Display Bindings -->
   <Extension path="/MonoDevelop/Ide/DisplayBindings">
     <DisplayBinding id = "MonobjcDeveloperTools"
                     insertafter ="DefaultDisplayBinding"
                     class = "MonoDevelop.Monobjc.DeveloperToolsDisplayBinding" />
   </Extension>
-  -->
 
   <!-- Extension point for CodeBehind -->
   <ExtensionPoint path="/Monobjc/CodeBehindGeneration" name="CodeBehind Generators">

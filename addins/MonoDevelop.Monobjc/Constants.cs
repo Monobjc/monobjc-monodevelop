@@ -21,6 +21,8 @@ namespace MonoDevelop.Monobjc
 {
 	static class Constants
 	{
+		public const String APPLICATION_TITLE = "Developer Tools (Monobjc)";
+
 		public const String IBACTION = "Monobjc.IBActionAttribute";
 		public const String IBOUTLET = "Monobjc.IBOutletAttribute";
 		public const String OBJECTIVE_C_CLASS = "Monobjc.ObjectiveCClassAttribute";
@@ -29,7 +31,6 @@ namespace MonoDevelop.Monobjc
 		public const String OBJECTIVE_C_IVAR = "Monobjc.ObjectiveCIVarAttribute";
 		public const String OBJECTIVE_C_FRAMEWORK = "Monobjc.ObjectiveCFrameworkAttribute";
 		
-		public const String APPLICATION_TITLE = "Apple Developer Tools";
 		public const String DEVELOPER_TOOLS = "MonoDevelop.Monobjc.DeveloperTools";
 		public const String XCODE_APPLICATION = "Applications/Xcode.app";
 		public const String INTERFACE_BUILDER_APPLICATION = "Applications/Interface Builder.app";
@@ -45,5 +46,10 @@ namespace MonoDevelop.Monobjc
 		public const String InterfaceDefinition = "InterfaceDefinition";
 		public const String EmbeddedInterfaceDefinition = "EmbeddedInterfaceDefinition";
 		public const String INFO_PLIST = "Info.plist";
+
+		public const String GROUP_CLASSES = "Classes";
+		public const String GROUP_RESOURCES = "Resources";
+		public const String GROUP_FRAMEWORKS = "Frameworks";
+		public const String CONFIGURATION_RELEASE = "Release";
 	}
 }

@@ -112,6 +112,7 @@ namespace MonoDevelop.Monobjc
 			this.MigrationHandler.Dispose ();
 			this.DependencyHandler.Dispose ();
 			this.CodeBehindHandler.Dispose ();
+			this.XcodeHandler.Dispose ();
 
 			base.Dispose ();
 		}
@@ -226,6 +227,7 @@ namespace MonoDevelop.Monobjc
 
 			this.CodeBehindHandler.GenerateDesignCode (e);
 			this.DependencyHandler.AddFiles (dependencies);
+			this.XcodeHandler.ClearXcodeProject();
 		}
 
 		protected override void OnFileChangedInProject (ProjectFileEventArgs e)
@@ -237,6 +239,7 @@ namespace MonoDevelop.Monobjc
 			base.OnFileChangedInProject (e);
 
 			this.CodeBehindHandler.GenerateDesignCode (e);
+			this.XcodeHandler.ClearXcodeProject();
 		}
 
 		protected override void OnFilePropertyChangedInProject (ProjectFileEventArgs e)
@@ -246,6 +249,7 @@ namespace MonoDevelop.Monobjc
 			this.ResolverHandler.ClearCache();
 
 			base.OnFilePropertyChangedInProject (e);
+			this.XcodeHandler.ClearXcodeProject();
 		}
 
 		protected override void OnFileRenamedInProject (ProjectFileRenamedEventArgs e)
@@ -255,6 +259,7 @@ namespace MonoDevelop.Monobjc
 			this.ResolverHandler.ClearCache();
 
 			base.OnFileRenamedInProject (e);
+			this.XcodeHandler.ClearXcodeProject();
 		}
 
 		protected override void OnReferenceAddedToProject (ProjectReferenceEventArgs e)
@@ -264,6 +269,7 @@ namespace MonoDevelop.Monobjc
 			this.ResolverHandler.RecomputeReferences();
 
 			base.OnReferenceAddedToProject (e);
+			this.XcodeHandler.ClearXcodeProject();
 		}
 
 		protected override void OnReferenceRemovedFromProject (ProjectReferenceEventArgs e)
@@ -273,6 +279,7 @@ namespace MonoDevelop.Monobjc
 			this.ResolverHandler.RecomputeReferences();
 
 			base.OnReferenceRemovedFromProject (e);
+			this.XcodeHandler.ClearXcodeProject();
 		}
 
 		/// <summary>
