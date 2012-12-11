@@ -18,33 +18,31 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
-using MonoDevelop.Core.Serialization;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 using MonoDevelop.Monobjc.Tracking;
-using System.Xml;
 
 namespace MonoDevelop.Monobjc
 {
 	public partial class MonobjcProject
 	{
-		private IEnumerable<SystemAssembly> monobjcAssemblies;
-
 		internal CodeBehindHandler CodeBehindHandler { get; private set; }
 
 		internal DependencyHandler DependencyHandler { get; private set; }
-
+		
+		internal EmbeddingHandler EmbeddingHandler { get; private set; }
+		
 		internal MigrationHandler MigrationHandler { get; private set; }
 
 		internal ResolverHandler ResolverHandler { get; private set; }
 
 		internal XcodeHandler XcodeHandler { get; private set; }
 
-		internal FilePath XcodeProjectFolder
-		{
+		internal FilePath XcodeProjectFolder {
 			get { return this.XcodeHandler.XcodeProject.ProjectFolder; }
 		}
 
@@ -59,7 +57,7 @@ namespace MonoDevelop.Monobjc
 		///   Returns all the registered Monobjc assemblies.
 		/// </summary>
 		internal IEnumerable<SystemAssembly> EveryMonobjcAssemblies {
-			get { return this.monobjcAssemblies ?? (this.monobjcAssemblies = this.AssemblyContext.GetAssemblies ().Where (BuildHelper.IsMonobjcReference)); }
+			get { return this.AssemblyContext.GetAssemblies ().Where (BuildHelper.IsMonobjcReference); }
 		}
 
 		/// <summary>
@@ -88,10 +86,11 @@ namespace MonoDevelop.Monobjc
 			this.DevelopmentRegion = this.DevelopmentRegion ?? "en";
 
 			// Create the handlers
-			this.ResolverHandler = new ResolverHandler (this);
-			this.MigrationHandler = new MigrationHandler (this);
-			this.DependencyHandler = new DependencyHandler (this);
 			this.CodeBehindHandler = new CodeBehindHandler (this);
+			this.DependencyHandler = new DependencyHandler (this);
+			this.EmbeddingHandler = new EmbeddingHandler (this);
+			this.MigrationHandler = new MigrationHandler (this);
+			this.ResolverHandler = new ResolverHandler (this);
 			this.XcodeHandler = new XcodeHandler (this);
 		}
 

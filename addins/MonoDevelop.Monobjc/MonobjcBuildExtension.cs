@@ -242,7 +242,7 @@ namespace MonoDevelop.Monobjc
 			case MonobjcProjectType.CocoaApplication:
 				{
 					MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)project.GetConfiguration (configuration);
-					//BundleGenerator.Generate (monitor, result, project, configuration, conf.OutputDirectory, false);
+					BundleGenerator.Generate (monitor, result, project, configuration, conf.OutputDirectory, false);
 				}
 				break;
 			case MonobjcProjectType.ConsoleApplication:

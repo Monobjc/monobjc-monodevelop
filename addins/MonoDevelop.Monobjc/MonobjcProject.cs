@@ -108,10 +108,11 @@ namespace MonoDevelop.Monobjc
 		{
 			IDELogger.Log ("MonobjcProject::Dispose");
 
-			this.ResolverHandler.Dispose ();
-			this.MigrationHandler.Dispose ();
-			this.DependencyHandler.Dispose ();
 			this.CodeBehindHandler.Dispose ();
+			this.DependencyHandler.Dispose ();
+			this.EmbeddingHandler.Dispose ();
+			this.MigrationHandler.Dispose ();
+			this.ResolverHandler.Dispose ();
 			this.XcodeHandler.Dispose ();
 
 			base.Dispose ();
