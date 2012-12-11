@@ -19,7 +19,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using MonoDevelop.Core;
+using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 
@@ -35,25 +37,32 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 		}
 
-		/// <summary>
-		/// Set the resource ids.
-		/// </summary>
-		public void SetResourceIds (IEnumerable<ProjectFileEventInfo> e)
+		public void ApplyEmbedding(IEnumerable<ProjectFileEventInfo> e)
 		{
-			this.SetResourceIds (e.Select (info => info.ProjectFile));
-		}
+			// Balk if the project is being deserialized
+			if (this.Project.Loading) {
+				return;
+			}
 
-		/// <summary>
-		/// Set the resource ids.
-		/// </summary>
-		private void SetResourceIds (IEnumerable<ProjectFile> files)
-		{
-			foreach (ProjectFile file in files) {
-				FilePath filePath = file.FilePath;
-				if (BuildHelper.IsNIBFile (filePath) && file.BuildAction == BuildAction.EmbeddedResource) {
-					this.SetResourceId (file);
+			// Collect file added
+			IList<ProjectFile> filesToAdd = new List<ProjectFile> ();
+			IList<ProjectFile> filesToRemove = new List<ProjectFile> ();
+			foreach (ProjectFileEventInfo info in e) {
+				ProjectFile projectFile = info.ProjectFile;
+				IDELogger.Log ("EmbeddingHandler::ApplyEmbedding -- {0}", projectFile);
+				if (BuildHelper.IsEmbeddedXIBFile (projectFile)) {
+					filesToAdd.Add (projectFile);
+				}
+				if (BuildHelper.IsNormalXIBFile (projectFile)) {
+					filesToRemove.Add (projectFile);
 				}
 			}
+
+			if (filesToAdd.Count == 0 && filesToRemove.Count == 0) {
+				return;
+			}
+
+			this.ScheduleForEmbedding(filesToAdd, filesToRemove);
 		}
 
 		/// <summary>
@@ -61,16 +70,66 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// </summary>
 		private void SetResourceId (ProjectFile file)
 		{
+			if (BuildHelper.IsNIBFile (file)) {
+				return;
+			}
+
 			FilePath filePath = file.FilePath;
 			String resourceId = this.Project.DefaultNamespace + "." + Path.GetFileNameWithoutExtension (filePath);
 			FilePath parentPath = filePath.ParentDirectory;
 			if (String.Equals (parentPath.Extension, Constants.DOT_LPROJ, StringComparison.InvariantCultureIgnoreCase)) {
-				String parent = parentPath.FileNameWithoutExtension;
-				if (parent != this.Project.DevelopmentRegion) {
-					resourceId = resourceId + "." + parent;
-				}
-				file.ResourceId = resourceId;
+				resourceId = resourceId + "." + parentPath.FileNameWithoutExtension;
 			}
+			file.ResourceId = resourceId;
+		}
+
+		private void ScheduleForEmbedding (IList<ProjectFile> filesToAdd, IList<ProjectFile> filesToRemove)
+		{
+			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor ("Monobjc", "md-monobjc", false);
+			ThreadPool.QueueUserWorkItem (delegate {
+				try {
+					monitor.BeginTask (GettextCatalog.GetString ("Setting up embedding..."), 1 + filesToAdd.Count + filesToRemove.Count);
+
+					IList<FilePair> pairs = new List<FilePair> ();
+					foreach (ProjectFile projectFile in filesToAdd) {
+						FilePair pair = this.Project.GetIBFile (projectFile, Constants.EmbeddedInterfaceDefinition, null);
+						if (pair == null) {
+							continue;
+						}
+						pairs.Add (pair);
+					}
+
+					foreach (FilePair pair in pairs) {
+						// Create file if needed
+						if (!File.Exists (pair.Destination)) {
+							File.Create (pair.Destination);
+						}
+						
+						// Add file if needed
+						ProjectFile destinationFile = this.Project.AddFile (pair.Destination);
+						this.SetResourceId (destinationFile);
+
+						monitor.Step(1);
+					}
+
+					// Remove dependent files
+					foreach (ProjectFile file in filesToRemove) {
+						foreach (ProjectFile child in file.DependentChildren) {
+							child.DependsOn = null;
+						}
+
+						monitor.Step(1);
+					}
+
+					this.Project.Save (monitor);
+					
+					monitor.EndTask ();
+				} catch (Exception ex) {
+					monitor.ReportError (ex.Message, ex);
+				} finally {
+					monitor.Dispose ();
+				}
+			});
 		}
 	}
 }

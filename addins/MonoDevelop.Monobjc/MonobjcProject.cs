@@ -218,17 +218,17 @@ namespace MonoDevelop.Monobjc
 		{
 			IDELogger.Log ("MonobjcProject::OnFileAddedToProject '{0}'", e);
 
-			//IList<FilePath> newFiles = new List<FilePath>();
-
-			this.ResolverHandler.ClearCache();
 			this.MigrationHandler.Migrate (e);
+			this.ResolverHandler.ClearCache();
+			this.XcodeHandler.ClearXcodeProject();
+
 			IEnumerable<FilePath> dependencies = this.DependencyHandler.GuessDependencies (e);
 
 			base.OnFileAddedToProject (e);
 
-			this.CodeBehindHandler.GenerateDesignCode (e);
 			this.DependencyHandler.AddFiles (dependencies);
-			this.XcodeHandler.ClearXcodeProject();
+			this.CodeBehindHandler.GenerateDesignCode (e);
+			this.EmbeddingHandler.ApplyEmbedding(e);
 		}
 
 		protected override void OnFileChangedInProject (ProjectFileEventArgs e)
@@ -236,11 +236,11 @@ namespace MonoDevelop.Monobjc
 			IDELogger.Log ("MonobjcProject::OnFileChangedInProject '{0}'", e);
 
 			this.ResolverHandler.ClearCache();
+			this.XcodeHandler.ClearXcodeProject();
 
 			base.OnFileChangedInProject (e);
 
 			this.CodeBehindHandler.GenerateDesignCode (e);
-			this.XcodeHandler.ClearXcodeProject();
 		}
 
 		protected override void OnFilePropertyChangedInProject (ProjectFileEventArgs e)
@@ -248,9 +248,11 @@ namespace MonoDevelop.Monobjc
 			IDELogger.Log ("MonobjcProject::OnFilePropertyChangedInProject '{0}'", e);
 
 			this.ResolverHandler.ClearCache();
+			this.XcodeHandler.ClearXcodeProject();
 
 			base.OnFilePropertyChangedInProject (e);
-			this.XcodeHandler.ClearXcodeProject();
+
+			this.EmbeddingHandler.ApplyEmbedding(e);
 		}
 
 		protected override void OnFileRenamedInProject (ProjectFileRenamedEventArgs e)
@@ -258,9 +260,9 @@ namespace MonoDevelop.Monobjc
 			IDELogger.Log ("MonobjcProject::OnFileRenamedInProject '{0}'", e);
 
 			this.ResolverHandler.ClearCache();
+			this.XcodeHandler.ClearXcodeProject();
 
 			base.OnFileRenamedInProject (e);
-			this.XcodeHandler.ClearXcodeProject();
 		}
 
 		protected override void OnReferenceAddedToProject (ProjectReferenceEventArgs e)
@@ -268,9 +270,9 @@ namespace MonoDevelop.Monobjc
 			IDELogger.Log ("MonobjcProject::OnReferenceAddedToProject '{0}'", e);
 
 			this.ResolverHandler.RecomputeReferences();
+			this.XcodeHandler.ClearXcodeProject();
 
 			base.OnReferenceAddedToProject (e);
-			this.XcodeHandler.ClearXcodeProject();
 		}
 
 		protected override void OnReferenceRemovedFromProject (ProjectReferenceEventArgs e)
@@ -278,9 +280,9 @@ namespace MonoDevelop.Monobjc
 			IDELogger.Log ("MonobjcProject::OnReferenceRemovedFromProject '{0}'", e);
 
 			this.ResolverHandler.RecomputeReferences();
+			this.XcodeHandler.ClearXcodeProject();
 
 			base.OnReferenceRemovedFromProject (e);
-			this.XcodeHandler.ClearXcodeProject();
 		}
 
 		/// <summary>

@@ -139,6 +139,19 @@ namespace MonoDevelop.Monobjc.Utilities
 		}
 
 		/// <summary>
+		///   Determines whether the specified filename is a NIB file.
+		/// </summary>
+		/// <param name = "file">The file.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is a NIB file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsNIBFile (ProjectFile file)
+		{
+			String extension = file.FilePath.Extension;
+			return String.Equals (Constants.DOT_NIB, extension) && (file.BuildAction == BuildAction.EmbeddedResource);
+		}
+		
+		/// <summary>
 		///   Determines whether the specified filename is a strings file.
 		/// </summary>
 		/// <param name = "file">The file.</param>
