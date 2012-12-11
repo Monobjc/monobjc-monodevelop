@@ -130,7 +130,6 @@
     <Compile Include="MonobjcProjectType.cs" />
     <Compile Include="MonobjcExecutionHandler.cs" />
     <Compile Include="Constants.cs" />
-    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.BusyDialog.cs" />
     <Compile Include="Gui\ExportDialog.cs" />
     <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.ExportDialog.cs" />
     <Compile Include="Gui\PreferencesPanel.cs" />
@@ -148,7 +147,6 @@
     <Compile Include="Tracking\MigrationHandler.cs" />
     <Compile Include="Tracking\DependencyHandler.cs" />
     <Compile Include="Tracking\CodeBehindHandler.cs" />
-    <Compile Include="Gui\BusyDialog.cs" />
     <Compile Include="Tracking\ResolverHandler.cs" />
     <Compile Include="Tracking\EmbeddingHandler.cs" />
     <Compile Include="Tracking\XcodeHandler.cs" />

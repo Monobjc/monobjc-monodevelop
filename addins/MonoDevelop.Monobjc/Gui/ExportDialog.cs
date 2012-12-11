@@ -85,13 +85,11 @@ namespace MonoDevelop.Monobjc.Gui
 						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Building Project...", 40); });
 						this.project.Build (monitor, configuration);
 
-						/*
 						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Generating Bundle...", 60); });
 						BundleGenerator.Generate(monitor, result, project, configuration, outputDirectory, native); 
 						
 						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Archiving Bundle...", 70); });
 						BundleGenerator.Archive(monitor, result, project, configuration, outputDirectory);
-						*/
 
 						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Cleaning Project...", 80); });
 						this.project.Clean (monitor, configuration);

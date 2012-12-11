@@ -47,6 +47,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.radiobuttonManaged = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("Export As Managed Application"));
 			this.radiobuttonManaged.CanFocus = true;
 			this.radiobuttonManaged.Name = "radiobuttonManaged";
+			this.radiobuttonManaged.Active = true;
 			this.radiobuttonManaged.DrawIndicator = true;
 			this.radiobuttonManaged.UseUnderline = true;
 			this.radiobuttonManaged.Group = new global::GLib.SList (global::System.IntPtr.Zero);

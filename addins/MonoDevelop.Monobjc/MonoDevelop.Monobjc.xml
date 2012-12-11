@@ -186,30 +186,27 @@
                       class="MonoDevelop.Monobjc.MonobjcExecutionHandler"/>
   </Extension>
 
-  <!-- Commands
+  <!-- Commands -->
   <Extension path="/MonoDevelop/Ide/Commands/Project">
     <Command id="MonoDevelop.Monobjc.Commands.ExportBundle"
              defaultHandler="MonoDevelop.Monobjc.Commands.ExportBundleCommandHandler"
              _label="Create Monobjc Bundle"
              _description="Export a Monobjc application bundle"/>
   </Extension>
-  -->
 
-  <!-- Project Menu
+  <!-- Project Menu -->
   <Extension path="/MonoDevelop/Ide/MainMenu/Project">
     <CommandItem id="MonoDevelop.Monobjc.Commands.ExportBundle"
                  insertafter="MonoDevelop.Ide.Commands.ProjectCommands.ExportProject"/>
   </Extension>
-  -->
 
-  <!-- Project Context Menu
+  <!-- Project Context Menu -->
   <Extension path="/MonoDevelop/Ide/ContextMenu/ProjectPad/Tools">
     <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
       <CommandItem id="MonoDevelop.Monobjc.Commands.ExportBundle"
                    insertafter="MonoDevelop.Ide.Commands.ProjectCommands.ExportProject"/>
     </Condition>
   </Extension>
-  -->
 
   <!-- General Options -->
   <Extension path = "/MonoDevelop/Ide/GlobalOptionsDialog/Preferences">
