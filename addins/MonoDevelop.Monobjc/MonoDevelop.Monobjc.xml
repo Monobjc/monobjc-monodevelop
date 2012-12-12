@@ -261,22 +261,24 @@
                     type="MonoDevelop.Monobjc.Debugger.MonobjcSoftDebuggerEngine" />
   </Extension>
 
-  <!-- Refactorings
+  <!-- Refactorings -->
   <Extension path="/MonoDevelop/Refactoring/Refactorings">
-    <Class id="CreateObjectiveCIVar" class="MonoDevelop.Monobjc.Refactoring.CreateIVarOperation" />
-    <Class id="ImplementObjectiveCProtocol" class="MonoDevelop.Monobjc.Refactoring.ImplementProtocolOperation" />
+    <Class id="MonobjcCreateIVar" class="MonoDevelop.Monobjc.Refactoring.CreateIVarOperation" />
+    <Class id="MonobjcCreateProperty" class="MonoDevelop.Monobjc.Refactoring.CreatePropertyOperation" />
+    <Class id="MonobjcImplementProtocol" class="MonoDevelop.Monobjc.Refactoring.ImplementProtocolOperation" />
   </Extension>
-  -->
 
-  <!-- Refactoring Commands
+  <!-- Refactoring Commands -->
   <Extension path="/MonoDevelop/Ide/Commands/Refactoring">
-    <Command id="MonoDevelop.Monobjc.Refactoring.CreateObjectiveCIVar"
+    <Command id="MonoDevelop.Monobjc.Refactoring.CreateIVar"
              defaultHandler="MonoDevelop.Monobjc.Refactoring.CreateIVarHandler"
-             _label="Create Variable"/>
-    <Command id="MonoDevelop.Monobjc.Refactoring.ImplementObjectiveCProtocol"
+             _label="Create Instance Variable"/>
+    <Command id="MonoDevelop.Monobjc.Refactoring.CreateProperty"
+             defaultHandler="MonoDevelop.Monobjc.Refactoring.CreatePropertyHandler"
+             _label="Create Property"/>
+    <Command id="MonoDevelop.Monobjc.Refactoring.ImplementProtocol"
              defaultHandler="MonoDevelop.Monobjc.Refactoring.ImplementProtocolHandler"
              _label="Implement Protocol"/>
   </Extension>
-  -->
 
 </Addin>

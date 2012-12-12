@@ -23,12 +23,16 @@ namespace MonoDevelop.Monobjc
 	{
 		public const String APPLICATION_TITLE = "Developer Tools (Monobjc)";
 
+		public const String NOT_IMPLEMENTED_EXCEPTION = "NotImplementedException";
+
 		public const String IBACTION = "Monobjc.IBActionAttribute";
 		public const String IBOUTLET = "Monobjc.IBOutletAttribute";
 		public const String OBJECTIVE_C_CLASS = "Monobjc.ObjectiveCClassAttribute";
 		public const String OBJECTIVE_C_PROTOCOL = "Monobjc.ObjectiveCProtocolAttribute";
 		public const String OBJECTIVE_C_MESSAGE = "Monobjc.ObjectiveCMessageAttribute";
+		public const String OBJECTIVE_C_MESSAGE_SHORTFORM = "ObjectiveCMessage";
 		public const String OBJECTIVE_C_IVAR = "Monobjc.ObjectiveCIVarAttribute";
+		public const String OBJECTIVE_C_IVAR_SHORTFORM = "ObjectiveCIVar";
 		public const String OBJECTIVE_C_FRAMEWORK = "Monobjc.ObjectiveCFrameworkAttribute";
 		
 		public const String DEVELOPER_TOOLS = "MonoDevelop.Monobjc.DeveloperTools";

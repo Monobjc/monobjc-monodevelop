@@ -94,6 +94,9 @@
     <Reference Include="atk-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
       <Private>False</Private>
     </Reference>
+    <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f">
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DeveloperToolsDesktopApplication.cs" />
@@ -156,6 +159,21 @@
     <Compile Include="Tracking\ObjectiveCHeaderWriter.cs" />
     <Compile Include="Tracking\ObjectiveCSourceWriter.cs" />
     <Compile Include="Tracking\ObjectiveCWriter.cs" />
+    <Compile Include="Commands\ExportBundleCommandHandler.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.CreateIVarDialog.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.CreatePropertyDialog.cs" />
+    <Compile Include="gtk-gui\MonoDevelop.Monobjc.Gui.ImplementProtocolDialog.cs" />
+    <Compile Include="Gui\CreateIVarDialog.cs" />
+    <Compile Include="Gui\CreatePropertyDialog.cs" />
+    <Compile Include="Gui\ImplementProtocolDialog.cs" />
+    <Compile Include="Refactoring\BaseOperation.cs" />
+    <Compile Include="Gui\BaseRefactoringDialog.cs" />
+    <Compile Include="Refactoring\CreateIVarHandler.cs" />
+    <Compile Include="Refactoring\CreateIVarOperation.cs" />
+    <Compile Include="Refactoring\ImplementProtocolHandler.cs" />
+    <Compile Include="Refactoring\ImplementProtocolOperation.cs" />
+    <Compile Include="Refactoring\CreatePropertyHandler.cs" />
+    <Compile Include="Refactoring\CreatePropertyOperation.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

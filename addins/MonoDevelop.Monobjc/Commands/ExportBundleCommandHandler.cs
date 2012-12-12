@@ -48,7 +48,7 @@ namespace MonoDevelop.Monobjc.Commands
                 return;
             }
 
-            MonobjcExportDialog dialog = new MonobjcExportDialog();
+            ExportDialog dialog = new ExportDialog();
             dialog.Use(proj);
             dialog.Run();
             dialog.Destroy();
