@@ -264,7 +264,9 @@
   <!-- Refactorings -->
   <Extension path="/MonoDevelop/Refactoring/Refactorings">
     <Class id="MonobjcCreateIVar" class="MonoDevelop.Monobjc.Refactoring.CreateIVarOperation" />
+    <!--
     <Class id="MonobjcCreateProperty" class="MonoDevelop.Monobjc.Refactoring.CreatePropertyOperation" />
+    -->
     <Class id="MonobjcImplementProtocol" class="MonoDevelop.Monobjc.Refactoring.ImplementProtocolOperation" />
   </Extension>
 
@@ -273,9 +275,11 @@
     <Command id="MonoDevelop.Monobjc.Refactoring.CreateIVar"
              defaultHandler="MonoDevelop.Monobjc.Refactoring.CreateIVarHandler"
              _label="Create Instance Variable"/>
+    <!--
     <Command id="MonoDevelop.Monobjc.Refactoring.CreateProperty"
              defaultHandler="MonoDevelop.Monobjc.Refactoring.CreatePropertyHandler"
              _label="Create Property"/>
+    -->
     <Command id="MonoDevelop.Monobjc.Refactoring.ImplementProtocol"
              defaultHandler="MonoDevelop.Monobjc.Refactoring.ImplementProtocolHandler"
              _label="Implement Protocol"/>

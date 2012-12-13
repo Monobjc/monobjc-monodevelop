@@ -53,19 +53,30 @@ namespace MonoDevelop.Monobjc.Gui
             return attribute;
         }
         
-        protected PropertyDeclaration GetPropertyDeclaration(String propertyName, AstType propertyType, AttributeSection attributeSection)
+		protected FieldDeclaration GetFieldDeclaration(String name, AstType propertyType)
+		{
+			var declaration = new FieldDeclaration();
+			declaration.Modifiers = Modifiers.Public;
+			declaration.Name = name;
+			declaration.ReturnType = propertyType;
+			return declaration;
+		}
+		
+		protected PropertyDeclaration GetPropertyDeclaration(String name, AstType propertyType, AttributeSection attributeSection = null)
+		{
+			var declaration = new PropertyDeclaration();
+			declaration.Modifiers = Modifiers.Public | Modifiers.Virtual;
+			declaration.Name = name;
+			declaration.ReturnType = propertyType;
+			if (attributeSection != null) {
+				declaration.Attributes.Add(attributeSection);
+			}
+			return declaration;
+		}
+		
+		protected ThrowStatement GetThrowStatement(String name)
         {
-            var propertyDeclaration = new PropertyDeclaration();
-            propertyDeclaration.Modifiers = Modifiers.Public | Modifiers.Virtual;
-            propertyDeclaration.Name = propertyName;
-            propertyDeclaration.ReturnType = propertyType;
-            propertyDeclaration.Attributes.Add(attributeSection);
-            return propertyDeclaration;
-        }
-        
-        protected ThrowStatement GetThrowStatement(String exceptionName)
-        {
-            return new ThrowStatement (new ObjectCreateExpression (new SimpleType (exceptionName), new List<Expression> ()));
+            return new ThrowStatement (new ObjectCreateExpression (new SimpleType (name), new List<Expression> ()));
         }
 
         protected String Indent(String content, String indent)

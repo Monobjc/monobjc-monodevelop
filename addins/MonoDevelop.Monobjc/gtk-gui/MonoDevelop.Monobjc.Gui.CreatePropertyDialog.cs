@@ -4,6 +4,15 @@ namespace MonoDevelop.Monobjc.Gui
 {
 	public partial class CreatePropertyDialog
 	{
+		private global::Gtk.VBox vbox;
+		private global::Gtk.Table table1;
+		private global::Gtk.Entry entryName;
+		private global::Gtk.Entry entryType;
+		private global::Gtk.Label labelName;
+		private global::Gtk.Label labelType;
+		private global::Gtk.HBox hbox;
+		private global::Gtk.Image imageWarning;
+		private global::Gtk.Label labelWarning;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
 		
@@ -20,12 +29,99 @@ namespace MonoDevelop.Monobjc.Gui
 			global::Gtk.VBox w1 = this.VBox;
 			w1.Name = "dialog1_VBox";
 			w1.BorderWidth = ((uint)(2));
+			// Container child dialog1_VBox.Gtk.Box+BoxChild
+			this.vbox = new global::Gtk.VBox ();
+			this.vbox.Name = "vbox";
+			this.vbox.Spacing = 6;
+			this.vbox.BorderWidth = ((uint)(6));
+			// Container child vbox.Gtk.Box+BoxChild
+			this.table1 = new global::Gtk.Table (((uint)(2)), ((uint)(2)), false);
+			this.table1.Name = "table1";
+			this.table1.RowSpacing = ((uint)(6));
+			this.table1.ColumnSpacing = ((uint)(6));
+			// Container child table1.Gtk.Table+TableChild
+			this.entryName = new global::Gtk.Entry ();
+			this.entryName.CanFocus = true;
+			this.entryName.Name = "entryName";
+			this.entryName.IsEditable = true;
+			this.entryName.InvisibleChar = '●';
+			this.table1.Add (this.entryName);
+			global::Gtk.Table.TableChild w2 = ((global::Gtk.Table.TableChild)(this.table1 [this.entryName]));
+			w2.LeftAttach = ((uint)(1));
+			w2.RightAttach = ((uint)(2));
+			w2.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.entryType = new global::Gtk.Entry ();
+			this.entryType.CanFocus = true;
+			this.entryType.Name = "entryType";
+			this.entryType.IsEditable = true;
+			this.entryType.InvisibleChar = '●';
+			this.table1.Add (this.entryType);
+			global::Gtk.Table.TableChild w3 = ((global::Gtk.Table.TableChild)(this.table1 [this.entryType]));
+			w3.TopAttach = ((uint)(1));
+			w3.BottomAttach = ((uint)(2));
+			w3.LeftAttach = ((uint)(1));
+			w3.RightAttach = ((uint)(2));
+			w3.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.labelName = new global::Gtk.Label ();
+			this.labelName.Name = "labelName";
+			this.labelName.Xalign = 1F;
+			this.labelName.LabelProp = global::Mono.Unix.Catalog.GetString ("Name:");
+			this.table1.Add (this.labelName);
+			global::Gtk.Table.TableChild w4 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelName]));
+			w4.XOptions = ((global::Gtk.AttachOptions)(4));
+			w4.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child table1.Gtk.Table+TableChild
+			this.labelType = new global::Gtk.Label ();
+			this.labelType.Name = "labelType";
+			this.labelType.Xalign = 1F;
+			this.labelType.LabelProp = global::Mono.Unix.Catalog.GetString ("Type:");
+			this.table1.Add (this.labelType);
+			global::Gtk.Table.TableChild w5 = ((global::Gtk.Table.TableChild)(this.table1 [this.labelType]));
+			w5.TopAttach = ((uint)(1));
+			w5.BottomAttach = ((uint)(2));
+			w5.XOptions = ((global::Gtk.AttachOptions)(4));
+			w5.YOptions = ((global::Gtk.AttachOptions)(4));
+			this.vbox.Add (this.table1);
+			global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.vbox [this.table1]));
+			w6.Position = 0;
+			w6.Expand = false;
+			w6.Fill = false;
+			// Container child vbox.Gtk.Box+BoxChild
+			this.hbox = new global::Gtk.HBox ();
+			this.hbox.Name = "hbox";
+			this.hbox.Spacing = 6;
+			// Container child hbox.Gtk.Box+BoxChild
+			this.imageWarning = new global::Gtk.Image ();
+			this.imageWarning.Name = "imageWarning";
+			this.imageWarning.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-apply", global::Gtk.IconSize.Menu);
+			this.hbox.Add (this.imageWarning);
+			global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox [this.imageWarning]));
+			w7.Position = 0;
+			w7.Expand = false;
+			w7.Fill = false;
+			// Container child hbox.Gtk.Box+BoxChild
+			this.labelWarning = new global::Gtk.Label ();
+			this.labelWarning.Name = "labelWarning";
+			this.labelWarning.Xalign = 0F;
+			this.hbox.Add (this.labelWarning);
+			global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox [this.labelWarning]));
+			w8.Position = 1;
+			this.vbox.Add (this.hbox);
+			global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.vbox [this.hbox]));
+			w9.Position = 1;
+			w9.Expand = false;
+			w9.Fill = false;
+			w1.Add (this.vbox);
+			global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(w1 [this.vbox]));
+			w10.Position = 0;
 			// Internal child MonoDevelop.Monobjc.Gui.CreatePropertyDialog.ActionArea
-			global::Gtk.HButtonBox w2 = this.ActionArea;
-			w2.Name = "dialog1_ActionArea";
-			w2.Spacing = 10;
-			w2.BorderWidth = ((uint)(5));
-			w2.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
+			global::Gtk.HButtonBox w11 = this.ActionArea;
+			w11.Name = "dialog1_ActionArea";
+			w11.Spacing = 10;
+			w11.BorderWidth = ((uint)(5));
+			w11.LayoutStyle = ((global::Gtk.ButtonBoxStyle)(4));
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonCancel = new global::Gtk.Button ();
 			this.buttonCancel.CanDefault = true;
@@ -35,9 +131,9 @@ namespace MonoDevelop.Monobjc.Gui
 			this.buttonCancel.UseUnderline = true;
 			this.buttonCancel.Label = "gtk-cancel";
 			this.AddActionWidget (this.buttonCancel, -6);
-			global::Gtk.ButtonBox.ButtonBoxChild w3 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w2 [this.buttonCancel]));
-			w3.Expand = false;
-			w3.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w12 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w11 [this.buttonCancel]));
+			w12.Expand = false;
+			w12.Fill = false;
 			// Container child dialog1_ActionArea.Gtk.ButtonBox+ButtonBoxChild
 			this.buttonOk = new global::Gtk.Button ();
 			this.buttonOk.CanDefault = true;
@@ -47,15 +143,15 @@ namespace MonoDevelop.Monobjc.Gui
 			this.buttonOk.UseUnderline = true;
 			this.buttonOk.Label = "gtk-ok";
 			this.AddActionWidget (this.buttonOk, -5);
-			global::Gtk.ButtonBox.ButtonBoxChild w4 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w2 [this.buttonOk]));
-			w4.Position = 1;
-			w4.Expand = false;
-			w4.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w13 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w11 [this.buttonOk]));
+			w13.Position = 1;
+			w13.Expand = false;
+			w13.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}
 			this.DefaultWidth = 400;
-			this.DefaultHeight = 300;
+			this.DefaultHeight = 200;
 			this.Show ();
 		}
 	}
