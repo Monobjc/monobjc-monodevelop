@@ -19,9 +19,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Gtk;
-using MonoDevelop.Refactoring;
 using ICSharpCode.NRefactory.CSharp;
 using ICSharpCode.NRefactory.TypeSystem;
+using MonoDevelop.Monobjc.Utilities;
+using MonoDevelop.Refactoring;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -56,21 +57,27 @@ namespace MonoDevelop.Monobjc.Gui
 		protected FieldDeclaration GetFieldDeclaration(String name, AstType propertyType)
 		{
 			var declaration = new FieldDeclaration();
-			declaration.Modifiers = Modifiers.Public;
 			declaration.Name = name;
+			declaration.Modifiers = Modifiers.Public;
 			declaration.ReturnType = propertyType;
+
+			IDELogger.Log("BaseRefactoringDialog::GetFieldDeclaration -- {0}", declaration.Name);
+
 			return declaration;
 		}
 		
 		protected PropertyDeclaration GetPropertyDeclaration(String name, AstType propertyType, AttributeSection attributeSection = null)
 		{
 			var declaration = new PropertyDeclaration();
-			declaration.Modifiers = Modifiers.Public | Modifiers.Virtual;
 			declaration.Name = name;
+			declaration.Modifiers = Modifiers.Public | Modifiers.Virtual;
 			declaration.ReturnType = propertyType;
 			if (attributeSection != null) {
 				declaration.Attributes.Add(attributeSection);
 			}
+
+			IDELogger.Log("BaseRefactoringDialog::GetPropertyDeclaration -- {0}", declaration.Name);
+			
 			return declaration;
 		}
 		

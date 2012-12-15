@@ -90,7 +90,7 @@ namespace MonoDevelop.Monobjc.Gui
 			}
 			ModeHelpWindow helpWindow = new InsertionCursorLayoutModeHelpWindow ();
 			helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
-			helpWindow.TitleText = GettextCatalog.GetString ("Create Instance Variable");
+			helpWindow.TitleText = GettextCatalog.GetString ("Create Property");
 			mode.HelpWindow = helpWindow;
 			mode.CurIndex = mode.InsertionPoints.Count - 1;
 			mode.StartMode ();
@@ -110,7 +110,8 @@ namespace MonoDevelop.Monobjc.Gui
 			String setterName = "set" + upperName + ":";
 
 			// Create the field declaration
-			FieldDeclaration fieldDeclaration = GetFieldDeclaration(lowerName, new SimpleType (propertyTypeName));
+			//FieldDeclaration fieldDeclaration = GetFieldDeclaration(lowerName, new SimpleType (propertyTypeName));
+			String fieldDeclaration = String.Format("private {0} {1};", propertyTypeName, lowerName);
 			
 			// Create the property declaration
 			PropertyDeclaration propertyDeclaration = GetPropertyDeclaration(upperName, new SimpleType (propertyTypeName));
@@ -138,23 +139,22 @@ namespace MonoDevelop.Monobjc.Gui
 				var attribute = GetAttribute(Constants.OBJECTIVE_C_MESSAGE_SHORTFORM, setterName);
 				attributeSection.Attributes.Add (attribute);
 
-				// Create the assignment
-				MemberReferenceExpression memberReferenceExpression = new MemberReferenceExpression(new ThisReferenceExpression (), lowerName);
-				AssignmentExpression assignmentExpression = new AssignmentExpression(memberReferenceExpression, new IdentifierExpression ("value"));
-
-				// Wrap the invocation with an expression
-				ExpressionStatement expressionStatement = new ExpressionStatement (assignmentExpression);
+				BlockStatement blockStatement = new BlockStatement();
+				// Create a simple assignment
+				MemberReferenceExpression memberReferenceExpression2 = new MemberReferenceExpression(new ThisReferenceExpression (), lowerName);
+				AssignmentExpression assignmentExpression = new AssignmentExpression(memberReferenceExpression2, new IdentifierExpression ("value"));
+				blockStatement.Add(assignmentExpression);
 
 				// Create the "set" region
 				propertyDeclaration.Setter = new Accessor();
 				propertyDeclaration.Setter.Attributes.Add(attributeSection);
-				propertyDeclaration.Setter.Body = new BlockStatement ();
-				propertyDeclaration.Setter.Body.Add(expressionStatement);
+				propertyDeclaration.Setter.Body = blockStatement;
 			}
 
 			// Return the result of the AST generation
 			StringBuilder builder = new StringBuilder();
-			builder.AppendLine(this.Options.OutputNode(fieldDeclaration));
+			builder.AppendLine(fieldDeclaration);
+			builder.AppendLine();
 			builder.AppendLine(this.Options.OutputNode(propertyDeclaration));
 			String generated = builder.ToString();
 			
