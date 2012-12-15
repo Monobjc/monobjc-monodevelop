@@ -57,7 +57,17 @@ namespace MonoDevelop.Monobjc
 				return developerToolsVersion;
 			}
 		}
-		
+
+		internal static bool IsXcode40OrHigher {
+			get {
+				Version version = DeveloperToolsVersion;
+				if (version == null) {
+					return false;
+				}
+				return (version.Major >= 4);
+			}
+		}
+
 		internal static Version DeveloperToolsVersionForFolder (String folder)
 		{
 			String path = Path.Combine (folder, Constants.XCODE_APPLICATION);

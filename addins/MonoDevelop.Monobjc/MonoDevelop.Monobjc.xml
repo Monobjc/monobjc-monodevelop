@@ -192,15 +192,27 @@
              defaultHandler="MonoDevelop.Monobjc.Commands.ExportBundleCommandHandler"
              _label="Create Monobjc Bundle"
              _description="Export a Monobjc application bundle"/>
+    <Command id="MonoDevelop.Monobjc.Commands.OpenDeveloperTools"
+             defaultHandler="MonoDevelop.Monobjc.Commands.OpenDeveloperToolsCommandHandler"
+             _label="Open in Apple Developer Tools"
+             _description="Open a Monobjc project in Apple Developer Tools"/>
   </Extension>
 
   <!-- Project Menu -->
   <Extension path="/MonoDevelop/Ide/MainMenu/Project">
+    <CommandItem id="MonoDevelop.Monobjc.Commands.OpenDeveloperTools"
+                 insertafter="MonoDevelop.Ide.Commands.ProjectCommands.ExportProject"/>
     <CommandItem id="MonoDevelop.Monobjc.Commands.ExportBundle"
                  insertafter="MonoDevelop.Ide.Commands.ProjectCommands.ExportProject"/>
   </Extension>
 
   <!-- Project Context Menu -->
+  <Extension path="/MonoDevelop/Ide/ContextMenu/ProjectPad">
+    <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
+      <CommandItem id="MonoDevelop.Monobjc.Commands.OpenDeveloperTools"
+                   insertbefore="MonoDevelop.Ide.Commands.ProjectCommands.Build"/>
+    </Condition>
+  </Extension>
   <Extension path="/MonoDevelop/Ide/ContextMenu/ProjectPad/Tools">
     <Condition id="ItemType" value="MonoDevelop.Monobjc.MonobjcProject">
       <CommandItem id="MonoDevelop.Monobjc.Commands.ExportBundle"

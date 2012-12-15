@@ -15,16 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System;
 using MonoDevelop.Components.Commands;
 using MonoDevelop.Ide;
-using MonoDevelop.Monobjc.Gui;
 
 namespace MonoDevelop.Monobjc.Commands
 {
 	/// <summary>
-	///   Command handler for the export operation.
+	///   Command handler to open the Xcode surrogate project.
 	/// </summary>
-	public class ExportBundleCommandHandler : CommandHandler
+	public class OpenDeveloperToolsCommandHandler : CommandHandler
 	{
 		/// <summary>
 		///   Updates the command.
@@ -33,7 +33,7 @@ namespace MonoDevelop.Monobjc.Commands
 		protected override void Update (CommandInfo info)
 		{
 			MonobjcProject project = IdeApp.ProjectOperations.CurrentSelectedProject as MonobjcProject;
-			info.Enabled = (project != null);
+			info.Enabled = (project != null) && DeveloperToolsDesktopApplication.IsXcode40OrHigher;
 		}
 
 		/// <summary>
@@ -47,10 +47,8 @@ namespace MonoDevelop.Monobjc.Commands
 				return;
 			}
 
-			ExportDialog dialog = new ExportDialog ();
-			dialog.Use (project);
-			dialog.Run ();
-			dialog.Destroy ();
+			DeveloperToolsDesktopApplication application = new DeveloperToolsDesktopApplication (project);
+			application.Launch (new string[]{ String.Empty });
 		}
 	}
 }

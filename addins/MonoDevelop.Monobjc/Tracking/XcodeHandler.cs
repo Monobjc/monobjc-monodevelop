@@ -49,7 +49,7 @@ namespace MonoDevelop.Monobjc.Tracking
 				return this.xcodeProject;
 			}
 		}
-		
+
 		public void ClearXcodeProject ()
 		{
 			this.xcodeProject = null;
@@ -124,43 +124,69 @@ namespace MonoDevelop.Monobjc.Tracking
 		private void AddClasses ()
 		{
 			IDELogger.Log("XcodeHandler::AddClasses");
-
 			ProjectTypeCache cache = ProjectTypeCache.Get (this.Project);
 			IEnumerable<IType > types = cache.GetAllClasses (true);
 			this.GenerateSurrogateSources (types);
 		}
 
+		private void ClearClasses()
+		{
+			IDELogger.Log("XcodeHandler::ClearClasses");
+			this.XcodeProject.ClearGroup(Constants.GROUP_CLASSES);
+		}
+
+		private void UpdateClasses()
+		{
+			this.ClearClasses();
+			this.AddClasses();
+		}
+		
 		private void AddResources ()
 		{
 			IDELogger.Log("XcodeHandler::AddResources");
-			
 			foreach (ProjectFile projectFile in this.Project.Files) {
 				if (BuildHelper.IsResourceFile (projectFile) && File.Exists (projectFile.FilePath)) {
-					this.xcodeProject.AddFile (Constants.GROUP_RESOURCES, projectFile.FilePath, this.TargetName);
+					this.XcodeProject.AddFile (Constants.GROUP_RESOURCES, projectFile.FilePath, this.TargetName);
 				}
 			}
 		}
 
+		private void ClearResources()
+		{
+			IDELogger.Log("XcodeHandler::ClearResources");
+			this.XcodeProject.ClearGroup(Constants.GROUP_RESOURCES);
+		}
+		
+		private void UpdateResources()
+		{
+			this.ClearResources();
+			this.AddResources();
+		}
+		
 		private void AddFrameworks ()
 		{
 			IDELogger.Log("XcodeHandler::AddFrameworks");
-			
 			foreach (String framework in this.Project.OSFrameworks.Split(';')) {
-				this.xcodeProject.AddFramework (Constants.GROUP_FRAMEWORKS, framework, this.TargetName);
+				this.XcodeProject.AddFramework (Constants.GROUP_FRAMEWORKS, framework, this.TargetName);
 			}
 		}
 
+		private void ClearFrameworks()
+		{
+			IDELogger.Log("XcodeHandler::ClearFrameworks");
+			this.XcodeProject.ClearGroup(Constants.GROUP_FRAMEWORKS);
+		}
+		
 		private void AddProjectReferences ()
 		{
 			IDELogger.Log("XcodeHandler::AddProjectReferences");
-			
 			foreach (var reference in this.Project.References.Where(r => r.ReferenceType == ReferenceType.Project)) {
 				MonobjcProject projectReference = this.Project.ParentSolution.FindProjectByName (reference.Reference) as MonobjcProject;
 				if (projectReference == null) {
 					continue;
 				}
 				XcodeProject otherProject = projectReference.XcodeHandler.XcodeProject;
-				this.xcodeProject.AddDependantProject (otherProject, this.TargetName);
+				this.XcodeProject.AddDependantProject (otherProject, this.TargetName);
 			}
 		}
 
