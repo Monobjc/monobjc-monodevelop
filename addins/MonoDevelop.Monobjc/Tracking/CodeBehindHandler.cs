@@ -49,7 +49,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <summary>
 		/// Generates the design code.
 		/// </summary>
-		public void GenerateDesignCode (ProjectFileEventArgs e)
+		public void GenerateDesignCode (IEnumerable<ProjectFileEventInfo> e)
 		{
 			// Balk if the project is being deserialized
 			if (this.Project.Loading) {

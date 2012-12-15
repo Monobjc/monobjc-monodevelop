@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System.Collections.Generic;
 using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.Tracking
@@ -29,7 +30,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 		}
 
-		public void Migrate (ProjectFileEventArgs e)
+		public void Migrate (IEnumerable<ProjectFileEventInfo> e)
 		{
 			// Migrate "Page" to "InterfaceDefinition" when project is loaded (upward compatibility)
 			foreach (ProjectFileEventInfo info in e) {

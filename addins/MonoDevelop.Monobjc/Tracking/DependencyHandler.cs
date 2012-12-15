@@ -38,7 +38,7 @@ namespace MonoDevelop.Monobjc.Tracking
 
 		private String DesignerExtension { get; set; }
 
-		public IEnumerable<FilePath> GuessDependencies (ProjectFileEventArgs e)
+		public IEnumerable<FilePath> GuessDependencies (IEnumerable<ProjectFileEventInfo> e)
 		{
 			// Balk if the project is being deserialized
 			if (this.Project.Loading) {
