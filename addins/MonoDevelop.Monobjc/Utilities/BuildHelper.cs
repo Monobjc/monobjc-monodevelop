@@ -34,6 +34,18 @@ namespace MonoDevelop.Monobjc.Utilities
 	public static class BuildHelper
 	{
 		/// <summary>
+		///   Determines whether the specified filename is a source file.
+		/// </summary>
+		/// <param name = "file">The file.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is a source file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsSourceFile (ProjectFile projectFile, string sourceExtension)
+		{
+			return String.Equals(projectFile.FilePath.Extension, sourceExtension, StringComparison.InvariantCultureIgnoreCase);
+		}
+
+		/// <summary>
 		///   Determines whether the specified filename is a resource file.
 		/// </summary>
 		/// <param name = "file">The file.</param>
