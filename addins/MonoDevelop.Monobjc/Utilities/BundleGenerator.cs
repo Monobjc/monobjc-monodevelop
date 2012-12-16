@@ -62,7 +62,9 @@ namespace MonoDevelop.Monobjc.Utilities
 				maker.WriteRuntime (project.TargetOSVersion);
 				monitor.EndTask ();
 			}
-			
+
+			BuildHelper.CombineArtwork(monitor, project, maker);
+
 			// Perform the signing
 			BuildHelper.SignBundle (monitor, project, maker);
 			BuildHelper.SignNativeBinaries (monitor, project, maker);

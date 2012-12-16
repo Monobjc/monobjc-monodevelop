@@ -24,6 +24,7 @@ using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Projects;
 using Monobjc.Tools.External;
+using Monobjc.Tools.Generators;
 using System.Reflection;
 
 namespace MonoDevelop.Monobjc.Utilities
@@ -365,14 +366,34 @@ namespace MonoDevelop.Monobjc.Utilities
 			// TODO: Review to use new parameters
 			pListGenerator.DevelopmentRegion = project.DevelopmentRegion;
 			pListGenerator.ApplicationName = assemblyName.Name;
-			pListGenerator.Identifier = project.DefaultNamespace;
-			pListGenerator.Version = assemblyName.Version.ToString ();
+			pListGenerator.Identifier = project.BundleId;
+			pListGenerator.Version = project.BundleVersion;
 			pListGenerator.Icon = project.BundleIcon.IsNullOrEmpty ? null : project.BundleIcon.FileNameWithoutExtension;
 			pListGenerator.MainNibFile = project.MainNibFile.IsNullOrEmpty ? null : project.MainNibFile.FileNameWithoutExtension;
 			pListGenerator.TargetOSVersion = project.TargetOSVersion;
 			pListGenerator.PrincipalClass = "NSApplication";
 			pListGenerator.WriteTo (Path.Combine (maker.ContentsDirectory, Constants.INFO_PLIST));
 			
+			monitor.EndTask ();
+		}
+
+		/// <summary>
+		/// Combines the artwork.
+		/// </summary>
+		public static void CombineArtwork (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		{
+			if (!project.CombineArtwork) {
+				return;
+			}
+
+			monitor.BeginTask (GettextCatalog.GetString ("Combining artwork..."), 0);
+			using (StringWriter outputWriter = new StringWriter()) {
+				using (StringWriter errorWriter = new StringWriter()) {
+					ArtworkCombiner combiner = new ArtworkCombiner();
+					combiner.Combine(maker.ResourcesFolder, outputWriter, errorWriter);
+					LoggingService.LogInfo ("Combiner returns: " + outputWriter.ToString ());
+				}
+			}
 			monitor.EndTask ();
 		}
 		
@@ -389,8 +410,12 @@ namespace MonoDevelop.Monobjc.Utilities
 
 				using (StringWriter outputWriter = new StringWriter()) {
 					using (StringWriter errorWriter = new StringWriter()) {
-						// TODO: Add Entitlements
-						CodeSign.SignApplication (maker.ApplicationDirectory, project.SigningIdentity, outputWriter, errorWriter);
+						ProjectFile file = project.GetProjectFile("App.entitlements");
+						if (project.UseEntitlements && file != null) {
+							CodeSign.SignApplication (maker.ApplicationDirectory, project.SigningIdentity, file.FilePath, outputWriter, errorWriter);
+						} else {
+							CodeSign.SignApplication (maker.ApplicationDirectory, project.SigningIdentity, outputWriter, errorWriter);
+						}
 						LoggingService.LogInfo ("CodeSign returns: " + outputWriter.ToString ());
 					}
 				}
