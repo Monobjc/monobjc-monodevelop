@@ -28,6 +28,30 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 	public class VBNetCodeBehindGenerator : BaseCodeBehindGenerator
 	{
 		/// <summary>
+		/// Gets a value indicating whether this generator supports partial classes.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if support partial classes; otherwise, <c>false</c>.
+		/// </value>
+		public override bool SupportPartialClasses {
+			get {
+				return true;
+			}
+		}
+		
+		/// <summary>
+		/// Gets a value indicating whether this generator support partial methods.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if support partial methods; otherwise, <c>false</c>.
+		/// </value>
+		public override bool SupportPartialMethods {
+			get {
+				return true;
+			}
+		}
+		
+		/// <summary>
 		///   Determines whether a line is a region delimiter.
 		/// </summary>
 		/// <param name = "line">The line.</param>

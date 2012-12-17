@@ -30,6 +30,26 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 	public interface ICodeBehindGenerator
 	{
 		/// <summary>
+		/// Gets a value indicating whether this generator supports partial classes.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if support partial classes; otherwise, <c>false</c>.
+		/// </value>
+		bool SupportPartialClasses {
+			get;
+		}
+		
+		/// <summary>
+		/// Gets a value indicating whether this generator support partial methods.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if support partial methods; otherwise, <c>false</c>.
+		/// </value>
+		bool SupportPartialMethods {
+			get;
+		}
+		
+		/// <summary>
 		///   Generates the design code for framework loading.
 		/// </summary>
 		/// <param name = "resolver">The type resolver.</param>

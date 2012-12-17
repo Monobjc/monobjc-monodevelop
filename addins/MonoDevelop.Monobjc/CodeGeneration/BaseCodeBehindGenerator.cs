@@ -35,6 +35,26 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 	public abstract class BaseCodeBehindGenerator : ICodeBehindGenerator
 	{
 		/// <summary>
+		/// Gets a value indicating whether this generator supports partial classes.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if support partial classes; otherwise, <c>false</c>.
+		/// </value>
+		public abstract bool SupportPartialClasses {
+			get;
+		}
+
+		/// <summary>
+		/// Gets a value indicating whether this generator support partial methods.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if support partial methods; otherwise, <c>false</c>.
+		/// </value>
+		public abstract bool SupportPartialMethods {
+			get;
+		}		
+
+		/// <summary>
 		///   Generates the design code for framework loading.
 		/// </summary>
 		/// <param name = "resolver">The type resolver.</param>
@@ -195,6 +215,63 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			writer.WriteFile (designerFile, ccu);
 
 			return designerFile;
+		}
+
+		protected virtual CodeCompileUnit GenerateCodeCompileUnit(ProjectTypeCache cache, String defaultNamespace, String className, IEnumerable<IBPartialClassDescription> enumerable)
+		{
+			// Create the compilation unit
+			CodeCompileUnit ccu = new CodeCompileUnit ();
+			CodeNamespace ns = new CodeNamespace (defaultNamespace);
+			ccu.Namespaces.Add (ns);
+			
+			// Create the partial class
+			CodeTypeDeclaration typeDeclaration = new CodeTypeDeclaration (className);
+			typeDeclaration.IsClass = true;
+			typeDeclaration.IsPartial = true;
+			
+			// List for import collection
+			Set<String> imports = new Set<string> ();
+			imports.Add ("Monobjc");
+			
+			// Create fields for outlets);
+			foreach (IBOutletDescriptor outlet in enumerable.SelectMany(d => d.Outlets)) {
+				IType outletType = cache.ResolvePartialType (outlet.ClassName);
+				outletType = outletType ?? cache.ResolvePartialType ("id");
+				outletType = outletType ?? cache.ResolveType (typeof(IntPtr));
+				
+				IDELogger.Log ("BaseCodeBehindGenerator::GenerateCodeBehindCode -- Resolving outlet '{0}' of type '{1}' => '{2}'", outlet.Name, outlet.ClassName, outletType.FullName);
+				
+				imports.Add (outletType.Namespace);
+				
+				CodeTypeMember property = this.GenerateOutletProperty (outletType, outlet.Name);
+				typeDeclaration.Members.Add (property);
+			}
+			
+			// Create methods for exposed actions
+			foreach (IBActionDescriptor action in enumerable.SelectMany(d => d.Actions)) {
+				IType argumentType = cache.ResolvePartialType (action.Argument);
+				argumentType = argumentType ?? cache.ResolvePartialType ("id");
+				argumentType = argumentType ?? cache.ResolveType (typeof(IntPtr));
+				
+				IDELogger.Log ("BaseCodeBehindGenerator::GenerateCodeBehindCode -- Resolving action '{0}' of type '{1}' => '{2}'", action.Message, action.Argument, argumentType.FullName);
+				
+				imports.Add (argumentType.Namespace);
+				
+				CodeTypeMember exposedMethod = this.GenerateActionExposedMethod (action.Message, argumentType);
+				typeDeclaration.Members.Add (exposedMethod);
+				
+				CodeTypeMember partialMethod = this.GenerateActionPartialMethod (action.Message, argumentType);
+				typeDeclaration.Members.Add (partialMethod);
+			}
+			
+			// Add namespaces
+			CodeNamespaceImport[] namespaceImports = imports.Select (import => new CodeNamespaceImport (import)).ToArray ();
+			ns.Imports.AddRange (namespaceImports);
+			
+			// Add the type
+			ns.Types.Add (typeDeclaration);
+
+			return ccu;
 		}
 
 		/// <summary>
