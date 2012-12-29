@@ -29,11 +29,15 @@ namespace MonoDevelop.Monobjc.Gui
 	[ToolboxItem(true)]
 	public partial class ProjectOptionsWidget : Bin
 	{
+		private MonobjcProject project;
+
 		/// <summary>
 		/// Initializes a new instance of the <see cref="MonoDevelop.Monobjc.Gui.MonobjcProjectOptionsWidget"/> class.
 		/// </summary>
 		public ProjectOptionsWidget ()
 		{
+			TreeViewColumn[] columns;
+
 			this.Build ();
 
 			IList<String> identities = KeyChainAccess.SigningIdentities;
@@ -43,11 +47,15 @@ namespace MonoDevelop.Monobjc.Gui
 			this.comboboxOSVersion.Model = new ListStore (typeof(string), typeof(MacOSVersion));
 			this.comboboxSigningCertificates.Model = new ListStore (typeof(String), typeof(String));
 			this.treeviewFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
-			this.treeviewFrameworks.AppendColumn(GetFrameworkTableColumn(this.HandleCheckRendererToggled));
+			columns = GetFrameworkTableColumns(this.HandleCheckRendererToggled);
+			this.treeviewFrameworks.AppendColumn(columns[0]);
+			this.treeviewFrameworks.AppendColumn(columns[1]);
 
 			this.comboboxArchitectures.Model = new ListStore (typeof(string), typeof(MacOSArchitecture));
 			this.treeviewEmbeddedFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
-			this.treeviewEmbeddedFrameworks.AppendColumn(GetFrameworkTableColumn(this.HandleCheckRendererToggled));
+			columns = GetFrameworkTableColumns(this.HandleCheckRendererToggled);
+			this.treeviewEmbeddedFrameworks.AppendColumn(columns[0]);
+			this.treeviewEmbeddedFrameworks.AppendColumn(columns[1]);
 			this.treeviewAdditionnalAssemblies.Model = new TreeStore (typeof(String));
 			this.treeviewAdditionnalAssemblies.AppendColumn (GetListTableColumn(this.HandleAdditionnalAssembliesEdited));
 			this.treeviewExcludedAssemblies.Model = new TreeStore (typeof(String));
@@ -91,12 +99,10 @@ namespace MonoDevelop.Monobjc.Gui
 			if (project == null) {
 				throw new ArgumentNullException ("project");
 			}
+			this.project = project;
 
 			this.filechooserbuttonMainNib.SetCurrentFolder (project.BaseDirectory.ToString ());
 			this.filechooserbuttonBundleIcon.SetCurrentFolder (project.BaseDirectory.ToString ());
-
-			FillFrameworks(this.treeviewFrameworks, project);
-			FillDevelopmentRegions(this.comboboxDevelopmentRegion, project);
 
 			this.ApplicationType = project.ApplicationType;
 			this.ApplicationCategory = project.ApplicationCategory ?? String.Empty;
@@ -108,6 +114,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.Signing = project.Signing;
 			this.SigningIdentity = project.SigningIdentity ?? String.Empty;
 			this.UseEntitlements = project.UseEntitlements;
+			FillFrameworks(this.treeviewFrameworks, project, project.TargetOSVersion);
 			this.OSFrameworks = project.OSFrameworks;
 
 			this.TargetOSArch = project.TargetOSArch;
@@ -119,6 +126,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.Archive = project.Archive;
 			this.ArchiveIdentity = project.ArchiveIdentity ?? String.Empty;
 
+			FillDevelopmentRegions(this.comboboxDevelopmentRegion, project);
 			this.DevelopmentRegion = project.DevelopmentRegion ?? "en";
 			this.CombineArtwork = project.CombineArtwork;
 			this.EncryptArtwork = project.EncryptArtwork;
@@ -191,9 +199,10 @@ namespace MonoDevelop.Monobjc.Gui
 		
 		void HandleComboboxOSVersionChanged (object sender, EventArgs e)
 		{
-			// Retrieve all the Monobjc assemblies for the given OS version
-
-			// Re-select project frameworks
+			String frameworks = this.OSFrameworks;
+			MacOSVersion version = this.TargetOSVersion;
+			FillFrameworks(this.treeviewFrameworks, this.project, version);
+			this.OSFrameworks = frameworks;
 		}
 
 		private void HandleCheckRendererToggled (object o, ToggledArgs args)

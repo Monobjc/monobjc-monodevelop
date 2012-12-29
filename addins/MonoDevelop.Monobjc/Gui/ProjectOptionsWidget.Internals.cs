@@ -99,13 +99,24 @@ namespace MonoDevelop.Monobjc.Gui
 			store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.8"), MacOSVersion.MacOS108);
 		}
 		
-		private static  void FillFrameworks (TreeView treeView, MonobjcProject project)
+		private static void FillFrameworks (TreeView treeView, MonobjcProject project, MacOSVersion version)
 		{
 			TreeStore store = (TreeStore)treeView.Model;
 			store.Clear ();
-			IEnumerable<String> assemblies = (from a in project.EveryMonobjcAssemblies
+			IEnumerable<String> assemblies = (from a in project.GetMonobjcAssemblies(version)
 			                                  where a.Name.Contains ("Monobjc.")
 			                                  select a.Name.Substring ("Monobjc.".Length)).Distinct ();
+			foreach (String assembly in assemblies) {
+				store.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), assembly);
+			}
+		}
+		
+		private static void FillEmbeddedFrameworks (TreeView treeView, MonobjcProject project, MacOSVersion version)
+		{
+			TreeStore store = (TreeStore)treeView.Model;
+			store.Clear ();
+
+
 			foreach (String assembly in assemblies) {
 				store.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), assembly);
 			}
@@ -190,24 +201,26 @@ namespace MonoDevelop.Monobjc.Gui
 			}
 		}
 	
-		private static TreeViewColumn GetFrameworkTableColumn (ToggledHandler handler)
+		private static TreeViewColumn[] GetFrameworkTableColumns (ToggledHandler handler)
 		{
-			TreeViewColumn column = new TreeViewColumn ();
-			
+			TreeViewColumn[] columns = new TreeViewColumn[2];
+			columns[0] = new TreeViewColumn ();
+			columns[1] = new TreeViewColumn ();
+
 			CellRendererToggle checkRenderer = new CellRendererToggle ();
 			checkRenderer.Toggled += handler;
-			column.PackStart (checkRenderer, false);
-			column.AddAttribute (checkRenderer, "active", 0);
+			columns[0].PackStart (checkRenderer, false);
+			columns[0].AddAttribute (checkRenderer, "active", 0);
 			
 			CellRendererPixbuf iconRenderer = new CellRendererPixbuf ();
-			column.PackStart (iconRenderer, false);
-			column.AddAttribute (iconRenderer, "pixbuf", 1);
+			columns[1].PackStart (iconRenderer, false);
+			columns[1].AddAttribute (iconRenderer, "pixbuf", 1);
 			
 			CellRendererText nameRenderer = new CellRendererText ();
-			column.PackStart (nameRenderer, true);
-			column.AddAttribute (nameRenderer, "text", 2);
+			columns[1].PackStart (nameRenderer, true);
+			columns[1].AddAttribute (nameRenderer, "text", 2);
 
-			return column;
+			return columns;
 		}
 
 		private static TreeViewColumn GetListTableColumn (EditedHandler handler)

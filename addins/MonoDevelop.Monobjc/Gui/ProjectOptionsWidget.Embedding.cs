@@ -35,7 +35,7 @@ namespace MonoDevelop.Monobjc.Gui
 				return String.Join (";", values);
 			}
 			set {
-				IEnumerable<String> values = (value ?? "Foundation;AppKit").Split (' ', ',', ';');
+				IEnumerable<String> values = (value ?? String.Empty).Split (' ', ',', ';');
 				SetMultipleValues (this.treeviewEmbeddedFrameworks, values);
 			}
 		}

@@ -40,9 +40,7 @@ namespace MonoDevelop.Monobjc
 		protected override BuildResult Build (IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
 		{
 			BuildResult result = new BuildResult ();
-			
-			MonobjcProject project = item as MonobjcProject;
-			
+
 			// Pre-build
 			this.PreBuild (result, monitor, item, configuration);
 			if (result.ErrorCount > 0) {

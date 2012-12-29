@@ -30,6 +30,13 @@ namespace MonoDevelop.Monobjc
 {
 	public partial class MonobjcProject
 	{
+		private static IDictionary<Version, MacOSVersion> versionMap = new Dictionary<Version, MacOSVersion> () {
+			{ new Version(10, 5, 0, 0), MacOSVersion.MacOS105 },
+			{ new Version(10, 6, 0, 0), MacOSVersion.MacOS106 },
+			{ new Version(10, 7, 0, 0), MacOSVersion.MacOS107 },
+			{ new Version(10, 8, 0, 0), MacOSVersion.MacOS108 },
+		};
+
 		internal CodeBehindHandler CodeBehindHandler { get; private set; }
 
 		internal DependencyHandler DependencyHandler { get; private set; }
@@ -58,6 +65,35 @@ namespace MonoDevelop.Monobjc
 		/// </summary>
 		internal IEnumerable<SystemAssembly> EveryMonobjcAssemblies {
 			get { return this.AssemblyContext.GetAssemblies ().Where (BuildHelper.IsMonobjcReference); }
+		}
+
+		internal IEnumerable<SystemAssembly> GetMonobjcAssemblies(MacOSVersion version) {
+			// If there is no assemblies, then skip the retrieval
+			IEnumerable<SystemAssembly> assemblies = this.EveryMonobjcAssemblies;
+			if (assemblies.Count() == 0) {
+				return assemblies;
+			}
+
+			// Get the min/max version
+			Version minVersion = new Version(assemblies.OrderBy(sa => sa.Version).First().Version);
+			Version maxVersion = new Version(assemblies.OrderBy(sa => sa.Version).Last().Version);
+
+			IDELogger.Log("MonobjcProject::GetMonobjcAssemblies -- Found minVersion: {0}", minVersion);
+			IDELogger.Log("MonobjcProject::GetMonobjcAssemblies -- Found maxVersion: {0}", maxVersion);
+
+			// Clamp the version
+			MacOSVersion min = versionMap[minVersion];
+			MacOSVersion max = versionMap[maxVersion];
+			if (version < min) {
+				version = min;
+			}
+			if (version > max) {
+				version = max;
+			}
+
+			// Only return assemblies that have the selected version
+			Version selectedVersion = versionMap.First(kvp => kvp.Value == version).Key;
+			return assemblies.Where(sa => sa.Version == selectedVersion.ToString());
 		}
 
 		/// <summary>
