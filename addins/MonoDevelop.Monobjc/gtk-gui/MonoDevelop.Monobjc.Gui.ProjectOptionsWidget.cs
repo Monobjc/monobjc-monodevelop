@@ -69,8 +69,11 @@ namespace MonoDevelop.Monobjc.Gui
 		private global::Gtk.CheckButton checkbuttonCombineArtwork;
 		private global::Gtk.CheckButton checkbuttonEncryptArtwork;
 		private global::Gtk.ComboBox comboboxDevelopmentRegion;
+		private global::Gtk.Entry entryEncryptArtworkSeed;
 		private global::Gtk.Label labelArchivingDescription1;
 		private global::Gtk.Label labelDevelopmentRegion;
+		private global::Gtk.Label labelEncryptArtworkSeed;
+		private global::Gtk.Label labelEncryptDescription;
 		private global::Gtk.Label labelAdvanced;
 		
 		protected virtual void Build ()
@@ -83,7 +86,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.notebook = new global::Gtk.Notebook ();
 			this.notebook.CanFocus = true;
 			this.notebook.Name = "notebook";
-			this.notebook.CurrentPage = 0;
+			this.notebook.CurrentPage = 3;
 			// Container child notebook.Gtk.Notebook+NotebookChild
 			this.tableGeneral = new global::Gtk.Table (((uint)(15)), ((uint)(2)), false);
 			this.tableGeneral.Name = "tableGeneral";
@@ -783,7 +786,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.notebook.SetTabLabel (this.tableArchiving, this.labelArchiving);
 			this.labelArchiving.ShowAll ();
 			// Container child notebook.Gtk.Notebook+NotebookChild
-			this.tableAdvanced = new global::Gtk.Table (((uint)(5)), ((uint)(2)), false);
+			this.tableAdvanced = new global::Gtk.Table (((uint)(7)), ((uint)(2)), false);
 			this.tableAdvanced.Name = "tableAdvanced";
 			this.tableAdvanced.RowSpacing = ((uint)(6));
 			this.tableAdvanced.ColumnSpacing = ((uint)(6));
@@ -811,9 +814,10 @@ namespace MonoDevelop.Monobjc.Gui
 			this.checkbuttonEncryptArtwork.UseUnderline = true;
 			this.tableAdvanced.Add (this.checkbuttonEncryptArtwork);
 			global::Gtk.Table.TableChild w107 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.checkbuttonEncryptArtwork]));
-			w107.TopAttach = ((uint)(3));
-			w107.BottomAttach = ((uint)(4));
+			w107.TopAttach = ((uint)(4));
+			w107.BottomAttach = ((uint)(5));
 			w107.RightAttach = ((uint)(2));
+			w107.XOptions = ((global::Gtk.AttachOptions)(4));
 			w107.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.comboboxDevelopmentRegion = global::Gtk.ComboBox.NewText ();
@@ -826,6 +830,21 @@ namespace MonoDevelop.Monobjc.Gui
 			w108.RightAttach = ((uint)(2));
 			w108.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
+			this.entryEncryptArtworkSeed = new global::Gtk.Entry ();
+			this.entryEncryptArtworkSeed.Sensitive = false;
+			this.entryEncryptArtworkSeed.CanFocus = true;
+			this.entryEncryptArtworkSeed.Name = "entryEncryptArtworkSeed";
+			this.entryEncryptArtworkSeed.IsEditable = true;
+			this.entryEncryptArtworkSeed.InvisibleChar = '●';
+			this.tableAdvanced.Add (this.entryEncryptArtworkSeed);
+			global::Gtk.Table.TableChild w109 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.entryEncryptArtworkSeed]));
+			w109.TopAttach = ((uint)(5));
+			w109.BottomAttach = ((uint)(6));
+			w109.LeftAttach = ((uint)(1));
+			w109.RightAttach = ((uint)(2));
+			w109.XOptions = ((global::Gtk.AttachOptions)(4));
+			w109.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.labelArchivingDescription1 = new global::Gtk.Label ();
 			this.labelArchivingDescription1.Name = "labelArchivingDescription1";
 			this.labelArchivingDescription1.Xalign = 0F;
@@ -833,23 +852,48 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelArchivingDescription1.Wrap = true;
 			this.labelArchivingDescription1.Justify = ((global::Gtk.Justification)(3));
 			this.tableAdvanced.Add (this.labelArchivingDescription1);
-			global::Gtk.Table.TableChild w109 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelArchivingDescription1]));
-			w109.RightAttach = ((uint)(2));
-			w109.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w110 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelArchivingDescription1]));
+			w110.RightAttach = ((uint)(2));
+			w110.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.labelDevelopmentRegion = new global::Gtk.Label ();
 			this.labelDevelopmentRegion.Name = "labelDevelopmentRegion";
 			this.labelDevelopmentRegion.Xalign = 1F;
 			this.labelDevelopmentRegion.LabelProp = global::Mono.Unix.Catalog.GetString ("Development Language:");
 			this.tableAdvanced.Add (this.labelDevelopmentRegion);
-			global::Gtk.Table.TableChild w110 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelDevelopmentRegion]));
-			w110.TopAttach = ((uint)(1));
-			w110.BottomAttach = ((uint)(2));
-			w110.XOptions = ((global::Gtk.AttachOptions)(4));
-			w110.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w111 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelDevelopmentRegion]));
+			w111.TopAttach = ((uint)(1));
+			w111.BottomAttach = ((uint)(2));
+			w111.XOptions = ((global::Gtk.AttachOptions)(4));
+			w111.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child tableAdvanced.Gtk.Table+TableChild
+			this.labelEncryptArtworkSeed = new global::Gtk.Label ();
+			this.labelEncryptArtworkSeed.Sensitive = false;
+			this.labelEncryptArtworkSeed.Name = "labelEncryptArtworkSeed";
+			this.labelEncryptArtworkSeed.Xalign = 1F;
+			this.labelEncryptArtworkSeed.LabelProp = global::Mono.Unix.Catalog.GetString ("Seed (32 hexa):");
+			this.tableAdvanced.Add (this.labelEncryptArtworkSeed);
+			global::Gtk.Table.TableChild w112 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelEncryptArtworkSeed]));
+			w112.TopAttach = ((uint)(5));
+			w112.BottomAttach = ((uint)(6));
+			w112.XOptions = ((global::Gtk.AttachOptions)(4));
+			w112.YOptions = ((global::Gtk.AttachOptions)(4));
+			// Container child tableAdvanced.Gtk.Table+TableChild
+			this.labelEncryptDescription = new global::Gtk.Label ();
+			this.labelEncryptDescription.Name = "labelEncryptDescription";
+			this.labelEncryptDescription.Xalign = 0F;
+			this.labelEncryptDescription.LabelProp = global::Mono.Unix.Catalog.GetString ("You have the ability to encrypt artwork in order to protect them from a direct re-use. The encryption is done by using the AES algorithm with the seed as key.");
+			this.labelEncryptDescription.Wrap = true;
+			this.tableAdvanced.Add (this.labelEncryptDescription);
+			global::Gtk.Table.TableChild w113 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelEncryptDescription]));
+			w113.TopAttach = ((uint)(3));
+			w113.BottomAttach = ((uint)(4));
+			w113.RightAttach = ((uint)(2));
+			w113.XOptions = ((global::Gtk.AttachOptions)(4));
+			w113.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.notebook.Add (this.tableAdvanced);
-			global::Gtk.Notebook.NotebookChild w111 = ((global::Gtk.Notebook.NotebookChild)(this.notebook [this.tableAdvanced]));
-			w111.Position = 3;
+			global::Gtk.Notebook.NotebookChild w114 = ((global::Gtk.Notebook.NotebookChild)(this.notebook [this.tableAdvanced]));
+			w114.Position = 3;
 			// Notebook tab
 			this.labelAdvanced = new global::Gtk.Label ();
 			this.labelAdvanced.Name = "labelAdvanced";

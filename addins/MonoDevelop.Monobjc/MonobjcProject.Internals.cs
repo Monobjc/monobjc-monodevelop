@@ -17,12 +17,11 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
+using MonoDevelop.Core.ProgressMonitoring;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 
@@ -140,7 +139,7 @@ namespace MonoDevelop.Monobjc
 				result = true;
 			}
 			
-			IDELogger.Log("MonobjcProject::IsInDevelopmentRegion -- '{0}' {1} in development region", ibFile, result ? "is" : "is not");
+			IDELogger.Log ("MonobjcProject::IsInDevelopmentRegion -- '{0}' {1} in development region", ibFile, result ? "is" : "is not");
 
 			return result;
 		}
@@ -150,58 +149,34 @@ namespace MonoDevelop.Monobjc
 		/// </summary>
 		internal void UpdateReferences ()
 		{
-			IDELogger.Log ("MonobjcProject::UpdateReferences");
+			// Remove any Monobjc references
+			List<ProjectReference> references = new List<ProjectReference> (this.References.Where (BuildHelper.IsMonobjcReference));
+			IDELogger.Log ("MonobjcProject::UpdateReferences -- Removing {0} references", references.Count ());
+			foreach (ProjectReference item in references) {
+				this.References.Remove (item);
+			}
 
-//			// Retrieve assembly from the project
-//			IEnumerable<ProjectReference> references = new List<ProjectReference> (this.References.Where (BuildHelper.IsMonobjcReference));
-//			String[] names = this.OSFrameworks.Split (';');
-//
-//			// Remove any Monobjc references
-//			foreach (ProjectReference item in references) {
-//				this.References.Remove (item);
-//			}
-//
-//			// Set the compatible version
-//			Version version;
-//			switch (this.TargetOSVersion) {
-//			case MacOSVersion.MacOS105:
-//				version = new Version (10, 5);
-//				break;
-//			case MacOSVersion.MacOS106:
-//				version = new Version (10, 6);
-//				break;
-//			case MacOSVersion.MacOS107:
-//				version = new Version (10, 7);
-//				break;
-//			case MacOSVersion.MacOS108:
-//				version = new Version (10, 8);
-//				break;
-//			default:
-//				version = new Version (10, 0);
-//				break;
-//			}
-//
-//			// Defer the framework loading code generation in a separate thread
-//			// this.CodeBehindTracker.GenerateFrameworkLoadingCode(names, true);
-//
-//			// Take the list of frameworks and add project references
-//			List<String> assemblyNames = new List<String> ();
-//			assemblyNames.Add ("Monobjc");
-//			assemblyNames.AddRange (names.Select (f => "Monobjc." + f));
-//			foreach (String assemblyName in assemblyNames) {
-//				// Find all matching assemblies with this name and a compatible version
-//				IEnumerable<SystemAssembly> matching = this.EveryMonobjcAssemblies.Where (a => a.Name.Equals (assemblyName) && BuildHelper.IsCompatible (new Version (a.Version), version));
-//
-//				// If there is a match, then add the reference
-//				if (matching != null && matching.Count () == 1) {
-//					SystemAssembly specificAssembly = matching.First ();
-//					ProjectReference reference = new ProjectReference (specificAssembly);
-//					// NOTE: Starting with Monobjc 4.0, assembly references use a fixed numbering scheme (ex: 10.7.0.0)
-//					// In this case, we can require a specific version
-//					reference.SpecificVersion = specificAssembly.Version.EndsWith (".0.0");
-//					this.References.Add (reference);
-//				}
-//			}
+			// Retrieve assembly from the project
+			List<SystemAssembly> assemblies = new List<SystemAssembly> (this.GetMonobjcAssemblies (this.TargetOSVersion));
+			String[] names = this.OSFrameworks.Split (';');
+			IDELogger.Log ("MonobjcProject::UpdateReferences -- Adding {0} names", names.Length);
+			foreach (String name in names) {
+				String qualifiedName = "Monobjc." + name;
+				SystemAssembly assembly = assemblies.FirstOrDefault (a => a.Name == qualifiedName);
+				if (assembly == null) {
+					continue;
+				}
+
+				ProjectReference reference = new ProjectReference (assembly);
+				// NOTE: Starting with Monobjc 4.0, assembly references use a fixed numbering scheme (ex: 10.7.0.0)
+				// In this case, we can require a specific version
+				reference.SpecificVersion = assembly.Version.EndsWith (".0.0");
+				this.References.Add (reference);
+			}
+			this.Save (new NullProgressMonitor ());
+
+			// Defer the framework loading code generation in a separate thread
+			this.CodeBehindHandler.GenerateFrameworkLoadingCode(names);
 		}
 	}
 }

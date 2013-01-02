@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using Gtk;
 using Monobjc.Tools.Utilities;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -47,13 +48,13 @@ namespace MonoDevelop.Monobjc.Gui
 			this.comboboxOSVersion.Model = new ListStore (typeof(string), typeof(MacOSVersion));
 			this.comboboxSigningCertificates.Model = new ListStore (typeof(String), typeof(String));
 			this.treeviewFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
-			columns = GetFrameworkTableColumns(this.HandleCheckRendererToggled);
+			columns = GetFrameworkTableColumns(this.HandleFrameworksCheckRendererToggled);
 			this.treeviewFrameworks.AppendColumn(columns[0]);
 			this.treeviewFrameworks.AppendColumn(columns[1]);
 
 			this.comboboxArchitectures.Model = new ListStore (typeof(string), typeof(MacOSArchitecture));
 			this.treeviewEmbeddedFrameworks.Model = new TreeStore (typeof(bool), typeof(Gdk.Pixbuf), typeof(String));
-			columns = GetFrameworkTableColumns(this.HandleCheckRendererToggled);
+			columns = GetFrameworkTableColumns(this.HandleEmbeddedFrameworksCheckRendererToggled);
 			this.treeviewEmbeddedFrameworks.AppendColumn(columns[0]);
 			this.treeviewEmbeddedFrameworks.AppendColumn(columns[1]);
 			this.treeviewAdditionnalAssemblies.Model = new TreeStore (typeof(String));
@@ -71,6 +72,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.comboboxOSVersion.Changed += this.HandleComboboxOSVersionChanged;
 			this.checkbuttonSigning.Toggled += this.HandleCheckbuttonSigningToggled;
 			this.checkbuttonArchivePackage.Toggled += this.HandleCheckbuttonArchivePackageToggled;
+			this.checkbuttonEncryptArtwork.Toggled += this.HandleCheckbuttonEncryptArtworkToggled;
 
 			this.buttonAddAdditionnalAssemblies.Clicked += HandleButtonAddAdditionnalAssembliesHandleClicked;
 			this.buttonRemoveAdditionnalAssemblies.Clicked += HandleButtonRemoveAdditionnalAssembliesHandleClicked;
@@ -81,6 +83,7 @@ namespace MonoDevelop.Monobjc.Gui
 
 			this.HandleCheckbuttonSigningToggled(this, EventArgs.Empty);
 			this.HandleCheckbuttonArchivePackageToggled(this, EventArgs.Empty);
+			this.HandleCheckbuttonEncryptArtworkToggled(this, EventArgs.Empty);
 
 			FillTypes (this.comboboxType);
 			FillApplicationCategories (this.comboboxApplicationCategory);
@@ -93,7 +96,6 @@ namespace MonoDevelop.Monobjc.Gui
 		/// <summary>
 		///   Loads the specified project.
 		/// </summary>
-		/// <param name = "project">The project.</param>
 		public void Load (MonobjcProject project)
 		{
 			if (project == null) {
@@ -118,6 +120,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.OSFrameworks = project.OSFrameworks;
 
 			this.TargetOSArch = project.TargetOSArch;
+			FillEmbeddedFrameworks(this.treeviewEmbeddedFrameworks, project);
 			this.EmbeddedFrameworks = project.EmbeddedFrameworks;
 			this.AdditionalAssemblies = project.AdditionalAssemblies;
 			this.ExcludedAssemblies = project.ExcludedAssemblies;
@@ -130,12 +133,32 @@ namespace MonoDevelop.Monobjc.Gui
 			this.DevelopmentRegion = project.DevelopmentRegion ?? "en";
 			this.CombineArtwork = project.CombineArtwork;
 			this.EncryptArtwork = project.EncryptArtwork;
+			this.EncryptArtworkSeed = project.EncryptArtworkSeed;
 		}
-		
+
+		/// <summary>
+		/// Determines whether the preferences can be saved.
+		/// </summary>
+		public bool CanSave(MonobjcProject project, out String message) {
+			if (this.entryBundleIdentifier.Text.Length == 0) {
+				message = GettextCatalog.GetString("The value for the bundle identifier is not valid. It cannot be empty.");
+				return false;
+			}
+			if (this.entryBundleVersion.Text.Length == 0) {
+				message = GettextCatalog.GetString("The value for the bundle version is not valid. It cannot be empty.");
+				return false;
+			}
+			if (this.checkbuttonEncryptArtwork.Active && this.entryEncryptArtworkSeed.Text.Length != 32) {
+				message = GettextCatalog.GetString("The value for the encryption seed is not valid. It should contain 32 hexadeciaml characters.");
+				return false;
+			}
+			message = String.Empty;
+			return true;
+		}
+
 		/// <summary>
 		///   Saves the specified project.
 		/// </summary>
-		/// <param name = "project">The project.</param>
 		public void Save (MonobjcProject project)
 		{
 			if (project == null) {
@@ -166,6 +189,7 @@ namespace MonoDevelop.Monobjc.Gui
 			project.DevelopmentRegion = this.DevelopmentRegion;
 			project.CombineArtwork = this.CombineArtwork;
 			project.EncryptArtwork = this.EncryptArtwork;
+			project.EncryptArtworkSeed = this.EncryptArtworkSeed;
 
 			project.UpdateReferences();
 		}
@@ -205,7 +229,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.OSFrameworks = frameworks;
 		}
 
-		private void HandleCheckRendererToggled (object o, ToggledArgs args)
+		private void HandleFrameworksCheckRendererToggled (object o, ToggledArgs args)
 		{
 			TreeStore store = (TreeStore)this.treeviewFrameworks.Model;
 			TreeIter iter;
@@ -215,7 +239,18 @@ namespace MonoDevelop.Monobjc.Gui
 			bool value = (bool)store.GetValue (iter, 0);
 			store.SetValue (iter, 0, !value);
 		}
-
+		
+		private void HandleEmbeddedFrameworksCheckRendererToggled (object o, ToggledArgs args)
+		{
+			TreeStore store = (TreeStore)this.treeviewEmbeddedFrameworks.Model;
+			TreeIter iter;
+			if (!store.GetIterFromString (out iter, args.Path)) {
+				return;
+			}
+			bool value = (bool)store.GetValue (iter, 0);
+			store.SetValue (iter, 0, !value);
+		}
+		
 		void HandleCheckbuttonSigningToggled (object sender, EventArgs e)
 		{
 			this.comboboxSigningCertificates.Sensitive = this.checkbuttonSigning.Active;
@@ -269,6 +304,11 @@ namespace MonoDevelop.Monobjc.Gui
 		void HandleCheckbuttonArchivePackageToggled (object sender, EventArgs e)
 		{
 			this.comboboxPackagingCertificates.Sensitive = this.checkbuttonArchivePackage.Active;
+		}
+
+		void HandleCheckbuttonEncryptArtworkToggled (object sender, EventArgs e)
+		{
+			this.entryEncryptArtworkSeed.Sensitive = this.checkbuttonEncryptArtwork.Active;
 		}
 	}
 }

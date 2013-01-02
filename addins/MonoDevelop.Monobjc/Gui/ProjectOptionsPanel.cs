@@ -15,7 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
+using System;
 using Gtk;
+using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui.Dialogs;
 
 namespace MonoDevelop.Monobjc.Gui
@@ -45,7 +47,15 @@ namespace MonoDevelop.Monobjc.Gui
 		/// </summary>
 		public override void ApplyChanges ()
 		{
-			this.widget.Save(this.ConfiguredProject as MonobjcProject);
+			String message;
+			if (this.widget.CanSave(this.ConfiguredProject as MonobjcProject, out message)) {
+				this.widget.Save(this.ConfiguredProject as MonobjcProject);
+			} else {
+				using(MessageDialog dialog = new MessageDialog(this.ParentDialog, DialogFlags.Modal, MessageType.Error, ButtonsType.Ok, GettextCatalog.GetString("Please check your values. {0}"), message)) {
+					dialog.Run();
+					dialog.Destroy();
+				}
+			}
 		}
 	}
 }

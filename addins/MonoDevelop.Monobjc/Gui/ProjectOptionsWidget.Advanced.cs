@@ -35,5 +35,10 @@ namespace MonoDevelop.Monobjc.Gui
 			get { return this.checkbuttonEncryptArtwork.Active; }
 			set { this.checkbuttonEncryptArtwork.Active = value; }
 		}
+		
+		private String EncryptArtworkSeed {
+			get { return this.entryEncryptArtworkSeed.Text; }
+			set { this.entryEncryptArtworkSeed.Text = value; }
+		}
 	}
 }

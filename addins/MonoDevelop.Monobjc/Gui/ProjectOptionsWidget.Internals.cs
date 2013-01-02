@@ -25,6 +25,7 @@ using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Ide;
 using MonoDevelop.Monobjc.Utilities;
+using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -111,14 +112,36 @@ namespace MonoDevelop.Monobjc.Gui
 			}
 		}
 		
-		private static void FillEmbeddedFrameworks (TreeView treeView, MonobjcProject project, MacOSVersion version)
+		private static void FillEmbeddedFrameworks (TreeView treeView, MonobjcProject project)
 		{
 			TreeStore store = (TreeStore)treeView.Model;
 			store.Clear ();
 
-
-			foreach (String assembly in assemblies) {
-				store.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), assembly);
+			// Populate the framework that are not from system
+			foreach (ProjectReference reference in project.ProjectMonobjcAssemblies) {
+				FilePath location = null;
+				String name = null;
+				if (reference.ReferenceType == ReferenceType.Assembly) {
+					location = reference.Reference;
+					name = location;
+				} else if (reference.ReferenceType == ReferenceType.Gac) {
+					location = project.AssemblyContext.GetAssemblyLocation (reference.Reference, project.TargetFramework);
+					name = location.FileNameWithoutExtension;
+				}
+				if (location == null) {
+					continue;
+				}
+				if (!File.Exists (location)) {
+					continue;
+				}
+				bool systemFramework;
+				if (!AttributeHelper.IsWrappingFramework (location, out systemFramework)) {
+					continue;
+				}
+				if (systemFramework) {
+					continue;
+				}
+				store.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), name.Substring ("Monobjc.".Length));
 			}
 		}
 

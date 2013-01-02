@@ -24,6 +24,7 @@ using Monobjc.Tools.InterfaceBuilder.Visitors;
 using MonoDevelop.Core;
 using MonoDevelop.DesignerSupport;
 using MonoDevelop.Ide;
+using MonoDevelop.Ide.Gui;
 using MonoDevelop.Monobjc.CodeGeneration;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
@@ -45,6 +46,41 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// Gets or sets the code generator.
 		/// </summary>
 		private ICodeBehindGenerator CodeGenerator { get; set; }
+
+		/// <summary>
+		/// Generates the framework loading code.
+		/// </summary>
+		/// <param name='frameworks'>
+		/// Frameworks.
+		/// </param>
+		public void GenerateFrameworkLoadingCode(String[] frameworks)
+		{
+			ThreadPool.QueueUserWorkItem (delegate {
+				IDELogger.Log ("CodeBehindHandler::GenerateFrameworkLoadingCode");
+
+				IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor ("Monobjc", "md-monobjc", false);
+				monitor.BeginTask (GettextCatalog.GetString ("Generating framework loading code..."), 3);
+				
+				// Create the resolver
+				ProjectTypeCache cache = ProjectTypeCache.Get (this.Project);
+				monitor.Step (1);
+				
+				// Generate loading code
+				FilePath entryPoint = this.CodeGenerator.GenerateFrameworkLoadingCode (cache, frameworks);
+				monitor.Step (1);
+				
+				DispatchService.GuiDispatch (() => {
+					// If generation was successfull, reload the document if is opened
+					foreach (Document doc in IdeApp.Workbench.Documents.Where(doc => String.Equals(doc.FileName, entryPoint))) {
+						doc.Reload ();
+						break;
+					}
+					
+					monitor.EndTask ();
+					monitor.Dispose ();
+				});
+			});
+		}
 
 		/// <summary>
 		/// Generates the design code.

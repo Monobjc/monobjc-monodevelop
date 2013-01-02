@@ -6,7 +6,7 @@
        description="Development of Mac OS X applications using Monobjc."
        copyright="GPL"
        category="Mac Development"
-       version="0.0.0.0">
+       version="3.0.2008.12">
 
   <!-- Header -->
   <Header>
