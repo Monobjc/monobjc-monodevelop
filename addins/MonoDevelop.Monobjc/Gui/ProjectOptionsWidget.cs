@@ -148,8 +148,8 @@ namespace MonoDevelop.Monobjc.Gui
 				message = GettextCatalog.GetString("The value for the bundle version is not valid. It cannot be empty.");
 				return false;
 			}
-			if (this.checkbuttonEncryptArtwork.Active && this.entryEncryptArtworkSeed.Text.Length != 32) {
-				message = GettextCatalog.GetString("The value for the encryption seed is not valid. It should contain 32 hexadeciaml characters.");
+			if (this.checkbuttonEncryptArtwork.Active && this.entryEncryptArtworkSeed.Text.Length == 0) {
+				message = GettextCatalog.GetString("The value for the encryption seed is not valid. It cannot be empty.");
 				return false;
 			}
 			message = String.Empty;

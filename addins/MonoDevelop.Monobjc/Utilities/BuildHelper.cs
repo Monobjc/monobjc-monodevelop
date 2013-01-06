@@ -396,6 +396,26 @@ namespace MonoDevelop.Monobjc.Utilities
 			}
 			monitor.EndTask ();
 		}
+
+		/// <summary>
+		/// Combines the artwork.
+		/// </summary>
+		public static void EncryptArtwork (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		{
+			if (!project.EncryptArtwork) {
+				return;
+			}
+			
+			monitor.BeginTask (GettextCatalog.GetString ("Encrypting artwork..."), 0);
+			using (StringWriter outputWriter = new StringWriter()) {
+				using (StringWriter errorWriter = new StringWriter()) {
+					ArtworkEncrypter encrypter = new ArtworkEncrypter();
+					encrypter.Encrypt(maker.ResourcesFolder, project.EncryptArtworkSeed);
+					LoggingService.LogInfo ("Combiner returns: " + outputWriter.ToString ());
+				}
+			}
+			monitor.EndTask ();
+		}
 		
 		/// <summary>
 		///   Sign the application bundle.

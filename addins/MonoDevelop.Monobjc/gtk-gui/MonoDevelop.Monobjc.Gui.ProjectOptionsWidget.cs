@@ -806,7 +806,6 @@ namespace MonoDevelop.Monobjc.Gui
 			w106.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.checkbuttonEncryptArtwork = new global::Gtk.CheckButton ();
-			this.checkbuttonEncryptArtwork.Sensitive = false;
 			this.checkbuttonEncryptArtwork.CanFocus = true;
 			this.checkbuttonEncryptArtwork.Name = "checkbuttonEncryptArtwork";
 			this.checkbuttonEncryptArtwork.Label = global::Mono.Unix.Catalog.GetString ("Encrypt Artwork");
@@ -831,7 +830,6 @@ namespace MonoDevelop.Monobjc.Gui
 			w108.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.entryEncryptArtworkSeed = new global::Gtk.Entry ();
-			this.entryEncryptArtworkSeed.Sensitive = false;
 			this.entryEncryptArtworkSeed.CanFocus = true;
 			this.entryEncryptArtworkSeed.Name = "entryEncryptArtworkSeed";
 			this.entryEncryptArtworkSeed.IsEditable = true;
@@ -868,10 +866,9 @@ namespace MonoDevelop.Monobjc.Gui
 			w111.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.labelEncryptArtworkSeed = new global::Gtk.Label ();
-			this.labelEncryptArtworkSeed.Sensitive = false;
 			this.labelEncryptArtworkSeed.Name = "labelEncryptArtworkSeed";
 			this.labelEncryptArtworkSeed.Xalign = 1F;
-			this.labelEncryptArtworkSeed.LabelProp = global::Mono.Unix.Catalog.GetString ("Seed (32 hexa):");
+			this.labelEncryptArtworkSeed.LabelProp = global::Mono.Unix.Catalog.GetString ("Seed:");
 			this.tableAdvanced.Add (this.labelEncryptArtworkSeed);
 			global::Gtk.Table.TableChild w112 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelEncryptArtworkSeed]));
 			w112.TopAttach = ((uint)(5));
@@ -882,7 +879,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelEncryptDescription = new global::Gtk.Label ();
 			this.labelEncryptDescription.Name = "labelEncryptDescription";
 			this.labelEncryptDescription.Xalign = 0F;
-			this.labelEncryptDescription.LabelProp = global::Mono.Unix.Catalog.GetString ("You have the ability to encrypt artwork in order to protect them from a direct re-use. The encryption is done by using the AES algorithm with the seed as key.");
+			this.labelEncryptDescription.LabelProp = global::Mono.Unix.Catalog.GetString ("You have the ability to encrypt artwork in order to protect them from a direct re-use. The encryption is done by using the AES algorithm (the key is derived from the seed).");
 			this.labelEncryptDescription.Wrap = true;
 			this.tableAdvanced.Add (this.labelEncryptDescription);
 			global::Gtk.Table.TableChild w113 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelEncryptDescription]));

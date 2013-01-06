@@ -63,7 +63,8 @@ namespace MonoDevelop.Monobjc.Utilities
 				monitor.EndTask ();
 			}
 
-			BuildHelper.CombineArtwork(monitor, project, maker);
+			BuildHelper.CombineArtwork (monitor, project, maker);
+			BuildHelper.EncryptArtwork (monitor, project, maker);
 
 			// Perform the signing
 			BuildHelper.SignBundle (monitor, project, maker);

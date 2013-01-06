@@ -160,18 +160,29 @@ namespace MonoDevelop.Monobjc
 			List<SystemAssembly> assemblies = new List<SystemAssembly> (this.GetMonobjcAssemblies (this.TargetOSVersion));
 			String[] names = this.OSFrameworks.Split (';');
 			IDELogger.Log ("MonobjcProject::UpdateReferences -- Adding {0} names", names.Length);
-			foreach (String name in names) {
-				String qualifiedName = "Monobjc." + name;
-				SystemAssembly assembly = assemblies.FirstOrDefault (a => a.Name == qualifiedName);
-				if (assembly == null) {
-					continue;
-				}
 
-				ProjectReference reference = new ProjectReference (assembly);
+			// Addition function
+			Action<SystemAssembly> adder = delegate(SystemAssembly a) {
+				ProjectReference reference = new ProjectReference (a);
 				// NOTE: Starting with Monobjc 4.0, assembly references use a fixed numbering scheme (ex: 10.7.0.0)
 				// In this case, we can require a specific version
-				reference.SpecificVersion = assembly.Version.EndsWith (".0.0");
+				reference.SpecificVersion = a.Version.EndsWith (".0.0");
 				this.References.Add (reference);
+			};
+
+			// Add core library
+			SystemAssembly assembly = assemblies.FirstOrDefault (a => a.Name == "Monobjc");
+			if (assembly != null) {
+				adder(assembly);
+			}
+
+			// Add reference libraries
+			foreach (String name in names) {
+				String qualifiedName = "Monobjc." + name;
+				assembly = assemblies.FirstOrDefault (a => a.Name == qualifiedName);
+				if (assembly != null) {
+					adder(assembly);
+				}
 			}
 			this.Save (new NullProgressMonitor ());
 

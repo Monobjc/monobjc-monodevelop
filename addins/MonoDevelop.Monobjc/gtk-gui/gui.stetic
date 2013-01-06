@@ -1213,7 +1213,6 @@
             <child>
               <widget class="Gtk.CheckButton" id="checkbuttonEncryptArtwork">
                 <property name="MemberName" />
-                <property name="Sensitive">False</property>
                 <property name="CanFocus">True</property>
                 <property name="Label" translatable="yes">Encrypt Artwork</property>
                 <property name="DrawIndicator">True</property>
@@ -1259,7 +1258,6 @@
             <child>
               <widget class="Gtk.Entry" id="entryEncryptArtworkSeed">
                 <property name="MemberName" />
-                <property name="Sensitive">False</property>
                 <property name="CanFocus">True</property>
                 <property name="IsEditable">True</property>
                 <property name="InvisibleChar">●</property>
@@ -1323,9 +1321,8 @@
             <child>
               <widget class="Gtk.Label" id="labelEncryptArtworkSeed">
                 <property name="MemberName" />
-                <property name="Sensitive">False</property>
                 <property name="Xalign">1</property>
-                <property name="LabelProp" translatable="yes">Seed (32 hexa):</property>
+                <property name="LabelProp" translatable="yes">Seed:</property>
               </widget>
               <packing>
                 <property name="TopAttach">5</property>
@@ -1345,7 +1342,7 @@
               <widget class="Gtk.Label" id="labelEncryptDescription">
                 <property name="MemberName" />
                 <property name="Xalign">0</property>
-                <property name="LabelProp" translatable="yes">You have the ability to encrypt artwork in order to protect them from a direct re-use. The encryption is done by using the AES algorithm with the seed as key.</property>
+                <property name="LabelProp" translatable="yes">You have the ability to encrypt artwork in order to protect them from a direct re-use. The encryption is done by using the AES algorithm (the key is derived from the seed).</property>
                 <property name="Wrap">True</property>
               </widget>
               <packing>
