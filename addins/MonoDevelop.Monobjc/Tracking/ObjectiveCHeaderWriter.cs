@@ -87,7 +87,9 @@ namespace MonoDevelop.Monobjc.Tracking
 				if (property.ReturnType == null) {
 					continue;
 				}
-				typeNames.Add (property.ReturnType.Name);
+				if (this.NeedImport(property.ReturnType)) {
+					typeNames.Add (property.ReturnType.Name);
+				}
 			}
 			foreach (String typeName in typeNames) {
 				yield return String.Format ("#import \"{0}.h\"", typeName);

@@ -26,10 +26,12 @@ namespace MonoDevelop.Monobjc.Tracking
 	public abstract class ObjectiveCWriter
 	{
 		protected MonobjcProject project;
+		protected ProjectTypeCache cache;
 
 		protected ObjectiveCWriter (MonobjcProject project)
 		{
 			this.project = project;
+			this.cache = ProjectTypeCache.Get(this.project);
 		}
 		
 		public void Write (TextWriter writer, IType type)
@@ -115,7 +117,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			if (type == null) {
 				return false;
 			}
-			return true;
+			return this.cache.IsInProjectReference(type);
 		}
 	}
 }

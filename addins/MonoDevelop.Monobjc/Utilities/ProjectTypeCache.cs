@@ -246,7 +246,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		}
 		
 		/// <summary>
-		/// Check if the type is defined in a project.
+		/// Check if the type is defined in the main project.
 		/// </summary>
 		public bool IsInProject (IType type)
 		{
@@ -255,6 +255,18 @@ namespace MonoDevelop.Monobjc.Utilities
 				return false;
 			}
 			return definition.ParentAssembly.Equals (this.ProjectWrapper.Compilation.MainAssembly);
+		}
+
+		/// <summary>
+		/// Check if the type is defined in a referenced project.
+		/// </summary>
+		public bool IsInProjectReference(IType type) {
+			ITypeDefinition definition = type.GetDefinition ();
+			if (definition == null) {
+				return false;
+			}
+			IAssembly assembly = definition.ParentAssembly;
+			return this.ProjectWrappers.Any(pw => definition.ParentAssembly.Equals(pw.Compilation.MainAssembly));
 		}
 
 		private TypeSystemService.ProjectContentWrapper ProjectWrapper {
