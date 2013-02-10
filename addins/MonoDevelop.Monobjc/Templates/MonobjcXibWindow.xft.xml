@@ -1,20 +1,17 @@
 <?xml version="1.0"?>
 <Template Originator="Laurent Etiemble" Created="2010/10/27">
-	
 	<!-- Template Header -->
 	<TemplateConfiguration>
-	  <_Name>Cocoa Window Template</_Name>
-    	<Icon>md-monobjc-xib</Icon>
-	  <_Category>Monobjc</_Category>
-	  <LanguageName>*</LanguageName>
-	  <ProjectType>Monobjc</ProjectType>
-	  <_Description>An Interface Builder document for creating a Cocoa window.</_Description>
+		<_Name>Cocoa Window Template</_Name>
+		<Icon>md-monobjc-xib</Icon>
+		<_Category>Monobjc</_Category>
+		<LanguageName>*</LanguageName>
+		<ProjectType>Monobjc</ProjectType>
+		<_Description>An Interface Builder document for creating a Cocoa window.</_Description>
 	</TemplateConfiguration>
-	
 	<!-- Template Content -->
 	<TemplateFiles>
-	  <File name="${Name}.xib" DefaultExtension=".xib" SuppressAutoOpen="True">
-<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+		<File name="${Name}.xib" DefaultExtension=".xib" SuppressAutoOpen="True"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
@@ -178,8 +175,6 @@
 		<nil key="IBDocument.LastKnownRelativeProjectPath"/>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
-</archive>]]>
-		</File>
+</archive>]]></File>
 	</TemplateFiles>
-	
 </Template>

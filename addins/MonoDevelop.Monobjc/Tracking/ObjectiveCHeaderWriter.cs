@@ -18,11 +18,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ICSharpCode.NRefactory.TypeSystem;
+using MonoDevelop.Core.Collections;
 using MonoDevelop.Monobjc.Utilities;
-using MonoDevelop.Projects.Dom;
-using MonoDevelop.Projects.Dom.Parser;
-using MonoDevelop.Projects;
-using System.Linq;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
@@ -32,6 +30,21 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 		}
 		
+		protected override void WriteIncludes (TextWriter writer, IType type)
+		{
+			foreach (String framework in this.project.OSFrameworks.Split(';')) {
+				writer.WriteLine ("#import <{0}/{0}.h>", framework);
+			}
+			IType baseType = this.GetBaseType (type);
+			if (this.NeedImport (baseType)) {
+				writer.WriteLine ("#import \"{0}.h\"", baseType.Name);
+			}
+			foreach (String import in this.GetOtherImports(type)) {
+				writer.WriteLine (import);
+			}
+			writer.WriteLine ();
+		}
+
 		protected override void WritePrologue (TextWriter writer, string name, string baseName)
 		{
 			writer.WriteLine ("@interface {0} : {1}", name, baseName);
@@ -55,7 +68,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		protected override void WriteMethods (TextWriter writer, IType type)
 		{
 			foreach (IMethod method in this.GetMethods(type)) {
-				String selector = AttributeHelper.GetAttributeValue (method, AttributeHelper.OBJECTIVE_C_MESSAGE);
+				String selector = AttributeHelper.GetAttributeValue (method, Constants.OBJECTIVE_C_MESSAGE);
 				writer.WriteLine ();
 				writer.WriteLine ("{0}(IBAction) {1}(id) sender;", method.IsStatic ? "+" : "-", selector);
 			}
@@ -67,21 +80,19 @@ namespace MonoDevelop.Monobjc.Tracking
 			writer.WriteLine ("@end");
 		}
 		
-		protected override IEnumerable<String> GetOtherImports (IType type)
+		private IEnumerable<String> GetOtherImports (IType type)
 		{
-			IList<String> typeNames = new List<String> ();
+			Set<String> typeNames = new Set<String> ();
 			foreach (IProperty property in this.GetProperties(type)) {
 				if (property.ReturnType == null) {
 					continue;
 				}
-				ProjectDom dom = this.resolver.GetOwnerDom (property.ReturnType);
-				Project project = (dom != null) ? dom.Project : null;
-				if (project != null) {
+				if (this.NeedImport(property.ReturnType)) {
 					typeNames.Add (property.ReturnType.Name);
 				}
 			}
-			foreach (String typeName in typeNames.Distinct()) {
-				yield return String.Format("#import \"{0}.h\"", typeName);
+			foreach (String typeName in typeNames) {
+				yield return String.Format ("#import \"{0}.h\"", typeName);
 			}
 		}
 	}

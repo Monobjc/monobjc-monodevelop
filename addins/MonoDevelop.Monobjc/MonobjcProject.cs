@@ -19,14 +19,13 @@ using System;
 using System.Xml;
 using Monobjc.Tools.Generators;
 using Monobjc.Tools.Utilities;
-using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Core.Execution;
 using MonoDevelop.Monobjc.CodeGeneration;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
 using System.Collections.Generic;
-using System.IO;
+using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc
 {
@@ -50,9 +49,7 @@ namespace MonoDevelop.Monobjc
 		/// </summary>
 		public MonobjcProject ()
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::ctor0");
-#endif
+			IDELogger.Log ("MonobjcProject::ctor0");
 			this.Initialize ();
 		}
 
@@ -62,9 +59,7 @@ namespace MonoDevelop.Monobjc
 		/// <param name = "languageName">Name of the language.</param>
 		public MonobjcProject (String languageName) : base(languageName)
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::ctor1");
-#endif
+			IDELogger.Log ("MonobjcProject::ctor1");
 			this.Initialize ();
 		}
 
@@ -76,44 +71,32 @@ namespace MonoDevelop.Monobjc
 		/// <param name = "projectOptions">The project options.</param>
 		public MonobjcProject (String language, ProjectCreateInformation info, XmlElement projectOptions) : base(language, info, projectOptions)
 		{
-			XmlNode node;
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::ctor3");
-#endif
-			node = projectOptions.SelectSingleNode ("MacOSApplicationType");
-			if (node != null) {
-				this.ApplicationType = (MonobjcApplicationType) Enum.Parse(typeof(MonobjcApplicationType), node.InnerText);
-			}
+			IDELogger.Log ("MonobjcProject::ctor3");
 
-			node = projectOptions.SelectSingleNode ("MacOSDevelopmentRegion");
-			if (node != null) {
-				this.DevelopmentRegion = node.InnerText;
-			}
+			this.ApplicationType = GetNodeValue (projectOptions, "MacOSApplicationType", MonobjcProjectType.CocoaApplication);
+			this.ApplicationCategory = GetNodeValue (projectOptions, "MacOSApplicationCategory", String.Empty);
+			this.BundleId = GetNodeValue (projectOptions, "BundleId", "net.monobjc.application.Test");
+			this.BundleVersion = GetNodeValue (projectOptions, "BundleVersion", "1.0");
+			this.MainNibFile = GetNodeValue (projectOptions, "MainNibFile", null);
+			this.BundleIcon = GetNodeValue (projectOptions, "BundleIcon", null);
+			this.TargetOSVersion = GetNodeValue (projectOptions, "MacOSVersion", MacOSVersion.MacOS106);
+			this.Signing = Boolean.Parse (GetNodeValue (projectOptions, "Signing", "false"));
+			this.SigningIdentity = GetNodeValue (projectOptions, "SigningIdentity", String.Empty);
+			this.UseEntitlements = Boolean.Parse (GetNodeValue (projectOptions, "UseEntitlements", "false"));
+			this.OSFrameworks = GetNodeValue (projectOptions, "MacOSFrameworks", String.Empty);
 
-			node = projectOptions.SelectSingleNode ("MainNibFile");
-			if (node != null) {
-				this.MainNibFile = node.InnerText;
-			}
+			this.TargetOSArch = GetNodeValue (projectOptions, "MacOSArch", MacOSArchitecture.X86);
+			this.EmbeddedFrameworks = GetNodeValue (projectOptions, "EmbeddedFrameworks", String.Empty);
+			this.AdditionalAssemblies = GetNodeValue (projectOptions, "AdditionalAssemblies", String.Empty);
+			this.ExcludedAssemblies = GetNodeValue (projectOptions, "ExcludedAssemblies", String.Empty);
+			this.AdditionalLibraries = GetNodeValue (projectOptions, "AdditionalLibraries", String.Empty);
 
-			node = projectOptions.SelectSingleNode ("BundleIcon");
-			if (node != null) {
-				this.BundleIcon = node.InnerText;
-			}
+			this.Archive = Boolean.Parse (GetNodeValue (projectOptions, "Archive", "false"));
+			this.ArchiveIdentity = GetNodeValue (projectOptions, "ArchiveIdentity", String.Empty);
 
-			node = projectOptions.SelectSingleNode ("MacOSFrameworks");
-			if (node != null) {
-				this.OSFrameworks = node.InnerText;
-			}
-
-			node = projectOptions.SelectSingleNode ("MacOSVersion");
-			if (node != null) {
-				this.TargetOSVersion = (MacOSVersion)Enum.Parse (typeof(MacOSVersion), node.InnerText);
-			}
-
-			node = projectOptions.SelectSingleNode ("MacOSArch");
-			if (node != null) {
-				this.TargetOSArch = (MacOSArchitecture)Enum.Parse (typeof(MacOSArchitecture), node.InnerText);
-			}
+			this.DevelopmentRegion = GetNodeValue (projectOptions, "MacOSDevelopmentRegion", "en");
+			this.CombineArtwork = Boolean.Parse (GetNodeValue (projectOptions, "CombineArtwork", "false"));
+			this.EncryptArtwork = Boolean.Parse (GetNodeValue (projectOptions, "EncryptArtwork", "false"));
 
 			this.Initialize ();
 		}
@@ -123,14 +106,15 @@ namespace MonoDevelop.Monobjc
 		/// </summary>
 		public override void Dispose ()
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::Dispose");
-#endif
-			this.CodeBehindTracker.Dispose ();
-			this.DependencyTracker.Dispose ();
-			this.XcodeTracker.Dispose ();
-			this.EmbeddingTracker.Dispose ();
-			
+			IDELogger.Log ("MonobjcProject::Dispose");
+
+			this.CodeBehindHandler.Dispose ();
+			this.DependencyHandler.Dispose ();
+			this.EmbeddingHandler.Dispose ();
+			this.MigrationHandler.Dispose ();
+			this.ResolverHandler.Dispose ();
+			this.XcodeHandler.Dispose ();
+
 			base.Dispose ();
 		}
 
@@ -172,7 +156,7 @@ namespace MonoDevelop.Monobjc
 		public override String GetDefaultBuildAction (String fileName)
 		{
 			if (BuildHelper.IsXIBFile (fileName)) {
-				return BuildHelper.InterfaceDefinition;
+				return Constants.InterfaceDefinition;
 			}
 			if (BuildHelper.IsNIBFile (fileName)) {
 				return BuildAction.EmbeddedResource;
@@ -192,24 +176,27 @@ namespace MonoDevelop.Monobjc
 		protected override ExecutionCommand CreateExecutionCommand (ConfigurationSelector configSel, DotNetProjectConfiguration configuration)
 		{
 			if (this.CompileTarget != CompileTarget.Exe) {
-				return base.CreateExecutionCommand(configSel, configuration);
+				return base.CreateExecutionCommand (configSel, configuration);
 			}
-			
-			MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)configuration;
+
+			if (this.projectType == MonobjcProjectType.None) {
+				return base.CreateExecutionCommand (configSel, configuration);
+			}
 
 			// Infer application name from configuration
+			MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)configuration;
 			String applicationName = this.GetApplicationName (configSel);
 			conf.ApplicationName = applicationName;
 			
 			switch (this.ApplicationType) {
-			case MonobjcApplicationType.CocoaApplication:
+			case MonobjcProjectType.CocoaApplication:
 				{
 					// Create the bundle maker to get the path to the runtime
 					BundleMaker maker = new BundleMaker (applicationName, conf.OutputDirectory);
 					conf.Runtime = maker.Runtime;
 				}
 				break;
-			case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				{
 					// Build the command line
 					conf.Runtime = FileProvider.GetPath (this.TargetOSVersion, "runtime");
@@ -227,39 +214,77 @@ namespace MonoDevelop.Monobjc
 			return command;
 		}
 
-		/// <summary>
-		///   Called when a project file is added to this instance.
-		/// </summary>
-		/// <param name = "e">The <see cref = "ProjectFileEventArgs" /> instance containing the event data.</param>
 		protected override void OnFileAddedToProject (ProjectFileEventArgs e)
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::OnFileAddedToProject");
-#endif
-			// Migrate "Page" to "InterfaceDefinition" when project is loaded
-			foreach(ProjectFileEventInfo info in e)
-			{
-	            ProjectFile projectFile = info.ProjectFile;
-				if (projectFile.BuildAction == BuildAction.Page) {
-					projectFile.BuildAction = BuildHelper.InterfaceDefinition;
-				}
-			}
-			
+			IDELogger.Log ("MonobjcProject::OnFileAddedToProject '{0}'", e);
+
+			this.MigrationHandler.Migrate (e);
+			this.ResolverHandler.ClearCache();
+			this.XcodeHandler.ClearXcodeProject();
+
+			IEnumerable<FilePath> dependencies = this.DependencyHandler.GuessDependencies (e);
+
 			base.OnFileAddedToProject (e);
+
+			this.DependencyHandler.AddFiles (dependencies);
+			this.CodeBehindHandler.GenerateDesignCode (e);
+			this.EmbeddingHandler.ApplyEmbedding(e);
 		}
 
-		/// <summary>
-		///   Called when a project file is changed into this instance.
-		/// </summary>
-		/// <param name = "e">The <see cref = "ProjectFileEventArgs" /> instance containing the event data.</param>
 		protected override void OnFileChangedInProject (ProjectFileEventArgs e)
 		{
-#if DEBUG
-            LoggingService.LogInfo("MonobjcProject::OnFileChangedInProject");
-#endif
+			IDELogger.Log ("MonobjcProject::OnFileChangedInProject '{0}'", e);
+
+			this.ResolverHandler.ClearCache();
+			this.XcodeHandler.ClearXcodeProject();
+
 			base.OnFileChangedInProject (e);
+
+			this.CodeBehindHandler.GenerateDesignCode (e);
 		}
-		
+
+		protected override void OnFilePropertyChangedInProject (ProjectFileEventArgs e)
+		{
+			IDELogger.Log ("MonobjcProject::OnFilePropertyChangedInProject '{0}'", e);
+
+			this.ResolverHandler.ClearCache();
+			this.XcodeHandler.ClearXcodeProject();
+
+			base.OnFilePropertyChangedInProject (e);
+
+			this.EmbeddingHandler.ApplyEmbedding(e);
+		}
+
+		protected override void OnFileRenamedInProject (ProjectFileRenamedEventArgs e)
+		{
+			IDELogger.Log ("MonobjcProject::OnFileRenamedInProject '{0}'", e);
+
+			this.ResolverHandler.ClearCache();
+			this.XcodeHandler.ClearXcodeProject();
+
+			base.OnFileRenamedInProject (e);
+		}
+
+		protected override void OnReferenceAddedToProject (ProjectReferenceEventArgs e)
+		{
+			IDELogger.Log ("MonobjcProject::OnReferenceAddedToProject '{0}'", e);
+
+			this.ResolverHandler.RecomputeReferences();
+			this.XcodeHandler.ClearXcodeProject();
+
+			base.OnReferenceAddedToProject (e);
+		}
+
+		protected override void OnReferenceRemovedFromProject (ProjectReferenceEventArgs e)
+		{
+			IDELogger.Log ("MonobjcProject::OnReferenceRemovedFromProject '{0}'", e);
+
+			this.ResolverHandler.RecomputeReferences();
+			this.XcodeHandler.ClearXcodeProject();
+
+			base.OnReferenceRemovedFromProject (e);
+		}
+
 		/// <summary>
 		/// Gets the common build actions.
 		/// </summary>
@@ -270,11 +295,11 @@ namespace MonoDevelop.Monobjc
 				if (buildActions.Contains (BuildAction.Page)) {
 					buildActions.Remove (BuildAction.Page);
 				}
-				if (!buildActions.Contains (BuildHelper.InterfaceDefinition)) {
-					buildActions.Add (BuildHelper.InterfaceDefinition);
+				if (!buildActions.Contains (Constants.InterfaceDefinition)) {
+					buildActions.Add (Constants.InterfaceDefinition);
 				}
-				if (!buildActions.Contains (BuildHelper.EmbeddedInterfaceDefinition)) {
-					buildActions.Add (BuildHelper.EmbeddedInterfaceDefinition);
+				if (!buildActions.Contains (Constants.EmbeddedInterfaceDefinition)) {
+					buildActions.Add (Constants.EmbeddedInterfaceDefinition);
 				}
 			}
 			return buildActions;

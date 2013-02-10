@@ -1,26 +1,22 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <Template Originator="Laurent Etiemble" Created="2010/10/27">
-	
 	<!-- Template Header -->
 	<TemplateConfiguration>
-	  <_Name>Product Definition Property List</_Name>
-      <Icon>md-monobjc-plist</Icon>
-	  <_Category>Monobjc</_Category>
-	  <LanguageName>*</LanguageName>
-	  <ProjectType>Monobjc</ProjectType>
-	  <_Description>An XML property list file that describes a product.</_Description>
-      <DefaultFilename IsFixed="true">Definition.plist</DefaultFilename>
+		<_Name>Product Definition Property List</_Name>
+		<Icon>md-monobjc-plist</Icon>
+		<_Category>Monobjc</_Category>
+		<LanguageName>*</LanguageName>
+		<ProjectType>Monobjc</ProjectType>
+		<_Description>An XML property list file that describes a product.</_Description>
+		<DefaultFilename IsFixed="true">Definition.plist</DefaultFilename>
 	</TemplateConfiguration>
-	
 	<!-- Conditions -->
 	<Conditions>
-		<ParentProject PermittedCreationPaths="" ExcludedFiles="Definition.plist" RequireProject="True"/>
+		<ParentProject PermittedCreationPaths="" ExcludedFiles="Definition.plist" RequireProject="True" />
 	</Conditions>
-	
 	<!-- Template Content -->
 	<TemplateFiles>
-	  <File name="Definition.plist" SuppressAutoOpen="True">
-<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+		<File name="Definition.plist" SuppressAutoOpen="True"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -33,8 +29,6 @@
 		<string>i386</string>
 	</array>
 </dict>
-</plist>]]>
-		</File>
+</plist>]]></File>
 	</TemplateFiles>
-	
 </Template>

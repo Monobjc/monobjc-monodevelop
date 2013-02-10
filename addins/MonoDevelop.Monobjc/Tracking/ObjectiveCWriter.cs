@@ -18,40 +18,35 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ICSharpCode.NRefactory.TypeSystem;
 using MonoDevelop.Monobjc.Utilities;
-using MonoDevelop.Projects;
-using MonoDevelop.Projects.Dom;
-using MonoDevelop.Projects.Dom.Parser;
-using MonoDevelop.Core;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
 	public abstract class ObjectiveCWriter
 	{
 		protected MonobjcProject project;
-		protected ProjectResolver resolver;
-		protected ProjectDom projectDom;
-		
+		protected ProjectTypeCache cache;
+
 		protected ObjectiveCWriter (MonobjcProject project)
 		{
 			this.project = project;
-			this.resolver = new ProjectResolver (this.project);
-			this.projectDom = ProjectDomService.GetProjectDom (this.project);
+			this.cache = ProjectTypeCache.Get(this.project);
 		}
 		
 		public void Write (TextWriter writer, IType type)
 		{
-			IType baseType = this.GetBaseType(type);
+			IType baseType = this.GetBaseType (type);
 			String name = type.Name;
 			String baseName = (baseType != null) ? baseType.Name : "NSObject";
 			
-			WriteHeader (writer);
-			WriteIncludes (writer, type);
+			this.WriteHeader (writer);
+			this.WriteIncludes (writer, type);
 			
-			WritePrologue (writer, name, baseName);
-			WriteProperties (writer, type);
-			WriteMethods (writer, type);
-			WriteEpilogue (writer, name, baseName);
+			this.WritePrologue (writer, name, baseName);
+			this.WriteProperties (writer, type);
+			this.WriteMethods (writer, type);
+			this.WriteEpilogue (writer, name, baseName);
 		}
 		
 		protected void WriteHeader (TextWriter writer)
@@ -61,21 +56,8 @@ namespace MonoDevelop.Monobjc.Tracking
 			writer.WriteLine ("//");
 		}
 		
-		protected void WriteIncludes (TextWriter writer, IType type)
-		{
-			foreach (String framework in this.project.OSFrameworks.Split(';')) {
-				writer.WriteLine ("#import <{0}/{0}.h>", framework);
-			}
-			IType baseType = this.GetBaseType(type);
-			if (this.NeedImport(baseType)) {
-				writer.WriteLine ("#import \"{0}.h\"", baseType.Name);
-			}
-			foreach (String import in this.GetOtherImports(type)) {
-				writer.WriteLine (import);
-			}
-			writer.WriteLine ();
-		}
-		
+		protected abstract void WriteIncludes (TextWriter writer, IType type);
+
 		protected abstract void WritePrologue (TextWriter writer, String name, String baseName);
 		
 		protected abstract void WriteProperties (TextWriter writer, IType type);
@@ -84,16 +66,14 @@ namespace MonoDevelop.Monobjc.Tracking
 		
 		protected abstract void WriteEpilogue (TextWriter writer, String name, String baseName);
 		
-		protected abstract IEnumerable<String> GetOtherImports (IType type);
-		
 		protected IEnumerable<IProperty> GetProperties (IType type)
 		{
 			IList<IProperty> properties = new List<IProperty> ();
-			foreach (IProperty property in type.Properties) {
-				if (!AttributeHelper.HasAttribute (property, AttributeHelper.IBOUTLET)) {
+			foreach (IProperty property in type.GetProperties()) {
+				if (!AttributeHelper.HasAttribute (property, Constants.IBOUTLET)) {
 					continue;
 				}
-				if (!AttributeHelper.HasAttribute (property, AttributeHelper.OBJECTIVE_C_IVAR)) {
+				if (!AttributeHelper.HasAttribute (property, Constants.OBJECTIVE_C_IVAR)) {
 					continue;
 				}
 				properties.Add (property);
@@ -104,11 +84,11 @@ namespace MonoDevelop.Monobjc.Tracking
 		protected IEnumerable<IMethod> GetMethods (IType type)
 		{
 			IList<IMethod> methods = new List<IMethod> ();
-			foreach (IMethod method in type.Methods) {
-				if (!AttributeHelper.HasAttribute (method, AttributeHelper.IBACTION)) {
+			foreach (IMethod method in type.GetMethods()) {
+				if (!AttributeHelper.HasAttribute (method, Constants.IBACTION)) {
 					continue;
 				}
-				if (!AttributeHelper.HasAttribute (method, AttributeHelper.OBJECTIVE_C_MESSAGE)) {
+				if (!AttributeHelper.HasAttribute (method, Constants.OBJECTIVE_C_MESSAGE)) {
 					continue;
 				}
 				if (method.Parameters.Count != 1) {
@@ -121,18 +101,14 @@ namespace MonoDevelop.Monobjc.Tracking
 		
 		protected IType GetBaseType (IType type)
 		{
-			// Search for the base class type
-			foreach (IReturnType baseType in type.BaseTypes) {
-				IType resolvedBaseType = this.projectDom.GetType (baseType);
-				if (resolvedBaseType == null) {
+			foreach (IType baseType in type.DirectBaseTypes) {
+				if (baseType.Kind != TypeKind.Class) {
 					continue;
 				}
-				if (resolvedBaseType.ClassType != ClassType.Class) {
-					continue;
-				}
-				return resolvedBaseType;
-				break;
+				IDELogger.Log ("ObjectiveCWriter::GetBaseType -- {0} : {1}", type.Name, baseType.Name);
+				return ProjectTypeCache.Get (this.project).ResolveType (baseType);
 			}
+
 			return null;
 		}
 		
@@ -141,10 +117,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			if (type == null) {
 				return false;
 			}
-			// Check if type is part of a project
-			ProjectDom typeDom = this.resolver.GetOwnerDom (type);
-			Project typeProject = (typeDom != null) ? typeDom.Project : null;
-			return (typeProject != null);
+			return this.cache.IsInProjectReference(type);
 		}
 	}
 }

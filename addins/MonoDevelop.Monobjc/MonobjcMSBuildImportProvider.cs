@@ -26,15 +26,16 @@ namespace MonoDevelop.Monobjc
 	[Extension]
 	public class MonobjcMSBuildImportProvider : IMSBuildImportProvider
 	{
-		private const string importCocoaApplication = @"$(MSBuildBinPath)\Monobjc.CocoaApplication.targets";
-		private const string importConsoleApplication = @"$(MSBuildBinPath)\Monobjc.ConsoleApplication.targets";
-		private const string importCocoaLibrary = @"$(MSBuildBinPath)\Monobjc.CocoaLibrary.targets";
+		private const String importCocoaApplication = @"$(MSBuildBinPath)\Monobjc.CocoaApplication.targets";
+		private const String importConsoleApplication = @"$(MSBuildBinPath)\Monobjc.ConsoleApplication.targets";
+		private const String importCocoaLibrary = @"$(MSBuildBinPath)\Monobjc.CocoaLibrary.targets";
 		
-		public void UpdateImports (SolutionEntityItem item, List<string> imports)
+		public void UpdateImports (SolutionEntityItem item, List<String> imports)
 		{
 			// Remove imports
 			imports.Remove (importCocoaApplication);
 			imports.Remove (importConsoleApplication);
+			imports.Remove (importCocoaLibrary);
 			
 			// Check project nature
 			MonobjcProject project = item as MonobjcProject;
@@ -43,13 +44,13 @@ namespace MonoDevelop.Monobjc
 			}
 			
 			switch (project.ApplicationType) {
-			case MonobjcApplicationType.CocoaApplication:
+			case MonobjcProjectType.CocoaApplication:
 				imports.Add (importCocoaApplication);
 				break;
-			case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				imports.Add (importConsoleApplication);
 				break;
-			case MonobjcApplicationType.CocoaLibrary:
+			case MonobjcProjectType.CocoaLibrary:
 				imports.Add (importCocoaLibrary);
 				break;
 			}

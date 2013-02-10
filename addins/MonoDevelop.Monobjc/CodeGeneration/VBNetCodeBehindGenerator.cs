@@ -18,7 +18,7 @@
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
-using MonoDevelop.Projects.Dom;
+using ICSharpCode.NRefactory.TypeSystem;
 
 namespace MonoDevelop.Monobjc.CodeGeneration
 {
@@ -27,6 +27,30 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 	/// </summary>
 	public class VBNetCodeBehindGenerator : BaseCodeBehindGenerator
 	{
+		/// <summary>
+		/// Gets a value indicating whether this generator supports partial classes.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if support partial classes; otherwise, <c>false</c>.
+		/// </value>
+		public override bool SupportPartialClasses {
+			get {
+				return true;
+			}
+		}
+		
+		/// <summary>
+		/// Gets a value indicating whether this generator support partial methods.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if support partial methods; otherwise, <c>false</c>.
+		/// </value>
+		public override bool SupportPartialMethods {
+			get {
+				return true;
+			}
+		}
+		
 		/// <summary>
 		///   Determines whether a line is a region delimiter.
 		/// </summary>
@@ -108,7 +132,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		protected override CodeExpression GenerateSetInstanceVariableStatement (CodeThisReferenceExpression thisRef, CodeTypeReference typeRef, CodePrimitiveExpression nameRef, CodePropertySetValueReferenceExpression valueRef)
 		{
 			String content = String.Format ("Me.SetInstanceVariable(Of {0})(\"{1}\", value)", typeRef.BaseType, nameRef.Value);
-			CodeSnippetExpression expression = new CodeSnippetExpression(content);
+			CodeSnippetExpression expression = new CodeSnippetExpression (content);
 			return expression;
 		}
 	}

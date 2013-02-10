@@ -18,8 +18,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ICSharpCode.NRefactory.TypeSystem;
 using MonoDevelop.Monobjc.Utilities;
-using MonoDevelop.Projects.Dom;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
@@ -27,6 +27,12 @@ namespace MonoDevelop.Monobjc.Tracking
 	{
 		public ObjectiveCSourceWriter (MonobjcProject project) : base(project)
 		{
+		}
+
+		protected override void WriteIncludes (TextWriter writer, IType type)
+		{
+			writer.WriteLine ("#import \"{0}.h\"", type.Name);
+			writer.WriteLine ();
 		}
 
 		protected override void WritePrologue (TextWriter writer, string name, string baseName)
@@ -42,7 +48,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		protected override void WriteMethods (TextWriter writer, IType type)
 		{
 			foreach (IMethod method in this.GetMethods(type)) {
-				String selector = AttributeHelper.GetAttributeValue (method, AttributeHelper.OBJECTIVE_C_MESSAGE);
+				String selector = AttributeHelper.GetAttributeValue (method, Constants.OBJECTIVE_C_MESSAGE);
 				writer.WriteLine ("{0}(IBAction) {1}(id) sender {{ }}", method.IsStatic ? "+" : "-", selector);
 			}
 		}
@@ -51,11 +57,6 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 			writer.WriteLine ();
 			writer.WriteLine ("@end");
-		}
-		
-		protected override IEnumerable<String> GetOtherImports (IType type)
-		{
-			yield return String.Format("#import \"{0}.h\"", type.Name);
 		}
 	}
 }

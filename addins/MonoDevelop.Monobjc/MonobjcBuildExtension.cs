@@ -25,252 +25,243 @@ using System;
 
 namespace MonoDevelop.Monobjc
 {
-    /// <summary>
-    ///   Service extension for building the bundle.
-    /// </summary>
-    public class MonobjcBuildExtension : ProjectServiceExtension
-    {
-        /// <summary>
-        ///   Builds the specified solution item.
-        /// </summary>
-        /// <param name = "monitor">The monitor.</param>
-        /// <param name = "item">The item.</param>
-        /// <param name = "configuration">The configuration.</param>
-        /// <returns>The build result.</returns>
-        protected override BuildResult Build(IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
-        {
-			BuildResult result = new BuildResult();
-			
-            MonobjcProject project = item as MonobjcProject;
-			
+	/// <summary>
+	///   Service extension for building the bundle.
+	/// </summary>
+	public class MonobjcBuildExtension : ProjectServiceExtension
+	{
+		/// <summary>
+		///   Builds the specified solution item.
+		/// </summary>
+		/// <param name = "monitor">The monitor.</param>
+		/// <param name = "item">The item.</param>
+		/// <param name = "configuration">The configuration.</param>
+		/// <returns>The build result.</returns>
+		protected override BuildResult Build (IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
+		{
+			BuildResult result = new BuildResult ();
+
 			// Pre-build
-			this.PreBuild(result, monitor, item, configuration);
-            if (result.ErrorCount > 0)
-            {
-                return result;
-            }
+			monitor.BeginTask (GettextCatalog.GetString ("Pre-Building..."), 1);
+			this.PreBuild (result, monitor, item, configuration);
+			monitor.EndTask();
+			if (result.ErrorCount > 0) {
+				return result;
+			}
 			
-            // Build
-            result.Append(base.Build(monitor, item, configuration));
-            if (result.ErrorCount > 0)
-            {
-                return result;
-            }
+			// Build
+			monitor.BeginTask (GettextCatalog.GetString ("Building"), 1);
+			result.Append (base.Build (monitor, item, configuration));
+			monitor.EndTask();
+			if (result.ErrorCount > 0) {
+				return result;
+			}
 			
 			// Post-build
-			this.PostBuild(result, monitor, item, configuration);
-			
-            return result;
-        }
+			monitor.BeginTask (GettextCatalog.GetString ("Post-Building..."), 1);
+			this.PostBuild (result, monitor, item, configuration);
+			monitor.EndTask();
 
-        /// <summary>
-        ///   Checks if the solution items needs building.
-        /// </summary>
-        /// <param name = "item">The item.</param>
-        /// <param name = "configuration">The configuration.</param>
-        /// <returns></returns>
-        protected override bool GetNeedsBuilding(SolutionEntityItem item, ConfigurationSelector configuration)
-        {
+			return result;
+		}
+
+		/// <summary>
+		///   Checks if the solution items needs building.
+		/// </summary>
+		/// <param name = "item">The item.</param>
+		/// <param name = "configuration">The configuration.</param>
+		/// <returns></returns>
+		protected override bool GetNeedsBuilding (SolutionEntityItem item, ConfigurationSelector configuration)
+		{
 			// Call base implementation
-			bool result = base.GetNeedsBuilding(item, configuration);
+			bool result = base.GetNeedsBuilding (item, configuration);
 			
 			// Balk if the project is not a Monobjc one
-            MonobjcProject project = item as MonobjcProject;
-            if (result || project == null)
-            {
-                return result;
-            }
+			MonobjcProject project = item as MonobjcProject;
+			if (result || project == null) {
+				return result;
+			}
 
 			// Call specific implementation
-			switch(project.ApplicationType)
-			{
-				case MonobjcApplicationType.CocoaApplication:
+			switch (project.ApplicationType) {
+			case MonobjcProjectType.CocoaApplication:
 				{
-		            MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
+					MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)project.GetConfiguration (configuration);
 		
-		            // Infer application name from configuration
-		            string applicationName = project.GetApplicationName(configuration);
+					// Infer application name from configuration
+					string applicationName = project.GetApplicationName (configuration);
 		
-		            // Create the bundle maker
-		            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
+					// Create the bundle maker
+					BundleMaker maker = new BundleMaker (applicationName, conf.OutputDirectory);
 		
-		            // Info.plist
-		            if (!File.Exists(Path.Combine(maker.ContentsDirectory, "Info.plist")))
-		            {
-		                return true;
-		            }
+					// Info.plist
+					if (!File.Exists (Path.Combine (maker.ContentsDirectory, Constants.INFO_PLIST))) {
+						return true;
+					}
 		
-		            // Runtime executable
-		            if (!File.Exists(maker.Runtime))
-		            {
-		                return true;
-		            }
+					// Runtime executable
+					if (!File.Exists (maker.Runtime)) {
+						return true;
+					}
 		
-		            // The IB files
-		            if (project.GetIBFiles(BuildHelper.InterfaceDefinition, maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
-		            {
-		                return true;
-		            }
+					// The IB files
+					if (project.GetIBFiles (Constants.InterfaceDefinition, maker.ResourcesFolder).Where (p => p.NeedsBuilding).Any ()) {
+						return true;
+					}
 		
-		            // The IB files
-		            if (project.GetIBFiles(BuildHelper.EmbeddedInterfaceDefinition, null).Where(p => p.NeedsBuilding).Any())
-		            {
-		                return true;
-		            }
+					// The IB files
+					if (project.GetIBFiles (Constants.EmbeddedInterfaceDefinition, null).Where (p => p.NeedsBuilding).Any ()) {
+						return true;
+					}
 		
-		            // The output files (output assembly and references)
-		            if (project.GetOutputFiles(configuration, maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
-		            {
-		                return true;
-		            }
+					// The output files (output assembly and references)
+					if (project.GetOutputFiles (configuration, maker.ResourcesFolder).Where (p => p.NeedsBuilding).Any ()) {
+						return true;
+					}
 		
-		            // The content files (file marked as content)
-		            if (project.GetContentFiles(configuration, maker.ResourcesFolder).Where(p => p.NeedsBuilding).Any())
-		            {
-		                return true;
-		            }
+					// The content files (file marked as content)
+					if (project.GetContentFiles (configuration, maker.ResourcesFolder).Where (p => p.NeedsBuilding).Any ()) {
+						return true;
+					}
 				}
 				break;
-				case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				{
 					// Do nothing
 				}
 				break;
-				case MonobjcApplicationType.CocoaLibrary:
+			case MonobjcProjectType.CocoaLibrary:
 				{
-		            // The IB files
-		            if (project.GetIBFiles(BuildHelper.EmbeddedInterfaceDefinition, null).Where(p => p.NeedsBuilding).Any())
-		            {
-		                return true;
-		            }
+					// The IB files
+					if (project.GetIBFiles (Constants.EmbeddedInterfaceDefinition, null).Where (p => p.NeedsBuilding).Any ()) {
+						return true;
+					}
 				}
 				break;
-				default:
-					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
+			default:
+				throw new NotSupportedException ("Unsupported application type " + project.ApplicationType);
 			}
 			
-            return false;
-        }
+			return false;
+		}
 
-        /// <summary>
-        ///   Cleans the specified solution item.
-        /// </summary>
-        /// <param name = "monitor">The monitor.</param>
-        /// <param name = "item">The item.</param>
-        /// <param name = "configuration">The configuration.</param>
-        protected override void Clean(IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
-        {
+		/// <summary>
+		///   Cleans the specified solution item.
+		/// </summary>
+		/// <param name = "monitor">The monitor.</param>
+		/// <param name = "item">The item.</param>
+		/// <param name = "configuration">The configuration.</param>
+		protected override void Clean (IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
+		{
 			// Call base implementation
-            base.Clean(monitor, item, configuration);
+			base.Clean (monitor, item, configuration);
 
 			// Balk if the project is not a Monobjc one
-            MonobjcProject project = item as MonobjcProject;
-            if (project == null)
-            {
-                return;
-            }
-			
-			// Call specific implementation
-			switch(project.ApplicationType)
-			{
-				case MonobjcApplicationType.CocoaApplication:
-				{
-		            MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
-		
-		            // Infer application name from configuration
-		            string applicationName = project.GetApplicationName(configuration);
-		
-		            // Create the bundle maker
-		            BundleMaker maker = new BundleMaker(applicationName, conf.OutputDirectory);
-		
-		            // Remove the application bundle
-		            Directory.Delete(maker.ApplicationDirectory, true);
-				}
-				break;
-				case MonobjcApplicationType.ConsoleApplication:
-				{
-					// Do nothing
-				}
-				break;
-				case MonobjcApplicationType.CocoaLibrary:
-				{
-					// Do nothing
-				}
-				break;
-				default:
-					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
-			}
-        }
-		
-        /// <summary>
-        /// Performs the pre-build for a Monobjc project.
-        /// </summary>
-        /// <param name = "result">The build result.</param>
-        /// <param name = "monitor">The monitor.</param>
-        /// <param name = "item">The item.</param>
-        /// <param name = "configuration">The configuration.</param>
-		private void PreBuild(BuildResult result, IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration) {
-            MonobjcProject project = item as MonobjcProject;
+			MonobjcProject project = item as MonobjcProject;
 			if (project == null) {
 				return;
 			}
 			
-			switch(project.ApplicationType)
-			{
-				case MonobjcApplicationType.CocoaApplication:
+			// Call specific implementation
+			switch (project.ApplicationType) {
+			case MonobjcProjectType.CocoaApplication:
 				{
-					BuildHelper.EmbedXIBFiles(monitor, project, result);
+					MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)project.GetConfiguration (configuration);
+		
+					// Infer application name from configuration
+					string applicationName = project.GetApplicationName (configuration);
+		
+					// Create the bundle maker
+					BundleMaker maker = new BundleMaker (applicationName, conf.OutputDirectory);
+		
+					// Remove the application bundle
+					Directory.Delete (maker.ApplicationDirectory, true);
 				}
 				break;
-				case MonobjcApplicationType.ConsoleApplication:
+			case MonobjcProjectType.ConsoleApplication:
 				{
 					// Do nothing
 				}
 				break;
-				case MonobjcApplicationType.CocoaLibrary:
+			case MonobjcProjectType.CocoaLibrary:
 				{
-					BuildHelper.EmbedXIBFiles(monitor, project, result);
+					// Do nothing
 				}
 				break;
-				default:
-					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
+			default:
+				throw new NotSupportedException ("Unsupported application type " + project.ApplicationType);
 			}
 		}
 		
-        /// <summary>
-        /// Performs the pre-build for a Monobjc project.
-        /// </summary>
-        /// <param name = "result">The build result.</param>
-        /// <param name = "monitor">The monitor.</param>
-        /// <param name = "item">The item.</param>
-        /// <param name = "configuration">The configuration.</param>
-		private void PostBuild(BuildResult result, IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration) {
-            MonobjcProject project = item as MonobjcProject;
+		/// <summary>
+		/// Performs the pre-build for a Monobjc project.
+		/// </summary>
+		/// <param name = "result">The build result.</param>
+		/// <param name = "monitor">The monitor.</param>
+		/// <param name = "item">The item.</param>
+		/// <param name = "configuration">The configuration.</param>
+		private void PreBuild (BuildResult result, IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
+		{
+			MonobjcProject project = item as MonobjcProject;
+			if (project == null) {
+				return;
+			}
+			
+			switch (project.ApplicationType) {
+			case MonobjcProjectType.CocoaApplication:
+				{
+					BuildHelper.EmbedXIBFiles (monitor, project, result);
+				}
+				break;
+			case MonobjcProjectType.ConsoleApplication:
+				{
+					// Do nothing
+				}
+				break;
+			case MonobjcProjectType.CocoaLibrary:
+				{
+					BuildHelper.EmbedXIBFiles (monitor, project, result);
+				}
+				break;
+			default:
+				throw new NotSupportedException ("Unsupported application type " + project.ApplicationType);
+			}
+		}
+		
+		/// <summary>
+		/// Performs the pre-build for a Monobjc project.
+		/// </summary>
+		/// <param name = "result">The build result.</param>
+		/// <param name = "monitor">The monitor.</param>
+		/// <param name = "item">The item.</param>
+		/// <param name = "configuration">The configuration.</param>
+		private void PostBuild (BuildResult result, IProgressMonitor monitor, SolutionEntityItem item, ConfigurationSelector configuration)
+		{
+			MonobjcProject project = item as MonobjcProject;
 			if (project == null) {
 				return;
 			}
 
-			switch(project.ApplicationType)
-			{
-				case MonobjcApplicationType.CocoaApplication:
+			switch (project.ApplicationType) {
+			case MonobjcProjectType.CocoaApplication:
 				{
-    		        MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration) project.GetConfiguration(configuration);
-					BundleGenerator.Generate(monitor, result, project, configuration, conf.OutputDirectory, false);
+					MonobjcProjectConfiguration conf = (MonobjcProjectConfiguration)project.GetConfiguration (configuration);
+					BundleGenerator.Generate (monitor, result, project, configuration, conf.OutputDirectory, false);
 				}
 				break;
-				case MonobjcApplicationType.ConsoleApplication:
-				{
-					// Do nothing
-				}
-				break;
-				case MonobjcApplicationType.CocoaLibrary:
+			case MonobjcProjectType.ConsoleApplication:
 				{
 					// Do nothing
 				}
 				break;
-				default:
-					throw new NotSupportedException("Unsupported application type " + project.ApplicationType);
+			case MonobjcProjectType.CocoaLibrary:
+				{
+					// Do nothing
+				}
+				break;
+			default:
+				throw new NotSupportedException ("Unsupported application type " + project.ApplicationType);
 			}
 		}
-    }
+	}
 }

@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
-#if MD_2_6 || MD_2_8
 using System;
 using MonoDevelop.Core;
 using MonoDevelop.Ide.Gui;
@@ -28,7 +27,7 @@ namespace MonoDevelop.Monobjc
 	{
 		public DesktopApplication GetApplication (FilePath fileName, string mimeType, Project ownerProject)
 		{
-			return new DeveloperToolsDesktopApplication((MonobjcProject) ownerProject);
+			return new DeveloperToolsDesktopApplication ((MonobjcProject)ownerProject);
 		}
 		
 		public bool CanHandle (FilePath fileName, string mimeType, Project ownerProject)
@@ -36,16 +35,14 @@ namespace MonoDevelop.Monobjc
 			if (ownerProject == null || !(ownerProject is MonobjcProject)) {
 				return false;
 			}
-			if ("application/vnd.apple-interface-builder".Equals(mimeType)) {
+			if (Constants.IB_MIME_TYPE.Equals (mimeType)) {
 				return true;
 			}
-			return !fileName.IsNullOrEmpty && fileName.HasExtension("xib");
+			return !fileName.IsNullOrEmpty && fileName.HasExtension (Constants.DOT_XIB);
 		}
 
-		public bool CanUseAsDefault
-		{
+		public bool CanUseAsDefault {
 			get { return true; }
 		}
 	}
 }
-#endif

@@ -22,39 +22,39 @@ using MonoDevelop.Ide;
 
 namespace MonoDevelop.Monobjc
 {
-    /// <summary>
-    ///   A Monobjc's version of a execution handler.
-    /// </summary>
-    public class MonobjcExecutionHandler : IExecutionHandler
-    {
-        /// <summary>
-        ///   Determines whether this instance can execute the specified command.
-        /// </summary>
-        /// <param name = "command">The command.</param>
-        /// <returns>
-        ///   <c>true</c> if this instance can execute the specified command; otherwise, <c>false</c>.
-        /// </returns>
-        public bool CanExecute(ExecutionCommand command)
-        {
-            return (command is MonobjcExecutionCommand);
-        }
+	/// <summary>
+	///   A Monobjc's version of a execution handler.
+	/// </summary>
+	public class MonobjcExecutionHandler : IExecutionHandler
+	{
+		/// <summary>
+		///   Determines whether this instance can execute the specified command.
+		/// </summary>
+		/// <param name = "command">The command.</param>
+		/// <returns>
+		///   <c>true</c> if this instance can execute the specified command; otherwise, <c>false</c>.
+		/// </returns>
+		public bool CanExecute (ExecutionCommand command)
+		{
+			return (command is MonobjcExecutionCommand);
+		}
 
-        /// <summary>
-        ///   Executes the specified command.
-        /// </summary>
-        /// <param name = "command">The command.</param>
-        /// <param name = "console">The console.</param>
-        /// <returns></returns>
-        public IProcessAsyncOperation Execute(ExecutionCommand command, IConsole console)
-        {
-            MonobjcExecutionCommand executionCommand = (MonobjcExecutionCommand) command;
+		/// <summary>
+		///   Executes the specified command.
+		/// </summary>
+		/// <param name = "command">The command.</param>
+		/// <param name = "console">The console.</param>
+		/// <returns></returns>
+		public IProcessAsyncOperation Execute (ExecutionCommand command, IConsole console)
+		{
+			MonobjcExecutionCommand executionCommand = (MonobjcExecutionCommand)command;
 
-			LoggingService.LogInfo("Execute command: {0} {1}", executionCommand.CommandString, executionCommand.CommandLineParameters);
+			IDELogger.Log("Execute command: {0} {1}", executionCommand.CommandString, executionCommand.CommandLineParameters);
+
+			ProcessService service = Runtime.ProcessService;
+			IProcessAsyncOperation operation = service.StartConsoleProcess (executionCommand.CommandString, executionCommand.CommandLineParameters, null, executionCommand.EnvironmentVariables, console, null);
 			
-            ProcessService service = Runtime.ProcessService;
-            IProcessAsyncOperation operation = service.StartConsoleProcess(executionCommand.CommandString, executionCommand.CommandLineParameters, null, executionCommand.EnvironmentVariables, console, null);
-			
-            return operation;
-        }
-    }
+			return operation;
+		}
+	}
 }

@@ -19,11 +19,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Monobjc.Tools.Generators;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
 using MonoDevelop.Projects;
 using Monobjc.Tools.External;
+using Monobjc.Tools.Generators;
 using System.Reflection;
 
 namespace MonoDevelop.Monobjc.Utilities
@@ -33,10 +33,18 @@ namespace MonoDevelop.Monobjc.Utilities
 	/// </summary>
 	public static class BuildHelper
 	{
-		internal const String InterfaceDefinition = "InterfaceDefinition";
-		internal const String EmbeddedInterfaceDefinition = "EmbeddedInterfaceDefinition";
-		internal const String INFO_PLIST = "Info.plist";
-		
+		/// <summary>
+		///   Determines whether the specified filename is a source file.
+		/// </summary>
+		/// <param name = "file">The file.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is a source file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsSourceFile (ProjectFile projectFile, string sourceExtension)
+		{
+			return String.Equals(projectFile.FilePath.Extension, sourceExtension, StringComparison.InvariantCultureIgnoreCase);
+		}
+
 		/// <summary>
 		///   Determines whether the specified filename is a resource file.
 		/// </summary>
@@ -44,12 +52,12 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <returns>
 		///   <c>true</c> if the specified filename is a resource file; otherwise, <c>false</c>.
 		/// </returns>
-		public static bool IsResourceFile(ProjectFile file)
+		public static bool IsResourceFile (ProjectFile file)
 		{
 			return (BuildHelper.IsInfoPlist (file) || 
-			        BuildHelper.IsNormalXIBFile (file) ||
-			        BuildHelper.IsEmbeddedXIBFile (file) ||
-			        BuildHelper.IsStringsFile (file));
+				BuildHelper.IsNormalXIBFile (file) ||
+				BuildHelper.IsEmbeddedXIBFile (file) ||
+				BuildHelper.IsStringsFile (file));
 		}
 		
 		/// <summary>
@@ -62,7 +70,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsNIBFile (String filename)
 		{
 			String extension = Path.GetExtension (filename);
-			return String.Equals (".nib", extension);
+			return String.Equals (Constants.DOT_NIB, extension);
 		}
 		
 		/// <summary>
@@ -75,7 +83,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsXIBFile (String filename)
 		{
 			String extension = Path.GetExtension (filename);
-			return String.Equals (".xib", extension);
+			return String.Equals (Constants.DOT_XIB, extension);
 		}
 		
 		/// <summary>
@@ -88,7 +96,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsStringsFile (String filename)
 		{
 			String extension = Path.GetExtension (filename);
-			return String.Equals (".strings", extension);
+			return String.Equals (Constants.DOT_STRINGS, extension);
 		}
 		
 		/// <summary>
@@ -98,7 +106,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <returns>
 		///   <c>true</c> if the specified filename is an Info.plist file; otherwise, <c>false</c>.
 		/// </returns>
-		public static bool IsInfoPlist(ProjectFile file)
+		public static bool IsInfoPlist (ProjectFile file)
 		{
 			return ("Info.plist".Equals (file.FilePath.FileName));
 		}
@@ -113,7 +121,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsXIBFile (ProjectFile file)
 		{
 			return (BuildHelper.IsNormalXIBFile (file) ||
-			        BuildHelper.IsEmbeddedXIBFile (file));
+				BuildHelper.IsEmbeddedXIBFile (file));
 		}
 		
 		/// <summary>
@@ -126,7 +134,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsNormalXIBFile (ProjectFile file)
 		{
 			String extension = file.FilePath.Extension;
-			return String.Equals (".xib", extension) && (file.BuildAction == InterfaceDefinition);
+			return String.Equals (Constants.DOT_XIB, extension) && (file.BuildAction == Constants.InterfaceDefinition);
 		}
 		
 		/// <summary>
@@ -139,9 +147,22 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsEmbeddedXIBFile (ProjectFile file)
 		{
 			String extension = file.FilePath.Extension;
-			return String.Equals (".xib", extension) && (file.BuildAction == EmbeddedInterfaceDefinition);
+			return String.Equals (Constants.DOT_XIB, extension) && (file.BuildAction == Constants.EmbeddedInterfaceDefinition);
 		}
 
+		/// <summary>
+		///   Determines whether the specified filename is a NIB file.
+		/// </summary>
+		/// <param name = "file">The file.</param>
+		/// <returns>
+		///   <c>true</c> if the specified filename is a NIB file; otherwise, <c>false</c>.
+		/// </returns>
+		public static bool IsNIBFile (ProjectFile file)
+		{
+			String extension = file.FilePath.Extension;
+			return String.Equals (Constants.DOT_NIB, extension) && (file.BuildAction == BuildAction.EmbeddedResource);
+		}
+		
 		/// <summary>
 		///   Determines whether the specified filename is a strings file.
 		/// </summary>
@@ -152,33 +173,9 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static bool IsStringsFile (ProjectFile file)
 		{
 			String extension = file.FilePath.Extension;
-			return String.Equals (".strings", extension) && (file.BuildAction == BuildAction.Content);
+			return String.Equals (Constants.DOT_STRINGS, extension) && (file.BuildAction == BuildAction.Content);
 		}
-		
-		public static bool IsInDevelopmentRegion(MonobjcProject project, ProjectFile file)
-		{
-			String developmentRegion = project.DevelopmentRegion;
-#if DEBUG
-			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 1 " + developmentRegion);
-#endif
-			FilePath baseDirectory = project.BaseDirectory;
-			FilePath localizedFolder = baseDirectory.Combine(developmentRegion + ".lproj");
-			FilePath ibFile = file.FilePath;
-#if DEBUG
-			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 2 " + baseDirectory);
-			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 3 " + localizedFolder);
-			LoggingService.LogInfo("BuildHelper::IsInDevelopmentRegion 4 " + ibFile + " " + ibFile.ParentDirectory);
-#endif
-			if (ibFile.ParentDirectory.Equals(baseDirectory)) {
-				return true;
-			}
-			if (ibFile.ParentDirectory.Equals(localizedFolder)) {
-				return true;
-			}
-			
-			return false;
-		}
-		
+
 		/// <summary>
 		///   Determines whether the specified versions are compatible.
 		/// </summary>
@@ -226,11 +223,11 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static void CompileXIBFiles (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker, BuildResult result)
 		{
 			XibCompiler xibCompiler = new XibCompiler ();
-			IEnumerable<FilePair> files = project.GetIBFiles (InterfaceDefinition, maker.ResourcesFolder);
+			IEnumerable<FilePair> files = project.GetIBFiles (Constants.InterfaceDefinition, maker.ResourcesFolder);
 			if (files == null) {
 				return;
 			}
-			List<FilePair> pairs = new List<FilePair>(files);
+			List<FilePair> pairs = new List<FilePair> (files);
 			monitor.BeginTask (GettextCatalog.GetString ("Compiling XIB files..."), files.Count ());
 			foreach (FilePair pair in pairs) {
 				monitor.Log.WriteLine (GettextCatalog.GetString ("Compiling {0}", pair.Source.ToRelative (project.BaseDirectory)));
@@ -251,7 +248,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static void EmbedXIBFiles (IProgressMonitor monitor, MonobjcProject project, BuildResult result)
 		{
 			XibCompiler xibCompiler = new XibCompiler ();
-			IEnumerable<FilePair> files = project.GetIBFiles (EmbeddedInterfaceDefinition, null);
+			IEnumerable<FilePair> files = project.GetIBFiles (Constants.EmbeddedInterfaceDefinition, null);
 			if (files == null) {
 				return;
 			}
@@ -259,13 +256,13 @@ namespace MonoDevelop.Monobjc.Utilities
 			monitor.BeginTask (GettextCatalog.GetString ("Embed XIB files..."), files.Count ());
 			foreach (FilePair pair in files) {
 				// If the destination file is a place-holder, change its dates
-				FileInfo sourceInfo = new FileInfo(pair.Source);
-				FileInfo destInfo = new FileInfo(pair.Destination);
+				FileInfo sourceInfo = new FileInfo (pair.Source);
+				FileInfo destInfo = new FileInfo (pair.Destination);
 				if (destInfo.Length == 0) {
-					DateTime dateTime = sourceInfo.CreationTime.Subtract(new TimeSpan(0, 0, 1));
-					File.SetCreationTime(pair.Destination, dateTime);
-					File.SetLastAccessTime(pair.Destination, dateTime);
-					File.SetLastWriteTime(pair.Destination, dateTime);
+					DateTime dateTime = sourceInfo.CreationTime.Subtract (new TimeSpan (0, 0, 1));
+					File.SetCreationTime (pair.Destination, dateTime);
+					File.SetLastAccessTime (pair.Destination, dateTime);
+					File.SetLastWriteTime (pair.Destination, dateTime);
 				}
 				
 				FilePath relativeFile = pair.Source.ToRelative (project.BaseDirectory);
@@ -331,7 +328,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <param name="maker">The maker.</param>
 		public static void CopyMonobjcAssemblies (IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration, BundleMaker maker)
 		{
-			IEnumerable<String> assemblies = project.ProjectMonobjcAssemblies.Select (a => a.GetReferencedFileNames (configuration)[0]);
+			IEnumerable<String> assemblies = project.ProjectMonobjcAssemblies.Select (a => a.GetReferencedFileNames (configuration) [0]);
 			monitor.BeginTask (GettextCatalog.GetString ("Copying Monobjc assemblies..."), assemblies.Count ());
 			foreach (String assembly in assemblies) {
 				String filename = Path.GetFileName (assembly);
@@ -356,25 +353,66 @@ namespace MonoDevelop.Monobjc.Utilities
 			InfoPListGenerator pListGenerator = new InfoPListGenerator ();
 			
 			// If an Info.plist exists in the project then use it
-			FilePath infoPListFile = project.BaseDirectory.Combine ("Info.plist");
+			FilePath infoPListFile = project.BaseDirectory.Combine (Constants.INFO_PLIST);
 			if (File.Exists (infoPListFile)) {
 				pListGenerator.Content = File.ReadAllText (infoPListFile);
 			}
 
-            String mainAssembly = project.GetOutputFileName(configuration);
-			Assembly assembly = Assembly.ReflectionOnlyLoadFrom(mainAssembly);
-			AssemblyName assemblyName = assembly.GetName();
-			
+			String mainAssembly = project.GetOutputFileName (configuration);
+			Assembly assembly = Assembly.ReflectionOnlyLoadFrom (mainAssembly);
+			AssemblyName assemblyName = assembly.GetName ();
+
+			// TODO: Review to use new parameters
 			pListGenerator.DevelopmentRegion = project.DevelopmentRegion;
 			pListGenerator.ApplicationName = assemblyName.Name;
-			pListGenerator.Identifier = project.DefaultNamespace;
-			pListGenerator.Version = assemblyName.Version.ToString();
+			pListGenerator.Identifier = project.BundleId;
+			pListGenerator.Version = project.BundleVersion;
 			pListGenerator.Icon = project.BundleIcon.IsNullOrEmpty ? null : project.BundleIcon.FileNameWithoutExtension;
 			pListGenerator.MainNibFile = project.MainNibFile.IsNullOrEmpty ? null : project.MainNibFile.FileNameWithoutExtension;
 			pListGenerator.TargetOSVersion = project.TargetOSVersion;
 			pListGenerator.PrincipalClass = "NSApplication";
-			pListGenerator.WriteTo (Path.Combine (maker.ContentsDirectory, "Info.plist"));
+			pListGenerator.WriteTo (Path.Combine (maker.ContentsDirectory, Constants.INFO_PLIST));
 			
+			monitor.EndTask ();
+		}
+
+		/// <summary>
+		/// Combines the artwork.
+		/// </summary>
+		public static void CombineArtwork (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		{
+			if (!project.CombineArtwork) {
+				return;
+			}
+
+			monitor.BeginTask (GettextCatalog.GetString ("Combining artwork..."), 0);
+			using (StringWriter outputWriter = new StringWriter()) {
+				using (StringWriter errorWriter = new StringWriter()) {
+					ArtworkCombiner combiner = new ArtworkCombiner();
+					combiner.Combine(maker.ResourcesFolder, outputWriter, errorWriter);
+					LoggingService.LogInfo ("Combiner returns: " + outputWriter.ToString ());
+				}
+			}
+			monitor.EndTask ();
+		}
+
+		/// <summary>
+		/// Combines the artwork.
+		/// </summary>
+		public static void EncryptArtwork (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		{
+			if (!project.EncryptArtwork) {
+				return;
+			}
+			
+			monitor.BeginTask (GettextCatalog.GetString ("Encrypting artwork..."), 0);
+			using (StringWriter outputWriter = new StringWriter()) {
+				using (StringWriter errorWriter = new StringWriter()) {
+					ArtworkEncrypter encrypter = new ArtworkEncrypter();
+					encrypter.Encrypt(maker.ResourcesFolder, project.EncryptArtworkSeed);
+					LoggingService.LogInfo ("Combiner returns: " + outputWriter.ToString ());
+				}
+			}
 			monitor.EndTask ();
 		}
 		
@@ -384,13 +422,24 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <param name = 'monitor'>The progress monitor.</param>
 		/// <param name = 'project'>The project.</param>
 		/// <param name = 'maker'>The bundle maker.</param>
-		public static void SignBundle(IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		public static void SignBundle (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
 		{
 			if (project.SigningIdentity != null) {
-	            monitor.BeginTask(GettextCatalog.GetString("Signing bundle..."), 0);
-	            String output = CodeSign.SignApplication(maker.ApplicationDirectory, project.SigningIdentity);
-	            LoggingService.LogInfo("CodeSign returns: " + output);
-	            monitor.EndTask();
+				monitor.BeginTask (GettextCatalog.GetString ("Signing bundle..."), 0);
+
+				using (StringWriter outputWriter = new StringWriter()) {
+					using (StringWriter errorWriter = new StringWriter()) {
+						ProjectFile file = project.GetProjectFile("App.entitlements");
+						if (project.UseEntitlements && file != null) {
+							CodeSign.SignApplication (maker.ApplicationDirectory, project.SigningIdentity, file.FilePath, outputWriter, errorWriter);
+						} else {
+							CodeSign.SignApplication (maker.ApplicationDirectory, project.SigningIdentity, outputWriter, errorWriter);
+						}
+						LoggingService.LogInfo ("CodeSign returns: " + outputWriter.ToString ());
+					}
+				}
+
+				monitor.EndTask ();
 			}
 		}
 		
@@ -400,17 +449,23 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <param name = 'monitor'>The progress monitor.</param>
 		/// <param name = 'project'>The project.</param>
 		/// <param name = 'maker'>The bundle maker.</param>
-		public static void SignNativeBinaries(IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		public static void SignNativeBinaries (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
 		{
 			if (project.SigningIdentity != null) {
-				String[] files = Directory.GetFiles(maker.MacOSDirectory, "*.dylib");
-	            monitor.BeginTask(GettextCatalog.GetString("Signing native libraries..."), files.Length);
-				foreach(String file in files) {
-		            String output = CodeSign.SignApplication(file, project.SigningIdentity);
-		            LoggingService.LogInfo("CodeSign returns: " + output);
+				String[] files = Directory.GetFiles (maker.MacOSDirectory, "*.dylib");
+				monitor.BeginTask (GettextCatalog.GetString ("Signing native libraries..."), files.Length);
+
+				foreach (String file in files) {
+					using (StringWriter outputWriter = new StringWriter()) {
+						using (StringWriter errorWriter = new StringWriter()) {
+							CodeSign.SignApplication (file, project.SigningIdentity, outputWriter, errorWriter);
+							LoggingService.LogInfo ("CodeSign returns: " + outputWriter.ToString ());
+						}
+					}
 					monitor.Step (1);
 				}
-	            monitor.EndTask();
+
+				monitor.EndTask ();
 			}
 		}
 		
@@ -420,15 +475,21 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <param name = 'monitor'>The progress monitor.</param>
 		/// <param name = 'project'>The project.</param>
 		/// <param name = 'maker'>The bundle maker.</param>
-		public static void ArchiveBundle(IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		public static void ArchiveBundle (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
 		{
 			if (project.Archive && project.ArchiveIdentity != null) {
-	            FilePath definitionFile = project.BaseDirectory.Combine("Definition.plist");
-	            String definitionFilename = File.Exists(definitionFile) ? definitionFile.ToString() : null;
-	            monitor.BeginTask(GettextCatalog.GetString("Signing archive..."), 0);
-	            String output = ProductBuild.ArchiveApplication(maker.ApplicationDirectory, project.ArchiveIdentity, definitionFilename);
-	            LoggingService.LogInfo("ProductBuild returns: " + output);
-	            monitor.EndTask();
+				FilePath definitionFile = project.BaseDirectory.Combine ("Definition.plist");
+				String definitionFilename = File.Exists (definitionFile) ? definitionFile.ToString () : null;
+				monitor.BeginTask (GettextCatalog.GetString ("Signing archive..."), 0);
+
+				using (StringWriter outputWriter = new StringWriter()) {
+					using (StringWriter errorWriter = new StringWriter()) {
+						ProductBuild.ArchiveApplication (maker.ApplicationDirectory, project.ArchiveIdentity, definitionFilename, outputWriter, errorWriter);
+						LoggingService.LogInfo ("ProductBuild returns: " + outputWriter.ToString ());
+					}
+				}
+
+				monitor.EndTask ();
 			}
 		}
 	}

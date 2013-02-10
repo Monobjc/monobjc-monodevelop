@@ -30,12 +30,32 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 	public interface ICodeBehindGenerator
 	{
 		/// <summary>
+		/// Gets a value indicating whether this generator supports partial classes.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if support partial classes; otherwise, <c>false</c>.
+		/// </value>
+		bool SupportPartialClasses {
+			get;
+		}
+		
+		/// <summary>
+		/// Gets a value indicating whether this generator support partial methods.
+		/// </summary>
+		/// <value>
+		/// <c>true</c> if support partial methods; otherwise, <c>false</c>.
+		/// </value>
+		bool SupportPartialMethods {
+			get;
+		}
+		
+		/// <summary>
 		///   Generates the design code for framework loading.
 		/// </summary>
 		/// <param name = "resolver">The type resolver.</param>
 		/// <param name = "frameworks">The frameworks.</param>
 		/// <returns>The path to the designer file.</returns>
-		FilePath GenerateFrameworkLoadingCode (ProjectResolver resolver, String[] frameworks);
+		FilePath GenerateFrameworkLoadingCode (ProjectTypeCache cache, String[] frameworks);
 
 		/// <summary>
 		///   Generates the design code for an Interface Builder file.
@@ -45,6 +65,6 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <param name = "className">Name of the class.</param>
 		/// <param name = "enumerable">The class descriptions.</param>
 		/// <returns>The path to the designer file.</returns>
-		FilePath GenerateCodeBehindCode (ProjectResolver resolver, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable);
+		FilePath GenerateCodeBehindCode (ProjectTypeCache cache, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable);
 	}
 }

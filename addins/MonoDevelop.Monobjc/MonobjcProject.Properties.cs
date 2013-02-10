@@ -18,269 +18,40 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
 using Monobjc.Tools.Utilities;
 using MonoDevelop.Core;
 using MonoDevelop.Core.Assemblies;
-using MonoDevelop.Core.Serialization;
-using MonoDevelop.Monobjc.Tracking;
 using MonoDevelop.Monobjc.Utilities;
 using MonoDevelop.Projects;
+using MonoDevelop.Monobjc.Tracking;
 
 namespace MonoDevelop.Monobjc
 {
 	public partial class MonobjcProject
 	{
-		private IEnumerable<SystemAssembly> monobjcAssemblies;
-		private MonobjcApplicationType applicationType;
+		private static IDictionary<Version, MacOSVersion> versionMap = new Dictionary<Version, MacOSVersion> () {
+			{ new Version(10, 5, 0, 0), MacOSVersion.MacOS105 },
+			{ new Version(10, 6, 0, 0), MacOSVersion.MacOS106 },
+			{ new Version(10, 7, 0, 0), MacOSVersion.MacOS107 },
+			{ new Version(10, 8, 0, 0), MacOSVersion.MacOS108 },
+		};
+
+		internal CodeBehindHandler CodeBehindHandler { get; private set; }
+
+		internal DependencyHandler DependencyHandler { get; private set; }
 		
-		private String developmentRegion;
-		private FilePath mainNibFile;
-		private FilePath bundleIcon;
-		private String osFrameworks;
-		private MacOSVersion targetOSVersion;
+		internal EmbeddingHandler EmbeddingHandler { get; private set; }
 		
-		private MacOSArchitecture targetOSArch;
-		private String signingIdentity;
-		private bool archive;
-		private String archiveIdentity;
-		
-		private String embeddedFrameworks;
-		private String additionalAssemblies;
-		private String excludedAssemblies;
-		private String additionalLibraries;
-		
-		/// <summary>
-		///   Gets or sets the application type.
-		/// </summary>
-		/// <value>The application type.</value>
-		[ItemProperty("MacOSApplicationType")]
-		public MonobjcApplicationType ApplicationType
-		{
-			get { return this.applicationType; }
-			set
-			{
-				this.applicationType = value;
-				this.NotifyModified("ApplicationType");
-			}
+		internal MigrationHandler MigrationHandler { get; private set; }
+
+		internal ResolverHandler ResolverHandler { get; private set; }
+
+		internal XcodeHandler XcodeHandler { get; private set; }
+
+		internal FilePath XcodeProjectFolder {
+			get { return this.XcodeHandler.XcodeProject.ProjectFolder; }
 		}
-
-		/// <summary>
-		/// Gets or sets the development region.
-		/// </summary>
-		/// <value>The development region.</value>
-		[ItemProperty("MacOSDevelopmentRegion", DefaultValue = "en")]
-		public String DevelopmentRegion
-		{
-			get { return this.developmentRegion; }
-			set
-			{
-				if (String.IsNullOrEmpty(value)) {
-					return;
-				}
-				this.developmentRegion = value;
-				this.NotifyModified("MacOSDevelopmentRegion");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the main IB file.
-		/// </summary>
-		/// <value>The main nib file.</value>
-		[ProjectPathItemProperty("MainNibFile")]
-		public FilePath MainNibFile
-		{
-			get { return this.mainNibFile; }
-			set
-			{
-				this.mainNibFile = value;
-				this.NotifyModified("MainNibFile");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the bundle icon.
-		/// </summary>
-		/// <value>The bundle icon.</value>
-		[ProjectPathItemProperty("BundleIcon")]
-		public FilePath BundleIcon
-		{
-			get { return this.bundleIcon; }
-			set
-			{
-				this.bundleIcon = value;
-				this.NotifyModified("BundleIcon");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the OS frameworks.
-		/// </summary>
-		/// <value>The OS frameworks.</value>
-		[ItemProperty("MacOSFrameworks")]
-		public string OSFrameworks
-		{
-			get { return this.osFrameworks; }
-			set
-			{
-				this.osFrameworks = value;
-				this.NotifyModified("MacOSFrameworks");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the target OS version.
-		/// </summary>
-		/// <value>The target OS version.</value>
-		[ItemProperty("MacOSVersion")]
-		public MacOSVersion TargetOSVersion
-		{
-			get { return this.targetOSVersion; }
-			set
-			{
-				this.targetOSVersion = value;
-				this.NotifyModified("MacOSVersion");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the target OS arch.
-		/// </summary>
-		/// <value>The target OS arch.</value>
-		[ItemProperty("MacOSArch")]
-		public MacOSArchitecture TargetOSArch
-		{
-			get { return this.targetOSArch; }
-			set
-			{
-				this.targetOSArch = value;
-				this.NotifyModified("MacOSArch");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the signing identity.
-		/// </summary>
-		/// <value>The signing identity.</value>
-		[ItemProperty("SigningIdentity")]
-		public String SigningIdentity
-		{
-			get { return this.signingIdentity; }
-			set
-			{
-				this.signingIdentity = value;
-				this.NotifyModified("SigningIdentity");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the archive.
-		/// </summary>
-		/// <value>The archive.</value>
-		[ItemProperty("Archive")]
-		public bool Archive
-		{
-			get { return this.archive; }
-			set
-			{
-				this.archive = value;
-				this.NotifyModified("Archive");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the archive identity.
-		/// </summary>
-		/// <value>The archive identity.</value>
-		[ItemProperty("ArchiveIdentity")]
-		public String ArchiveIdentity
-		{
-			get { return this.archiveIdentity; }
-			set
-			{
-				this.archiveIdentity = value;
-				this.NotifyModified("ArchiveIdentity");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the embedded frameworks.
-		/// </summary>
-		/// <value>The embedded frameworks.</value>
-		[ItemProperty("EmbeddedFrameworks")]
-		public String EmbeddedFrameworks
-		{
-			get { return this.embeddedFrameworks; }
-			set
-			{
-				this.embeddedFrameworks = value;
-				this.NotifyModified("EmbeddedFrameworks");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the additional assemblies.
-		/// </summary>
-		/// <value>The additional assemblies.</value>
-		[ItemProperty("AdditionalAssemblies")]
-		public String AdditionalAssemblies
-		{
-			get { return this.additionalAssemblies; }
-			set
-			{
-				this.additionalAssemblies = value;
-				this.NotifyModified("AdditionalAssemblies");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the excluded assemblies.
-		/// </summary>
-		/// <value>The excluded assemblies.</value>
-		[ItemProperty("ExcludedAssemblies")]
-		public String ExcludedAssemblies
-		{
-			get { return this.excludedAssemblies; }
-			set
-			{
-				this.excludedAssemblies = value;
-				this.NotifyModified("ExcludedAssemblies");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the additional libraries.
-		/// </summary>
-		/// <value>The additional libraries.</value>
-		[ItemProperty("AdditionalLibraries")]
-		public String AdditionalLibraries
-		{
-			get { return this.additionalLibraries; }
-			set
-			{
-				this.additionalLibraries = value;
-				this.NotifyModified("AdditionalLibraries");
-			}
-		}
-
-		/// <summary>
-		///   Gets or sets the code behind tracker.
-		/// </summary>
-		internal CodeBehindProjectTracker CodeBehindTracker { get; private set; }
-		
-		/// <summary>
-		///   Gets or sets the dependency tracker.
-		/// </summary>
-		internal DependencyProjectTracker DependencyTracker { get; private set; }
-		
-		/// <summary>
-		///   Gets or sets the embedding tracker.
-		/// </summary>
-		internal EmbeddingProjectTracker EmbeddingTracker { get; private set; }
-
-		/// <summary>
-		///   Gets or sets the xcode tracker.
-		/// </summary>
-		internal XcodeProjectTracker XcodeTracker { get; private set; }
 
 		/// <summary>
 		///   Gets the project Monobjc assemblies.
@@ -293,7 +64,89 @@ namespace MonoDevelop.Monobjc
 		///   Returns all the registered Monobjc assemblies.
 		/// </summary>
 		internal IEnumerable<SystemAssembly> EveryMonobjcAssemblies {
-			get { return this.monobjcAssemblies ?? (this.monobjcAssemblies = this.AssemblyContext.GetAssemblies ().Where (BuildHelper.IsMonobjcReference)); }
+			get { return this.AssemblyContext.GetAssemblies ().Where (BuildHelper.IsMonobjcReference); }
+		}
+
+		internal IEnumerable<SystemAssembly> GetMonobjcAssemblies(MacOSVersion version) {
+			// If there is no assemblies, then skip the retrieval
+			IEnumerable<SystemAssembly> assemblies = this.EveryMonobjcAssemblies;
+			if (assemblies.Count() == 0) {
+				return assemblies;
+			}
+
+			// Get the min/max version
+			Version minVersion = new Version(assemblies.OrderBy(sa => sa.Version).First().Version);
+			Version maxVersion = new Version(assemblies.OrderBy(sa => sa.Version).Last().Version);
+
+			IDELogger.Log("MonobjcProject::GetMonobjcAssemblies -- Found minVersion: {0}", minVersion);
+			IDELogger.Log("MonobjcProject::GetMonobjcAssemblies -- Found maxVersion: {0}", maxVersion);
+
+			// Clamp the version
+			MacOSVersion min = versionMap[minVersion];
+			MacOSVersion max = versionMap[maxVersion];
+			if (version < min) {
+				version = min;
+			}
+			if (version > max) {
+				version = max;
+			}
+
+			// Only return assemblies that have the selected version
+			Version selectedVersion = versionMap.First(kvp => kvp.Value == version).Key;
+			return assemblies.Where(sa => sa.Version == selectedVersion.ToString());
+		}
+
+		/// <summary>
+		/// Initialize this instance.
+		/// </summary>
+		private void Initialize ()
+		{
+			IDELogger.Log ("MonobjcProject::Initialize");
+
+			this.ApplicationType = this.ApplicationType == MonobjcProjectType.None ? MonobjcProjectType.CocoaApplication : this.ApplicationType;
+			this.ApplicationCategory = this.ApplicationCategory ?? String.Empty;
+			this.BundleId = this.BundleId ?? "net.monobjc.application.Test";
+			this.BundleVersion = this.BundleVersion ?? "1.0";
+			this.TargetOSVersion = this.TargetOSVersion == MacOSVersion.None ? MacOSVersion.MacOS106 : this.TargetOSVersion;
+			this.SigningIdentity = this.SigningIdentity ?? String.Empty;
+			this.OSFrameworks = this.OSFrameworks ?? "Foundation;AppKit";
+
+			this.TargetOSArch = this.TargetOSArch == MacOSArchitecture.None ? MacOSArchitecture.X86 : this.TargetOSArch;
+			this.EmbeddedFrameworks = this.EmbeddedFrameworks ?? String.Empty;
+			this.AdditionalAssemblies = this.AdditionalAssemblies ?? String.Empty;
+			this.ExcludedAssemblies = this.ExcludedAssemblies ?? String.Empty;
+			this.AdditionalLibraries = this.AdditionalLibraries ?? String.Empty;
+
+			this.ArchiveIdentity = this.ArchiveIdentity ?? String.Empty;
+			
+			this.DevelopmentRegion = this.DevelopmentRegion ?? "en";
+			this.EncryptArtworkSeed = this.EncryptArtworkSeed ?? String.Empty;
+
+			// Create the handlers
+			this.CodeBehindHandler = new CodeBehindHandler (this);
+			this.DependencyHandler = new DependencyHandler (this);
+			this.EmbeddingHandler = new EmbeddingHandler (this);
+			this.MigrationHandler = new MigrationHandler (this);
+			this.ResolverHandler = new ResolverHandler (this);
+			this.XcodeHandler = new XcodeHandler (this);
+		}
+
+		private String GetNodeValue (XmlElement element, String key, String @default)
+		{
+			XmlNode node = element.SelectSingleNode (key);
+			if (node == null) {
+				return @default;
+			}
+			return node.InnerText;
+		}
+
+		private T GetNodeValue<T> (XmlElement element, String key, T @default)
+		{
+			XmlNode node = element.SelectSingleNode (key);
+			if (node == null) {
+				return @default;
+			}
+			return (T)Enum.Parse (typeof(T), node.InnerText);
 		}
 	}
 }

@@ -21,37 +21,36 @@ using MonoDevelop.Monobjc.Gui;
 
 namespace MonoDevelop.Monobjc.Commands
 {
-    /// <summary>
-    ///   Command handler for the export operation.
-    /// </summary>
-    public class ExportBundleCommandHandler : CommandHandler
-    {
-        /// <summary>
-        ///   Updates the command.
-        /// </summary>
-        /// <param name = "info">The info.</param>
-        protected override void Update(CommandInfo info)
-        {
-            MonobjcProject proj = IdeApp.ProjectOperations.CurrentSelectedProject as MonobjcProject;
-            info.Enabled = (proj != null);
-        }
+	/// <summary>
+	///   Command handler for the export operation.
+	/// </summary>
+	public class ExportBundleCommandHandler : CommandHandler
+	{
+		/// <summary>
+		///   Updates the command.
+		/// </summary>
+		/// <param name = "info">The info.</param>
+		protected override void Update (CommandInfo info)
+		{
+			MonobjcProject project = IdeApp.ProjectOperations.CurrentSelectedProject as MonobjcProject;
+			info.Enabled = (project != null);
+		}
 
-        /// <summary>
-        ///   Runs the specified command.
-        /// </summary>
-        /// <param name = "dataItem">The data item.</param>
-        protected override void Run(object dataItem)
-        {
-            MonobjcProject proj = IdeApp.ProjectOperations.CurrentSelectedProject as MonobjcProject;
-            if (proj == null)
-            {
-                return;
-            }
+		/// <summary>
+		///   Runs the specified command.
+		/// </summary>
+		/// <param name = "dataItem">The data item.</param>
+		protected override void Run (object dataItem)
+		{
+			MonobjcProject project = IdeApp.ProjectOperations.CurrentSelectedProject as MonobjcProject;
+			if (project == null) {
+				return;
+			}
 
-            MonobjcExportDialog dialog = new MonobjcExportDialog();
-            dialog.Use(proj);
-            dialog.Run();
-            dialog.Destroy();
-        }
-    }
+			ExportDialog dialog = new ExportDialog ();
+			dialog.Use (project);
+			dialog.Run ();
+			dialog.Destroy ();
+		}
+	}
 }

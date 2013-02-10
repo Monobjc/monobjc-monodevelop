@@ -1,44 +1,41 @@
 <?xml version="1.0"?>
 <Template originator="Laurent Etiemble" created="2010/10/27">
-	
-  <!-- Template Header -->
-  <TemplateConfiguration>
-    <_Name>Document Based Cocoa Application</_Name>
-    <Icon>md-monobjc-project</Icon>
-    <_Category>C#/Monobjc</_Category>
-    <LanguageName>C#</LanguageName>
-    <_Description>This project builds a document based Cocoa-based application.</_Description>
-  </TemplateConfiguration>
-	
-  <!-- Template Content -->
-  <Combine name="${ProjectName}" directory=".">
-	<Options>
-	  <StartupProject>${ProjectName}</StartupProject>
-	</Options>
-    <Project name="${ProjectName}" directory="." type="Monobjc">
-      <Options>
-        <MacOSApplicationType>CocoaApplication</MacOSApplicationType>
-		<MacOSDevelopmentRegion>en</MacOSDevelopmentRegion>
-        <MacOSVersion>MacOS106</MacOSVersion>
-        <MacOSArch>X86</MacOSArch>
-        <MacOSFrameworks>Foundation;AppKit</MacOSFrameworks>
-        <MainNibFile>en.lproj\MainMenu.xib</MainNibFile>
-        <OptionInfer>On</OptionInfer>
-        <OptionStrict>On</OptionStrict>
-        <MyType>Console</MyType>
-      </Options>
-      <References>
-        <Reference type="Gac" refto="System" />
-        <Reference type="Gac" refto="System.Core" />
-        <Reference type="Gac" refto="System.Xml" />
-        <Reference type="Gac" refto="Monobjc, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
-        <Reference type="Gac" refto="Monobjc.Foundation, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
-        <Reference type="Gac" refto="Monobjc.AppKit, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
-      </References>
-      <Files>
-          <FileTemplateReference TemplateID="MonobjcFileInfoPListDocument" />
-	      <File name="Program.vb">
-<![CDATA[Imports Monobjc
+	<!-- Template Header -->
+	<TemplateConfiguration>
+		<_Name>Document Based Cocoa Application</_Name>
+		<Icon>md-monobjc-project</Icon>
+		<_Category>C#/Monobjc</_Category>
+		<LanguageName>C#</LanguageName>
+		<_Description>This project builds a document based Cocoa-based application.</_Description>
+	</TemplateConfiguration>
+	<!-- Template Content -->
+	<Combine name="${ProjectName}" directory=".">
+		<Options>
+			<StartupProject>${ProjectName}</StartupProject>
+		</Options>
+		<Project name="${ProjectName}" directory="." type="Monobjc">
+			<Options>
+				<MacOSApplicationType>CocoaApplication</MacOSApplicationType>
+				<MacOSDevelopmentRegion>en</MacOSDevelopmentRegion>
+				<MacOSVersion>MacOS106</MacOSVersion>
+				<MacOSArch>X86</MacOSArch>
+				<MacOSFrameworks>Foundation;AppKit</MacOSFrameworks>
+				<MainNibFile>en.lproj\MainMenu.xib</MainNibFile>
+				<OptionInfer>On</OptionInfer>
+				<OptionStrict>On</OptionStrict>
+				<MyType>Console</MyType>
+			</Options>
+			<References>
+				<Reference type="Gac" refto="System" />
+				<Reference type="Gac" refto="System.Core" />
+				<Reference type="Gac" refto="System.Xml" />
+				<Reference type="Gac" refto="Monobjc, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
+				<Reference type="Gac" refto="Monobjc.Foundation, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
+				<Reference type="Gac" refto="Monobjc.AppKit, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
+			</References>
+			<Files>
+				<FileTemplateReference TemplateID="MonobjcFileInfoPListDocument" />
+				<File name="Program.vb"><![CDATA[Imports Monobjc
 Imports Monobjc.AppKit
 Imports Monobjc.Foundation
 
@@ -61,8 +58,7 @@ Namespace ${Namespace}
 		End Sub
 	End Class
 End Namespace]]></File>
-	      <File name="AppDelegate.vb">
-<![CDATA[Imports Monobjc
+				<File name="AppDelegate.vb"><![CDATA[Imports Monobjc
 Imports Monobjc.AppKit
 Imports Monobjc.Foundation
 
@@ -85,8 +81,7 @@ Namespace __Namespace
 		End Sub
 	End Class
 End Namespace]]></File>
-	      <File name="MyDocument.vb">
-<![CDATA[Imports Monobjc
+				<File name="MyDocument.vb"><![CDATA[Imports Monobjc
 Imports Monobjc.AppKit
 Imports Monobjc.Foundation
 
@@ -138,8 +133,7 @@ Namespace ${Namespace}
 		End Function
 	End Class
 End Namespace]]></File>
-	      <File name="en.lproj/MainMenu.xib">
-<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<File name="en.lproj/MainMenu.xib"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
@@ -3637,8 +3631,7 @@ End Namespace]]></File>
 		</object>
 	</data>
 </archive>]]></File>
-	      <File name="en.lproj/MyDocument.xib">
-<![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+				<File name="en.lproj/MyDocument.xib"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="7.10">
 	<data>
 		<int key="IBDocument.SystemTarget">1060</int>
@@ -3886,7 +3879,7 @@ End Namespace]]></File>
 		<int key="IBDocument.defaultPropertyAccessControl">3</int>
 	</data>
 </archive>]]></File>
-      </Files>
-    </Project>
-  </Combine>
+			</Files>
+		</Project>
+	</Combine>
 </Template>

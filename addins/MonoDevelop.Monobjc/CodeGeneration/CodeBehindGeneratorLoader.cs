@@ -41,7 +41,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// </summary>
 		/// <param name = "languageName">The language name.</param>
 		/// <returns>A code generator.</returns>
-		public static ICodeBehindGenerator getGenerator (String languageName)
+		public static ICodeBehindGenerator GetGenerator (String languageName)
 		{
 			if (generators.ContainsKey (languageName)) {
 				return generators [languageName];

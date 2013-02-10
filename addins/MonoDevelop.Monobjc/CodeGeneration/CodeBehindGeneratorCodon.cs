@@ -23,7 +23,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 	///   An extension codon for a code-behind implementation.
 	/// </summary>
 	[ExtensionNode(Description = "A codon for CodeBehind generation.")]
-    public class CodeBehindGeneratorCodon : TypeExtensionNode
+	public class CodeBehindGeneratorCodon : TypeExtensionNode
 	{
 		/// <summary>
 		///   Gets the generator.

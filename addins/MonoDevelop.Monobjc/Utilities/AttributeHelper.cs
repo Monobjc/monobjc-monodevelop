@@ -16,16 +16,11 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System;
-using System.CodeDom;
-using System.Collections;
 using System.Linq;
+using ICSharpCode.NRefactory.Semantics;
+using ICSharpCode.NRefactory.TypeSystem;
 using Mono.Cecil;
-using MonoDevelop.Projects.Dom;
-using MonoDevelop.Core;
-
-#if MD_2_6 || MD_2_8
 using Mono.Collections.Generic;
-#endif
 
 namespace MonoDevelop.Monobjc.Utilities
 {
@@ -34,20 +29,6 @@ namespace MonoDevelop.Monobjc.Utilities
 	/// </summary>
 	public static class AttributeHelper
 	{
-		public const String IBACTION = "Monobjc.IBActionAttribute";
-
-		public const String IBOUTLET = "Monobjc.IBOutletAttribute";
-
-		public const String OBJECTIVE_C_CLASS = "Monobjc.ObjectiveCClassAttribute";
-
-		public const String OBJECTIVE_C_PROTOCOL = "Monobjc.ObjectiveCProtocolAttribute";
-
-		public const String OBJECTIVE_C_MESSAGE = "Monobjc.ObjectiveCMessageAttribute";
-
-		public const String OBJECTIVE_C_IVAR = "Monobjc.ObjectiveCIVarAttribute";
-
-		public const String OBJECTIVE_C_FRAMEWORK = "Monobjc.ObjectiveCFrameworkAttribute";
-
 		/// <summary>
 		///   Returns the attribute with the given full name if it exists.
 		/// </summary>
@@ -60,7 +41,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <returns>
 		///   A <see cref = "IAttribute" /> if it is found; <code>null</code> otherwise.
 		/// </returns>
-		public static IAttribute GetAttribute (IMember member, String attributeFullName)
+		public static IAttribute GetAttribute (IEntity member, String attributeFullName)
 		{
 			return member.Attributes.FirstOrDefault (a => String.Equals (a.AttributeType.FullName, attributeFullName));
 		}
@@ -77,7 +58,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <returns>
 		///   <code>true</code> if it is found; <code>false</code> otherwise.
 		/// </returns>
-		public static bool HasAttribute (IMember member, String attributeFullName)
+		public static bool HasAttribute (IEntity member, String attributeFullName)
 		{
 			return member.Attributes.Any (a => String.Equals (a.AttributeType.FullName, attributeFullName));
 		}
@@ -94,60 +75,55 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <returns>
 		///   The value if the attribute is found; <code>null</code> otherwise.
 		/// </returns>
-		public static String GetAttributeValue (IMember member, String attributeFullName)
+		public static String GetAttributeValue (IEntity member, String attributeFullName)
 		{
 			IAttribute attribute = GetAttribute (member, attributeFullName);
 			if (attribute == null) {
 				return null;
 			}
-			CodePrimitiveExpression expression = attribute.PositionalArguments.FirstOrDefault (pa => typeof(CodePrimitiveExpression).IsAssignableFrom (pa.GetType ())) as CodePrimitiveExpression;
+			ResolveResult expression = attribute.PositionalArguments.FirstOrDefault (pa => pa.IsCompileTimeConstant);
 			if (expression == null) {
 				return null;
 			}
-			return expression.Value.ToString ();
+			return expression.ConstantValue.ToString ();
 		}
 		
-		public static bool IsWrappingFramework(String assemblyPath, out bool systemFramework)
-        {
-            systemFramework = false;
-            AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly(assemblyPath);
+		public static bool IsWrappingFramework (String assemblyPath, out bool systemFramework)
+		{
+			systemFramework = false;
+			AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly (assemblyPath);
 
-            // Balk if the assembly has no custom attribute
-            if (!assemblyDefinition.HasCustomAttributes)
-            {
-                return false;
-            }
+			// Balk if the assembly has no custom attribute
+			if (!assemblyDefinition.HasCustomAttributes) {
+				return false;
+			}
 
-            CustomAttribute frameworkAttribute = null;
-            Collection<CustomAttribute> attributes = assemblyDefinition.CustomAttributes;
-            foreach (CustomAttribute attribute in attributes)
-            {
-                String fullType = attribute.Constructor.DeclaringType.ToString();
-                if (String.Equals(fullType, OBJECTIVE_C_FRAMEWORK))
-                {
-                    frameworkAttribute = attribute;
-                    break;
-                }
-            }
+			CustomAttribute frameworkAttribute = null;
+			Collection<CustomAttribute> attributes = assemblyDefinition.CustomAttributes;
+			foreach (CustomAttribute attribute in attributes) {
+				String fullType = attribute.Constructor.DeclaringType.ToString ();
+				if (String.Equals (fullType, Constants.OBJECTIVE_C_FRAMEWORK)) {
+					frameworkAttribute = attribute;
+					break;
+				}
+			}
 
-            // Return false if no framework attribute is found
-            if (frameworkAttribute == null)
-            {
-                return false;
-            }
+			// Return false if no framework attribute is found
+			if (frameworkAttribute == null) {
+				return false;
+			}
 
-            // Retrieve the attribute parameters
-            Collection<CustomAttributeArgument> list = frameworkAttribute.ConstructorArguments;
-            if (list.Count == 0)
-            {
-                return false;
-            }
+			// Retrieve the attribute parameters
+			Collection<CustomAttributeArgument> list = frameworkAttribute.ConstructorArguments;
+			if (list.Count == 0) {
+				return false;
+			}
 
-            // Set if this assembly wraps a system framework
-            String value = list[0].Value.ToString();
-            systemFramework = Boolean.Parse(value);
+			// Set if this assembly wraps a system framework
+			String value = list [0].Value.ToString ();
+			systemFramework = Boolean.Parse (value);
 
-            return true;
-        }
+			return true;
+		}
 	}
 }

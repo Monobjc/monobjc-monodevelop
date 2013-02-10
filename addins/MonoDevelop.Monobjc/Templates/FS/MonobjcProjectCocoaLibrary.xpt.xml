@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<Template originator="Laurent Etiemble" created="2010/10/27">
+	<!-- Template Header -->
+	<TemplateConfiguration>
+		<_Name>Cocoa Library</_Name>
+		<Icon>md-monobjc-project</Icon>
+		<_Category>F#/Monobjc</_Category>
+		<LanguageName>F#</LanguageName>
+		<_Description>This project builds a Cocoa-based library.</_Description>
+	</TemplateConfiguration>
+	<!-- Template Content -->
+	<Combine name="${ProjectName}" directory=".">
+		<Options>
+			<StartupProject>${ProjectName}</StartupProject>
+		</Options>
+		<Project name="${ProjectName}" directory="." type="Monobjc">
+			<Options Target="Library" PauseConsoleOutput="False">
+				<MacOSApplicationType>CocoaLibrary</MacOSApplicationType>
+				<MacOSDevelopmentRegion>en</MacOSDevelopmentRegion>
+				<MacOSVersion>MacOS106</MacOSVersion>
+				<MacOSArch>X86</MacOSArch>
+				<MacOSFrameworks>Foundation;AppKit</MacOSFrameworks>
+				<OptionInfer>On</OptionInfer>
+				<OptionStrict>On</OptionStrict>
+			</Options>
+			<References>
+				<Reference type="Gac" refto="System" />
+				<Reference type="Gac" refto="System.Core" />
+				<Reference type="Gac" refto="System.Xml" />
+				<Reference type="Gac" refto="Monobjc, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
+				<Reference type="Gac" refto="Monobjc.Foundation, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
+				<Reference type="Gac" refto="Monobjc.AppKit, Version=10.6.0.0, Culture=neutral, PublicKeyToken=d5a8d181860c16be" />
+			</References>
+			<Files>
+				<FileTemplateReference TemplateID="MonobjcVBFileNSObject" name="MyClass" />
+			</Files>
+		</Project>
+	</Combine>
+</Template>
