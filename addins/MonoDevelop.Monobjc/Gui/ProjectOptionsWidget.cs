@@ -212,6 +212,9 @@ namespace MonoDevelop.Monobjc.Gui
 				throw new NotSupportedException ("Unsupported application type " + this.ApplicationType);
 			}		
 
+			this.comboboxApplicationCategory.Sensitive = value1;
+			this.entryBundleIdentifier.Sensitive = value1;
+			this.entryBundleVersion.Sensitive = value1;
 			this.filechooserbuttonMainNib.Sensitive = value1;
 			this.filechooserbuttonBundleIcon.Sensitive = value1;
 			this.checkbuttonSigning.Sensitive = value1;

@@ -42,20 +42,26 @@ namespace MonoDevelop.Monobjc
 			BuildResult result = new BuildResult ();
 
 			// Pre-build
+			monitor.BeginTask (GettextCatalog.GetString ("Pre-Building..."), 1);
 			this.PreBuild (result, monitor, item, configuration);
+			monitor.EndTask();
 			if (result.ErrorCount > 0) {
 				return result;
 			}
 			
 			// Build
+			monitor.BeginTask (GettextCatalog.GetString ("Building"), 1);
 			result.Append (base.Build (monitor, item, configuration));
+			monitor.EndTask();
 			if (result.ErrorCount > 0) {
 				return result;
 			}
 			
 			// Post-build
+			monitor.BeginTask (GettextCatalog.GetString ("Post-Building..."), 1);
 			this.PostBuild (result, monitor, item, configuration);
-			
+			monitor.EndTask();
+
 			return result;
 		}
 
