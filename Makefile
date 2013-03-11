@@ -13,11 +13,12 @@
 # ----------------------------------------
 
 # Set the default parameters
-MONODEVELOP_APP?=/Applications/MonoDevelop.app
-MONODEVELOP_VERSION?=3.0
+VERSION?=3.0
 CONFIGURATION?=Debug
 BUILD_NUMBER?=0
-APP_SUPPORT_DIR=~/Library/Application\ Support/MonoDevelop-$(MONODEVELOP_VERSION)/LocalInstall/Addins
+IDE_NAME?=MonoDevelop
+IDE_APP?=/Applications/$(IDE_NAME).app
+APP_SUPPORT_DIR?=~/Library/Application\ Support/$(IDE_NAME)-$(IDE_VERSION)/LocalInstall/Addins
 
 # Set the directories
 ADDINS_DIR=$(CURDIR)/addins
@@ -27,10 +28,10 @@ REPOSITORY_DIR=$(DIST_DIR)/repository
 TOOLS_DIR=$(CURDIR)/tools
 
 # Compute the version
-ADDIN_VERSION=3.0
 DATE_REFERENCE=$(shell date -j -f "%Y-%m-%d" "2007-07-01" "+%s")
 DATE_TODAY=$(shell date "+%s")
 REVISION_NUMBER=$(shell echo "($(DATE_TODAY) - $(DATE_REFERENCE)) / 86400" | bc)
+MD_PROPERTIES=MD_$(shell echo "$(VERSION)" | sed -e "s/\./_/g")
 
 # Set the tools
 CAT=cat
@@ -40,8 +41,8 @@ MKDIR=mkdir -p
 RMRF=rm -Rf
 SED=sed
 XBUILD=xbuild /verbosity:minimal /p:Configuration=$(CONFIGURATION) /p:OutDir=$(BUILD_DIR)/
-MDTOOL=$(MONODEVELOP_APP)/Contents/MacOS/mdtool
-MD_CONFIG_PATH=$(MONODEVELOP_APP)/Contents/MacOS/lib/pkgconfig
+MDTOOL=$(IDE_APP)/Contents/MacOS/mdtool
+MD_CONFIG_PATH=$(IDE_APP)/Contents/MacOS/lib/pkgconfig
 
 # Addin descriptors
 MONOBJC_ADDINS= \
@@ -51,18 +52,20 @@ MONOBJC_ADDINS= \
 # Targets
 # ----------------------------------------
 
-all: $(MONODEVELOP_APP)
+all: $(IDE_APP)
 	$(MKDIR) "$(BUILD_DIR)"
 	$(MKDIR) "$(REPOSITORY_DIR)"
 	
 	for i in $(MONOBJC_ADDINS); do \
-		$(CAT) $(ADDINS_DIR)/$$i/$$i.xml | $(SED) -e "s/0.0.0.0/$(ADDIN_VERSION).$(REVISION_NUMBER).$(BUILD_NUMBER)/g" > $(ADDINS_DIR)/$$i/addin.xml; \
+        $(CAT) $(ADDINS_DIR)/$$i/$$i.xml | $(SED) -e "s/@VERSION@/$(VERSION)/g" -e "s/@REVISION@/$(REVISION_NUMBER).$(BUILD_NUMBER)/g" > $(ADDINS_DIR)/$$i/addin.xml; \
+        $(CAT) $(ADDINS_DIR)/$$i/$$i.csproj.tmpl | $(SED) -e "s/@VERSION@/$(VERSION)/g" -e "s/@PROPERTIES@/$(MD_PROPERTIES)/g" > $(ADDINS_DIR)/$$i/$$i.csproj; \
 	done
 	(PKG_CONFIG_PATH=$(MD_CONFIG_PATH) $(XBUILD))
 
 clean:
 	for i in $(MONOBJC_ADDINS); do \
-		$(CAT) $(ADDINS_DIR)/$$i/$$i.xml > $(ADDINS_DIR)/$$i/addin.xml; \
+        $(CAT) $(ADDINS_DIR)/$$i/$$i.xml > $(ADDINS_DIR)/$$i/addin.xml; \
+        $(CAT) $(ADDINS_DIR)/$$i/$$i.csproj.tmpl | $(SED) -e "s/@VERSION@/3.0/g" > $(ADDINS_DIR)/$$i/$$i.csproj; \
 	done
 	$(RMRF) "$(BUILD_DIR)"
 	$(RMRF) "$(DIST_DIR)"
@@ -76,10 +79,10 @@ repository: all $(MONOBJC_ADDINS_DESCRIPTOR_DIST)
 
 local: repository
 	for i in $(MONOBJC_ADDINS); do \
-		$(CP) -R $(BUILD_DIR) $(APP_SUPPORT_DIR)/$$i.$(ADDIN_VERSION).$(REVISION_NUMBER).$(BUILD_NUMBER); \
+		$(CP) -R $(BUILD_DIR) $(APP_SUPPORT_DIR)/$$i.$(VERSION).$(REVISION_NUMBER).$(BUILD_NUMBER); \
 	done
 
-$(MONODEVELOP_APP):
+$(IDE_APP):
 	$(error Cannot found MonoDevelop application)
 
 # ----------------------------------------
