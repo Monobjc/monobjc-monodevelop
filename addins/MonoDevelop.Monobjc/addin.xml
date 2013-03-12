@@ -264,7 +264,7 @@
     <CodeBehindGenerator id="F#"
                          class="MonoDevelop.Monobjc.CodeGeneration.FSharpCodeBehindGenerator"/>
   </Extension>
-  
+
   <!-- Debugger Engine -->
   <Extension path="/MonoDevelop/Debugging/DebuggerEngines">
     <DebuggerEngine id="MonoDevelop.Monobjc.Debugger"
