@@ -46,11 +46,18 @@ namespace MonoDevelop.Monobjc
 		///   Gets the command string.
 		/// </summary>
 		/// <value>The command string.</value>
-		public override string CommandString {
-			get { return this.configuration.Runtime; }
-		}
+#if MD_3_0
+        public override string CommandString {
+            get { return this.configuration.Runtime; }
+        }
+#endif
+#if MD_4_0
+        public string CommandString {
+            get { return this.configuration.Runtime; }
+        }
+#endif
 
-		/// <summary>
+        /// <summary>
 		///   Gets the name of the application.
 		/// </summary>
 		/// <value>The name of the application.</value>
