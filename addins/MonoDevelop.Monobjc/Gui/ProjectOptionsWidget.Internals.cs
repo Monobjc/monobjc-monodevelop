@@ -124,7 +124,7 @@ namespace MonoDevelop.Monobjc.Gui
 				if (reference.ReferenceType == ReferenceType.Assembly) {
 					location = reference.Reference;
 					name = location;
-				} else if (reference.ReferenceType == ReferenceType.Gac) {
+				} else if (reference.ReferenceType == ReferenceType.Package) {
 					location = project.AssemblyContext.GetAssemblyLocation (reference.Reference, project.TargetFramework);
 					name = location.FileNameWithoutExtension;
 				}
