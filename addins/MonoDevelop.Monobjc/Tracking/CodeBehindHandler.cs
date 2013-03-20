@@ -180,6 +180,7 @@ namespace MonoDevelop.Monobjc.Tracking
 			if (String.Equals ("FirstResponder", className)) {
 				return false;
 			}
+			// TODO: Skip classes that are standard ones
 			IEnumerable<IBPartialClassDescription> enumerable = visitor [className];
 			return (enumerable.SelectMany (d => d.Outlets).Count () > 0 || enumerable.SelectMany (d => d.Actions).Count () > 0);
 		}
