@@ -47,10 +47,11 @@ namespace MonoDevelop.Monobjc
 		public const String DOT_STRINGS = ".strings";
 		public const String DOT_XIB = ".xib";
 
+		public const String EncryptedContent = "EncryptedContent";
 		public const String InterfaceDefinition = "InterfaceDefinition";
 		public const String EmbeddedInterfaceDefinition = "EmbeddedInterfaceDefinition";
-		public const String INFO_PLIST = "Info.plist";
 
+		public const String INFO_PLIST = "Info.plist";
 		public const String GROUP_CLASSES = "Classes";
 		public const String GROUP_RESOURCES = "Resources";
 		public const String GROUP_FRAMEWORKS = "Frameworks";
