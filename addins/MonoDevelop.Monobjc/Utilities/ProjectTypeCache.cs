@@ -266,7 +266,7 @@ namespace MonoDevelop.Monobjc.Utilities
 				return false;
 			}
 			IAssembly assembly = definition.ParentAssembly;
-			return this.ProjectWrappers.Any(pw => definition.ParentAssembly.Equals(pw.Compilation.MainAssembly));
+			return this.ProjectWrappers.Any(pw => assembly.Equals(pw.Compilation.MainAssembly));
 		}
 
 		private TypeSystemService.ProjectContentWrapper ProjectWrapper {
