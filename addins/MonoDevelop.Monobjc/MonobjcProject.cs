@@ -96,7 +96,6 @@ namespace MonoDevelop.Monobjc
 
 			this.DevelopmentRegion = GetNodeValue (projectOptions, "MacOSDevelopmentRegion", "en");
 			this.CombineArtwork = Boolean.Parse (GetNodeValue (projectOptions, "CombineArtwork", "false"));
-			this.EncryptArtwork = Boolean.Parse (GetNodeValue (projectOptions, "EncryptArtwork", "false"));
 
 			this.Initialize ();
 		}
@@ -294,6 +293,9 @@ namespace MonoDevelop.Monobjc
 				buildActions = new List<String> (base.GetCommonBuildActions ());
 				if (buildActions.Contains (BuildAction.Page)) {
 					buildActions.Remove (BuildAction.Page);
+				}
+				if (!buildActions.Contains (Constants.EncryptedContent)) {
+					buildActions.Add (Constants.EncryptedContent);
 				}
 				if (!buildActions.Contains (Constants.InterfaceDefinition)) {
 					buildActions.Add (Constants.InterfaceDefinition);

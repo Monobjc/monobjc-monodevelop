@@ -24,8 +24,7 @@ namespace MonoDevelop.Monobjc
 	{
 		private String developmentRegion;
 		private bool combineArtwork;
-		private bool encryptArtwork;
-		private String encryptArtworkSeed;
+		private String encryptionSeed;
 
 		/// <summary>
 		/// Gets or sets the development region.
@@ -52,25 +51,13 @@ namespace MonoDevelop.Monobjc
 		}
 
 		/// <summary>
-		/// Gets or sets a value indicating whether to encrypt artwork.
+		/// Gets or sets the encryption seed.
 		/// </summary>
-		[ItemProperty("EncryptArtwork")]
-		public bool EncryptArtwork {
-			get { return this.encryptArtwork; }
+		[ItemProperty("EncryptionSeed")]
+		public String EncryptionSeed {
+			get { return this.encryptionSeed; }
 			set {
-				this.encryptArtwork = value;
-				this.NotifyModified ("EncryptArtwork");
-			}
-		}
-	
-		/// <summary>
-		/// Gets or sets the encrypt artwork seed.
-		/// </summary>
-		[ItemProperty("EncryptArtworkSeed")]
-		public String EncryptArtworkSeed {
-			get { return this.encryptArtworkSeed; }
-			set {
-				this.encryptArtworkSeed = value;
+				this.encryptionSeed = value;
 				this.NotifyModified ("EncryptArtworkSeed");
 			}
 		}

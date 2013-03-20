@@ -31,14 +31,9 @@ namespace MonoDevelop.Monobjc.Gui
 			set { this.checkbuttonCombineArtwork.Active = value; }
 		}
 		
-		private bool EncryptArtwork {
-			get { return this.checkbuttonEncryptArtwork.Active; }
-			set { this.checkbuttonEncryptArtwork.Active = value; }
-		}
-		
-		private String EncryptArtworkSeed {
-			get { return this.entryEncryptArtworkSeed.Text; }
-			set { this.entryEncryptArtworkSeed.Text = value; }
+		private String EncryptionSeed {
+			get { return this.entryEncryptionSeed.Text; }
+			set { this.entryEncryptionSeed.Text = value; }
 		}
 	}
 }

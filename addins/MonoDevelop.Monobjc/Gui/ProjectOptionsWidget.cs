@@ -72,7 +72,6 @@ namespace MonoDevelop.Monobjc.Gui
 			this.comboboxOSVersion.Changed += this.HandleComboboxOSVersionChanged;
 			this.checkbuttonSigning.Toggled += this.HandleCheckbuttonSigningToggled;
 			this.checkbuttonArchivePackage.Toggled += this.HandleCheckbuttonArchivePackageToggled;
-			this.checkbuttonEncryptArtwork.Toggled += this.HandleCheckbuttonEncryptArtworkToggled;
 
 			this.buttonAddAdditionnalAssemblies.Clicked += HandleButtonAddAdditionnalAssembliesHandleClicked;
 			this.buttonRemoveAdditionnalAssemblies.Clicked += HandleButtonRemoveAdditionnalAssembliesHandleClicked;
@@ -83,7 +82,6 @@ namespace MonoDevelop.Monobjc.Gui
 
 			this.HandleCheckbuttonSigningToggled(this, EventArgs.Empty);
 			this.HandleCheckbuttonArchivePackageToggled(this, EventArgs.Empty);
-			this.HandleCheckbuttonEncryptArtworkToggled(this, EventArgs.Empty);
 
 			FillTypes (this.comboboxType);
 			FillApplicationCategories (this.comboboxApplicationCategory);
@@ -132,8 +130,7 @@ namespace MonoDevelop.Monobjc.Gui
 			FillDevelopmentRegions(this.comboboxDevelopmentRegion, project);
 			this.DevelopmentRegion = project.DevelopmentRegion ?? "en";
 			this.CombineArtwork = project.CombineArtwork;
-			this.EncryptArtwork = project.EncryptArtwork;
-			this.EncryptArtworkSeed = project.EncryptArtworkSeed;
+			this.EncryptionSeed = project.EncryptionSeed;
 		}
 
 		/// <summary>
@@ -146,10 +143,6 @@ namespace MonoDevelop.Monobjc.Gui
 			}
 			if (this.entryBundleVersion.Text.Length == 0) {
 				message = GettextCatalog.GetString("The value for the bundle version is not valid. It cannot be empty.");
-				return false;
-			}
-			if (this.checkbuttonEncryptArtwork.Active && this.entryEncryptArtworkSeed.Text.Length == 0) {
-				message = GettextCatalog.GetString("The value for the encryption seed is not valid. It cannot be empty.");
 				return false;
 			}
 			message = String.Empty;
@@ -188,8 +181,7 @@ namespace MonoDevelop.Monobjc.Gui
 			
 			project.DevelopmentRegion = this.DevelopmentRegion;
 			project.CombineArtwork = this.CombineArtwork;
-			project.EncryptArtwork = this.EncryptArtwork;
-			project.EncryptArtworkSeed = this.EncryptArtworkSeed;
+			project.EncryptionSeed = this.EncryptionSeed;
 
 			project.UpdateReferences();
 		}
@@ -307,11 +299,6 @@ namespace MonoDevelop.Monobjc.Gui
 		void HandleCheckbuttonArchivePackageToggled (object sender, EventArgs e)
 		{
 			this.comboboxPackagingCertificates.Sensitive = this.checkbuttonArchivePackage.Active;
-		}
-
-		void HandleCheckbuttonEncryptArtworkToggled (object sender, EventArgs e)
-		{
-			this.entryEncryptArtworkSeed.Sensitive = this.checkbuttonEncryptArtwork.Active;
 		}
 	}
 }

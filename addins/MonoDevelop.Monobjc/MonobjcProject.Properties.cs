@@ -120,7 +120,7 @@ namespace MonoDevelop.Monobjc
 			this.ArchiveIdentity = this.ArchiveIdentity ?? String.Empty;
 			
 			this.DevelopmentRegion = this.DevelopmentRegion ?? "en";
-			this.EncryptArtworkSeed = this.EncryptArtworkSeed ?? String.Empty;
+			this.EncryptionSeed = this.EncryptionSeed ?? String.Empty;
 
 			// Create the handlers
 			this.CodeBehindHandler = new CodeBehindHandler (this);

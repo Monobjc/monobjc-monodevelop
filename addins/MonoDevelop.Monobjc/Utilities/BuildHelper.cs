@@ -25,6 +25,7 @@ using MonoDevelop.Projects;
 using Monobjc.Tools.External;
 using Monobjc.Tools.Generators;
 using System.Reflection;
+using System.Security.Cryptography;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
@@ -399,19 +400,18 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <summary>
 		/// Combines the artwork.
 		/// </summary>
-		public static void EncryptArtwork (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
+		public static void EncryptContentFiles (IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration, BundleMaker maker)
 		{
-			if (!project.EncryptArtwork) {
+			IEnumerable<FilePair> files = project.GetEncryptedContentFiles (configuration, maker.ResourcesFolder);
+			if (files == null) {
 				return;
 			}
-			
-			monitor.BeginTask (GettextCatalog.GetString ("Encrypting artwork..."), 0);
-			using (StringWriter outputWriter = new StringWriter()) {
-				using (StringWriter errorWriter = new StringWriter()) {
-					ArtworkEncrypter encrypter = new ArtworkEncrypter();
-					encrypter.Encrypt(maker.ResourcesFolder, project.EncryptArtworkSeed);
-					LoggingService.LogInfo ("Combiner returns: " + outputWriter.ToString ());
-				}
+			Aes provider = FileEncrypter.GetProvider (project.EncryptionSeed);
+			monitor.BeginTask (GettextCatalog.GetString ("Encrypting content files..."), files.Count ());
+			foreach (FilePair pair in files) {
+				monitor.Log.WriteLine (GettextCatalog.GetString ("Encrypting {0}", pair.Source.ToRelative (project.BaseDirectory)));
+				pair.Encrypt(provider);
+				monitor.Step (1);
 			}
 			monitor.EndTask ();
 		}

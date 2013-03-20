@@ -110,17 +110,20 @@ namespace MonoDevelop.Monobjc
 		/// <returns>A list of pairs</returns>
 		internal IEnumerable<FilePair> GetContentFiles (ConfigurationSelector configuration, FilePath destinationDirectory)
 		{
-			// Return each content file
-			foreach (ProjectFile file in this.Files) {
-				if (file.BuildAction != BuildAction.Content) {
-					continue;
-				}
-
-				FilePath destination = destinationDirectory.Combine (file.FilePath.ToRelative (this.BaseDirectory));
-				yield return new FilePair (file.FilePath, destination);
-			}
+			return GetFiles(configuration, destinationDirectory, BuildAction.Content);
 		}
-
+		
+		/// <summary>
+		///   Gets the encrypted content files pairs.
+		/// </summary>
+		/// <param name = "configuration">The configuration.</param>
+		/// <param name = "destinationDirectory">The destination directory.</param>
+		/// <returns>A list of pairs</returns>
+		internal IEnumerable<FilePair> GetEncryptedContentFiles (ConfigurationSelector configuration, FilePath destinationDirectory)
+		{
+			return GetFiles(configuration, destinationDirectory, Constants.EncryptedContent);
+		}
+		
 		/// <summary>
 		/// Determines whether the project file is in the development region.
 		/// </summary>
@@ -188,6 +191,25 @@ namespace MonoDevelop.Monobjc
 
 			// Defer the framework loading code generation in a separate thread
 			this.CodeBehindHandler.GenerateFrameworkLoadingCode(names);
+		}
+
+		/// <summary>
+		///   Gets the files pairs.
+		/// </summary>
+		/// <param name = "configuration">The configuration.</param>
+		/// <param name = "destinationDirectory">The destination directory.</param>
+		/// <returns>A list of pairs</returns>
+		internal IEnumerable<FilePair> GetFiles (ConfigurationSelector configuration, FilePath destinationDirectory, String fileType)
+		{
+			// Return each content file
+			foreach (ProjectFile file in this.Files) {
+				if (file.BuildAction != fileType) {
+					continue;
+				}
+				
+				FilePath destination = destinationDirectory.Combine (file.FilePath.ToRelative (this.BaseDirectory));
+				yield return new FilePair (file.FilePath, destination);
+			}
 		}
 	}
 }

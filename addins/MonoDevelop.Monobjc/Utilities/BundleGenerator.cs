@@ -64,7 +64,7 @@ namespace MonoDevelop.Monobjc.Utilities
 			}
 
 			BuildHelper.CombineArtwork (monitor, project, maker);
-			BuildHelper.EncryptArtwork (monitor, project, maker);
+			BuildHelper.EncryptContentFiles (monitor, project, configuration, maker);
 
 			// Perform the signing
 			BuildHelper.SignBundle (monitor, project, maker);
