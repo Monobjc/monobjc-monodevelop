@@ -16,7 +16,9 @@
 // along with Monobjc.  If not, see <http://www.gnu.org/licenses/>.
 //
 using System.IO;
+using System.Security.Cryptography;
 using MonoDevelop.Core;
+using Monobjc.Tools.Generators;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
@@ -25,6 +27,8 @@ namespace MonoDevelop.Monobjc.Utilities
 	/// </summary>
 	public class FilePair
 	{
+		private static FileEncrypter Encrypter = new FileEncrypter();
+
 		/// <summary>
 		///   Initializes a new instance of the <see cref = "FilePair" /> struct.
 		/// </summary>
@@ -83,6 +87,18 @@ namespace MonoDevelop.Monobjc.Utilities
 			if (this.NeedsBuilding || allowsOverride) {
 				this.EnsureOutputDirectory ();
 				File.Copy (this.Source, this.Destination, true);
+			}
+		}
+
+		/// <summary>
+		///   Encrypt the specified pair.
+		/// </summary>
+		/// <param name="aes">The AES encryptor.</param>
+		public void Encrypt (Aes aes)
+		{
+			if (this.NeedsBuilding) {
+				this.EnsureOutputDirectory ();
+				Encrypter.Encrypt(this.Source, this.Destination, aes);
 			}
 		}
 	}
