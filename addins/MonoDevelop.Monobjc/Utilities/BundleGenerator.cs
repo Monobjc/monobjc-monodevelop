@@ -47,17 +47,17 @@ namespace MonoDevelop.Monobjc.Utilities
 
 			// Copy the content files
 			BuildHelper.CopyContentFiles (monitor, project, configuration, maker);
+            
+            // Create the Info.plist
+            BuildHelper.CreateInfoPList (monitor, project, configuration, maker);
 
-			// Copy the Monobjc assemblies
-			BuildHelper.CopyMonobjcAssemblies (monitor, project, configuration, maker);
-
-			// Create the Info.plist
-			BuildHelper.CreateInfoPList (monitor, project, configuration, maker);
-			
 			if (native) {
 				GenerateNative (monitor, result, project, configuration, maker);
 			} else {
-				// Write the native runtime
+                // Copy the Monobjc assemblies
+                BuildHelper.CopyMonobjcAssemblies (monitor, project, configuration, maker);
+                
+                // Write the native runtime
 				monitor.BeginTask (GettextCatalog.GetString ("Copying native launcher..."), 0);
 				maker.WriteRuntime (project.TargetOSVersion);
 				monitor.EndTask ();
