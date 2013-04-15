@@ -30,7 +30,7 @@ namespace ${Namespace}
         public ${Name}(NSWindow window) : base(window) { }
 
 		[ObjectiveCMessage("initWithWindow:")]
-        public virtual Id InitWithWindow(NSWindow window)
+        public override Id InitWithWindow(NSWindow window)
         {
 			this.SendMessageSuper<IntPtr>(${Name}Class, "initWithWindow:", window);
 			
@@ -48,7 +48,7 @@ namespace ${Namespace}
 		}
 
 		[ObjectiveCMessage("windowDidLoad")]
-        public virtual void WindowDidLoad()
+        public override void WindowDidLoad()
         {
 			this.SendMessageSuper(${Name}Class, "windowDidLoad");
 			
