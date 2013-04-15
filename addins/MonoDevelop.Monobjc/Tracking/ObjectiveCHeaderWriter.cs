@@ -55,6 +55,9 @@ namespace MonoDevelop.Monobjc.Tracking
 			writer.WriteLine ("{");
 			
 			foreach (IProperty property in this.GetProperties(type)) {
+                if (!property.DeclaringType.Equals(type)) {
+                    continue;
+                }
 				String propertyType = property.ReturnType.Name;
 				if (property.Equals ("Id")) {
 					propertyType = "id";
@@ -68,7 +71,10 @@ namespace MonoDevelop.Monobjc.Tracking
 		protected override void WriteMethods (TextWriter writer, IType type)
 		{
 			foreach (IMethod method in this.GetMethods(type)) {
-				String selector = AttributeHelper.GetAttributeValue (method, Constants.OBJECTIVE_C_MESSAGE);
+                if (!method.DeclaringType.Equals(type)) {
+                    continue;
+                }
+                String selector = AttributeHelper.GetAttributeValue (method, Constants.OBJECTIVE_C_MESSAGE);
 				writer.WriteLine ();
 				writer.WriteLine ("{0}(IBAction) {1}(id) sender;", method.IsStatic ? "+" : "-", selector);
 			}
