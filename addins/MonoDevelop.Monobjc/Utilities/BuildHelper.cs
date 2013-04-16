@@ -424,13 +424,13 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <param name = 'maker'>The bundle maker.</param>
 		public static void SignBundle (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
 		{
-			if (project.SigningIdentity != null) {
-				monitor.BeginTask (GettextCatalog.GetString ("Signing bundle..."), 0);
+            if (project.Signing && !String.IsNullOrEmpty(project.SigningIdentity)) {
+                monitor.BeginTask (GettextCatalog.GetString ("Signing bundle..."), 0);
 
 				using (StringWriter outputWriter = new StringWriter()) {
 					using (StringWriter errorWriter = new StringWriter()) {
 						ProjectFile file = project.GetProjectFile("App.entitlements");
-						if (project.UseEntitlements && file != null) {
+                        if (project.UseEntitlements && file != null) {
 							CodeSign.SignApplication (maker.ApplicationDirectory, project.SigningIdentity, file.FilePath, outputWriter, errorWriter);
 						} else {
 							CodeSign.SignApplication (maker.ApplicationDirectory, project.SigningIdentity, outputWriter, errorWriter);
@@ -451,8 +451,12 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <param name = 'maker'>The bundle maker.</param>
 		public static void SignNativeBinaries (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
 		{
-			if (project.SigningIdentity != null) {
+            if (project.Signing && !String.IsNullOrEmpty(project.SigningIdentity)) {
 				String[] files = Directory.GetFiles (maker.MacOSDirectory, "*.dylib");
+                if (files == null) {
+                    return;
+                }
+
 				monitor.BeginTask (GettextCatalog.GetString ("Signing native libraries..."), files.Length);
 
 				foreach (String file in files) {
