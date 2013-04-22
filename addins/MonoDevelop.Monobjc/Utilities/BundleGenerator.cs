@@ -141,15 +141,16 @@ namespace MonoDevelop.Monobjc.Utilities
             codeGenerator.TargetArchitecture = project.TargetOSArch;
 
             // We embed the machine.config file; it depends on the target framework
-            switch (project.TargetFramework.ClrVersion)
+            int version = (int) project.TargetFramework.ClrVersion;
+            switch (version)
             {
-                case ClrVersion.Net_2_0:
+                case 2: // ClrVersion.Net_2_0:
                     codeGenerator.MachineConfiguration = "/Library/Frameworks/Mono.framework/Home/etc/mono/2.0/machine.config";
                     break;
-                case ClrVersion.Net_4_0:
+                case 4: // ClrVersion.Net_4_0:
                     codeGenerator.MachineConfiguration = "/Library/Frameworks/Mono.framework/Home/etc/mono/4.0/machine.config";
                     break;
-                case ClrVersion.Net_4_5:
+                case 5: // ClrVersion.Net_4_5:
                     codeGenerator.MachineConfiguration = "/Library/Frameworks/Mono.framework/Home/etc/mono/4.5/machine.config";
                     break;
             }
