@@ -31,7 +31,10 @@ namespace MonoDevelop.Monobjc.Utilities
         {
             // Infer application name from configuration
             String applicationName = project.GetApplicationName(configuration);
-            
+
+            LoggingService.LogInfo("Generate => applicationName='" + applicationName + "'");
+            LoggingService.LogInfo("Generate => outputDirectory='" + outputDirectory + "'");
+
             // Create the bundle maker
             BundleMaker maker = new BundleMaker(applicationName, outputDirectory);
 
@@ -54,6 +57,7 @@ namespace MonoDevelop.Monobjc.Utilities
 
             if (native)
             {
+                LoggingService.LogInfo("Generate #0 " + maker.MacOSDirectory);
                 GenerateNative(monitor, result, project, configuration, maker);
             }
             else
@@ -67,12 +71,18 @@ namespace MonoDevelop.Monobjc.Utilities
                 monitor.EndTask();
             }
 
+            LoggingService.LogInfo("Generate #1 " + maker.MacOSDirectory);
             BuildHelper.CombineArtwork(monitor, project, maker);
+            LoggingService.LogInfo("Generate #2");
             BuildHelper.EncryptContentFiles(monitor, project, configuration, maker);
-
+            LoggingService.LogInfo("Generate #3");
+            
             // Perform the signing
+            LoggingService.LogInfo("Generate #4");
             BuildHelper.SignBundle(monitor, project, maker);
+            LoggingService.LogInfo("Generate #5");
             BuildHelper.SignNativeBinaries(monitor, project, maker);
+            LoggingService.LogInfo("Generate #6");
         }
         
         public static void Archive(IProgressMonitor monitor, BuildResult result, MonobjcProject project, ConfigurationSelector configuration, String outputDirectory)
@@ -81,10 +91,14 @@ namespace MonoDevelop.Monobjc.Utilities
             
             // Infer application name from configuration
             String applicationName = project.GetApplicationName(configuration);
-            
+
+            LoggingService.LogInfo("Archive #1");
+
             // Create the bundle maker
             BundleMaker maker = new BundleMaker(applicationName, outputDirectory);
             
+            LoggingService.LogInfo("Archive #2");
+
             // Archive the application
             BuildHelper.ArchiveBundle(monitor, project, maker);
             
@@ -93,10 +107,14 @@ namespace MonoDevelop.Monobjc.Utilities
         
         private static void GenerateNative(IProgressMonitor monitor, BuildResult result, MonobjcProject project, ConfigurationSelector configuration, BundleMaker maker)
         {
+            LoggingService.LogInfo("GenerateNative #1");
+            
             // Create a directory for generation
             String tempDir = Path.Combine(project.GetOutputFileName(configuration).ParentDirectory, ".native");
             Directory.CreateDirectory(tempDir);
 
+            LoggingService.LogInfo("GenerateNative #2");
+            
             // Build a list of all folders to visit when collecting managed references
             String mainAssembly = project.GetOutputFileName(configuration);
             String configurationDir = Path.GetDirectoryName(mainAssembly);

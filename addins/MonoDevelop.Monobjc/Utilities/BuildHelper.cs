@@ -225,8 +225,8 @@ namespace MonoDevelop.Monobjc.Utilities
 		{
 			XibCompiler xibCompiler = new XibCompiler ();
 			IEnumerable<FilePair> files = project.GetIBFiles (Constants.InterfaceDefinition, maker.ResourcesFolder);
-			if (files == null) {
-				return;
+            if (files == null || files.Count() == 0) {
+                return;
 			}
 			List<FilePair> pairs = new List<FilePair> (files);
 			monitor.BeginTask (GettextCatalog.GetString ("Compiling XIB files..."), files.Count ());
@@ -250,8 +250,8 @@ namespace MonoDevelop.Monobjc.Utilities
 		{
 			XibCompiler xibCompiler = new XibCompiler ();
 			IEnumerable<FilePair> files = project.GetIBFiles (Constants.EmbeddedInterfaceDefinition, null);
-			if (files == null) {
-				return;
+            if (files == null || files.Count() == 0) {
+                return;
 			}
 			
 			monitor.BeginTask (GettextCatalog.GetString ("Embed XIB files..."), files.Count ());
@@ -286,8 +286,8 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static void CopyOutputFiles (IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration, BundleMaker maker)
 		{
 			IEnumerable<FilePair> files = project.GetOutputFiles (configuration, maker.ResourcesFolder);
-			if (files == null) {
-				return;
+            if (files == null || files.Count() == 0) {
+                return;
 			}
 			monitor.BeginTask (GettextCatalog.GetString ("Copying output files..."), files.Count ());
 			foreach (FilePair pair in files) {
@@ -308,8 +308,8 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static void CopyContentFiles (IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration, BundleMaker maker)
 		{
 			IEnumerable<FilePair> files = project.GetContentFiles (configuration, maker.ResourcesFolder);
-			if (files == null) {
-				return;
+            if (files == null || files.Count() == 0) {
+                return;
 			}
 			monitor.BeginTask (GettextCatalog.GetString ("Copying content files..."), files.Count ());
 			foreach (FilePair pair in files) {
@@ -403,7 +403,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		public static void EncryptContentFiles (IProgressMonitor monitor, MonobjcProject project, ConfigurationSelector configuration, BundleMaker maker)
 		{
 			IEnumerable<FilePair> files = project.GetEncryptedContentFiles (configuration, maker.ResourcesFolder);
-			if (files == null) {
+			if (files == null || files.Count() == 0) {
 				return;
 			}
 			Aes provider = FileEncrypter.GetProvider (project.EncryptionSeed);
@@ -453,7 +453,7 @@ namespace MonoDevelop.Monobjc.Utilities
 		{
             if (project.Signing && !String.IsNullOrEmpty(project.SigningIdentity)) {
 				String[] files = Directory.GetFiles (maker.MacOSDirectory, "*.dylib");
-                if (files == null) {
+                if (files == null || files.Count() == 0) {
                     return;
                 }
 
@@ -481,10 +481,10 @@ namespace MonoDevelop.Monobjc.Utilities
 		/// <param name = 'maker'>The bundle maker.</param>
 		public static void ArchiveBundle (IProgressMonitor monitor, MonobjcProject project, BundleMaker maker)
 		{
-			if (project.Archive && project.ArchiveIdentity != null) {
+            if (project.Archive && project.ArchiveIdentity != null) {
 				FilePath definitionFile = project.BaseDirectory.Combine ("Definition.plist");
-				String definitionFilename = File.Exists (definitionFile) ? definitionFile.ToString () : null;
-				monitor.BeginTask (GettextCatalog.GetString ("Signing archive..."), 0);
+                String definitionFilename = File.Exists (definitionFile) ? definitionFile.ToString () : null;
+                monitor.BeginTask (GettextCatalog.GetString ("Signing archive..."), 0);
 
 				using (StringWriter outputWriter = new StringWriter()) {
 					using (StringWriter errorWriter = new StringWriter()) {

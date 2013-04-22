@@ -41,10 +41,11 @@ namespace MonoDevelop.Monobjc.Gui
 		{
 			this.Build ();
 			
-			this.radiobuttonManaged.Toggled += HandleRadiobuttonManagedhandleToggled;
-			this.radiobuttonNative.Toggled += HandleRadiobuttonNativehandleToggled;
+            this.radiobuttonManaged.Toggled += this.HandleRadiobuttonToggled;
+            this.radiobuttonNative.Toggled += this.HandleRadiobuttonToggled;
+            this.filechooserbuttonOutput.SelectionChanged += this.HandleSelectionChanged;
 			
-			this.EnableWidgets (true);
+            this.EnableWidgets (true);
 		}
 
 		/// <summary>
@@ -69,7 +70,9 @@ namespace MonoDevelop.Monobjc.Gui
 			// Set the output directory
 			String outputDirectory = this.filechooserbuttonOutput.Filename;
 			
-			// Launch the bundle creation
+            LoggingService.LogInfo("Exporting bundle (Native={0}) to {1}", native, outputDirectory);
+            
+            // Launch the bundle creation
 			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetOutputProgressMonitor (GettextCatalog.GetString ("Monobjc"), MonoDevelop.Ide.Gui.Stock.RunProgramIcon, true, true);
 			BuildResult result = new BuildResult();
 			Thread thread = new Thread (delegate() {
@@ -96,8 +99,9 @@ namespace MonoDevelop.Monobjc.Gui
 						
 						DispatchService.GuiDispatch (delegate() { this.ReportProgress ("Finished", 100); });
 					} catch (Exception ex) {
-						LoggingService.LogError ("Error while generating the bundle.", ex);
-						monitor.ReportError (GettextCatalog.GetString ("Error while generating the bundle."), ex);
+                        LoggingService.LogInfo(ex.ToString());
+                        LoggingService.LogError ("Error while generating the bundle:", ex);
+                        monitor.ReportError (GettextCatalog.GetString ("Error while generating the bundle."), ex);
 					}
 					
 					DispatchService.GuiDispatch (delegate() { this.EnableWidgets (true); this.OnClose(); });
@@ -111,6 +115,7 @@ namespace MonoDevelop.Monobjc.Gui
 		{
 			this.radiobuttonManaged.Sensitive = value;
 			this.radiobuttonNative.Sensitive = value;
+            this.buttonOk.Sensitive = (!String.IsNullOrEmpty(this.filechooserbuttonOutput.Filename));
 			
 			if (value) {
 				this.ReportProgress ("Ready", 0);
@@ -123,12 +128,14 @@ namespace MonoDevelop.Monobjc.Gui
 			this.progressbar.Text = GettextCatalog.GetString (key);
 		}
 
-		private void HandleRadiobuttonManagedhandleToggled (object sender, EventArgs e)
+		private void HandleRadiobuttonToggled (object sender, EventArgs e)
 		{
+            this.EnableWidgets(true);
 		}
 
-		private void HandleRadiobuttonNativehandleToggled (object sender, EventArgs e)
-		{
-		}
-	}
+        private void HandleSelectionChanged (object sender, EventArgs e)
+        {
+            this.EnableWidgets(true);
+        }
+    }
 }
