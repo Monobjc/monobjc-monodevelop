@@ -431,9 +431,9 @@ namespace MonoDevelop.Monobjc.Utilities
 					using (StringWriter errorWriter = new StringWriter()) {
 						ProjectFile file = project.GetProjectFile("App.entitlements");
                         if (project.UseEntitlements && file != null) {
-							CodeSign.SignApplication (maker.ApplicationDirectory, project.SigningIdentity, file.FilePath, outputWriter, errorWriter);
+							CodeSign.PerformSigning (maker.ApplicationDirectory, project.SigningIdentity, file.FilePath, outputWriter, errorWriter);
 						} else {
-							CodeSign.SignApplication (maker.ApplicationDirectory, project.SigningIdentity, outputWriter, errorWriter);
+                            CodeSign.PerformSigning (maker.ApplicationDirectory, project.SigningIdentity, outputWriter, errorWriter);
 						}
 						LoggingService.LogInfo ("CodeSign returns: " + outputWriter.ToString ());
 					}
@@ -462,7 +462,7 @@ namespace MonoDevelop.Monobjc.Utilities
 				foreach (String file in files) {
 					using (StringWriter outputWriter = new StringWriter()) {
 						using (StringWriter errorWriter = new StringWriter()) {
-							CodeSign.SignApplication (file, project.SigningIdentity, outputWriter, errorWriter);
+                            CodeSign.PerformSigning (file, project.SigningIdentity, outputWriter, errorWriter);
 							LoggingService.LogInfo ("CodeSign returns: " + outputWriter.ToString ());
 						}
 					}
