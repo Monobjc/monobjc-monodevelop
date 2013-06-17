@@ -34,6 +34,13 @@
 	<true/>
 	-->
 
+    <!-- Security-Scoped Bookmark and URL Access
+    <key>com.apple.security.files.bookmarks.app-scope</key>
+    <true/>
+    <key>com.apple.security.files.bookmarks.document-scope</key>
+    <true/>
+    -->
+
 	<!-- Folder-specific file system entitlements
 	<key>com.apple.security.files.downloads.read-write</key>
 	<true/>

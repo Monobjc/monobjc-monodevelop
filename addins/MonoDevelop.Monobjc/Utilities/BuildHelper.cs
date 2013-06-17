@@ -431,8 +431,10 @@ namespace MonoDevelop.Monobjc.Utilities
 					using (StringWriter errorWriter = new StringWriter()) {
 						ProjectFile file = project.GetProjectFile("App.entitlements");
                         if (project.UseEntitlements && file != null) {
+                            monitor.Log.WriteLine (GettextCatalog.GetString ("Signing with identity='{0}' and entitlements='{1}'", project.SigningIdentity, file.FilePath));
 							CodeSign.PerformSigning (maker.ApplicationDirectory, project.SigningIdentity, file.FilePath, outputWriter, errorWriter);
 						} else {
+                            monitor.Log.WriteLine (GettextCatalog.GetString ("Signing with identity='{0}'", project.SigningIdentity));
                             CodeSign.PerformSigning (maker.ApplicationDirectory, project.SigningIdentity, outputWriter, errorWriter);
 						}
 						LoggingService.LogInfo ("CodeSign returns: " + outputWriter.ToString ());
