@@ -52,6 +52,7 @@ namespace MonoDevelop.Monobjc
 		public const String EmbeddedInterfaceDefinition = "EmbeddedInterfaceDefinition";
 
 		public const String INFO_PLIST = "Info.plist";
+        public const String APP_ENTITLEMENTS = "App.entitlements";
 		public const String GROUP_CLASSES = "Classes";
 		public const String GROUP_RESOURCES = "Resources";
 		public const String GROUP_FRAMEWORKS = "Frameworks";
