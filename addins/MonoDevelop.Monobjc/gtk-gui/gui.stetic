@@ -5,14 +5,14 @@
     <target-gtk-version>2.12</target-gtk-version>
   </configuration>
   <import>
-    <widget-library name="../../../dependencies/3.0/Mono.TextEditor.dll" />
-    <widget-library name="../../../dependencies/3.0/MonoDevelop.Debugger.dll" />
-    <widget-library name="../../../dependencies/3.0/MonoDevelop.Debugger.Soft.dll" />
-    <widget-library name="../../../dependencies/3.0/MonoDevelop.Deployment.dll" />
-    <widget-library name="../../../dependencies/3.0/MonoDevelop.DesignerSupport.dll" />
-    <widget-library name="../../../dependencies/3.0/MonoDevelop.Ide.dll" />
-    <widget-library name="../../../dependencies/3.0/MonoDevelop.Refactoring.dll" />
-    <widget-library name="../../../dependencies/3.0/MonoDevelop.SourceEditor2.dll" />
+    <widget-library name="../../../dependencies/4.2/Mono.TextEditor.dll" />
+    <widget-library name="../../../dependencies/4.2/MonoDevelop.Debugger.dll" />
+    <widget-library name="../../../dependencies/4.2/MonoDevelop.Debugger.Soft.dll" />
+    <widget-library name="../../../dependencies/4.2/MonoDevelop.Deployment.dll" />
+    <widget-library name="../../../dependencies/4.2/MonoDevelop.DesignerSupport.dll" />
+    <widget-library name="../../../dependencies/4.2/MonoDevelop.Ide.dll" />
+    <widget-library name="../../../dependencies/4.2/MonoDevelop.Refactoring.dll" />
+    <widget-library name="../../../dependencies/4.2/MonoDevelop.SourceEditor2.dll" />
     <widget-library name="../bin/Debug/MonoDevelop.Monobjc.dll" internal="true" />
   </import>
   <widget class="Gtk.Bin" id="MonoDevelop.Monobjc.Gui.PreferencesWidget" design-size="400 300">
@@ -1382,6 +1382,7 @@
                 <property name="MemberName" />
                 <property name="CanFocus">True</property>
                 <property name="Label" translatable="yes">Export As Managed Application</property>
+                <property name="Active">True</property>
                 <property name="DrawIndicator">True</property>
                 <property name="HasLabel">True</property>
                 <property name="UseUnderline">True</property>

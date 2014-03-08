@@ -20,8 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Gtk;
-using ICSharpCode.NRefactory.CSharp;
-using ICSharpCode.NRefactory.TypeSystem;
 using Mono.TextEditor;
 using Mono.TextEditor.PopupWindow;
 using MonoDevelop.Core;
@@ -30,6 +28,7 @@ using MonoDevelop.Ide.Gui;
 using MonoDevelop.Ide.TypeSystem;
 using MonoDevelop.Refactoring;
 using MonoDevelop.Monobjc.Utilities;
+using ICSharpCode.NRefactory.CSharp;
 
 namespace MonoDevelop.Monobjc.Gui
 {
@@ -83,13 +82,13 @@ namespace MonoDevelop.Monobjc.Gui
 			String indent = this.Options.GetIndent(type.GetDefinition());
 			String generatedCode = this.Generate (propertyName, propertyTypeName, indent);
 			
-			var mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (document, declaringType));
+            var mode = new InsertionCursorEditMode (editor, MonoDevelop.Ide.TypeSystem.CodeGenerationService.GetInsertionPoints (document, declaringType));
 			if (mode.InsertionPoints.Count == 0) {
 				MessageService.ShowError (GettextCatalog.GetString ("No valid insertion point can be found in type '{0}'.", declaringType.Name));
 				return;
 			}
 			ModeHelpWindow helpWindow = new InsertionCursorLayoutModeHelpWindow ();
-			helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
+            //helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
 			helpWindow.TitleText = GettextCatalog.GetString ("Create Instance Variable");
 			mode.HelpWindow = helpWindow;
 			mode.CurIndex = mode.InsertionPoints.Count - 1;
@@ -104,7 +103,7 @@ namespace MonoDevelop.Monobjc.Gui
 		private string Generate (String propertyName, String propertyTypeName, string indent)
 		{
 			// Create the attribute
-			AttributeSection attributeSection = new AttributeSection ();
+            AttributeSection attributeSection = new AttributeSection ();
 			var attribute = GetAttribute(Constants.OBJECTIVE_C_IVAR_SHORTFORM, propertyName);
 			attributeSection.Attributes.Add (attribute);
 			

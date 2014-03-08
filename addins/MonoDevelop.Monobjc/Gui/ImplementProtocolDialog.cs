@@ -233,13 +233,13 @@ namespace MonoDevelop.Monobjc.Gui
 			String indent = this.Options.GetIndent (type.GetDefinition ());
 			String generatedCode = this.GenerateImplementation (declaringType, indent);
 			
-			var mode = new InsertionCursorEditMode (editor, CodeGenerationService.GetInsertionPoints (document, declaringType));
+			var mode = new InsertionCursorEditMode (editor, MonoDevelop.Ide.TypeSystem.CodeGenerationService.GetInsertionPoints (document, declaringType));
 			if (mode.InsertionPoints.Count == 0) {
 				MessageService.ShowError (GettextCatalog.GetString ("No valid insertion point can be found in type '{0}'.", declaringType.Name));
 				return;
 			}
 			ModeHelpWindow helpWindow = new InsertionCursorLayoutModeHelpWindow ();
-			helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
+            //helpWindow.TransientFor = IdeApp.Workbench.RootWindow;
 			helpWindow.TitleText = GettextCatalog.GetString ("Implement Protocol");
 			mode.HelpWindow = helpWindow;
 			mode.CurIndex = mode.InsertionPoints.Count - 1;

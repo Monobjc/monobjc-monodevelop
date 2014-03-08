@@ -23,7 +23,7 @@ namespace MonoDevelop.Monobjc
 	/// <summary>
 	///   A Monobjc's version of a execution command.
 	/// </summary>
-	public class MonobjcExecutionCommand : ExecutionCommand
+    public class MonobjcExecutionCommand : ExecutionCommand
 	{
 		private readonly MonobjcProjectConfiguration configuration;
 
@@ -46,16 +46,9 @@ namespace MonoDevelop.Monobjc
 		///   Gets the command string.
 		/// </summary>
 		/// <value>The command string.</value>
-#if MD_3_0
-        public override string CommandString {
-            get { return this.configuration.Runtime; }
-        }
-#endif
-#if MD_4_0
         public string CommandString {
             get { return this.configuration.Runtime; }
         }
-#endif
 
         /// <summary>
 		///   Gets the name of the application.

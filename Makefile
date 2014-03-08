@@ -13,12 +13,11 @@
 # ----------------------------------------
 
 # Set the default parameters
-VERSION?=3.0
+VERSION?=4.2
 CONFIGURATION?=Debug
 BUILD_NUMBER?=0
-IDE_NAME?=MonoDevelop
-IDE_APP?=/Applications/$(IDE_NAME).app
-APP_SUPPORT_DIR?=~/Library/Application\ Support/$(IDE_NAME)-$(IDE_VERSION)/LocalInstall/Addins
+IDE_APP?=/Applications/Xamarin\ Studio.app
+APP_SUPPORT_DIR?=~/Library/Application\ Support/XamarinStudio-4.0/LocalInstall/Addins
 
 # Set the directories
 ADDINS_DIR=$(CURDIR)/addins
