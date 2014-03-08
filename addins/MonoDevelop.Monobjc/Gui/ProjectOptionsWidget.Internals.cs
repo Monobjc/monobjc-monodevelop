@@ -97,7 +97,8 @@ namespace MonoDevelop.Monobjc.Gui
 			store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.5"), MacOSVersion.MacOS105);
 			store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.6"), MacOSVersion.MacOS106);
 			store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.7"), MacOSVersion.MacOS107);
-			store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.8"), MacOSVersion.MacOS108);
+            store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.8"), MacOSVersion.MacOS108);
+            store.AppendValues (GettextCatalog.GetString ("Mac OS X 10.9"), MacOSVersion.MacOS109);
 		}
 		
 		private static void FillFrameworks (TreeView treeView, MonobjcProject project, MacOSVersion version)

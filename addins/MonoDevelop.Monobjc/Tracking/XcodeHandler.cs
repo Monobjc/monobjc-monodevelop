@@ -86,9 +86,12 @@ namespace MonoDevelop.Monobjc.Tracking
 			case MacOSVersion.MacOS107:
 				version = "10.7";
 				break;
-			case MacOSVersion.MacOS108:
-				version = "10.8";
-				break;
+            case MacOSVersion.MacOS108:
+                version = "10.8";
+                break;
+            case MacOSVersion.MacOS109:
+                version = "10.9";
+                break;
 			default:
 				version = "10.6";
 				break;
