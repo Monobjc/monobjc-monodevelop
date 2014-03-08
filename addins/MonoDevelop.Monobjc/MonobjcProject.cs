@@ -144,7 +144,13 @@ namespace MonoDevelop.Monobjc
 		/// <returns></returns>
 		public override bool SupportsFramework (TargetFramework framework)
 		{
-			return framework.IsCompatibleWithFramework (TargetFrameworkMoniker.NET_4_0);
+            switch (framework.ClrVersion) {
+                case ClrVersion.Net_4_0:
+                case ClrVersion.Net_4_5:
+                    return true;
+                default:
+                    return false;
+            }
 		}
 
 		/// <summary>
