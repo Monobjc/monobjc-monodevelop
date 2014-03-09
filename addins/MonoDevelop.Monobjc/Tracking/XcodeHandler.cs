@@ -299,6 +299,8 @@ namespace MonoDevelop.Monobjc.Tracking
                 // Store the file so it can be tracked
                 this.headerFiles.Add(headerFile);
 			}
+
+            this.timestamp = DateTime.UtcNow.Ticks;
 		}
 		
         /// <summary>
