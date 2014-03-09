@@ -232,7 +232,7 @@ namespace MonoDevelop.Monobjc
 			base.OnFileAddedToProject (e);
 
 			this.DependencyHandler.AddFiles (dependencies);
-			this.CodeBehindHandler.GenerateDesignCode (e);
+			this.CodeBehindHandler.GenerateDesignCodeForXib (e);
 			this.EmbeddingHandler.ApplyEmbedding(e);
 		}
 
@@ -245,7 +245,7 @@ namespace MonoDevelop.Monobjc
 
 			base.OnFileChangedInProject (e);
 
-			this.CodeBehindHandler.GenerateDesignCode (e);
+			this.CodeBehindHandler.GenerateDesignCodeForXib (e);
 		}
 
 		protected override void OnFilePropertyChangedInProject (ProjectFileEventArgs e)

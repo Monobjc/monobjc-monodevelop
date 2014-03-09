@@ -17,6 +17,7 @@
     <!-- Assemblies -->
     <Import assembly="MonoDevelop.Monobjc.dll" />
     <Import assembly="Monobjc.Tools.dll" />
+    <Import assembly="Antlr4.Runtime.v4.0.dll" />
     <!-- Common Templates -->
     <Import file="Templates/MonobjcFileDefinitionPList.xft.xml"/>
     <Import file="Templates/MonobjcFileEntitlementsPList.xft.xml"/>

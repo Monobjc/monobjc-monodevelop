@@ -74,7 +74,7 @@ namespace MonoDevelop.Monobjc.Gui
 		private global::Gtk.Label labelEncryptArtworkSeed;
 		private global::Gtk.Label labelEncryptDescription;
 		private global::Gtk.Label labelAdvanced;
-		
+
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
@@ -400,64 +400,40 @@ namespace MonoDevelop.Monobjc.Gui
 			this.buttonAddAdditionnalAssemblies.CanFocus = true;
 			this.buttonAddAdditionnalAssemblies.Name = "buttonAddAdditionnalAssemblies";
 			this.buttonAddAdditionnalAssemblies.UseUnderline = true;
-			// Container child buttonAddAdditionnalAssemblies.Gtk.Container+ContainerChild
-			global::Gtk.Alignment w28 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
-			// Container child GtkAlignment.Gtk.Container+ContainerChild
-			global::Gtk.HBox w29 = new global::Gtk.HBox ();
-			w29.Spacing = 2;
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Image w30 = new global::Gtk.Image ();
-			w30.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-add", global::Gtk.IconSize.Menu);
-			w29.Add (w30);
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Label w32 = new global::Gtk.Label ();
-			w32.LabelProp = global::Mono.Unix.Catalog.GetString ("Add");
-			w32.UseUnderline = true;
-			w29.Add (w32);
-			w28.Add (w29);
-			this.buttonAddAdditionnalAssemblies.Add (w28);
+			this.buttonAddAdditionnalAssemblies.Label = global::Mono.Unix.Catalog.GetString ("Add");
+			global::Gtk.Image w28 = new global::Gtk.Image ();
+			w28.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-add", global::Gtk.IconSize.Menu);
+			this.buttonAddAdditionnalAssemblies.Image = w28;
 			this.vbox3.Add (this.buttonAddAdditionnalAssemblies);
-			global::Gtk.Box.BoxChild w36 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.buttonAddAdditionnalAssemblies]));
-			w36.Position = 0;
-			w36.Expand = false;
-			w36.Fill = false;
+			global::Gtk.Box.BoxChild w29 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.buttonAddAdditionnalAssemblies]));
+			w29.Position = 0;
+			w29.Expand = false;
+			w29.Fill = false;
 			// Container child vbox3.Gtk.Box+BoxChild
 			this.buttonRemoveAdditionnalAssemblies = new global::Gtk.Button ();
 			this.buttonRemoveAdditionnalAssemblies.CanFocus = true;
 			this.buttonRemoveAdditionnalAssemblies.Name = "buttonRemoveAdditionnalAssemblies";
 			this.buttonRemoveAdditionnalAssemblies.UseUnderline = true;
-			// Container child buttonRemoveAdditionnalAssemblies.Gtk.Container+ContainerChild
-			global::Gtk.Alignment w37 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
-			// Container child GtkAlignment.Gtk.Container+ContainerChild
-			global::Gtk.HBox w38 = new global::Gtk.HBox ();
-			w38.Spacing = 2;
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Image w39 = new global::Gtk.Image ();
-			w39.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
-			w38.Add (w39);
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Label w41 = new global::Gtk.Label ();
-			w41.LabelProp = global::Mono.Unix.Catalog.GetString ("Remove");
-			w41.UseUnderline = true;
-			w38.Add (w41);
-			w37.Add (w38);
-			this.buttonRemoveAdditionnalAssemblies.Add (w37);
+			this.buttonRemoveAdditionnalAssemblies.Label = global::Mono.Unix.Catalog.GetString ("Remove");
+			global::Gtk.Image w30 = new global::Gtk.Image ();
+			w30.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
+			this.buttonRemoveAdditionnalAssemblies.Image = w30;
 			this.vbox3.Add (this.buttonRemoveAdditionnalAssemblies);
-			global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.buttonRemoveAdditionnalAssemblies]));
-			w45.Position = 1;
-			w45.Expand = false;
-			w45.Fill = false;
+			global::Gtk.Box.BoxChild w31 = ((global::Gtk.Box.BoxChild)(this.vbox3 [this.buttonRemoveAdditionnalAssemblies]));
+			w31.Position = 1;
+			w31.Expand = false;
+			w31.Fill = false;
 			this.hboxAdditionalAssemblies.Add (this.vbox3);
-			global::Gtk.Box.BoxChild w46 = ((global::Gtk.Box.BoxChild)(this.hboxAdditionalAssemblies [this.vbox3]));
-			w46.Position = 1;
-			w46.Expand = false;
-			w46.Fill = false;
+			global::Gtk.Box.BoxChild w32 = ((global::Gtk.Box.BoxChild)(this.hboxAdditionalAssemblies [this.vbox3]));
+			w32.Position = 1;
+			w32.Expand = false;
+			w32.Fill = false;
 			this.tableEmbedding.Add (this.hboxAdditionalAssemblies);
-			global::Gtk.Table.TableChild w47 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.hboxAdditionalAssemblies]));
-			w47.TopAttach = ((uint)(5));
-			w47.BottomAttach = ((uint)(6));
-			w47.RightAttach = ((uint)(2));
-			w47.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w33 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.hboxAdditionalAssemblies]));
+			w33.TopAttach = ((uint)(5));
+			w33.BottomAttach = ((uint)(6));
+			w33.RightAttach = ((uint)(2));
+			w33.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableEmbedding.Gtk.Table+TableChild
 			this.hboxAdditionnalLibraries = new global::Gtk.HBox ();
 			this.hboxAdditionnalLibraries.Name = "hboxAdditionnalLibraries";
@@ -474,8 +450,8 @@ namespace MonoDevelop.Monobjc.Gui
 			this.treeviewAdditionnalLibraries.HeadersVisible = false;
 			this.scrolledwindowAdditionnalLibraries.Add (this.treeviewAdditionnalLibraries);
 			this.hboxAdditionnalLibraries.Add (this.scrolledwindowAdditionnalLibraries);
-			global::Gtk.Box.BoxChild w49 = ((global::Gtk.Box.BoxChild)(this.hboxAdditionnalLibraries [this.scrolledwindowAdditionnalLibraries]));
-			w49.Position = 0;
+			global::Gtk.Box.BoxChild w35 = ((global::Gtk.Box.BoxChild)(this.hboxAdditionnalLibraries [this.scrolledwindowAdditionnalLibraries]));
+			w35.Position = 0;
 			// Container child hboxAdditionnalLibraries.Gtk.Box+BoxChild
 			this.vbox5 = new global::Gtk.VBox ();
 			this.vbox5.Name = "vbox5";
@@ -485,64 +461,40 @@ namespace MonoDevelop.Monobjc.Gui
 			this.buttonAddAdditionnalLibraries.CanFocus = true;
 			this.buttonAddAdditionnalLibraries.Name = "buttonAddAdditionnalLibraries";
 			this.buttonAddAdditionnalLibraries.UseUnderline = true;
-			// Container child buttonAddAdditionnalLibraries.Gtk.Container+ContainerChild
-			global::Gtk.Alignment w50 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
-			// Container child GtkAlignment.Gtk.Container+ContainerChild
-			global::Gtk.HBox w51 = new global::Gtk.HBox ();
-			w51.Spacing = 2;
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Image w52 = new global::Gtk.Image ();
-			w52.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-add", global::Gtk.IconSize.Menu);
-			w51.Add (w52);
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Label w54 = new global::Gtk.Label ();
-			w54.LabelProp = global::Mono.Unix.Catalog.GetString ("Add");
-			w54.UseUnderline = true;
-			w51.Add (w54);
-			w50.Add (w51);
-			this.buttonAddAdditionnalLibraries.Add (w50);
+			this.buttonAddAdditionnalLibraries.Label = global::Mono.Unix.Catalog.GetString ("Add");
+			global::Gtk.Image w36 = new global::Gtk.Image ();
+			w36.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-add", global::Gtk.IconSize.Menu);
+			this.buttonAddAdditionnalLibraries.Image = w36;
 			this.vbox5.Add (this.buttonAddAdditionnalLibraries);
-			global::Gtk.Box.BoxChild w58 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.buttonAddAdditionnalLibraries]));
-			w58.Position = 0;
-			w58.Expand = false;
-			w58.Fill = false;
+			global::Gtk.Box.BoxChild w37 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.buttonAddAdditionnalLibraries]));
+			w37.Position = 0;
+			w37.Expand = false;
+			w37.Fill = false;
 			// Container child vbox5.Gtk.Box+BoxChild
 			this.buttonRemoveAdditionnalLibraries = new global::Gtk.Button ();
 			this.buttonRemoveAdditionnalLibraries.CanFocus = true;
 			this.buttonRemoveAdditionnalLibraries.Name = "buttonRemoveAdditionnalLibraries";
 			this.buttonRemoveAdditionnalLibraries.UseUnderline = true;
-			// Container child buttonRemoveAdditionnalLibraries.Gtk.Container+ContainerChild
-			global::Gtk.Alignment w59 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
-			// Container child GtkAlignment.Gtk.Container+ContainerChild
-			global::Gtk.HBox w60 = new global::Gtk.HBox ();
-			w60.Spacing = 2;
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Image w61 = new global::Gtk.Image ();
-			w61.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
-			w60.Add (w61);
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Label w63 = new global::Gtk.Label ();
-			w63.LabelProp = global::Mono.Unix.Catalog.GetString ("Remove");
-			w63.UseUnderline = true;
-			w60.Add (w63);
-			w59.Add (w60);
-			this.buttonRemoveAdditionnalLibraries.Add (w59);
+			this.buttonRemoveAdditionnalLibraries.Label = global::Mono.Unix.Catalog.GetString ("Remove");
+			global::Gtk.Image w38 = new global::Gtk.Image ();
+			w38.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
+			this.buttonRemoveAdditionnalLibraries.Image = w38;
 			this.vbox5.Add (this.buttonRemoveAdditionnalLibraries);
-			global::Gtk.Box.BoxChild w67 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.buttonRemoveAdditionnalLibraries]));
-			w67.Position = 1;
-			w67.Expand = false;
-			w67.Fill = false;
+			global::Gtk.Box.BoxChild w39 = ((global::Gtk.Box.BoxChild)(this.vbox5 [this.buttonRemoveAdditionnalLibraries]));
+			w39.Position = 1;
+			w39.Expand = false;
+			w39.Fill = false;
 			this.hboxAdditionnalLibraries.Add (this.vbox5);
-			global::Gtk.Box.BoxChild w68 = ((global::Gtk.Box.BoxChild)(this.hboxAdditionnalLibraries [this.vbox5]));
-			w68.Position = 1;
-			w68.Expand = false;
-			w68.Fill = false;
+			global::Gtk.Box.BoxChild w40 = ((global::Gtk.Box.BoxChild)(this.hboxAdditionnalLibraries [this.vbox5]));
+			w40.Position = 1;
+			w40.Expand = false;
+			w40.Fill = false;
 			this.tableEmbedding.Add (this.hboxAdditionnalLibraries);
-			global::Gtk.Table.TableChild w69 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.hboxAdditionnalLibraries]));
-			w69.TopAttach = ((uint)(9));
-			w69.BottomAttach = ((uint)(10));
-			w69.RightAttach = ((uint)(2));
-			w69.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w41 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.hboxAdditionnalLibraries]));
+			w41.TopAttach = ((uint)(9));
+			w41.BottomAttach = ((uint)(10));
+			w41.RightAttach = ((uint)(2));
+			w41.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableEmbedding.Gtk.Table+TableChild
 			this.hboxExcludedAssemblies = new global::Gtk.HBox ();
 			this.hboxExcludedAssemblies.Name = "hboxExcludedAssemblies";
@@ -559,8 +511,8 @@ namespace MonoDevelop.Monobjc.Gui
 			this.treeviewExcludedAssemblies.HeadersVisible = false;
 			this.scrolledwindowExcludedAssemblies.Add (this.treeviewExcludedAssemblies);
 			this.hboxExcludedAssemblies.Add (this.scrolledwindowExcludedAssemblies);
-			global::Gtk.Box.BoxChild w71 = ((global::Gtk.Box.BoxChild)(this.hboxExcludedAssemblies [this.scrolledwindowExcludedAssemblies]));
-			w71.Position = 0;
+			global::Gtk.Box.BoxChild w43 = ((global::Gtk.Box.BoxChild)(this.hboxExcludedAssemblies [this.scrolledwindowExcludedAssemblies]));
+			w43.Position = 0;
 			// Container child hboxExcludedAssemblies.Gtk.Box+BoxChild
 			this.vbox4 = new global::Gtk.VBox ();
 			this.vbox4.Name = "vbox4";
@@ -570,64 +522,40 @@ namespace MonoDevelop.Monobjc.Gui
 			this.buttonAddExcludedAssemblies.CanFocus = true;
 			this.buttonAddExcludedAssemblies.Name = "buttonAddExcludedAssemblies";
 			this.buttonAddExcludedAssemblies.UseUnderline = true;
-			// Container child buttonAddExcludedAssemblies.Gtk.Container+ContainerChild
-			global::Gtk.Alignment w72 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
-			// Container child GtkAlignment.Gtk.Container+ContainerChild
-			global::Gtk.HBox w73 = new global::Gtk.HBox ();
-			w73.Spacing = 2;
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Image w74 = new global::Gtk.Image ();
-			w74.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-add", global::Gtk.IconSize.Menu);
-			w73.Add (w74);
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Label w76 = new global::Gtk.Label ();
-			w76.LabelProp = global::Mono.Unix.Catalog.GetString ("Add");
-			w76.UseUnderline = true;
-			w73.Add (w76);
-			w72.Add (w73);
-			this.buttonAddExcludedAssemblies.Add (w72);
+			this.buttonAddExcludedAssemblies.Label = global::Mono.Unix.Catalog.GetString ("Add");
+			global::Gtk.Image w44 = new global::Gtk.Image ();
+			w44.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-add", global::Gtk.IconSize.Menu);
+			this.buttonAddExcludedAssemblies.Image = w44;
 			this.vbox4.Add (this.buttonAddExcludedAssemblies);
-			global::Gtk.Box.BoxChild w80 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.buttonAddExcludedAssemblies]));
-			w80.Position = 0;
-			w80.Expand = false;
-			w80.Fill = false;
+			global::Gtk.Box.BoxChild w45 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.buttonAddExcludedAssemblies]));
+			w45.Position = 0;
+			w45.Expand = false;
+			w45.Fill = false;
 			// Container child vbox4.Gtk.Box+BoxChild
 			this.buttonRemoveExcludedAssemblies = new global::Gtk.Button ();
 			this.buttonRemoveExcludedAssemblies.CanFocus = true;
 			this.buttonRemoveExcludedAssemblies.Name = "buttonRemoveExcludedAssemblies";
 			this.buttonRemoveExcludedAssemblies.UseUnderline = true;
-			// Container child buttonRemoveExcludedAssemblies.Gtk.Container+ContainerChild
-			global::Gtk.Alignment w81 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
-			// Container child GtkAlignment.Gtk.Container+ContainerChild
-			global::Gtk.HBox w82 = new global::Gtk.HBox ();
-			w82.Spacing = 2;
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Image w83 = new global::Gtk.Image ();
-			w83.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
-			w82.Add (w83);
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Label w85 = new global::Gtk.Label ();
-			w85.LabelProp = global::Mono.Unix.Catalog.GetString ("Remove");
-			w85.UseUnderline = true;
-			w82.Add (w85);
-			w81.Add (w82);
-			this.buttonRemoveExcludedAssemblies.Add (w81);
+			this.buttonRemoveExcludedAssemblies.Label = global::Mono.Unix.Catalog.GetString ("Remove");
+			global::Gtk.Image w46 = new global::Gtk.Image ();
+			w46.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-delete", global::Gtk.IconSize.Menu);
+			this.buttonRemoveExcludedAssemblies.Image = w46;
 			this.vbox4.Add (this.buttonRemoveExcludedAssemblies);
-			global::Gtk.Box.BoxChild w89 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.buttonRemoveExcludedAssemblies]));
-			w89.Position = 1;
-			w89.Expand = false;
-			w89.Fill = false;
+			global::Gtk.Box.BoxChild w47 = ((global::Gtk.Box.BoxChild)(this.vbox4 [this.buttonRemoveExcludedAssemblies]));
+			w47.Position = 1;
+			w47.Expand = false;
+			w47.Fill = false;
 			this.hboxExcludedAssemblies.Add (this.vbox4);
-			global::Gtk.Box.BoxChild w90 = ((global::Gtk.Box.BoxChild)(this.hboxExcludedAssemblies [this.vbox4]));
-			w90.Position = 1;
-			w90.Expand = false;
-			w90.Fill = false;
+			global::Gtk.Box.BoxChild w48 = ((global::Gtk.Box.BoxChild)(this.hboxExcludedAssemblies [this.vbox4]));
+			w48.Position = 1;
+			w48.Expand = false;
+			w48.Fill = false;
 			this.tableEmbedding.Add (this.hboxExcludedAssemblies);
-			global::Gtk.Table.TableChild w91 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.hboxExcludedAssemblies]));
-			w91.TopAttach = ((uint)(7));
-			w91.BottomAttach = ((uint)(8));
-			w91.RightAttach = ((uint)(2));
-			w91.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w49 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.hboxExcludedAssemblies]));
+			w49.TopAttach = ((uint)(7));
+			w49.BottomAttach = ((uint)(8));
+			w49.RightAttach = ((uint)(2));
+			w49.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableEmbedding.Gtk.Table+TableChild
 			this.labelAdditionnalAssemblies = new global::Gtk.Label ();
 			this.labelAdditionnalAssemblies.Name = "labelAdditionnalAssemblies";
@@ -635,11 +563,11 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelAdditionnalAssemblies.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Additionnal Assemblies</b>");
 			this.labelAdditionnalAssemblies.UseMarkup = true;
 			this.tableEmbedding.Add (this.labelAdditionnalAssemblies);
-			global::Gtk.Table.TableChild w92 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelAdditionnalAssemblies]));
-			w92.TopAttach = ((uint)(4));
-			w92.BottomAttach = ((uint)(5));
-			w92.RightAttach = ((uint)(2));
-			w92.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w50 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelAdditionnalAssemblies]));
+			w50.TopAttach = ((uint)(4));
+			w50.BottomAttach = ((uint)(5));
+			w50.RightAttach = ((uint)(2));
+			w50.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableEmbedding.Gtk.Table+TableChild
 			this.labelAdditionnalLibraries = new global::Gtk.Label ();
 			this.labelAdditionnalLibraries.Name = "labelAdditionnalLibraries";
@@ -647,23 +575,23 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelAdditionnalLibraries.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Additionnal Libraries</b>");
 			this.labelAdditionnalLibraries.UseMarkup = true;
 			this.tableEmbedding.Add (this.labelAdditionnalLibraries);
-			global::Gtk.Table.TableChild w93 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelAdditionnalLibraries]));
-			w93.TopAttach = ((uint)(8));
-			w93.BottomAttach = ((uint)(9));
-			w93.RightAttach = ((uint)(2));
-			w93.XOptions = ((global::Gtk.AttachOptions)(4));
-			w93.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w51 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelAdditionnalLibraries]));
+			w51.TopAttach = ((uint)(8));
+			w51.BottomAttach = ((uint)(9));
+			w51.RightAttach = ((uint)(2));
+			w51.XOptions = ((global::Gtk.AttachOptions)(4));
+			w51.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableEmbedding.Gtk.Table+TableChild
 			this.labelArchitectures = new global::Gtk.Label ();
 			this.labelArchitectures.Name = "labelArchitectures";
 			this.labelArchitectures.Xalign = 1F;
 			this.labelArchitectures.LabelProp = global::Mono.Unix.Catalog.GetString ("Target Mac OS Architectures:");
 			this.tableEmbedding.Add (this.labelArchitectures);
-			global::Gtk.Table.TableChild w94 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelArchitectures]));
-			w94.TopAttach = ((uint)(1));
-			w94.BottomAttach = ((uint)(2));
-			w94.XOptions = ((global::Gtk.AttachOptions)(4));
-			w94.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w52 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelArchitectures]));
+			w52.TopAttach = ((uint)(1));
+			w52.BottomAttach = ((uint)(2));
+			w52.XOptions = ((global::Gtk.AttachOptions)(4));
+			w52.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableEmbedding.Gtk.Table+TableChild
 			this.labelEmbeddedFrameworks = new global::Gtk.Label ();
 			this.labelEmbeddedFrameworks.Name = "labelEmbeddedFrameworks";
@@ -671,11 +599,11 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelEmbeddedFrameworks.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Embedded Frameworks</b>");
 			this.labelEmbeddedFrameworks.UseMarkup = true;
 			this.tableEmbedding.Add (this.labelEmbeddedFrameworks);
-			global::Gtk.Table.TableChild w95 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelEmbeddedFrameworks]));
-			w95.TopAttach = ((uint)(2));
-			w95.BottomAttach = ((uint)(3));
-			w95.RightAttach = ((uint)(2));
-			w95.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w53 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelEmbeddedFrameworks]));
+			w53.TopAttach = ((uint)(2));
+			w53.BottomAttach = ((uint)(3));
+			w53.RightAttach = ((uint)(2));
+			w53.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableEmbedding.Gtk.Table+TableChild
 			this.labelEmbeddingDescription = new global::Gtk.Label ();
 			this.labelEmbeddingDescription.Name = "labelEmbeddingDescription";
@@ -684,9 +612,9 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelEmbeddingDescription.Wrap = true;
 			this.labelEmbeddingDescription.Justify = ((global::Gtk.Justification)(3));
 			this.tableEmbedding.Add (this.labelEmbeddingDescription);
-			global::Gtk.Table.TableChild w96 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelEmbeddingDescription]));
-			w96.RightAttach = ((uint)(2));
-			w96.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w54 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelEmbeddingDescription]));
+			w54.RightAttach = ((uint)(2));
+			w54.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableEmbedding.Gtk.Table+TableChild
 			this.labelExcludedAssemblies = new global::Gtk.Label ();
 			this.labelExcludedAssemblies.Name = "labelExcludedAssemblies";
@@ -694,11 +622,11 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelExcludedAssemblies.LabelProp = global::Mono.Unix.Catalog.GetString ("<b>Excluded Assemblies</b>");
 			this.labelExcludedAssemblies.UseMarkup = true;
 			this.tableEmbedding.Add (this.labelExcludedAssemblies);
-			global::Gtk.Table.TableChild w97 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelExcludedAssemblies]));
-			w97.TopAttach = ((uint)(6));
-			w97.BottomAttach = ((uint)(7));
-			w97.RightAttach = ((uint)(2));
-			w97.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w55 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.labelExcludedAssemblies]));
+			w55.TopAttach = ((uint)(6));
+			w55.BottomAttach = ((uint)(7));
+			w55.RightAttach = ((uint)(2));
+			w55.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableEmbedding.Gtk.Table+TableChild
 			this.scrolledwindowEmbeddedFrameworks = new global::Gtk.ScrolledWindow ();
 			this.scrolledwindowEmbeddedFrameworks.CanFocus = true;
@@ -711,13 +639,13 @@ namespace MonoDevelop.Monobjc.Gui
 			this.treeviewEmbeddedFrameworks.HeadersVisible = false;
 			this.scrolledwindowEmbeddedFrameworks.Add (this.treeviewEmbeddedFrameworks);
 			this.tableEmbedding.Add (this.scrolledwindowEmbeddedFrameworks);
-			global::Gtk.Table.TableChild w99 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.scrolledwindowEmbeddedFrameworks]));
-			w99.TopAttach = ((uint)(3));
-			w99.BottomAttach = ((uint)(4));
-			w99.RightAttach = ((uint)(2));
+			global::Gtk.Table.TableChild w57 = ((global::Gtk.Table.TableChild)(this.tableEmbedding [this.scrolledwindowEmbeddedFrameworks]));
+			w57.TopAttach = ((uint)(3));
+			w57.BottomAttach = ((uint)(4));
+			w57.RightAttach = ((uint)(2));
 			this.notebook.Add (this.tableEmbedding);
-			global::Gtk.Notebook.NotebookChild w100 = ((global::Gtk.Notebook.NotebookChild)(this.notebook [this.tableEmbedding]));
-			w100.Position = 1;
+			global::Gtk.Notebook.NotebookChild w58 = ((global::Gtk.Notebook.NotebookChild)(this.notebook [this.tableEmbedding]));
+			w58.Position = 1;
 			// Notebook tab
 			this.labelEmbedding = new global::Gtk.Label ();
 			this.labelEmbedding.Name = "labelEmbedding";
@@ -738,21 +666,21 @@ namespace MonoDevelop.Monobjc.Gui
 			this.checkbuttonArchivePackage.DrawIndicator = true;
 			this.checkbuttonArchivePackage.UseUnderline = true;
 			this.tableArchiving.Add (this.checkbuttonArchivePackage);
-			global::Gtk.Table.TableChild w101 = ((global::Gtk.Table.TableChild)(this.tableArchiving [this.checkbuttonArchivePackage]));
-			w101.TopAttach = ((uint)(1));
-			w101.BottomAttach = ((uint)(2));
-			w101.RightAttach = ((uint)(2));
-			w101.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w59 = ((global::Gtk.Table.TableChild)(this.tableArchiving [this.checkbuttonArchivePackage]));
+			w59.TopAttach = ((uint)(1));
+			w59.BottomAttach = ((uint)(2));
+			w59.RightAttach = ((uint)(2));
+			w59.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableArchiving.Gtk.Table+TableChild
 			this.comboboxPackagingCertificates = global::Gtk.ComboBox.NewText ();
 			this.comboboxPackagingCertificates.Name = "comboboxPackagingCertificates";
 			this.tableArchiving.Add (this.comboboxPackagingCertificates);
-			global::Gtk.Table.TableChild w102 = ((global::Gtk.Table.TableChild)(this.tableArchiving [this.comboboxPackagingCertificates]));
-			w102.TopAttach = ((uint)(2));
-			w102.BottomAttach = ((uint)(3));
-			w102.LeftAttach = ((uint)(1));
-			w102.RightAttach = ((uint)(2));
-			w102.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w60 = ((global::Gtk.Table.TableChild)(this.tableArchiving [this.comboboxPackagingCertificates]));
+			w60.TopAttach = ((uint)(2));
+			w60.BottomAttach = ((uint)(3));
+			w60.LeftAttach = ((uint)(1));
+			w60.RightAttach = ((uint)(2));
+			w60.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableArchiving.Gtk.Table+TableChild
 			this.labelArchivingDescription = new global::Gtk.Label ();
 			this.labelArchivingDescription.Name = "labelArchivingDescription";
@@ -761,23 +689,23 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelArchivingDescription.Wrap = true;
 			this.labelArchivingDescription.Justify = ((global::Gtk.Justification)(3));
 			this.tableArchiving.Add (this.labelArchivingDescription);
-			global::Gtk.Table.TableChild w103 = ((global::Gtk.Table.TableChild)(this.tableArchiving [this.labelArchivingDescription]));
-			w103.RightAttach = ((uint)(2));
-			w103.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w61 = ((global::Gtk.Table.TableChild)(this.tableArchiving [this.labelArchivingDescription]));
+			w61.RightAttach = ((uint)(2));
+			w61.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableArchiving.Gtk.Table+TableChild
 			this.labelPackagingCertificate = new global::Gtk.Label ();
 			this.labelPackagingCertificate.Name = "labelPackagingCertificate";
 			this.labelPackagingCertificate.Xalign = 1F;
 			this.labelPackagingCertificate.LabelProp = global::Mono.Unix.Catalog.GetString ("Packaging Certificate:");
 			this.tableArchiving.Add (this.labelPackagingCertificate);
-			global::Gtk.Table.TableChild w104 = ((global::Gtk.Table.TableChild)(this.tableArchiving [this.labelPackagingCertificate]));
-			w104.TopAttach = ((uint)(2));
-			w104.BottomAttach = ((uint)(3));
-			w104.XOptions = ((global::Gtk.AttachOptions)(4));
-			w104.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w62 = ((global::Gtk.Table.TableChild)(this.tableArchiving [this.labelPackagingCertificate]));
+			w62.TopAttach = ((uint)(2));
+			w62.BottomAttach = ((uint)(3));
+			w62.XOptions = ((global::Gtk.AttachOptions)(4));
+			w62.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.notebook.Add (this.tableArchiving);
-			global::Gtk.Notebook.NotebookChild w105 = ((global::Gtk.Notebook.NotebookChild)(this.notebook [this.tableArchiving]));
-			w105.Position = 2;
+			global::Gtk.Notebook.NotebookChild w63 = ((global::Gtk.Notebook.NotebookChild)(this.notebook [this.tableArchiving]));
+			w63.Position = 2;
 			// Notebook tab
 			this.labelArchiving = new global::Gtk.Label ();
 			this.labelArchiving.Name = "labelArchiving";
@@ -798,21 +726,21 @@ namespace MonoDevelop.Monobjc.Gui
 			this.checkbuttonCombineArtwork.DrawIndicator = true;
 			this.checkbuttonCombineArtwork.UseUnderline = true;
 			this.tableAdvanced.Add (this.checkbuttonCombineArtwork);
-			global::Gtk.Table.TableChild w106 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.checkbuttonCombineArtwork]));
-			w106.TopAttach = ((uint)(2));
-			w106.BottomAttach = ((uint)(3));
-			w106.RightAttach = ((uint)(2));
-			w106.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w64 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.checkbuttonCombineArtwork]));
+			w64.TopAttach = ((uint)(2));
+			w64.BottomAttach = ((uint)(3));
+			w64.RightAttach = ((uint)(2));
+			w64.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.comboboxDevelopmentRegion = global::Gtk.ComboBox.NewText ();
 			this.comboboxDevelopmentRegion.Name = "comboboxDevelopmentRegion";
 			this.tableAdvanced.Add (this.comboboxDevelopmentRegion);
-			global::Gtk.Table.TableChild w107 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.comboboxDevelopmentRegion]));
-			w107.TopAttach = ((uint)(1));
-			w107.BottomAttach = ((uint)(2));
-			w107.LeftAttach = ((uint)(1));
-			w107.RightAttach = ((uint)(2));
-			w107.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w65 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.comboboxDevelopmentRegion]));
+			w65.TopAttach = ((uint)(1));
+			w65.BottomAttach = ((uint)(2));
+			w65.LeftAttach = ((uint)(1));
+			w65.RightAttach = ((uint)(2));
+			w65.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.entryEncryptionSeed = new global::Gtk.Entry ();
 			this.entryEncryptionSeed.CanFocus = true;
@@ -820,13 +748,13 @@ namespace MonoDevelop.Monobjc.Gui
 			this.entryEncryptionSeed.IsEditable = true;
 			this.entryEncryptionSeed.InvisibleChar = '●';
 			this.tableAdvanced.Add (this.entryEncryptionSeed);
-			global::Gtk.Table.TableChild w108 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.entryEncryptionSeed]));
-			w108.TopAttach = ((uint)(4));
-			w108.BottomAttach = ((uint)(5));
-			w108.LeftAttach = ((uint)(1));
-			w108.RightAttach = ((uint)(2));
-			w108.XOptions = ((global::Gtk.AttachOptions)(4));
-			w108.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w66 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.entryEncryptionSeed]));
+			w66.TopAttach = ((uint)(4));
+			w66.BottomAttach = ((uint)(5));
+			w66.LeftAttach = ((uint)(1));
+			w66.RightAttach = ((uint)(2));
+			w66.XOptions = ((global::Gtk.AttachOptions)(4));
+			w66.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.labelArchivingDescription1 = new global::Gtk.Label ();
 			this.labelArchivingDescription1.Name = "labelArchivingDescription1";
@@ -835,31 +763,31 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelArchivingDescription1.Wrap = true;
 			this.labelArchivingDescription1.Justify = ((global::Gtk.Justification)(3));
 			this.tableAdvanced.Add (this.labelArchivingDescription1);
-			global::Gtk.Table.TableChild w109 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelArchivingDescription1]));
-			w109.RightAttach = ((uint)(2));
-			w109.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w67 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelArchivingDescription1]));
+			w67.RightAttach = ((uint)(2));
+			w67.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.labelDevelopmentRegion = new global::Gtk.Label ();
 			this.labelDevelopmentRegion.Name = "labelDevelopmentRegion";
 			this.labelDevelopmentRegion.Xalign = 1F;
 			this.labelDevelopmentRegion.LabelProp = global::Mono.Unix.Catalog.GetString ("Development Language:");
 			this.tableAdvanced.Add (this.labelDevelopmentRegion);
-			global::Gtk.Table.TableChild w110 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelDevelopmentRegion]));
-			w110.TopAttach = ((uint)(1));
-			w110.BottomAttach = ((uint)(2));
-			w110.XOptions = ((global::Gtk.AttachOptions)(4));
-			w110.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w68 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelDevelopmentRegion]));
+			w68.TopAttach = ((uint)(1));
+			w68.BottomAttach = ((uint)(2));
+			w68.XOptions = ((global::Gtk.AttachOptions)(4));
+			w68.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.labelEncryptArtworkSeed = new global::Gtk.Label ();
 			this.labelEncryptArtworkSeed.Name = "labelEncryptArtworkSeed";
 			this.labelEncryptArtworkSeed.Xalign = 1F;
 			this.labelEncryptArtworkSeed.LabelProp = global::Mono.Unix.Catalog.GetString ("Encryption Seed:");
 			this.tableAdvanced.Add (this.labelEncryptArtworkSeed);
-			global::Gtk.Table.TableChild w111 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelEncryptArtworkSeed]));
-			w111.TopAttach = ((uint)(4));
-			w111.BottomAttach = ((uint)(5));
-			w111.XOptions = ((global::Gtk.AttachOptions)(4));
-			w111.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w69 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelEncryptArtworkSeed]));
+			w69.TopAttach = ((uint)(4));
+			w69.BottomAttach = ((uint)(5));
+			w69.XOptions = ((global::Gtk.AttachOptions)(4));
+			w69.YOptions = ((global::Gtk.AttachOptions)(4));
 			// Container child tableAdvanced.Gtk.Table+TableChild
 			this.labelEncryptDescription = new global::Gtk.Label ();
 			this.labelEncryptDescription.Name = "labelEncryptDescription";
@@ -867,15 +795,15 @@ namespace MonoDevelop.Monobjc.Gui
 			this.labelEncryptDescription.LabelProp = global::Mono.Unix.Catalog.GetString ("You have the ability to encrypt content files in order to protect them from a direct re-use. The encryption is done by using the AES algorithm (the key is derived from the seed).");
 			this.labelEncryptDescription.Wrap = true;
 			this.tableAdvanced.Add (this.labelEncryptDescription);
-			global::Gtk.Table.TableChild w112 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelEncryptDescription]));
-			w112.TopAttach = ((uint)(3));
-			w112.BottomAttach = ((uint)(4));
-			w112.RightAttach = ((uint)(2));
-			w112.XOptions = ((global::Gtk.AttachOptions)(4));
-			w112.YOptions = ((global::Gtk.AttachOptions)(4));
+			global::Gtk.Table.TableChild w70 = ((global::Gtk.Table.TableChild)(this.tableAdvanced [this.labelEncryptDescription]));
+			w70.TopAttach = ((uint)(3));
+			w70.BottomAttach = ((uint)(4));
+			w70.RightAttach = ((uint)(2));
+			w70.XOptions = ((global::Gtk.AttachOptions)(4));
+			w70.YOptions = ((global::Gtk.AttachOptions)(4));
 			this.notebook.Add (this.tableAdvanced);
-			global::Gtk.Notebook.NotebookChild w113 = ((global::Gtk.Notebook.NotebookChild)(this.notebook [this.tableAdvanced]));
-			w113.Position = 3;
+			global::Gtk.Notebook.NotebookChild w71 = ((global::Gtk.Notebook.NotebookChild)(this.notebook [this.tableAdvanced]));
+			w71.Position = 3;
 			// Notebook tab
 			this.labelAdvanced = new global::Gtk.Label ();
 			this.labelAdvanced.Name = "labelAdvanced";
