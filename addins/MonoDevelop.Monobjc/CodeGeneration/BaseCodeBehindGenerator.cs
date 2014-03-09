@@ -123,7 +123,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 		/// <param name = "className">Name of the class.</param>
 		/// <param name = "enumerable">The class descriptions.</param>
 		/// <returns>The path to the designer file.</returns>
-		public FilePath GenerateCodeBehindCode (ProjectTypeCache cache, CodeBehindWriter writer, String className, IEnumerable<IBPartialClassDescription> enumerable)
+        public FilePath GenerateCodeBehindCode (ProjectTypeCache cache, CodeBehindWriter writer, String className, IEnumerable<IIBClassDescriptor> descriptors)
 		{
 			FilePath designerFile = null;
 			String defaultNamespace;
@@ -174,7 +174,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			imports.Add ("Monobjc");
 
 			// Create fields for outlets);
-			foreach (IBOutletDescriptor outlet in enumerable.SelectMany(d => d.Outlets)) {
+            foreach (IBOutletDescriptor outlet in descriptors.SelectMany(d => d.Outlets)) {
 				IType outletType = cache.ResolvePartialType (outlet.ClassName);
 				outletType = outletType ?? cache.ResolvePartialType ("id");
 				outletType = outletType ?? cache.ResolveType (typeof(IntPtr));
@@ -188,7 +188,7 @@ namespace MonoDevelop.Monobjc.CodeGeneration
 			}
 
 			// Create methods for exposed actions
-			foreach (IBActionDescriptor action in enumerable.SelectMany(d => d.Actions)) {
+            foreach (IBActionDescriptor action in descriptors.SelectMany(d => d.Actions)) {
 				IType argumentType = cache.ResolvePartialType (action.Argument);
 				argumentType = argumentType ?? cache.ResolvePartialType ("id");
 				argumentType = argumentType ?? cache.ResolveType (typeof(IntPtr));

@@ -32,6 +32,8 @@ namespace MonoDevelop.Monobjc.Tracking
 	class XcodeHandler : ProjectHandler
 	{
 		private XcodeProject xcodeProject = null;
+        private long timestamp = 0;
+        private IList<String> headerFiles = new List<String>();
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="XcodeHandler"/> class.
@@ -39,8 +41,21 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <param name="project">The project.</param>
 		public XcodeHandler (MonobjcProject project) : base(project)
 		{
+            IdeApp.FocusIn += this.HandleApplicationFocusIn;
 		}
 
+        /// <summary>
+        /// Clean up the handler
+        /// </summary>
+        public override void Dispose()
+        {
+            IdeApp.FocusIn -= this.HandleApplicationFocusIn;
+            base.Dispose();
+        }
+
+        /// <summary>
+        /// Gets the Xcode project. The project will be created if needed
+        /// </summary>
 		public XcodeProject XcodeProject {
 			get {
 				if (this.xcodeProject == null) {
@@ -50,11 +65,40 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 		}
 
+        /// <summary>
+        /// Clears the Xcode project.
+        /// </summary>
 		public void ClearXcodeProject ()
 		{
 			this.xcodeProject = null;
 		}
 
+        public void HandleApplicationFocusIn (Object sender, EventArgs e)
+        {
+            IList<FilePath> touchedHeaders = new List<FilePath>();
+
+            // Each time the IDE got focus:
+            // - check if header files are more recent than the reference timestamp. If so, generate code-behind code
+            // - once code-behind has been generated, update the last timestamp
+            foreach (FilePath path in this.headerFiles) {
+                long lastModified = File.GetLastWriteTimeUtc(path).Ticks;
+                if (lastModified < this.timestamp) {
+                    continue;
+                }
+                touchedHeaders.Add(path);
+            }
+
+            IDELogger.Log ("XcodeHandler::HandleApplicationFocusIn -- Found {0} touched headers", touchedHeaders.Count);
+            this.timestamp = DateTime.UtcNow.Ticks;
+
+            if (touchedHeaders.Count > 0) {
+                this.Project.CodeBehindHandler.GenerateDesignCodeForHeaders(touchedHeaders);
+            }
+        }
+
+        /// <summary>
+        /// Builds the Xcode project and all its parts.
+        /// </summary>
 		private void BuildXcodeProject ()
 		{
 			IDELogger.Log("XcodeHandler::BuildXcodeProject");
@@ -124,6 +168,9 @@ namespace MonoDevelop.Monobjc.Tracking
 			this.xcodeProject.Save ();
 		}
 
+        /// <summary>
+        /// Adds the surrogate classes to the project.
+        /// </summary>
 		private void AddClasses ()
 		{
 			IDELogger.Log("XcodeHandler::AddClasses");
@@ -132,18 +179,28 @@ namespace MonoDevelop.Monobjc.Tracking
 			this.GenerateSurrogateSources (types);
 		}
 
+        /// <summary>
+        /// Clears the classes from the project.
+        /// </summary>
 		private void ClearClasses()
 		{
 			IDELogger.Log("XcodeHandler::ClearClasses");
 			this.XcodeProject.ClearGroup(Constants.GROUP_CLASSES);
+            this.headerFiles.Clear();
 		}
 
+        /// <summary>
+        /// Updates the classes in the project.
+        /// </summary>
 		private void UpdateClasses()
 		{
 			this.ClearClasses();
 			this.AddClasses();
 		}
 		
+        /// <summary>
+        /// Adds the resources to the project.
+        /// </summary>
 		private void AddResources ()
 		{
 			IDELogger.Log("XcodeHandler::AddResources");
@@ -154,18 +211,27 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 		}
 
+        /// <summary>
+        /// Clears the resources from the project.
+        /// </summary>
 		private void ClearResources()
 		{
 			IDELogger.Log("XcodeHandler::ClearResources");
 			this.XcodeProject.ClearGroup(Constants.GROUP_RESOURCES);
 		}
 		
+        /// <summary>
+        /// Updates the resources in the project.
+        /// </summary>
 		private void UpdateResources()
 		{
 			this.ClearResources();
 			this.AddResources();
 		}
 		
+        /// <summary>
+        /// Adds the frameworks to the project.
+        /// </summary>
 		private void AddFrameworks ()
 		{
 			IDELogger.Log("XcodeHandler::AddFrameworks");
@@ -174,12 +240,18 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 		}
 
+        /// <summary>
+        /// Clears the frameworks from the project.
+        /// </summary>
 		private void ClearFrameworks()
 		{
 			IDELogger.Log("XcodeHandler::ClearFrameworks");
 			this.XcodeProject.ClearGroup(Constants.GROUP_FRAMEWORKS);
 		}
 		
+        /// <summary>
+        /// Adds the project references to the project.
+        /// </summary>
 		private void AddProjectReferences ()
 		{
 			IDELogger.Log("XcodeHandler::AddProjectReferences");
@@ -193,8 +265,15 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 		}
 
+        /// <summary>
+        /// Generates the surrogate sources for the given types.
+        /// </summary>
 		private void GenerateSurrogateSources (IEnumerable<IType> types)
 		{
+            // Clear the tracking list
+            this.headerFiles.Clear();
+
+            // For each type, generate header/source files
 			foreach (IType type in types) {
 				IDELogger.Log("XcodeHandler::GenerateSurrogateSources -- {0}", type.Name);
 				
@@ -213,11 +292,19 @@ namespace MonoDevelop.Monobjc.Tracking
 					headerWriter.Write (writer, type);
 				}
 				
+                // Add the files to the project
 				this.XcodeProject.AddFile (Constants.GROUP_CLASSES, headerFile, this.TargetName);
 				this.XcodeProject.AddFile (Constants.GROUP_CLASSES, sourceFile, this.TargetName);
+
+                // Store the file so it can be tracked
+                this.headerFiles.Add(headerFile);
 			}
 		}
 		
+        /// <summary>
+        /// Gets the output folder where the Xcode project will be stored
+        /// </summary>
+        /// <value>The output folder.</value>
 		private FilePath OutputFolder {
 			get {
 				ConfigurationSelector configurationSelector = IdeApp.Workspace.ActiveConfiguration;
@@ -226,10 +313,17 @@ namespace MonoDevelop.Monobjc.Tracking
 			}
 		}
 		
+        /// <summary>
+        /// Gets the name of the target. This is required for a proper Xcode project configuration.
+        /// </summary>
+        /// <value>The name of the target.</value>
 		private String TargetName {
 			get { return (this.Project != null) ? this.Project.Name : "Monobjc"; }
 		}
 
+        /// <summary>
+        /// The default settings for a Xcode project.
+        /// </summary>
 		private static IDictionary<String, String> DEFAULT_SETTINGS = new Dictionary<String, String> () {
 			{ "ARCHS", "$(ARCHS_STANDARD_64_BIT)" },
 			{ "SDKROOT", "macosx" },

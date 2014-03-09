@@ -93,6 +93,9 @@
     <Reference Include="MonoDevelop.SourceEditor2">
       <HintPath>..\..\dependencies\@VERSION@\MonoDevelop.SourceEditor2.dll</HintPath>
     </Reference>
+    <Reference Include="Antlr4.Runtime.v4.0">
+      <HintPath>..\..\dependencies\Antlr4.Runtime.v4.0.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CodeGeneration\BaseCodeBehindGenerator.cs" />
@@ -146,6 +149,16 @@
     <Compile Include="MonobjcProjectBinding.cs" />
     <Compile Include="MonobjcProjectConfiguration.cs" />
     <Compile Include="MonobjcProjectType.cs" />
+    <Compile Include="Parsing\NativeClassDescriptor.cs" />
+    <Compile Include="Parsing\NativeClassDescriptionCollector.cs" />
+    <Compile Include="Parsing\NativeInstanceVariableDescriptor.cs" />
+    <Compile Include="Parsing\NativeMethodDescriptor.cs" />
+    <Compile Include="Parsing\ObjCBaseListener.cs" />
+    <Compile Include="Parsing\ObjCBaseVisitor.cs" />
+    <Compile Include="Parsing\ObjCLexer.cs" />
+    <Compile Include="Parsing\ObjCListener.cs" />
+    <Compile Include="Parsing\ObjCParser.cs" />
+    <Compile Include="Parsing\ObjCVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Refactoring\BaseOperation.cs" />
     <Compile Include="Refactoring\CreateIVarHandler.cs" />
@@ -155,6 +168,8 @@
     <Compile Include="Refactoring\ImplementProtocolHandler.cs" />
     <Compile Include="Refactoring\ImplementProtocolOperation.cs" />
     <Compile Include="Tracking\CodeBehindHandler.cs" />
+    <Compile Include="Tracking\CodeBehindHandler.Headers.cs" />
+    <Compile Include="Tracking\CodeBehindHandler.Xib.cs" />
     <Compile Include="Tracking\DependencyHandler.cs" />
     <Compile Include="Tracking\EmbeddingHandler.cs" />
     <Compile Include="Tracking\MigrationHandler.cs" />

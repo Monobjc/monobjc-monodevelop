@@ -17,7 +17,7 @@ namespace MonoDevelop.Monobjc.Gui
 		private global::Gtk.ProgressBar progressbar;
 		private global::Gtk.Button buttonCancel;
 		private global::Gtk.Button buttonOk;
-		
+
 		protected virtual void Build ()
 		{
 			global::Stetic.Gui.Initialize (this);
@@ -47,6 +47,7 @@ namespace MonoDevelop.Monobjc.Gui
 			this.radiobuttonManaged = new global::Gtk.RadioButton (global::Mono.Unix.Catalog.GetString ("Export As Managed Application"));
 			this.radiobuttonManaged.CanFocus = true;
 			this.radiobuttonManaged.Name = "radiobuttonManaged";
+			this.radiobuttonManaged.Active = true;
 			this.radiobuttonManaged.DrawIndicator = true;
 			this.radiobuttonManaged.UseUnderline = true;
 			this.radiobuttonManaged.Group = new global::GLib.SList (global::System.IntPtr.Zero);
@@ -169,26 +170,15 @@ namespace MonoDevelop.Monobjc.Gui
 			this.buttonOk.CanDefault = true;
 			this.buttonOk.CanFocus = true;
 			this.buttonOk.Name = "buttonOk";
-			// Container child buttonOk.Gtk.Container+ContainerChild
-			global::Gtk.Alignment w15 = new global::Gtk.Alignment (0.5F, 0.5F, 0F, 0F);
-			// Container child GtkAlignment.Gtk.Container+ContainerChild
-			global::Gtk.HBox w16 = new global::Gtk.HBox ();
-			w16.Spacing = 2;
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Image w17 = new global::Gtk.Image ();
-			w17.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-ok", global::Gtk.IconSize.Menu);
-			w16.Add (w17);
-			// Container child GtkHBox.Gtk.Container+ContainerChild
-			global::Gtk.Label w19 = new global::Gtk.Label ();
-			w19.LabelProp = global::Mono.Unix.Catalog.GetString ("Create");
-			w16.Add (w19);
-			w15.Add (w16);
-			this.buttonOk.Add (w15);
+			this.buttonOk.Label = global::Mono.Unix.Catalog.GetString ("Create");
+			global::Gtk.Image w15 = new global::Gtk.Image ();
+			w15.Pixbuf = global::Stetic.IconLoader.LoadIcon (this, "gtk-ok", global::Gtk.IconSize.Menu);
+			this.buttonOk.Image = w15;
 			w13.Add (this.buttonOk);
-			global::Gtk.ButtonBox.ButtonBoxChild w23 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w13 [this.buttonOk]));
-			w23.Position = 1;
-			w23.Expand = false;
-			w23.Fill = false;
+			global::Gtk.ButtonBox.ButtonBoxChild w16 = ((global::Gtk.ButtonBox.ButtonBoxChild)(w13 [this.buttonOk]));
+			w16.Position = 1;
+			w16.Expand = false;
+			w16.Fill = false;
 			if ((this.Child != null)) {
 				this.Child.ShowAll ();
 			}

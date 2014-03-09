@@ -31,7 +31,7 @@ using MonoDevelop.Projects;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
-	class CodeBehindHandler : ProjectHandler
+    partial class CodeBehindHandler : ProjectHandler
 	{
 		/// <summary>
 		/// Initializes a new instance of the <see cref="CodeBehindHandler"/> class.
@@ -80,109 +80,6 @@ namespace MonoDevelop.Monobjc.Tracking
 					monitor.Dispose ();
 				});
 			});
-		}
-
-		/// <summary>
-		/// Generates the design code.
-		/// </summary>
-		public void GenerateDesignCode (IEnumerable<ProjectFileEventInfo> e)
-		{
-			// Balk if the project is being deserialized
-			if (this.Project.Loading) {
-				return;
-			}
-
-			// Run CodeBehind if it is a XIB file
-			IList<ProjectFile> projectFiles = new List<ProjectFile> ();
-			foreach (ProjectFileEventInfo info in e) {
-				ProjectFile projectFile = info.ProjectFile;
-				IDELogger.Log ("CodeBehindHandler::GenerateDesignCode -- checking {0}", projectFile);
-				if (BuildHelper.IsXIBFile (projectFile) && this.Project.IsInDevelopmentRegion (projectFile)) {
-					IDELogger.Log ("CodeBehindHandler::GenerateDesignCode -- collecting {0}", projectFile);
-					projectFiles.Add (projectFile);
-				}
-			}
-			
-			if (projectFiles.Count == 0) {
-				return;
-			}
-
-			this.ScheduleDesignCodeGeneration (projectFiles);
-		}
-
-		private void ScheduleDesignCodeGeneration (IList<ProjectFile> projectFiles)
-		{
-			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor ("Monobjc", "md-monobjc", false);
-			ThreadPool.QueueUserWorkItem (delegate {
-				try {
-					monitor.BeginTask (GettextCatalog.GetString ("Generating design code..."), 1 + projectFiles.Count);
-
-					ProjectTypeCache cache = ProjectTypeCache.Get (this.Project);
-					CodeBehindWriter writer = CodeBehindWriter.CreateForProject (monitor, this.Project);
-					
-					// Perform the code generation
-					List<FilePath> designerFiles = new List<FilePath> ();
-					foreach (ProjectFile file in projectFiles) {
-						IList<FilePath> files = this.GenerateCodeBehind (cache, writer, file.FilePath);
-						designerFiles.AddRange (files);
-						monitor.Step (1);
-					}
-					writer.WriteOpenFiles ();
-
-					// Add all the designer files
-					foreach (FilePath designerFile in designerFiles) {
-						this.Project.AddFile (designerFile);
-					}
-					this.Project.Save (monitor);
-
-					monitor.EndTask ();
-				} catch (Exception ex) {
-					monitor.ReportError (ex.Message, ex);
-				} finally {
-					monitor.Dispose ();
-				}
-			});
-		}
-
-		private IList<FilePath> GenerateCodeBehind (ProjectTypeCache cache, CodeBehindWriter writer, FilePath file)
-		{
-			IDELogger.Log ("CodeBehindHandler::GenerateCodeBehind -- Parsing {0}", file);
-
-			// Parse and collect information from the document
-			IBDocument document = IBDocument.LoadFromFile (file);
-			ClassDescriptionCollector visitor = new ClassDescriptionCollector ();
-			document.Root.Accept (visitor);
-			
-			List<FilePath> designerFiles = new List<FilePath> ();
-			foreach (string className in visitor.ClassNames) {
-				// Check if the class should be generated
-				if (!ShouldGenerate (visitor, className)) {
-					IDELogger.Log ("CodeBehindHandler::GenerateCodeBehind -- Skipping {0} (no outlets, no actions or reserved name)", className);
-					continue;
-				}
-				
-				// Generate the designer part
-				FilePath designerFile = this.CodeGenerator.GenerateCodeBehindCode (cache, writer, className, visitor [className]);
-				if (designerFile != FilePath.Null) {
-					designerFiles.Add (designerFile);
-				}
-			}
-
-			return designerFiles;
-		}
-		
-		/// <summary>
-		/// Returns whether a designed class should be generated.
-		/// </summary>
-		private static bool ShouldGenerate (ClassDescriptionCollector visitor, String className)
-		{
-			// Not clean, but needed anyway...
-			if (String.Equals ("FirstResponder", className)) {
-				return false;
-			}
-			// TODO: Skip classes that are standard ones
-			IEnumerable<IBPartialClassDescription> enumerable = visitor [className];
-			return (enumerable.SelectMany (d => d.Outlets).Count () > 0 || enumerable.SelectMany (d => d.Actions).Count () > 0);
 		}
 	}
 }
