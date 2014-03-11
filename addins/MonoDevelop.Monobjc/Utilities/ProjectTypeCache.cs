@@ -322,7 +322,11 @@ namespace MonoDevelop.Monobjc.Utilities
 
 		private IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions (Func<ITypeDefinition, bool> matcher, bool projectOnly)
 		{
+            IDELogger.Log ("ProjectTypeCache::GetMatchingTypeDefinitions -- Forcing update");
+
 			TypeSystemService.ForceUpdate (this.ProjectWrapper);
+
+            IDELogger.Log ("ProjectTypeCache::GetMatchingTypeDefinitions -- Searching");
 
 			// Search only in the project wrapper
 			if (projectOnly) {

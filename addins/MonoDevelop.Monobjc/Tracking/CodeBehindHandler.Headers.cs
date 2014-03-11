@@ -104,7 +104,6 @@ namespace MonoDevelop.Monobjc.Tracking
             NativeClassDescriptionCollector<int> visitor = new NativeClassDescriptionCollector<int> ();
             context.Accept (visitor);
 
-            /*
             IDELogger.Log ("CodeBehindHandler::GenerateCodeBehindForHeader -- Dump classes");
             foreach (NativeClassDescriptor classDescriptor in visitor.Descriptors) {
                 IDELogger.Log ("CodeBehindHandler::GenerateCodeBehindForHeader -- ClassName={0}", classDescriptor.ClassName);
@@ -116,7 +115,6 @@ namespace MonoDevelop.Monobjc.Tracking
                     IDELogger.Log ("CodeBehindHandler::GenerateCodeBehindForHeader -- {0}", descriptor);
                 }
             }
-            */
 
 			List<FilePath> designerFiles = new List<FilePath> ();
             foreach (NativeClassDescriptor classDescriptor in visitor.Descriptors) {
