@@ -73,6 +73,7 @@ namespace MonoDevelop.Monobjc.Tracking
 					monitor.BeginTask (GettextCatalog.GetString ("Generating design code..."), 1 + projectFiles.Count);
 
 					ProjectTypeCache cache = ProjectTypeCache.Get (this.Project);
+                    cache.ForceUpdate();
 					CodeBehindWriter writer = CodeBehindWriter.CreateForProject (monitor, this.Project);
 					
 					// Perform the code generation

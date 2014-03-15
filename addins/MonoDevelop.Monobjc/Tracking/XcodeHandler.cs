@@ -175,6 +175,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		{
 			IDELogger.Log("XcodeHandler::AddClasses");
 			ProjectTypeCache cache = ProjectTypeCache.Get (this.Project);
+            cache.ForceUpdate();
 			IEnumerable<IType > types = cache.GetAllClasses (true);
 			this.GenerateSurrogateSources (types);
 		}

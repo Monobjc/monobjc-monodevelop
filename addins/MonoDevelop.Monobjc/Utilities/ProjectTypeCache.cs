@@ -76,6 +76,14 @@ namespace MonoDevelop.Monobjc.Utilities
 			this.typeCache.Clear ();
 		}
 		
+        /// <summary>
+        /// Forces the update of the project wrapper.
+        /// </summary>
+        public void ForceUpdate ()
+        {
+            TypeSystemService.ForceUpdate (this.ProjectWrapper);
+        }
+
 		/// <summary>
 		/// Recomputes the reference types.
 		/// </summary>
@@ -322,10 +330,6 @@ namespace MonoDevelop.Monobjc.Utilities
 
 		private IEnumerable<ITypeDefinition> GetMatchingTypeDefinitions (Func<ITypeDefinition, bool> matcher, bool projectOnly)
 		{
-            IDELogger.Log ("ProjectTypeCache::GetMatchingTypeDefinitions -- Forcing update");
-
-			TypeSystemService.ForceUpdate (this.ProjectWrapper);
-
             IDELogger.Log ("ProjectTypeCache::GetMatchingTypeDefinitions -- Searching");
 
 			// Search only in the project wrapper
