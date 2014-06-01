@@ -109,7 +109,12 @@ namespace MonoDevelop.Monobjc.Gui
 			                                  where a.Name.Contains ("Monobjc.")
 			                                  select a.Name.Substring ("Monobjc.".Length)).Distinct ();
 			foreach (String assembly in assemblies) {
-				store.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), assembly);
+#if MD_4_0 || MD_4_2
+                store.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), assembly);
+#endif
+#if MD_5_0
+                store.AppendValues (false, ImageService.GetImage ("md-monobjc-fmk", IconSize.Menu), assembly);
+#endif
 			}
 		}
 		
@@ -142,7 +147,12 @@ namespace MonoDevelop.Monobjc.Gui
 				if (systemFramework) {
 					continue;
 				}
-				store.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), name.Substring ("Monobjc.".Length));
+#if MD_4_0 || MD_4_2
+                store.AppendValues (false, ImageService.GetPixbuf ("md-monobjc-fmk", IconSize.Menu), name.Substring ("Monobjc.".Length));
+#endif
+#if MD_5_0
+                store.AppendValues (false, ImageService.GetImage ("md-monobjc-fmk", IconSize.Menu), name.Substring ("Monobjc.".Length));
+#endif
 			}
 		}
 

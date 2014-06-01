@@ -5,13 +5,21 @@ namespace MonoDevelop.Monobjc.Gui
 	public partial class ImplementProtocolDialog
 	{
 		private global::Gtk.VBox vbox;
+		
 		private global::Gtk.Label labelProtocols;
+		
 		private global::Gtk.ScrolledWindow scrolledwindow1;
+		
 		private global::Gtk.TreeView treeviewProtocols;
+		
 		private global::Gtk.Label labelMembers;
+		
 		private global::Gtk.ScrolledWindow scrolledwindow2;
+		
 		private global::Gtk.TreeView treeviewMembers;
+		
 		private global::Gtk.Button buttonCancel;
+		
 		private global::Gtk.Button buttonOk;
 
 		protected virtual void Build ()

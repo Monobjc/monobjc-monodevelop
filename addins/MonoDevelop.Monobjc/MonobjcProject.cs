@@ -121,6 +121,9 @@ namespace MonoDevelop.Monobjc
 		///   Gets the type of the project.
 		/// </summary>
 		/// <value>The type of the project.</value>
+#if MD_5_0
+        [Obsolete]
+#endif
 		public override string ProjectType {
 			get { return "Monobjc"; }
 		}

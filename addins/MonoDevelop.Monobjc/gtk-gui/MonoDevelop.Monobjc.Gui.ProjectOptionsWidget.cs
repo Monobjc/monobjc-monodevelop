@@ -5,74 +5,143 @@ namespace MonoDevelop.Monobjc.Gui
 	public partial class ProjectOptionsWidget
 	{
 		private global::Gtk.Notebook notebook;
+		
 		private global::Gtk.Table tableGeneral;
+		
 		private global::Gtk.CheckButton checkbuttonEntitlements;
+		
 		private global::Gtk.CheckButton checkbuttonSigning;
+		
 		private global::Gtk.ComboBox comboboxApplicationCategory;
+		
 		private global::Gtk.ComboBox comboboxOSVersion;
+		
 		private global::Gtk.ComboBox comboboxSigningCertificates;
+		
 		private global::Gtk.ComboBox comboboxType;
+		
 		private global::Gtk.Entry entryBundleIdentifier;
+		
 		private global::Gtk.Entry entryBundleVersion;
+		
 		private global::Gtk.FileChooserButton filechooserbuttonBundleIcon;
+		
 		private global::Gtk.FileChooserButton filechooserbuttonMainNib;
+		
 		private global::Gtk.HSeparator hseparator1;
+		
 		private global::Gtk.Label labelApplicationCategory;
+		
 		private global::Gtk.Label labelBundleIcon;
+		
 		private global::Gtk.Label labelBundleIdentifier;
+		
 		private global::Gtk.Label labelBundleVersion;
+		
 		private global::Gtk.Label labelFrameworks;
+		
 		private global::Gtk.Label labelGeneralDescription;
+		
 		private global::Gtk.Label labelMainNib;
+		
 		private global::Gtk.Label labelOSVersion;
+		
 		private global::Gtk.Label labelSigningCertificate;
+		
 		private global::Gtk.Label labelType;
+		
 		private global::Gtk.ScrolledWindow scrolledwindowFrameworks;
+		
 		private global::Gtk.TreeView treeviewFrameworks;
+		
 		private global::Gtk.Label labelGeneral;
+		
 		private global::Gtk.Table tableEmbedding;
+		
 		private global::Gtk.ComboBox comboboxArchitectures;
+		
 		private global::Gtk.HBox hboxAdditionalAssemblies;
+		
 		private global::Gtk.ScrolledWindow scrolledwindowAdditionnalAssemblies;
+		
 		private global::Gtk.TreeView treeviewAdditionnalAssemblies;
+		
 		private global::Gtk.VBox vbox3;
+		
 		private global::Gtk.Button buttonAddAdditionnalAssemblies;
+		
 		private global::Gtk.Button buttonRemoveAdditionnalAssemblies;
+		
 		private global::Gtk.HBox hboxAdditionnalLibraries;
+		
 		private global::Gtk.ScrolledWindow scrolledwindowAdditionnalLibraries;
+		
 		private global::Gtk.TreeView treeviewAdditionnalLibraries;
+		
 		private global::Gtk.VBox vbox5;
+		
 		private global::Gtk.Button buttonAddAdditionnalLibraries;
+		
 		private global::Gtk.Button buttonRemoveAdditionnalLibraries;
+		
 		private global::Gtk.HBox hboxExcludedAssemblies;
+		
 		private global::Gtk.ScrolledWindow scrolledwindowExcludedAssemblies;
+		
 		private global::Gtk.TreeView treeviewExcludedAssemblies;
+		
 		private global::Gtk.VBox vbox4;
+		
 		private global::Gtk.Button buttonAddExcludedAssemblies;
+		
 		private global::Gtk.Button buttonRemoveExcludedAssemblies;
+		
 		private global::Gtk.Label labelAdditionnalAssemblies;
+		
 		private global::Gtk.Label labelAdditionnalLibraries;
+		
 		private global::Gtk.Label labelArchitectures;
+		
 		private global::Gtk.Label labelEmbeddedFrameworks;
+		
 		private global::Gtk.Label labelEmbeddingDescription;
+		
 		private global::Gtk.Label labelExcludedAssemblies;
+		
 		private global::Gtk.ScrolledWindow scrolledwindowEmbeddedFrameworks;
+		
 		private global::Gtk.TreeView treeviewEmbeddedFrameworks;
+		
 		private global::Gtk.Label labelEmbedding;
+		
 		private global::Gtk.Table tableArchiving;
+		
 		private global::Gtk.CheckButton checkbuttonArchivePackage;
+		
 		private global::Gtk.ComboBox comboboxPackagingCertificates;
+		
 		private global::Gtk.Label labelArchivingDescription;
+		
 		private global::Gtk.Label labelPackagingCertificate;
+		
 		private global::Gtk.Label labelArchiving;
+		
 		private global::Gtk.Table tableAdvanced;
+		
 		private global::Gtk.CheckButton checkbuttonCombineArtwork;
+		
 		private global::Gtk.ComboBox comboboxDevelopmentRegion;
+		
 		private global::Gtk.Entry entryEncryptionSeed;
+		
 		private global::Gtk.Label labelArchivingDescription1;
+		
 		private global::Gtk.Label labelDevelopmentRegion;
+		
 		private global::Gtk.Label labelEncryptArtworkSeed;
+		
 		private global::Gtk.Label labelEncryptDescription;
+		
 		private global::Gtk.Label labelAdvanced;
 
 		protected virtual void Build ()

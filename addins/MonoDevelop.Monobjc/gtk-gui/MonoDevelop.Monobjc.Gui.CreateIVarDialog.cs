@@ -5,15 +5,25 @@ namespace MonoDevelop.Monobjc.Gui
 	public partial class CreateIVarDialog
 	{
 		private global::Gtk.VBox vbox;
+		
 		private global::Gtk.Table table1;
+		
 		private global::Gtk.Entry entryName;
+		
 		private global::Gtk.Entry entryType;
+		
 		private global::Gtk.Label labelName;
+		
 		private global::Gtk.Label labelType;
+		
 		private global::Gtk.HBox hbox;
+		
 		private global::Gtk.Image imageWarning;
+		
 		private global::Gtk.Label labelWarning;
+		
 		private global::Gtk.Button buttonCancel;
+		
 		private global::Gtk.Button buttonOk;
 
 		protected virtual void Build ()

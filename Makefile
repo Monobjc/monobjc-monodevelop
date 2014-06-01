@@ -16,7 +16,7 @@
 VERSION?=4.2
 CONFIGURATION?=Debug
 BUILD_NUMBER?=0
-IDE_APP?=/Applications/Xamarin\ Studio.app
+IDE_APP?=/Applications/Xamarin\ Studio\ $(VERSION).app
 APP_SUPPORT_DIR?=~/Library/Application\ Support/XamarinStudio-4.0/LocalInstall/Addins
 
 # Set the directories
@@ -82,7 +82,7 @@ local: repository
 	done
 
 $(IDE_APP):
-	$(error Cannot found MonoDevelop application)
+	$(error Cannot found IDE application)
 
 # ----------------------------------------
 # Phony Targets

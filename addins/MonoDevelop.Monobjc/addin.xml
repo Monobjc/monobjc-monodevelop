@@ -6,7 +6,7 @@
        description="Development of Mac OS X applications using Monobjc."
        copyright="GPL"
        category="Mac Development"
-       version="@VERSION@.@REVISION@">
+       version="5.0.2527.3">
 
   <!-- Header -->
   <Header>
@@ -57,13 +57,13 @@
 
   <!-- Dependencies -->
   <Dependencies>
-    <Addin id="MonoDevelop.Core" version="@VERSION@" />
-    <Addin id="MonoDevelop.Ide" version="@VERSION@" />
-    <Addin id="MonoDevelop.Debugger" version="@VERSION@"/>
-    <Addin id="MonoDevelop.Debugger.Soft" version="@VERSION@"/>
-    <Addin id="MonoDevelop.Deployment" version="@VERSION@" />
-    <Addin id="MonoDevelop.DesignerSupport" version="@VERSION@" />
-    <Addin id="MonoDevelop.Refactoring" version="@VERSION@"/>
+    <Addin id="MonoDevelop.Core" version="5.0" />
+    <Addin id="MonoDevelop.Ide" version="5.0" />
+    <Addin id="MonoDevelop.Debugger" version="5.0"/>
+    <Addin id="MonoDevelop.Debugger.Soft" version="5.0"/>
+    <Addin id="MonoDevelop.Deployment" version="5.0" />
+    <Addin id="MonoDevelop.DesignerSupport" version="5.0" />
+    <Addin id="MonoDevelop.Refactoring" version="5.0"/>
   </Dependencies>
 
   <!-- File Templates -->

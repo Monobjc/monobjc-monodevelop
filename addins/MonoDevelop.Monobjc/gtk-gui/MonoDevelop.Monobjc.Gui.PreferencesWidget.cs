@@ -5,9 +5,13 @@ namespace MonoDevelop.Monobjc.Gui
 	public partial class PreferencesWidget
 	{
 		private global::Gtk.Table table1;
+		
 		private global::Gtk.FileChooserButton filechooserbuttonDeveloperTools;
+		
 		private global::Gtk.Label labelDeveloperTools;
+		
 		private global::Gtk.Label labelTitle;
+		
 		private global::Gtk.Label labelVersion;
 
 		protected virtual void Build ()

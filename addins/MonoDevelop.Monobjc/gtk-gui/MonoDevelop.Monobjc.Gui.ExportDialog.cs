@@ -5,17 +5,29 @@ namespace MonoDevelop.Monobjc.Gui
 	public partial class ExportDialog
 	{
 		private global::Gtk.VBox vbox;
+		
 		private global::Gtk.RadioButton radiobuttonManaged;
+		
 		private global::Gtk.Label labelManaged;
+		
 		private global::Gtk.RadioButton radiobuttonNative;
+		
 		private global::Gtk.Label labelNative;
+		
 		private global::Gtk.HSeparator hseparator1;
+		
 		private global::Gtk.HBox hbox2;
+		
 		private global::Gtk.Label labelOutput;
+		
 		private global::Gtk.FileChooserButton filechooserbuttonOutput;
+		
 		private global::Gtk.HSeparator hseparator2;
+		
 		private global::Gtk.ProgressBar progressbar;
+		
 		private global::Gtk.Button buttonCancel;
+		
 		private global::Gtk.Button buttonOk;
 
 		protected virtual void Build ()

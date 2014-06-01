@@ -15,7 +15,7 @@
     <DebugType>full</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;@PROPERTIES@</DefineConstants>
+    <DefineConstants>DEBUG;MD_5_0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
@@ -24,7 +24,7 @@
     <DebugType>none</DebugType>
     <Optimize>False</Optimize>
     <OutputPath>bin\Release</OutputPath>
-    <DefineConstants>@PROPERTIES@</DefineConstants>
+    <DefineConstants>MD_5_0</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <ConsolePause>False</ConsolePause>
@@ -40,58 +40,58 @@
     <Reference Include="pango-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <Reference Include="Mono.Posix" />
     <Reference Include="ICSharpCode.NRefactory.CSharp">
-      <HintPath>..\..\dependencies\3.0\ICSharpCode.NRefactory.CSharp.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\ICSharpCode.NRefactory.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.NRefactory">
-      <HintPath>..\..\dependencies\3.0\ICSharpCode.NRefactory.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\ICSharpCode.NRefactory.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Addins">
-      <HintPath>..\..\dependencies\3.0\Mono.Addins.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\Mono.Addins.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Addins.Setup">
-      <HintPath>..\..\dependencies\3.0\Mono.Addins.Setup.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\Mono.Addins.Setup.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil">
-      <HintPath>..\..\dependencies\3.0\Mono.Cecil.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\Mono.Cecil.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Debugger.Soft">
-      <HintPath>..\..\dependencies\3.0\Mono.Debugger.Soft.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\Mono.Debugger.Soft.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Debugging">
-      <HintPath>..\..\dependencies\3.0\Mono.Debugging.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\Mono.Debugging.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Debugging.Soft">
-      <HintPath>..\..\dependencies\3.0\Mono.Debugging.Soft.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\Mono.Debugging.Soft.dll</HintPath>
     </Reference>
     <Reference Include="Mono.TextEditor">
-      <HintPath>..\..\dependencies\3.0\Mono.TextEditor.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\Mono.TextEditor.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Core">
-      <HintPath>..\..\dependencies\3.0\MonoDevelop.Core.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\MonoDevelop.Core.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Debugger">
-      <HintPath>..\..\dependencies\3.0\MonoDevelop.Debugger.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\MonoDevelop.Debugger.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Debugger.Soft">
-      <HintPath>..\..\dependencies\3.0\MonoDevelop.Debugger.Soft.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\MonoDevelop.Debugger.Soft.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Deployment">
-      <HintPath>..\..\dependencies\3.0\MonoDevelop.Deployment.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\MonoDevelop.Deployment.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.DesignerSupport">
-      <HintPath>..\..\dependencies\3.0\MonoDevelop.DesignerSupport.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\MonoDevelop.DesignerSupport.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Ide">
-      <HintPath>..\..\dependencies\3.0\MonoDevelop.Ide.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\MonoDevelop.Ide.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Projects.Formats.MSBuild">
-      <HintPath>..\..\dependencies\3.0\MonoDevelop.Projects.Formats.MSBuild.exe</HintPath>
+      <HintPath>..\..\dependencies\5.0\MonoDevelop.Projects.Formats.MSBuild.exe</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.Refactoring">
-      <HintPath>..\..\dependencies\3.0\MonoDevelop.Refactoring.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\MonoDevelop.Refactoring.dll</HintPath>
     </Reference>
     <Reference Include="MonoDevelop.SourceEditor2">
-      <HintPath>..\..\dependencies\3.0\MonoDevelop.SourceEditor2.dll</HintPath>
+      <HintPath>..\..\dependencies\5.0\MonoDevelop.SourceEditor2.dll</HintPath>
     </Reference>
     <Reference Include="Antlr4.Runtime.v4.0">
       <HintPath>..\..\dependencies\Antlr4.Runtime.v4.0.dll</HintPath>

@@ -176,7 +176,12 @@ namespace MonoDevelop.Monobjc.Gui
 				}
 				
 				TreeStore store = (TreeStore)this.treeviewProtocols.Model;
-				store.AppendValues (ImageService.GetPixbuf (MonoDevelop.Ide.Gui.Stock.Interface, IconSize.Menu), protocol + " (" + type.FullName + ")", type);
+#if MD_4_0 || MD_4_2
+                store.AppendValues (ImageService.GetPixbuf (MonoDevelop.Ide.Gui.Stock.Interface, IconSize.Menu), protocol + " (" + type.FullName + ")", type);
+#endif
+#if MD_5_0
+                store.AppendValues (ImageService.GetImage (MonoDevelop.Ide.Gui.Stock.Interface, IconSize.Menu), protocol + " (" + type.FullName + ")", type);
+#endif
 			}
 		}
 		
@@ -186,19 +191,37 @@ namespace MonoDevelop.Monobjc.Gui
 			store.Clear ();
 			
 			foreach (IMember member in type.GetMembers((m) => true, GetMemberOptions.ReturnMemberDefinitions | GetMemberOptions.IgnoreInheritedMembers)) {
-				switch (member.EntityType) {
-				case EntityType.Method:
-					if (member.Name.StartsWith ("get_")) {
-						continue;
-					}
-					if (member.Name.StartsWith ("set_")) {
-						continue;
-					}
-					store.AppendValues (false, ImageService.GetPixbuf (MonoDevelop.Ide.Gui.Stock.Method, IconSize.Menu), member.Name, member);
-					break;
-				case EntityType.Property:
-					store.AppendValues (false, ImageService.GetPixbuf (MonoDevelop.Ide.Gui.Stock.Property, IconSize.Menu), member.Name, member);
-					break;
+#if MD_4_0 || MD_4_2
+                bool isMethod = (member.EntityType == EntityType.Method);
+                bool isProperty = (member.EntityType == EntityType.Property);
+#endif
+#if MD_5_0
+                bool isMethod = (member.SymbolKind == SymbolKind.Method);
+                bool isProperty = (member.SymbolKind == SymbolKind.Property);
+#endif
+
+                if (isMethod) {
+                    if (member.Name.StartsWith("get_")) {
+                        continue;
+                    }
+                    if (member.Name.StartsWith("set_")) {
+                        continue;
+                    }
+#if MD_4_0 || MD_4_2
+                    store.AppendValues (false, ImageService.GetPixbuf (MonoDevelop.Ide.Gui.Stock.Method, IconSize.Menu), member.Name, member);
+#endif
+#if MD_5_0
+                    store.AppendValues(false, ImageService.GetImage(MonoDevelop.Ide.Gui.Stock.Method, IconSize.Menu), member.Name, member);
+#endif
+                }
+
+                if (isProperty) {
+#if MD_4_0 || MD_4_2
+                    store.AppendValues (false, ImageService.GetPixbuf (MonoDevelop.Ide.Gui.Stock.Property, IconSize.Menu), member.Name, member);
+#endif
+#if MD_5_0
+                    store.AppendValues (false, ImageService.GetImage (MonoDevelop.Ide.Gui.Stock.Property, IconSize.Menu), member.Name, member);
+#endif
 				}
 			}
 		}
@@ -266,14 +289,23 @@ namespace MonoDevelop.Monobjc.Gui
 				IDELogger.Log("ImplementProtocolDialog::GenerateImplementation -- Member={0}", member.Name);
 				IDELogger.Log("ImplementProtocolDialog::GenerateImplementation -- Type={0}", member.DeclaringType.Name);
 
-				switch (member.EntityType) {
-				case EntityType.Method:
+#if MD_4_0 || MD_4_2
+                bool isMethod = (member.EntityType == EntityType.Method);
+                bool isProperty = (member.EntityType == EntityType.Property);
+#endif
+#if MD_5_0
+                bool isMethod = (member.SymbolKind == SymbolKind.Method);
+                bool isProperty = (member.SymbolKind == SymbolKind.Property);
+#endif
+
+                if (isMethod) {
 					IMethod method = (IMethod)member;
 					String methodContent = this.GenerateMethod (method);
 					code.Append (Indent (methodContent, indent));
 					code.AppendLine ();
-					break;
-				case EntityType.Property:
+                }
+              
+                if (isProperty) {
 					IProperty property = (IProperty)member;
 
 					IMethod getter = property.CanGet ? property.Getter : null;
@@ -282,7 +314,6 @@ namespace MonoDevelop.Monobjc.Gui
 					String propertyContent = this.GenerateProperty (property, getter, setter);
 					code.Append (Indent (propertyContent, indent));
 					code.AppendLine ();
-					break;
 				}
 			}
 			
