@@ -56,6 +56,7 @@ namespace MonoDevelop.Monobjc.Tracking
 
             this.ScheduleDesignCodeGenerationForHeaders (paths);
         }
+
         private void ScheduleDesignCodeGenerationForHeaders (IEnumerable<FilePath> paths)
 		{
 			IProgressMonitor monitor = IdeApp.Workbench.ProgressMonitors.GetStatusProgressMonitor ("Monobjc", "md-monobjc", false);

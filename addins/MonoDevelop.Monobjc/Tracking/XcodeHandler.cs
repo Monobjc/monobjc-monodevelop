@@ -26,14 +26,25 @@ using MonoDevelop.Monobjc.Utilities;
 using ICSharpCode.NRefactory.TypeSystem;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace MonoDevelop.Monobjc.Tracking
 {
 	class XcodeHandler : ProjectHandler
 	{
+        private static IList<XcodeHandler> handlers = new List<XcodeHandler>();
+
 		private XcodeProject xcodeProject = null;
         private long timestamp = 0;
         private IList<String> headerFiles = new List<String>();
+
+        /// <summary>
+        /// Initializes the <see cref="MonoDevelop.Monobjc.Tracking.XcodeHandler"/> class.
+        /// </summary>
+        static XcodeHandler()
+        {
+            IdeApp.FocusIn += HandleApplicationFocusIn;
+        }
 
 		/// <summary>
 		/// Initializes a new instance of the <see cref="XcodeHandler"/> class.
@@ -41,7 +52,7 @@ namespace MonoDevelop.Monobjc.Tracking
 		/// <param name="project">The project.</param>
 		public XcodeHandler (MonobjcProject project) : base(project)
 		{
-            IdeApp.FocusIn += this.HandleApplicationFocusIn;
+            handlers.Add(this);
 		}
 
         /// <summary>
@@ -49,7 +60,7 @@ namespace MonoDevelop.Monobjc.Tracking
         /// </summary>
         public override void Dispose()
         {
-            IdeApp.FocusIn -= this.HandleApplicationFocusIn;
+            handlers.Remove(this);
             base.Dispose();
         }
 
@@ -73,26 +84,35 @@ namespace MonoDevelop.Monobjc.Tracking
 			this.xcodeProject = null;
 		}
 
-        public void HandleApplicationFocusIn (Object sender, EventArgs e)
+        /// <summary>
+        /// Handles the application focus in.
+        /// </summary>
+        /// <param name="sender">the sender</param>
+        /// <param name="e">the event</param>
+        public static void HandleApplicationFocusIn (Object sender, EventArgs e)
         {
-            IList<FilePath> touchedHeaders = new List<FilePath>();
+            IDELogger.Log ("XcodeHandler::HandleApplicationFocusIn -- Processing...");
 
-            // Each time the IDE got focus:
-            // - check if header files are more recent than the reference timestamp. If so, generate code-behind code
-            // - once code-behind has been generated, update the last timestamp
-            foreach (FilePath path in this.headerFiles) {
-                long lastModified = File.GetLastWriteTimeUtc(path).Ticks;
-                if (lastModified < this.timestamp) {
-                    continue;
+            foreach (XcodeHandler handler in handlers) {
+                IList<FilePath> touchedHeaders = new List<FilePath>();
+
+                // Each time the IDE got focus:
+                // - check if header files are more recent than the reference timestamp. If so, generate code-behind code
+                // - once code-behind has been generated, update the last timestamp
+                foreach (FilePath path in handler.headerFiles) {
+                    long lastModified = File.GetLastWriteTimeUtc(path).Ticks;
+                    if (lastModified < handler.timestamp) {
+                        continue;
+                    }
+                    touchedHeaders.Add(path);
                 }
-                touchedHeaders.Add(path);
-            }
 
-            IDELogger.Log ("XcodeHandler::HandleApplicationFocusIn -- Found {0} touched headers", touchedHeaders.Count);
-            this.timestamp = DateTime.UtcNow.Ticks;
+                IDELogger.Log ("XcodeHandler::HandleApplicationFocusIn -- Found {0} touched headers in {1}", touchedHeaders.Count, handler.Project.Name);
+                handler.timestamp = DateTime.UtcNow.Ticks;
 
-            if (touchedHeaders.Count > 0) {
-                this.Project.CodeBehindHandler.GenerateDesignCodeForHeaders(touchedHeaders);
+                if (touchedHeaders.Count > 0) {
+                    handler.Project.CodeBehindHandler.GenerateDesignCodeForHeaders(touchedHeaders);
+                }
             }
         }
 
@@ -160,12 +180,15 @@ namespace MonoDevelop.Monobjc.Tracking
 				break;
 			}
 
-			this.AddClasses ();
-			this.AddResources ();
-			this.AddFrameworks ();
-			this.AddProjectReferences ();
+            this.xcodeProject.Save ();
 
-			this.xcodeProject.Save ();
+            ThreadPool.QueueUserWorkItem(delegate {
+                this.AddClasses ();
+                this.AddResources ();
+                this.AddFrameworks ();
+                this.AddProjectReferences ();
+                this.xcodeProject.Save ();
+            });
 		}
 
         /// <summary>
