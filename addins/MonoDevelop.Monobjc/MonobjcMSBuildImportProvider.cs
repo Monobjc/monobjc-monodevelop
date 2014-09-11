@@ -26,9 +26,9 @@ namespace MonoDevelop.Monobjc
 	[Extension]
 	public class MonobjcMSBuildImportProvider : IMSBuildImportProvider
 	{
-		private const String importCocoaApplication = @"$(MSBuildBinPath)\Monobjc.CocoaApplication.targets";
-		private const String importConsoleApplication = @"$(MSBuildBinPath)\Monobjc.ConsoleApplication.targets";
-		private const String importCocoaLibrary = @"$(MSBuildBinPath)\Monobjc.CocoaLibrary.targets";
+        private const String importCocoaApplication = @"$(MSBuildToolsPath)\Monobjc.CocoaApplication.targets";
+        private const String importConsoleApplication = @"$(MSBuildToolsPath)\Monobjc.ConsoleApplication.targets";
+        private const String importCocoaLibrary = @"$(MSBuildToolsPath)\Monobjc.CocoaLibrary.targets";
 		
 		public void UpdateImports (SolutionEntityItem item, List<String> imports)
 		{
