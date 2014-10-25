@@ -36,6 +36,7 @@ namespace MonoDevelop.Monobjc
 			{ new Version(10, 7, 0, 0), MacOSVersion.MacOS107 },
             { new Version(10, 8, 0, 0), MacOSVersion.MacOS108 },
             { new Version(10, 9, 0, 0), MacOSVersion.MacOS109 },
+            { new Version(10, 10, 0, 0), MacOSVersion.MacOS1010 },
 		};
 
 		internal CodeBehindHandler CodeBehindHandler { get; private set; }

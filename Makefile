@@ -13,11 +13,11 @@
 # ----------------------------------------
 
 # Set the default parameters
-VERSION?=4.2
+VERSION?=5.0
 CONFIGURATION?=Debug
 BUILD_NUMBER?=0
 IDE_APP?=/Applications/Xamarin\ Studio\ $(VERSION).app
-APP_SUPPORT_DIR?=~/Library/Application\ Support/XamarinStudio-4.0/LocalInstall/Addins
+APP_SUPPORT_DIR?=~/Library/Application\ Support/XamarinStudio-5.0/LocalInstall/Addins
 
 # Set the directories
 ADDINS_DIR=$(CURDIR)/addins
