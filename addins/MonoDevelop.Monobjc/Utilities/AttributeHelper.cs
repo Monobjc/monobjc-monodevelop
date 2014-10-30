@@ -21,6 +21,7 @@ using ICSharpCode.NRefactory.Semantics;
 using ICSharpCode.NRefactory.TypeSystem;
 using Mono.Cecil;
 using Mono.Collections.Generic;
+using System.IO;
 
 namespace MonoDevelop.Monobjc.Utilities
 {
@@ -90,7 +91,13 @@ namespace MonoDevelop.Monobjc.Utilities
 		
 		public static bool IsWrappingFramework (String assemblyPath, out bool systemFramework)
 		{
-			systemFramework = false;
+            systemFramework = false;
+
+            // Sanity check
+            if (!File.Exists(assemblyPath)) {
+                return false;
+            }
+
 			AssemblyDefinition assemblyDefinition = AssemblyDefinition.ReadAssembly (assemblyPath);
 
 			// Balk if the assembly has no custom attribute
